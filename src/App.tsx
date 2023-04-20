@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
-import LoginButton from './components/LoginButton';
-import Profile from './components/Profile';
-import LogoutButton from './components/LogoutButton';
+import LoginButton from './components/Auth0/LoginButton';
+import Profile from './components/Auth0/Profile';
+import LogoutButton from './components/Auth0/LogoutButton';
 import { useAuth0 } from '@auth0/auth0-react';
 
 function App(): JSX.Element {

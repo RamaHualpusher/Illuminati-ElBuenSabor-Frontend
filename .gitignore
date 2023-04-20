@@ -11,6 +11,16 @@
 # production
 /build
 
+#IntelliJ
+.idea
+*.iml
+*.iws
+*.ipr
+
+# Visual Studio Code
+.vscode
+
+
 # misc
 .DS_Store
 .env
