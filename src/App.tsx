@@ -1,8 +1,8 @@
+// App.tsx
 import React from 'react';
 import './App.css';
-import LoginButton from './components/Auth0/LoginButton';
+import Navbar from './components/Navbar/Navbar';
 import Profile from './components/Auth0/Profile';
-import LogoutButton from './components/Auth0/LogoutButton';
 import { useAuth0 } from '@auth0/auth0-react';
 
 function App(): JSX.Element {
@@ -12,11 +12,15 @@ function App(): JSX.Element {
 
   return (
     <div className="App">
-      <h1>Application</h1>
-      {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-      <Profile />
+      <Navbar />
+      <main className="p-4">
+        <h1>Prueba de login de la App </h1>
+        <h2>El Buen Sabor</h2>
+        <Profile />
+      </main>
     </div>
   );
 }
 
 export default App;
+
