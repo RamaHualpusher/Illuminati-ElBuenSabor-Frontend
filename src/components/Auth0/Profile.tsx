@@ -11,7 +11,7 @@ const Profile: FC = () => {
     };
   
     if (isLoading) {
-      return <div className="text-center text-xl font-bold">Loading...</div>;
+      return <div className="text-center text-xl font-bold">Cargando...</div>;
     }
   
     return isAuthenticated ? (
@@ -29,7 +29,7 @@ const Profile: FC = () => {
           <h2 className="card-title text-center">{user?.name}</h2>
           <ul className="list-group list-group-flush">
             <li className="list-group-item d-flex justify-content-between">
-              <strong>Name</strong>
+              <strong>Nombre</strong>
               <span>{user?.name}</span>
             </li>
             <li className="list-group-item d-flex justify-content-between">
@@ -37,7 +37,7 @@ const Profile: FC = () => {
               <span>{user?.email}</span>
             </li>
             <li className="list-group-item d-flex justify-content-between">
-              <strong>Nickname</strong>
+              <strong>Nick</strong>
               <span>{user?.nickname}</span>
             </li>
           </ul>
