@@ -6,8 +6,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from '@auth0/auth0-react';
 
-const DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN || '';
-const CLIENT_ID = process.env.REACT_APP_AUTH0_CLIENT_ID || '';
+const DOMAIN = "el-buen-sabor.us.auth0.com";
+const CLIENT_ID = "7qBjTMMkU4ypcWrFBJklOuR4oVqD2KLt";
 
 const root = document.getElementById('root');
 
