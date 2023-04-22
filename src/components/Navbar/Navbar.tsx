@@ -48,11 +48,12 @@ const Navbar: FC = () => {
       <div className={`collapse navbar-collapse${navbarOpen ? ' show' : ''}`}>
         <ul className="navbar-nav ms-auto">
           {isAuthenticated && (
-            <li className="nav-item">
-              <p className="nav-link mb-0">{user?.name}</p>
+            <li className="nav-item" style={{ display: 'flex', alignItems: 'center' }}>
+              <p className="nav-link mb-0" >{user?.name}</p>
+              <img src={user?.picture} alt="imagen usuario" style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}/>
             </li>
           )}
-          <li className="nav-item">
+          <li className="nav-item" >
             {isAuthenticated ? <LogoutButton /> : <LoginButton />}
           </li>
         </ul>
