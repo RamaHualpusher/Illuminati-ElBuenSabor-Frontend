@@ -22,8 +22,8 @@ function App(): JSX.Element {
       </main>
       <Router>
         <Routes>
-          <Route path="/ingredientes" element={<IngredientesTable url="localhost:8080/api/rubros-ingredientes" />} />
-          <Route path="/productos" element={<ProductosTable url="localhost:8080/api/rubros-productos" />} />
+          <Route path="/ingredientes" element={<IngredientesTable url="http://localhost:8080/api/rubros-ingredientes" />} />
+          <Route path="/productos" element={<ProductosTable url="http://localhost:8080/api/rubros-productos" />} />
         </Routes>
       </Router>
     </div>
