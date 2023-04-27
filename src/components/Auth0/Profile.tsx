@@ -1,20 +1,24 @@
-import { useAuth0 } from '@auth0/auth0-react';
-import React, { FC } from 'react';
+import { useAuth0 } from "@auth0/auth0-react";
+import React, { FC } from "react";
+import { Link } from "react-router-dom";
 
 const Profile: FC = () => {
-    const { user, isAuthenticated, isLoading } = useAuth0();
-  
-    const defaultImage = process.env.PUBLIC_URL + '/logo512.png';
-  
-    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-      e.currentTarget.src = defaultImage;
-    };
-  
-    if (isLoading) {
-      return <div className="text-center text-xl font-bold">Cargando...</div>;
-    }
-  
-    return isAuthenticated ? (
+  const { user, isAuthenticated, isLoading } = useAuth0();
+
+  const defaultImage = process.env.PUBLIC_URL + "/logo512.png";
+
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>
+  ) => {
+    e.currentTarget.src = defaultImage;
+  };
+
+  if (isLoading) {
+    return <div className="text-center text-xl font-bold">Cargando...</div>;
+  }
+
+  return isAuthenticated ? (
+    <>
       <div className="card mt-4">
         <div className="card-body">
           <div className="d-flex justify-content-center">
@@ -23,7 +27,7 @@ const Profile: FC = () => {
               src={user?.picture}
               alt={user?.name}
               onError={handleImageError}
-              style={{ width: '150px', height: '150px' }}
+              style={{ width: "150px", height: "150px" }}
             />
           </div>
           <h2 className="card-title text-center">{user?.name}</h2>
@@ -43,12 +47,34 @@ const Profile: FC = () => {
           </ul>
         </div>
       </div>
-    ) : (
+      <div className="d-flex justify-content-center mb-3">
+        <div className="btn-group">
+          <Link to="/rubros/ingredientes" className="btn btn-secondary">
+            Rubros Ingredientes
+          </Link>
+          <Link to="/rubros/productos" className="btn btn-secondary">
+            Rubros Productos
+          </Link>
+        </div>
+      </div>
+    </>
+  ) : (
+    <div>
+      <div className="d-flex justify-content-center mb-3">
+        <div className="btn-group">
+          <Link to="/rubros/ingredientes" className="btn btn-secondary">
+            Rubros Ingredientes
+          </Link>
+          <Link to="/rubros/productos" className="btn btn-secondary">
+            Rubros Productos
+          </Link>
+        </div>
+      </div>
       <div className="text-center text-xl font-bold">
         Presione Iniciar sesión para ver la información de su perfil.
       </div>
-    );
-  };
-
+    </div>
+  );
+};
 
 export default Profile;
