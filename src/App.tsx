@@ -1,11 +1,9 @@
-// App.tsx
 import React from 'react';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import Profile from './components/Auth0/Profile';
 import { useAuth0 } from '@auth0/auth0-react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Table } from 'react-bootstrap';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import IngredientesTable from './components/Tablas/RubroIngredientes';
 import ProductosTable from './components/Tablas/RubroProducto';
 
@@ -22,22 +20,14 @@ function App(): JSX.Element {
         <h2>El Buen Sabor</h2>
         <Profile />
       </main>
-        <Router>
-            <Switch>
-                <Route path="/ingredientes">
-                    <IngredientesTable url="https://localhost:3306/elbuensabor/ingredientes" />
-                    //en teoria deberia funcionar esta url para buscar los datos en la BD y traer todo, segun cada columna asignada
-                </Route>
-                <Route path="/productos">
-                    <ProductosTable url="https://localhost:3306/elbuensabor/productos" />
-                    //en teoria deberia funcionar esta url para buscar los datos en la BD y traer todo, segun cada columna asignada
-                </Route>
-            </Switch>
-        </Router>
+      <Router>
+        <Routes>
+          <Route path="/ingredientes" element={<IngredientesTable url="localhost:8080/api/rubros-ingredientes" />} />
+          <Route path="/productos" element={<ProductosTable url="localhost:8080/api/rubros-productos" />} />
+        </Routes>
+      </Router>
     </div>
-
   );
 }
 
 export default App;
-
