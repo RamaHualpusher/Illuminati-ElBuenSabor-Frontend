@@ -85,11 +85,14 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
 
   return (
     <>
+      <div className="d-flex justify-content-start" style={{marginLeft: '10px'}}>
+        <Button variant="success" onClick={handleAddModalOpen}>Agregar Producto</Button>
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Activo</th>
+            
             <th>Acciones</th>
           </tr>
         </thead>
@@ -106,7 +109,7 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
           ))}
         </tbody>
       </Table>
-      <Button variant="success" onClick={handleAddModalOpen}>Agregar Producto</Button>
+      
       <EditProductoModal
         show={editModalShow}
         handleClose={handleEditModalClose}
