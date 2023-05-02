@@ -24,9 +24,7 @@ const AddRubroIngredienteModal: FC<AddRubroIngredienteModalProps> = ({
     setRubroIngrediente({ ...rubroIngrediente, [name]: value });
   };
 
-  const handleActivoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRubroIngrediente({ ...rubroIngrediente, activo: event.target.checked });
-  };
+  
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -61,19 +59,10 @@ const AddRubroIngredienteModal: FC<AddRubroIngredienteModalProps> = ({
               required
             />
           </Form.Group>
-          <Form.Group controlId="formBasicActivo">
-            <Form.Check
-              type="checkbox"
-              label="Activo"
-              name="activo"
-              checked={rubroIngrediente.activo}
-              onChange={handleActivoChange}
-            />
-          </Form.Group>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleClose} style={{marginTop: '10px'}}>
             Cancelar
           </Button>{' '}
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" style={{marginTop: '10px'}}>
             Guardar
           </Button>
         </Form>

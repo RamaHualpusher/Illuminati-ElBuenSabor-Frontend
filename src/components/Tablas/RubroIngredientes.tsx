@@ -85,11 +85,15 @@ console.log(error);
 
 return (
 <>
+
+<div className="d-flex justify-content-start" style={{marginLeft: '10px'}}>
+  <Button variant="success" onClick={handleAddModalOpen}>Agregar Rubro Ingrediente</Button>
+</div>
+
 <Table striped bordered hover>
 <thead>
 <tr>
 <th>Nombre</th>
-<th>Activo</th>
 <th>Acciones</th>
 </tr>
 </thead>
@@ -106,7 +110,7 @@ return (
 ))}
 </tbody>
 </Table>
-<Button variant="success" onClick={handleAddModalOpen}>Agregar Rubro Ingrediente</Button>
+
 <EditRubroIngredienteModal
 show={editModalShow}
 handleClose={handleEditModalClose}
