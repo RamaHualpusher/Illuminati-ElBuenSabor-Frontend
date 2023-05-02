@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, DropdownButton } from 'react-bootstrap';
 import axios from 'axios';
 import EditRubroIngredienteModal from './EditRubroIngredienteModal';
 import AddRubroIngredienteModal from './AddRubroIngredienteModal';
@@ -21,6 +21,8 @@ const [data, setData] = useState<RubroIngrediente[]>([]);
 const [editModalShow, setEditModalShow] = useState(false);
 const [addModalShow, setAddModalShow] = useState(false);
 const [selectedRubroIngrediente, setSelectedRubroIngrediente] = useState<RubroIngrediente | null>(null);
+const [selectedRubro, setSelectedRubro] = useState<string | null>(null);
+const options = ["Todos", "Lácteos", "Carne", "Verduras"];
 
 useEffect(() => {
 axios.get<RubroIngrediente[]>(url)
@@ -86,13 +88,18 @@ console.log(error);
 return (
 <>
 
-<div className="d-flex justify-content-start" style={{marginLeft: '10px'}}>
-  <Button variant="success" onClick={handleAddModalOpen}>Agregar Rubro Ingrediente</Button>
+<div className="d-flex justify-content-start" style={{ marginLeft: "10px" }}>
+  <Button variant="success" onClick={handleAddModalOpen}>
+    Agregar Rubro Ingrediente
+  </Button>
+  {/* <DropdownButton options={options} /> */}
 </div>
+
 
 <Table striped bordered hover>
 <thead>
 <tr>
+<th>Rubro</th>
 <th>Nombre</th>
 <th>Acciones</th>
 </tr>
