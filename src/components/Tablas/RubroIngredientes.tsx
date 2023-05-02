@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, DropdownButton } from 'react-bootstrap';
+import { Table, Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import axios from 'axios';
 import EditRubroIngredienteModal from './EditRubroIngredienteModal';
 import AddRubroIngredienteModal from './AddRubroIngredienteModal';
@@ -92,7 +92,11 @@ return (
   <Button variant="success" onClick={handleAddModalOpen}>
     Agregar Rubro Ingrediente
   </Button>
-  {/* <DropdownButton options={options} /> */}
+  <DropdownButton id="dropdown-basic-button" title="Dropdown button">
+      <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+      <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+      <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+  </DropdownButton>
 </div>
 
 
