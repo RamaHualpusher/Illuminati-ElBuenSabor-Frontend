@@ -29,7 +29,6 @@ const BotonesMenu: FC = () => {
           </li>
         </ul>
       </div>
-
     );
 };
 
