@@ -23,7 +23,6 @@ const AddRubroIngredienteModal: FC<AddRubroIngredienteModalProps> = ({
     const { name, value } = event.target;
     setRubroIngrediente({ ...rubroIngrediente, [name]: value });
   };
-
   
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

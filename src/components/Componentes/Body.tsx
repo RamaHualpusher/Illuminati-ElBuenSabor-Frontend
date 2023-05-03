@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
-interface BodyProps {
+export interface BodyProps {
   name: string;
   image: string;
   description: string;
@@ -9,8 +9,8 @@ interface BodyProps {
 }
 
 const Body: React.FC<BodyProps> = ({ name, image, description, price }) => {
-  return (
-    <Container className="mt-4">
+  return (      
+      <Container className="mt-4">
       <Row>
         <Col>
           <h3>{name}</h3>
@@ -27,7 +27,7 @@ const Body: React.FC<BodyProps> = ({ name, image, description, price }) => {
           <Button variant="success">Agregar al carrito</Button>
         </Col>
       </Row>
-    </Container>
+    </Container>    
   );
 };
 

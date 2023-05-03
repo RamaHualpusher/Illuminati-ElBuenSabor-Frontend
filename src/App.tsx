@@ -29,6 +29,7 @@ function App(): JSX.Element {
         <Routes>
           <Route path="/" element={<h1>Home</h1>} />
           <Route path="/rubros/*" element={<Rubros />} />
+          <Route path="/body" element={<Body name="Nombre del producto" image="https://via.placeholder.com/400x300" description="Descripción del producto." price={9.99} />} />
         </Routes>
       </Router>
     </div>
