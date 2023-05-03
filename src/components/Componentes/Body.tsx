@@ -1,32 +1,38 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
-interface Props {
-    name: string;
-    imageUrl: string;
-    description: string;
-    price: number;
+interface BodyProps {
+  name: string;
+  image: string;
+  description: string;
+  price: number;
 }
 
-export const Body: React.FC<Props> = ({ name, imageUrl, description, price }) => {
-    const { id } = useParams<{ id: string }>();
-
-    return (
-        <div className="body-container">
-            <div className="body-name">{name}</div>
-            <img src={imageUrl} alt={name} className="body-image" />
-            <div className="body-description">{description}</div>
-            <div className="body-price">{`$${price}`}</div>
-            <Button variant="primary">Detalles</Button>
-            <div className="body-add-to-cart">
-                <Button variant="secondary">{`Agregar al carrito (${id})`}</Button>
-            </div>
-        </div>
-    );
+const Body: React.FC<BodyProps> = ({ name, image, description, price }) => {
+  return (
+    <Container className="mt-4">
+      <Row>
+        <Col>
+          <h3>{name}</h3>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12} sm={6}>
+          <img src={image} alt={name} className="img-fluid" />
+        </Col>
+        <Col xs={12} sm={6}>
+          <p>{description}</p>
+          <p>Precio: ${price}</p>
+          <Button variant="primary">Detalles</Button>{' '}
+          <Button variant="success">Agregar al carrito</Button>
+        </Col>
+      </Row>
+    </Container>
+  );
 };
 
 export default Body;
+
 
 
 
