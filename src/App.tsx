@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import Navbar from './components/Navbar/Navbar';
+import Navbar from './components/Componentes/Navbar';
+import BotonesMenu from './components/Componentes/BotonesMenu';
 import Profile from './components/Auth0/Profile';
 import { useAuth0 } from '@auth0/auth0-react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
@@ -15,6 +16,7 @@ function App(): JSX.Element {
     <div className="App">
       <Router>
         <Navbar />
+        <BotonesMenu/>
         <main className="p-4">
           <h1>Prueba de login de la App </h1>
           <h2>El Buen Sabor</h2>
