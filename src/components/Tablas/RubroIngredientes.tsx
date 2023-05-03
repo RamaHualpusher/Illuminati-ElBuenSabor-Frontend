@@ -92,7 +92,7 @@ return (
   <Button variant="success" onClick={handleAddModalOpen}>
     Agregar Rubro Ingrediente
   </Button>
-  {/* <DropdownButton options={options} /> */}
+  { <DropdownButton options={['Todos', 'Lácteos', 'Carne', 'Verduras']} /> }
 </div>
 
 
