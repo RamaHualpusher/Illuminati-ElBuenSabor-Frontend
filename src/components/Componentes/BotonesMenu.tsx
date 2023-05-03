@@ -9,50 +9,26 @@ const BotonesMenu: FC = () => {
     };
     return (
         <div className="fok">
-
-            <li className="fak">
+        <ul>
+          <li className="fak">
             <div className="frame-20">
-                <div className="todos">Todos</div>
-
-
+              <div className="todos">Todos</div>
             </div>
-
-
-
             <div className="frame-19">
-
-                <div className="ofertas">Ofertas</div>
-
-
-
+              <div className="ofertas">Ofertas</div>
             </div>
-
-
-
             <div className="frame-202">
-                <div className="pizzas">Pizzas</div>
-
-
+              <div className="pizzas">Pizzas</div>
             </div>
-
-
-
             <div className="frame-21">
-                <div className="burguer">Burguer</div>
-
-
+              <div className="burguer">Burguer</div>
             </div>
-
-
-
             <div className="frame-22">
-                <div className="bebidas">Bebidas</div>
-
-
+              <div className="bebidas">Bebidas</div>
             </div>
-
-            </li>
-        </div>
+          </li>
+        </ul>
+      </div>
 
     );
 };
