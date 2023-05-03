@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Navbar from './components/Componentes/Navbar';
+import ImagenMenu from './components/Componentes/ImagenMenu';
 import BotonesMenu from './components/Componentes/BotonesMenu';
 import Profile from './components/Auth0/Profile';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -18,6 +19,7 @@ function App(): JSX.Element {
     <div className="App">
       <Router>
         <Navbar />
+        <ImagenMenu/>
         <BotonesMenu/>
         <main className="p-4">
           <h1>Prueba de login de la App </h1>
