@@ -6,6 +6,8 @@ import Profile from './components/Auth0/Profile';
 import { useAuth0 } from '@auth0/auth0-react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Rubros from './components/Rubros';
+import { Container } from 'react-bootstrap';
+import Body from "../src/components/Componentes/Body";
 
 function App(): JSX.Element {
   const { isAuthenticated, isLoading } = useAuth0();

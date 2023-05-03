@@ -8,7 +8,6 @@ const BotonesMenu: FC = () => {
     const toggleBotones = () => {
         setBotonesOpen(!BotonesOpen);
     };
-<<<<<<< HEAD
 
     const [selectedOption, setSelectedOption] = useState("option1");
 
@@ -69,7 +68,8 @@ const BotonesMenu: FC = () => {
                 </Form.Label>
             </Form.Group>
         </Form>
-=======
+    )
+
     return (
         <div className="fok">
         <ul>
@@ -92,7 +92,7 @@ const BotonesMenu: FC = () => {
           </li>
         </ul>
       </div>
->>>>>>> b4152ca13659f7da27ddd399461fa00a153b727f
+
     );
 }
 
