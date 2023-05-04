@@ -8,7 +8,7 @@ import { OrderIngredient } from '../../types/types';
 
 export default function Landing() {
     const producto1: Products = {
-        Imagen: '/public/assets/img/pizza_casera_31391_orig.jpg',
+        Imagen: 'assets/img/pizza_casera_31391_orig.jpg',
         Nombre: 'Pizza',
         Rubro: 'Comida rápida',
         PrecioVenta: 5.99,
