@@ -1,0 +1,52 @@
+[
+    {
+      "id": 1,
+      "nombre": "Hamburguesa",
+      "rubro": "Comida Rápida",
+      "tiempo": 10,
+      "precio": 5.99
+    },
+    {
+      "id": 2,
+      "nombre": "Papas Fritas",
+      "rubro": "Comida Rápida",
+      "tiempo": 5,
+      "precio": 2.99
+    },
+    {
+      "id": 3,
+      "nombre": "Pizza",
+      "rubro": "Comida Rápida",
+      "tiempo": 15,
+      "precio": 8.99
+    },
+    {
+      "id": 4,
+      "nombre": "Hot Dog",
+      "rubro": "Comida Rápida",
+      "tiempo": 7,
+      "precio": 3.99
+    },
+    {
+      "id": 5,
+      "nombre": "Ensalada César",
+      "rubro": "Comida Rápida",
+      "tiempo": 5,
+      "precio": 4.99
+    },
+    {
+      "id": 6,
+      "nombre": "Sándwich de Pollo",
+      "rubro": "Comida Rápida",
+      "tiempo": 8,
+      "precio": 5.49
+    },
+    {
+      "id": 7,
+      "nombre": "Alitas de Pollo",
+      "rubro": "Comida Rápida",
+      "tiempo": 12,
+      "precio": 7.99
+    }
+  ]
+  
