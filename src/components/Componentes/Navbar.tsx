@@ -19,6 +19,7 @@ const Navbar: FC = () => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
         <div className="d-flex align-items-center">
+        <a href="/" className="logo-iluminatti-1 me-2">
           <img
             className="logo-iluminatti-1 me-2"
             src="/assets/img/logo-grupo-illuminati.jpg"
@@ -29,6 +30,7 @@ const Navbar: FC = () => {
               borderRadius: "50%",
             }}
           />
+          </a>
           <a className="navbar-brand" href="#">
             El Buen Sabor - Illuminati
           </a>
