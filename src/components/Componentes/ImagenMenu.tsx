@@ -7,13 +7,13 @@ const ImagenMenu: FC =() =>{
   
 
     return(
-        <div className="container">
+        <div className="container-fluid w-100">
           <img
-            className="pizza-carousell-1 me-2"
-            src="/assets/img/pizza-carousell.jpg"
+            className="pizza-carousell-1"
+            src="/assets/img/pizza-carousell.png"
             alt="imagenMenu"
             style={{
-              width: "1920px",
+              width: "100%",
               height: "350px",
               borderRadius: "0%",
             }}
