@@ -65,24 +65,24 @@ const Navbar: FC = () => {
                 style={{ fontSize: "1.5rem", marginRight: "10px" }}
               />
             </li>
-                {isAuthenticated && (
-                <li className="nav-item d-flex align-items-center">
-                    <p className="nav-link mb-0">
-                    {user?.name && getFirstName(user.name)}
-                    </p>
-                    <img
-                    src={user?.picture}
-                    alt="imagen usuario"
-                    style={{
-                        width: "50px",
-                        height: "50px",
-                        borderRadius: "50%",
-                        marginRight: "10px",
-                    }}
-                    />
-                </li>
-                )}
-                <li className="nav-item">
+            {isAuthenticated && (
+              <li className="nav-item d-flex align-items-center">
+                <p className="nav-link mb-0">
+                  {user?.name && getFirstName(user.name)}
+                </p>
+                <img
+                  src={user?.picture}
+                  alt="imagen usuario"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    marginRight: "10px",
+                  }}
+                />
+              </li>
+            )}
+            <li className="nav-item">
               {isAuthenticated ? <LogoutButton /> : <LoginButton />}
             </li>
           </ul>

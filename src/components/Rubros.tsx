@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
-import RubrosIngredientesTable from './Tablas/RubroIngredientes';
-import ProductosTable from './Tablas/RubroProducto';
+import RubrosIngredientesTable from './Stock/RubroIngrediente/RubroIngredientes';
+import ProductosTable from './Stock/RubroProducto/RubroProducto';
 
 function Rubros(): JSX.Element {
   return (
