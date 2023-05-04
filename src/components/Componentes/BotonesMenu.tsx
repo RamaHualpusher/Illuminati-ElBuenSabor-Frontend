@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
 import { Form } from "react-bootstrap";
 
+
 const BotonesMenu: FC = () => {
   const [selectedOption, setSelectedOption] = useState("Todos");
 
@@ -32,7 +33,7 @@ const BotonesMenu: FC = () => {
             >
               Todos
               <br />
-              <i className="" style={iconStyle}/>
+              <img src="" alt="todos" />             
             </button>
             <button
               type="button"
