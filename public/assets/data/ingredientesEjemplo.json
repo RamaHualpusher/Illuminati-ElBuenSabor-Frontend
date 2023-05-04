@@ -1,0 +1,25 @@
+[{
+	"id": 1,
+	"nombre": "Harina de trigo",
+	"rubro": "Harinas",
+	"minStock": 10,
+	"stockActual": 20,
+	"precio": 3.5,
+	"um": "kg"
+}, {
+	"id": 2,
+	"nombre": "Azúcar",
+	"rubro": "Endulzantes",
+	"minStock": 5,
+	"stockActual": 8,
+	"precio": 2,
+	"um": "kg"
+}, {
+	"id": 3,
+	"nombre": "Aceite de oliva",
+	"rubro": "Aceites",
+	"minStock": 3,
+	"stockActual": 4,
+	"precio": 10,
+	"um": "l"
+}]
