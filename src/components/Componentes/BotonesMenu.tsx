@@ -8,6 +8,16 @@ const BotonesMenu: FC = () => {
     setSelectedOption(event.currentTarget.value);
   };
 
+  const buttonStyle = {
+    marginRight: "50px",
+    border: "none",
+    outline: "none"
+  };
+
+  const iconStyle = {
+    fontSize: "160%"
+  };
+
   return (
     <Form>
       <Form.Group>
@@ -18,40 +28,55 @@ const BotonesMenu: FC = () => {
               className={`btn ${selectedOption === "Todos" ? "btn-primary" : "btn-outline-primary"}`}
               value="Todos"
               onClick={handleOptionChange}
+              style={buttonStyle}
             >
-              <i className="bi bi-0-square-fill"/> Todos
+              Todos
+              <br />
+              <i className="bi bi-0-square-fill" style={iconStyle}/>
             </button>
             <button
               type="button"
               className={`btn ${selectedOption === "Ofertas" ? "btn-primary" : "btn-outline-primary"}`}
               value="Ofertas"
               onClick={handleOptionChange}
+              style={buttonStyle}
             >
-              <i className="bi bi-tag-fill"/> Ofertas
+              Ofertas
+              <br />
+              <i className="bi bi-tag-fill" style={iconStyle}/>
             </button>
             <button
               type="button"
               className={`btn ${selectedOption === "Pizzas" ? "btn-primary" : "btn-outline-primary"}`}
               value="Pizzas"
               onClick={handleOptionChange}
+              style={buttonStyle}
             >
-              <i className="bi bi-1-square-fill"/> Pizza
+              Pizza
+              <br />
+              <i className="bi bi-1-square-fill" style={iconStyle}/>
             </button>
             <button
               type="button"
               className={`btn ${selectedOption === "Burguer" ? "btn-primary" : "btn-outline-primary"}`}
               value="Burguer"
               onClick={handleOptionChange}
+              style={buttonStyle}
             >
-              <i className="bi bi-2-square-fill"/> Burguer
+              Burguer
+              <br />
+              <i className="bi bi-2-square-fill" style={iconStyle}/>
             </button>
             <button
               type="button"
               className={`btn ${selectedOption === "Bebidas" ? "btn-primary" : "btn-outline-primary"}`}
               value="Bebidas"
               onClick={handleOptionChange}
+              style={{...buttonStyle, marginRight: "0"}}
             >
-              <i className="bi bi-3-square-fill"/> Bebidas
+              Bebidas
+              <br />
+              <i className="bi bi-3-square-fill" style={iconStyle}/>
             </button>
           </div>
         </Form.Label>
@@ -61,3 +86,6 @@ const BotonesMenu: FC = () => {
 };
 
 export default BotonesMenu;
+
+
+
