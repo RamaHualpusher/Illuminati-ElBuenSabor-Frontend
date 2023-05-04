@@ -10,7 +10,7 @@ const BotonesMenu: FC = () => {
   };
 
   const buttonStyle = {
-    marginRight: "50px",
+    marginRight: "100px",
     border: "none",
     outline: "none"
   };
