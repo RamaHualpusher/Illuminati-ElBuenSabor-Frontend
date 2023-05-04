@@ -1,14 +1,6 @@
 import React from 'react';
 import './App.css';
-import Navbar from './components/Componentes/Navbar';
-import ImagenMenu from './components/Componentes/ImagenMenu';
-
-import Profile from './components/Auth0/Profile';
 import { useAuth0 } from '@auth0/auth0-react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Rubros from './components/Rubros';
-
-import Body from "../src/components/Componentes/Body";
 import IndexRouter from "./routers/IndexRouter";
 import Footer from './components/Footer/Footer';
 

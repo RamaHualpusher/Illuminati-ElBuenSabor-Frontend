@@ -5,6 +5,7 @@ import UserRouter from "./UserRouter";
 // import Cashier from "../screens/Cashier";
 // import Detail from "../screens/Detail";
 // import Delivery from "../screens/Delivery"
+
 const IndexRouter = () => {
   return (
     <BrowserRouter>
