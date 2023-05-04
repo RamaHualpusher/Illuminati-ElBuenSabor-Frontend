@@ -17,8 +17,7 @@ const EditProductoModal: FC<EditProductoModalProps> = ({
 }) => {
   const [producto, setProducto] = useState<Producto>({
     id: 0,
-    nombre: '',
-    activo: false,
+    nombre: ''    
   });
 
   useEffect(() => {
@@ -61,9 +60,9 @@ const EditProductoModal: FC<EditProductoModalProps> = ({
               type="checkbox"
               label="Activo"
               name="activo"
-              checked={producto.activo}
+              
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setProducto({ ...producto, activo: event.target.checked });
+                setProducto({ ...producto });
               }}
             />
           </Form.Group>

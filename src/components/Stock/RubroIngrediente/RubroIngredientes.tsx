@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 export type RubroIngrediente = {
 id: number;
 nombre: string;
-activo: boolean;
 };
 
 type RubrosIngredientesTableProps = {
@@ -108,7 +107,6 @@ return (
 {data.map(item => (
 <tr key={item.id}>
 <td>{item.nombre}</td>
-<td>{item.activo ? 'Sí' : 'No'}</td>
 <td>
 <Button variant="primary" onClick={() => handleEditModalOpen(item)}>Editar</Button>
 <Button variant="danger" onClick={() => handleRubroIngredienteDelete(item)}>Eliminar</Button>

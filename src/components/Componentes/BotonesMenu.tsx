@@ -15,7 +15,7 @@ const BotonesMenu: FC = () => {
   };
 
   const iconStyle = {
-    fontSize: "160%"
+    fontSize: "260%"
   };
 
   return (
@@ -32,7 +32,7 @@ const BotonesMenu: FC = () => {
             >
               Todos
               <br />
-              <i className="bi bi-0-square-fill" style={iconStyle}/>
+              <i className="bi bi-patch-plus" style={iconStyle}/>
             </button>
             <button
               type="button"
@@ -65,7 +65,7 @@ const BotonesMenu: FC = () => {
             >
               Burguer
               <br />
-              <i className="bi bi-2-square-fill" style={iconStyle}/>
+              <i className="bi bi-slack" style={iconStyle}/>
             </button>
             <button
               type="button"
@@ -76,7 +76,7 @@ const BotonesMenu: FC = () => {
             >
               Bebidas
               <br />
-              <i className="bi bi-3-square-fill" style={iconStyle}/>
+              <i className="bi bi-cup-straw" style={iconStyle}/>
             </button>
           </div>
         </Form.Label>

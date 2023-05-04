@@ -17,8 +17,7 @@ selectedRubroIngrediente,
 }) => {
 const [rubroIngrediente, setRubroIngrediente] = useState<RubroIngrediente>({
 id: 0,
-nombre: '',
-activo: false,
+nombre: ''
 });
 
 useEffect(() => {
@@ -61,9 +60,8 @@ required
 type="checkbox"
 label="Activo"
 name="activo"
-checked={rubroIngrediente.activo}
 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-setRubroIngrediente({ ...rubroIngrediente, activo: event.target.checked });
+setRubroIngrediente({ ...rubroIngrediente});
 }}
 />
 </Form.Group>

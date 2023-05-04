@@ -15,8 +15,7 @@ const AddRubroIngredienteModal: FC<AddRubroIngredienteModalProps> = ({
 }) => {
   const [rubroIngrediente, setRubroIngrediente] = useState<RubroIngrediente>({
     id: 0,
-    nombre: '',
-    activo: false,
+    nombre: ''
   });
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,8 +30,7 @@ const AddRubroIngredienteModal: FC<AddRubroIngredienteModalProps> = ({
       handleRubroIngredienteAdd(rubroIngrediente);
       setRubroIngrediente({
         id: 0,
-        nombre: '',
-        activo: false,
+        nombre: ''
       });
       handleClose();
     } else {

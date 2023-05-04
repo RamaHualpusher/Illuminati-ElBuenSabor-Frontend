@@ -15,16 +15,13 @@ const AddProductoModal: FC<AddProductoModalProps> = ({
 }) => {
   const [producto, setProducto] = useState<Producto>({
     id: 0,
-    nombre: '',
-    activo: false,
+    nombre: ''
   });
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setProducto({ ...producto, [name]: value });
-  };
-
-  
+  };  
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -32,8 +29,7 @@ const AddProductoModal: FC<AddProductoModalProps> = ({
       handleProductoAdd(producto);
       setProducto({
         id: 0,
-        nombre: '',
-        activo: false,
+        nombre: ''
       });
       handleClose();
     } else {

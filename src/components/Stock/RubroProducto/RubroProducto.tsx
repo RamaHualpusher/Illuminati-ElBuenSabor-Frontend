@@ -8,8 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 export type Producto = {
   id: number;
-  nombre: string;
-  activo: boolean;
+  nombre: string; 
 };
 
 type ProductosTableProps = {
@@ -99,8 +98,7 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
         <tbody>
           {data.map(item => (
             <tr key={item.id}>
-              <td>{item.nombre}</td>
-              <td>{item.activo ? 'Sí' : 'No'}</td>
+              <td>{item.nombre}</td>             
               <td>
                 <Button variant="primary" onClick={() => handleEditModalOpen(item)}>Editar</Button>{' '}
                 <Button variant="danger" onClick={() => handleProductoDelete(item)}>Eliminar</Button>
