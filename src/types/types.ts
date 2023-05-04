@@ -1,4 +1,5 @@
 export interface Products {
+    Imagen: string;
     Nombre: string;
     Rubro: string;
     PrecioVenta: number;
@@ -6,9 +7,9 @@ export interface Products {
     Estado: string;
     Descripcion: string;
     Ingredients: OrderIngredient[]
-  }
-  export interface OrderIngredient {
-    Ingredient: string;
-    Cuantity: string;
-    UMedida: string;
-  }
+}
+export interface OrderIngredient {
+   Ingredient: string;
+   Cuantity: string;
+   UMedida: string;
+}

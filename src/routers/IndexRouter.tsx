@@ -15,3 +15,10 @@ const IndexRouter = () => {
         <Route path="/cocina/ingredientes" element={<IngredientesTable url="/assets/data/ingredientesEjemplo.json" />} />
         {/* <Route path="/admin" element={<Admin />} />
         <Route path="/cashier" element={<Cashier />} />
+        <Route path="/detail" element={<Detail />} />*/}  
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+export default IndexRouter;

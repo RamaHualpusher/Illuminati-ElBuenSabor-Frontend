@@ -13,9 +13,9 @@ const BotonesMenu: FC = () => {
       <Form.Group>
         <Form.Label>
           <div>
-            <button
+            <button 
               type="button"
-              className={`btn ${selectedOption === "Todos" ? "btn-primary" : "btn-outline-primary"}`}
+              className={` btn ${selectedOption === "Todos" ? "btn-primary" : "btn-outline-primary"}`}
               value="Todos"
               onClick={handleOptionChange}
             >
