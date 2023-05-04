@@ -55,7 +55,7 @@ const BotonesMenu: FC = () => {
             >
               Pizza
               <br />
-              <i className="bi bi-1-square-fill" style={iconStyle}/>
+              <i className="bi bi-fan" style={iconStyle}/>
             </button>
             <button
               type="button"
