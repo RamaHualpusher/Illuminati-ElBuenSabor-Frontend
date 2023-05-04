@@ -6,7 +6,6 @@ import { Products } from '../../types/types';
 import { OrderIngredient } from '../../types/types';
 
 
-
 export default function Landing() {
     const producto1: Products = {
         Imagen: '/public/assets/img/pizza_casera_31391_orig.jpg',

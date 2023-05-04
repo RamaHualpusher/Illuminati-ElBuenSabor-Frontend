@@ -32,7 +32,7 @@ const BotonesMenu: FC = () => {
             >
               Todos
               <br />
-              <i className="bi bi-patch-plus" style={iconStyle}/>
+              <i className="" style={iconStyle}/>
             </button>
             <button
               type="button"
