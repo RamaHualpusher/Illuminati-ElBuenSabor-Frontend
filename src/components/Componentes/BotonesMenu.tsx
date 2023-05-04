@@ -1,77 +1,63 @@
 import React, { FC, useState } from "react";
 import { Form } from "react-bootstrap";
 
-
 const BotonesMenu: FC = () => {
-    const [BotonesOpen, setBotonesOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("Todos");
 
-    const toggleBotones = () => {
-        setBotonesOpen(!BotonesOpen);
-    };
+  const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setSelectedOption(event.currentTarget.value);
+  };
 
-    const [selectedOption, setSelectedOption] = useState("option1");
-
-    const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedOption(event.target.value);
-    };
-    return (
-      
-        <Form>
-            <Form.Group>
-                <Form.Label>
-                    <div>
-                        <Form.Check
-                            type="radio"
-                            label={<i className="bi bi-0-square-fill">Todos</i>}
-                            name="option"
-                            value="Todos"
-                            checked={selectedOption === "Todos"}
-                            onChange={handleOptionChange}
-                            inline
-                        />
-                        <Form.Check
-                            type="radio"
-                            label={<i className="bi bi-tag-fill">Ofertas</i>}
-                            name="option"
-                            value="Ofertas"
-                            checked={selectedOption === "Ofertas"}
-                            onChange={handleOptionChange}
-                            inline
-                        />
-                        <Form.Check
-                            type="radio"
-                            label={<i className="bi bi-1-square-fill">Pizza</i>}
-                            name="option"
-                            value="Pizzas"
-                            checked={selectedOption === "Pizzas"}
-                            onChange={handleOptionChange}
-                            inline
-                        />
-                        <Form.Check
-                            type="radio"
-                            label={<i className="bi bi-2-square-fill">Burguer</i>}
-                            name="option"
-                            value="Burguer"
-                            checked={selectedOption === "Burguer"}
-                            onChange={handleOptionChange}
-                            inline
-                        />
-                        <Form.Check
-                            type="radio"
-                            label={<i className="bi bi-3-square-fill">Bebidas</i>}
-                            name="option"
-                            value="Bebidas"
-                            checked={selectedOption === "Bebidas"}
-                            onChange={handleOptionChange}
-                            inline
-                        />
-                    </div>
-                </Form.Label>
-            </Form.Group>
-        </Form>
-    )
-
-
-}
+  return (
+    <Form>
+      <Form.Group>
+        <Form.Label>
+          <div>
+            <button
+              type="button"
+              className={`btn ${selectedOption === "Todos" ? "btn-primary" : "btn-outline-primary"}`}
+              value="Todos"
+              onClick={handleOptionChange}
+            >
+              <i className="bi bi-0-square-fill"/> Todos
+            </button>
+            <button
+              type="button"
+              className={`btn ${selectedOption === "Ofertas" ? "btn-primary" : "btn-outline-primary"}`}
+              value="Ofertas"
+              onClick={handleOptionChange}
+            >
+              <i className="bi bi-tag-fill"/> Ofertas
+            </button>
+            <button
+              type="button"
+              className={`btn ${selectedOption === "Pizzas" ? "btn-primary" : "btn-outline-primary"}`}
+              value="Pizzas"
+              onClick={handleOptionChange}
+            >
+              <i className="bi bi-1-square-fill"/> Pizza
+            </button>
+            <button
+              type="button"
+              className={`btn ${selectedOption === "Burguer" ? "btn-primary" : "btn-outline-primary"}`}
+              value="Burguer"
+              onClick={handleOptionChange}
+            >
+              <i className="bi bi-2-square-fill"/> Burguer
+            </button>
+            <button
+              type="button"
+              className={`btn ${selectedOption === "Bebidas" ? "btn-primary" : "btn-outline-primary"}`}
+              value="Bebidas"
+              onClick={handleOptionChange}
+            >
+              <i className="bi bi-3-square-fill"/> Bebidas
+            </button>
+          </div>
+        </Form.Label>
+      </Form.Group>
+    </Form>
+  );
+};
 
 export default BotonesMenu;
