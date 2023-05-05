@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "../components/Componentes/Navbar";
+import NavBar from "../components/NavBar/Navbar";
 import Landing from "../components/Landing/Landing";
 import { Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
