@@ -1,7 +1,7 @@
 import React from "react";
 import BotonesMenu from './BotonesMenu';
-import ImagenMenu from '../Componentes/ImagenMenu';
-import TarjetaComida from '../Componentes/TarjetaComida';
+import ImagenMenu from './ImagenMenu';
+import TarjetaComida from './TarjetaComida';
 import { Products } from '../../types/types';
 
 
