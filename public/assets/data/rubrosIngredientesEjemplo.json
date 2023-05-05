@@ -1,0 +1,27 @@
+[
+    {
+      "id": 1,
+      "nombre": "Quesos"
+    },
+    {
+      "id": 2,
+      "nombre": "Salsas"
+    },
+    {
+      "id": 3,
+      "nombre": "Carnes"
+    },
+    {
+      "id": 4,
+      "nombre": "Verduras"
+    },
+    {
+      "id": 5,
+      "nombre": "Frutas"
+    },
+    {
+      "id": 6,
+      "nombre": "Especias"
+    }
+  ]
+  
