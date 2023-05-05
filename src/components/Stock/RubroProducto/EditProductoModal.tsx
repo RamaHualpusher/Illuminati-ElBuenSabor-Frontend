@@ -17,7 +17,8 @@ const EditProductoModal: FC<EditProductoModalProps> = ({
 }) => {
   const [producto, setProducto] = useState<Producto>({
     id: 0,
-    nombre: ''    
+    nombre: '',
+    rubro: '',
   });
 
   useEffect(() => {
@@ -55,18 +56,21 @@ const EditProductoModal: FC<EditProductoModalProps> = ({
               required
             />
           </Form.Group>
-          <Form.Group controlId="formBasicActivo">
-            <Form.Check
-              type="checkbox"
-              label="Activo"
-              name="activo"
-              
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setProducto({ ...producto });
-              }}
+          <Form.Group controlId="formBasicRubro">
+            <Form.Label>Rubro</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese rubro"
+              name="rubro"
+              value={producto.rubro}
+              onChange={handleInputChange}
+              required
             />
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button variant="secondary" onClick={handleClose} style={{ marginTop: '10px' }}>
+            Cancelar
+          </Button>{' '}
+          <Button variant="primary" type="submit" style={{ marginTop: '10px' }}>
             Guardar
           </Button>
         </Form>

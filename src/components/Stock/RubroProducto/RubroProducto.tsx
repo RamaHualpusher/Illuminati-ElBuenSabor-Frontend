@@ -5,17 +5,19 @@ import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from '../../NavBar/Navbar';
 
 export type Producto = {
   id: number;
-  nombre: string; 
+  nombre: string;
+  rubro: string;
 };
 
-type ProductosTableProps = {
+type RubrosProductosTableProps = {
   url: string;
 };
 
-const ProductosTable = ({ url }: ProductosTableProps) => {
+const RubrosProductosTable = ({ url }: RubrosProductosTableProps) => {
   const [data, setData] = useState<Producto[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
@@ -83,24 +85,29 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
   }
 
   return (
-    <>
-      <div className="d-flex justify-content-start" style={{marginLeft: '10px'}}>
+    <div>
+      <Navbar />
+      <div className="d-flex justify-content-start m-3">
         <Button variant="success" onClick={handleAddModalOpen}>Agregar Producto</Button>
       </div>
       <Table striped bordered hover>
         <thead>
           <tr>
+            <th>Rubro</th>
             <th>Nombre</th>
-            
-            <th>Acciones</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
           </tr>
         </thead>
         <tbody>
           {data.map(item => (
             <tr key={item.id}>
-              <td>{item.nombre}</td>             
+              <td>{item.rubro}</td>
+              <td>{item.nombre}</td>
               <td>
-                <Button variant="primary" onClick={() => handleEditModalOpen(item)}>Editar</Button>{' '}
+                <Button variant="primary" onClick={() => handleEditModalOpen(item)}>Editar</Button>
+              </td>
+              <td>
                 <Button variant="danger" onClick={() => handleProductoDelete(item)}>Eliminar</Button>
               </td>
             </tr>
@@ -113,15 +120,14 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
         handleClose={handleEditModalClose}
         handleProductoEdit={handleProductoEdit}
         selectedProducto={selectedProducto}
-        />
-        <AddProductoModal
-          show={addModalShow}
-          handleClose={handleAddModalClose}
-          handleProductoAdd={handleProductoAdd}
-        />
-      </>
-      
-      );
-      };
-      
-      export default ProductosTable;
+      />
+      <AddProductoModal
+        show={addModalShow}
+        handleClose={handleAddModalClose}
+        handleProductoAdd={handleProductoAdd}
+      />
+    </div>
+  );
+};
+
+export default RubrosProductosTable;

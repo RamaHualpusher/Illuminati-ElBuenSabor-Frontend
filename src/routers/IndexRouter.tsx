@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserRouter from "./UserRouter";
 import IngredientesTable from "../components/Stock/Ingrediente/IngredientesTable";
 import ProductosTable from "../components/Stock/Producto/ProductosTable";
+import RubrosIngredientesTable from "../components/Stock/RubroIngrediente/RubroIngredientes";
+import RubrosProductosTable from "../components/Stock/RubroProducto/RubroProducto";
 // import Admin from "../screens/Admin";
 // import Cashier from "../screens/Cashier";
 // import Detail from "../screens/Detail";
@@ -15,6 +17,8 @@ const IndexRouter = () => {
         <Route path="/" element={<UserRouter />} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable url="/assets/data/ingredientesEjemplo.json" />} />
         <Route path="/cocina/productos" element={<ProductosTable url="/assets/data/productosEjemplo.json" />} />
+        <Route path="/cocina/rubros/ingredientes" element={<RubrosIngredientesTable url="/assets/data/dataTableRubrosIngredientes.json" />} />
+        <Route path="/cocina/rubros/productos" element={<RubrosProductosTable url="/assets/data/dataTableRubrosProductos.json" />} />
       </Routes>
     </BrowserRouter>
   );

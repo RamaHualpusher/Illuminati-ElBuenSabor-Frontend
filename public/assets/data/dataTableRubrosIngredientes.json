@@ -1,0 +1,53 @@
+[
+    {
+      "id": 1,
+      "nombre": "Lácteos",
+      "rubro": "Alimentos"
+    },
+    {
+      "id": 2,
+      "nombre": "Carne",
+      "rubro": "Alimentos"
+    },
+    {
+      "id": 3,
+      "nombre": "Verduras",
+      "rubro": "Alimentos"
+    },
+    {
+      "id": 4,
+      "nombre": "Frutas",
+      "rubro": "Alimentos"
+    },
+    {
+      "id": 5,
+      "nombre": "Pescado",
+      "rubro": "Alimentos"
+    },
+    {
+      "id": 6,
+      "nombre": "Abarrotes",
+      "rubro": "Alimentos"
+    },
+    {
+      "id": 7,
+      "nombre": "Bebidas",
+      "rubro": "Bebidas"
+    },
+    {
+      "id": 8,
+      "nombre": "Refrescos",
+      "rubro": "Bebidas"
+    },
+    {
+      "id": 9,
+      "nombre": "Vinos y Licores",
+      "rubro": "Bebidas"
+    },
+    {
+      "id": 10,
+      "nombre": "Agua",
+      "rubro": "Bebidas"
+    }
+  ]
+  
