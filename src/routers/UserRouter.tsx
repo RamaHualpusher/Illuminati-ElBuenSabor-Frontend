@@ -1,5 +1,6 @@
 import React from "react";
 import NavBar from "../components/Componentes/Navbar";
+import NavbarEmpleado from "../components/Componentes/NavbarEmpleado";
 import Landing from "../components/Landing/Landing";
 import { Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -8,6 +9,7 @@ const UserRouter = () => {
   return (
     <div>
       <NavBar />
+      <NavbarEmpleado/>
       <Routes>
         <Route path="/" element={<Landing />} />
       </Routes>
