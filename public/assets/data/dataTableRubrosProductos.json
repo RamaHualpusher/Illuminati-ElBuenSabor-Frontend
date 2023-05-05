@@ -1,0 +1,63 @@
+[
+    {
+      "id": 1,
+      "nombre": "Hamburguesa",
+      "rubro": "Comida Rápida"
+    },
+    {
+      "id": 2,
+      "nombre": "Papas Fritas",
+      "rubro": "Comida Rápida"
+    },
+    {
+      "id": 3,
+      "nombre": "Pizza",
+      "rubro": "Comida Rápida"
+    },
+    {
+      "id": 4,
+      "nombre": "Hot Dog",
+      "rubro": "Comida Rápida"
+    },
+    {
+      "id": 5,
+      "nombre": "Ensalada César",
+      "rubro": "Comida Rápida"
+    },
+    {
+      "id": 6,
+      "nombre": "Sándwich de Pollo",
+      "rubro": "Comida Rápida"
+    },
+    {
+      "id": 7,
+      "nombre": "Alitas de Pollo",
+      "rubro": "Comida Rápida"
+    },
+    {
+      "id": 8,
+      "nombre": "Tarta de Chocolate",
+      "rubro": "Postres"
+    },
+    {
+      "id": 9,
+      "nombre": "Helado",
+      "rubro": "Postres"
+    },
+    {
+      "id": 10,
+      "nombre": "Café",
+      "rubro": "Bebidas"
+    },
+    {
+      "id": 11,
+      "nombre": "Jugo de Naranja",
+      "rubro": "Bebidas"
+    },
+    {
+      "id": 12,
+      "nombre": "Ensalada de Frutas",
+      "rubro": "Comida Saludable"
+    }
+  ]
+  

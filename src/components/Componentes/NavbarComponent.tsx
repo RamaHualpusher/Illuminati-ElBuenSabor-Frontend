@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
+import LoginButton from "../NavBar/LoginButton";
+import LogoutButton from "../NavBar/LogoutButton";
 
 const Navbar: FC = () => {
   const { isAuthenticated, user } = useAuth0();
@@ -31,7 +31,7 @@ const Navbar: FC = () => {
             }}
           />
           </a>
-          <a className="navbar-brand" href="/">
+          <a className="navbar-brand" href="#">
             El Buen Sabor - Illuminati
           </a>
           <div className="d-none d-lg-block">

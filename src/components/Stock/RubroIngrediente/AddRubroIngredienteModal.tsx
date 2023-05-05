@@ -15,26 +15,27 @@ const AddRubroIngredienteModal: FC<AddRubroIngredienteModalProps> = ({
 }) => {
   const [rubroIngrediente, setRubroIngrediente] = useState<RubroIngrediente>({
     id: 0,
-    nombre: ''
+    nombre: '',
+    rubro: '',
   });
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setRubroIngrediente({ ...rubroIngrediente, [name]: value });
   };
-  
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (rubroIngrediente.nombre.length >= 3) {
+    if (rubroIngrediente.nombre.length >= 3 && rubroIngrediente.rubro.length >= 3) {
       handleRubroIngredienteAdd(rubroIngrediente);
       setRubroIngrediente({
         id: 0,
-        nombre: ''
+        nombre: '',
+        rubro: '',
       });
       handleClose();
     } else {
-      alert('El campo Nombre debe tener al menos 3 caracteres.');
+      alert('Los campos Nombre y Rubro deben tener al menos 3 caracteres.');
     }
   };
 
@@ -56,10 +57,21 @@ const AddRubroIngredienteModal: FC<AddRubroIngredienteModalProps> = ({
               required
             />
           </Form.Group>
-          <Button variant="secondary" onClick={handleClose} style={{marginTop: '10px'}}>
+          <Form.Group controlId="formBasicRubro">
+            <Form.Label>Rubro</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese rubro"
+              name="rubro"
+              value={rubroIngrediente.rubro}
+              onChange={handleInputChange}
+              required
+            />
+          </Form.Group>
+          <Button variant="secondary" onClick={handleClose} style={{ marginTop: '10px' }}>
             Cancelar
           </Button>{' '}
-          <Button variant="primary" type="submit" style={{marginTop: '10px'}}>
+          <Button variant="primary" type="submit" style={{ marginTop: '10px' }}>
             Guardar
           </Button>
         </Form>
