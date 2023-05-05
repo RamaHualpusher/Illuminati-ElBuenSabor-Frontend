@@ -31,7 +31,7 @@ const Navbar: FC = () => {
             }}
           />
           </a>
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" href="/">
             El Buen Sabor - Illuminati
           </a>
           <div className="d-none d-lg-block">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button} from 'react-bootstrap';
 import axios from 'axios';
-import Navbar from '../../Componentes/Navbar';
+import Navbar from '../../NavBar/Navbar';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 
