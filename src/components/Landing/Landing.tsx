@@ -38,7 +38,6 @@ export default function Landing() {
     return (
         <div >
             <div  style={{ background: "linear-gradient(to bottom, #fff, #cccc)",}} >
-                <h1 className="display-1">Home</h1> 
                 <ImagenMenu />
                 <h1 className="display-6"><strong>La mejor comida rápida</strong></h1>
                 <BotonesMenu />
