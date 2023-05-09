@@ -6,7 +6,7 @@ const ImagenMenu: FC = () => {
 
 
   return (
-    <div className="container-fluid w-100 d-flex justify-content-center">
+    <div className="container-fluid w-100 d-flex justify-content-center" style={{marginBottom:"20px"}}>
       <img
         className="pizza-carousell-1"
         src="/assets/img/pizza-carousell.png"

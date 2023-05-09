@@ -37,9 +37,8 @@ export default function Landing() {
 
     return (
         <div >
-            <div  style={{ background: "linear-gradient(to bottom, #fff, #cccc)",}} >
+            <div  style={{ background: "linear-gradient(to bottom, #fff, #cccc)"}}  >
                 <ImagenMenu />
-                <h1 className="display-6"><strong>La mejor comida rápida</strong></h1>
                 <BotonesMenu />
                 <div  >
                     <input placeholder="Busqueda" className="Search_Food" style={{ marginRight: "10px" }}></input>

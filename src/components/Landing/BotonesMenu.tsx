@@ -26,7 +26,7 @@ const BotonesMenu: FC = () => {
           <div>
             <button 
               type="button"
-              className={` btn ${selectedOption === "Todos" ? "btn-primary" : "btn-outline-primary"}`}
+              className={` btn ${selectedOption === "Todos" ? "btn btn-dark" : "btn-outline-secondary"}`}
               value="Todos"
               onClick={handleOptionChange}
               style={buttonStyle}
@@ -37,7 +37,7 @@ const BotonesMenu: FC = () => {
             </button>
             <button
               type="button"
-              className={`btn ${selectedOption === "Ofertas" ? "btn-primary" : "btn-outline-primary"}`}
+              className={`btn ${selectedOption === "Ofertas" ? "btn btn-dark" : "btn-outline-secondary"}`}
               value="Ofertas"
               onClick={handleOptionChange}
               style={buttonStyle}
@@ -48,7 +48,7 @@ const BotonesMenu: FC = () => {
             </button>
             <button
               type="button"
-              className={`btn ${selectedOption === "Pizzas" ? "btn-primary" : "btn-outline-primary"}`}
+              className={`btn ${selectedOption === "Pizzas" ? "btn btn-dark" : "btn-outline-secondary"}`}
               value="Pizzas"
               onClick={handleOptionChange}
               style={buttonStyle}
@@ -59,7 +59,7 @@ const BotonesMenu: FC = () => {
             </button>
             <button
               type="button"
-              className={`btn ${selectedOption === "Burguer" ? "btn-primary" : "btn-outline-primary"}`}
+              className={`btn ${selectedOption === "Burguer" ? "btn btn-dark" : "btn-outline-secondary"}`}
               value="Burguer"
               onClick={handleOptionChange}
               style={buttonStyle}
@@ -70,7 +70,7 @@ const BotonesMenu: FC = () => {
             </button>
             <button
               type="button"
-              className={`btn ${selectedOption === "Bebidas" ? "btn-primary" : "btn-outline-primary"}`}
+              className={`btn ${selectedOption === "Bebidas" ? "btn btn-dark" : "btn-outline-secondary"}`}
               value="Bebidas"
               onClick={handleOptionChange}
               style={{...buttonStyle, marginRight: "0"}}
