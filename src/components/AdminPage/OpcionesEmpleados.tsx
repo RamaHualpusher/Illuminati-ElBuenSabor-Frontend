@@ -1,37 +1,95 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function OpcionesEmpleados(){
-    return(
-        <div className="d-flex flex-column bd-highligt mb-3">
-            <div className="d-flex justify-content-center">
-                <div className="btn-group">
-                    <button className="btn btn-success my-3">Empleados</button>
-                    <button className="btn btn-success my-3">Clientes</button>
-                    <button className="btn btn-success my-3">Raking Clientes</button>
+export default function OpcionesEmpleados() {
+    return (
+        <div className="d-flex flex-column bd-highligt mb-3 bg-secondary">
+            <div className="row justify-content-center">
+                <div className="col-md-3">
+                    <div className="card my-3" style={{ border: "1px solid black" }}>
+                        <div className="card-body">
+                            <h5 className="card-title" style={{ color: "black" }}>Empleados</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="card my-3" style={{ border: "1px solid black" }}>
+                        <div className="card-body">
+                            <h5 className="card-title" style={{ color: "black" }}>Clientes</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="card my-3" style={{ border: "1px solid black" }}>
+                        <div className="card-body">
+                            <h5 className="card-title" style={{ color: "black" }}>Ranking Clientes</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="d-flex justify-content-center">
-                <div className="btn-group">
-                    <Link to="/cocina/productos" className="btn btn-success my-3">Productos</Link>
-                    <button className="btn btn-success my-3">Ranking Productos</button>
-                    <button className="btn btn-success my-3">Raking Ventas</button>
+            <div className="row justify-content-center">
+                <div className="col-md-3" >
+                    <Link to="/cocina/productos" className="card-link" style={{ color: "black", textDecoration: "none" }}>
+                        <div className="card my-3" style={{ border: "1px solid black" }}>
+                            <div className="card-body">
+                                <h5>Productos</h5>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+                <div className="col-md-3">
+                    <div className="card my-3"style={{ border: "1px solid black" }}>
+                        <div className="card-body">
+                            <h5 className="card-title" style={{ color: "black" }}>Ranking Productos</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="card my-3" style={{ border: "1px solid black" }}>
+                        <div className="card-body">
+                            <h5 className="card-title" style={{ color: "black" }}>Ranking Ventas</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="d-flex justify-content-center">
-                <div className="btn-group">
-                    <Link to="/cocina/ingredientes" className="btn btn-success my-3">Ingredientes</Link>
-                    <Link to="/cocina/rubros/ingredientes" className="btn btn-success my-3">Rubros Ingredientes</Link>
-                    <Link to="/cocina/rubros/productos" className="btn btn-success my-3">Rubros Productos</Link>
+            <div className="row justify-content-center">
+                <div className="col-md-3">
+                    <Link to="/cocina/ingredientes" className="card-link" style={{ color: "black", textDecoration: "none" }}>
+                        <div className="card my-3" style={{ border: "1px solid black" }}>
+                            <div className="card-body">
+                                <h5>Ingredientes</h5>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+                <div className="col-md-3">
+                    <Link to="/cocina/rubros/ingredientes" className="card-link" style={{ color: "black", textDecoration: "none" }}>
+                        <div className="card my-3" style={{ border: "1px solid black" }}>
+                            <div className="card-body">
+                                <h5>Rubros Ingredientes</h5>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+                <div className="col-md-3">
+                    <Link to="/cocina/rubros/productos" className="card-link" style={{ color: "black", textDecoration: "none" }}>
+                        <div className="card my-3" style={{ border: "1px solid black" }}>
+                            <div className="card-body">
+                                <h5>Rubros Productos</h5>
+                            </div>
+                        </div>
+                    </Link>
                 </div>
             </div>
-            <div className="d-flex justify-content-center">
-                <div className="btn-group">
-                    <button className="btn btn-success my-3">Categorias</button>
+            <div className="row justify-content-center">
+                <div className="col-md-3">
+                    <div className="card my-3" style={{ border: "1px solid black" }}>
+                        <div className="card-body">
+                            <h5 className="card-title" style={{ color: "black" }}>Categorias</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     )
 }
-
-

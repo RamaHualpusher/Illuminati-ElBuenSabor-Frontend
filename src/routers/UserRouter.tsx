@@ -3,9 +3,6 @@ import NavBar from "../components/NavBar/Navbar";
 import Landing from "../components/Landing/Landing";
 import { Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
-import AdminPage from "../components/AdminPage/AdminPage";
-import { useAuth0 } from "@auth0/auth0-react";
 
 const UserRouter = () => {
 

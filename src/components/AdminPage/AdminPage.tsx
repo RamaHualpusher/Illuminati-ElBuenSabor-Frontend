@@ -6,8 +6,7 @@ export default function AdminPage(){
 
 
     return(
-        <div style={{height: "100vh"}}>
-            <h1 className="display-1">Admin Page</h1>
+        <div >
             <OpcionesEmpleados/>
         </div>
     )

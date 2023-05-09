@@ -14,7 +14,6 @@ const PanelAdmin: React.FC<NavbarAdminProps> = ({ title }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
-        <h1 className="Title_admin h1 text-white">{title}</h1>
         <div className="d-flex justify-content-center align-items-center">
           <button className="btn btn-primary me-2">Perfil</button>
           <button className="btn btn-primary me-2">Empleados</button>
@@ -22,6 +21,7 @@ const PanelAdmin: React.FC<NavbarAdminProps> = ({ title }) => {
           <button className="btn btn-primary me-2">Facturas</button>
           <button className="btn btn-primary me-2">Stock</button>
         </div>
+        <h1 className="Title_admin h1 text-white">{title}</h1>
       </div>
     </nav>
   );
