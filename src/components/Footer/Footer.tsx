@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
           <Col md={4}>
             <p className="text-muted mb-0">© {new Date().getFullYear()} El Buen Sabor</p>
           </Col>
-          <Col md={7}>
+          <Col md={8}>
             <ul className="list-unstyled mb-0 d-flex justify-content-end ">
               <li className="mx-2">
                 <i className="bi bi-whatsapp text-white"></i>
@@ -19,7 +19,9 @@ const Footer: React.FC = () => {
               </li>
               <li className="mx-2">
                 <i className="bi bi-geo-alt text-white"></i>
-                <span className="footer-text text-white px-1">Mendoza-Argentina</span>
+                <a href="https://www.google.com/maps/search/?api=1&query=Av.%20Ar%C3%ADstides%20Villanueva%20436,%20Mendoza" target="_blank" rel="noreferrer" className="footer-link text-white px-1">
+                  <span className="footer-text text-white px-1">Av. Arístides Villanueva 436, Mendoza</span>
+                </a>
               </li>
               <li className="mx-2">
                 <i className="bi bi-envelope text-white"></i>
@@ -36,4 +38,3 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-
