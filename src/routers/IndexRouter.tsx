@@ -5,6 +5,7 @@ import IngredientesTable from "../components/Stock/Ingrediente/IngredientesTable
 import ProductosTable from "../components/Stock/Producto/ProductosTable";
 import RubrosIngredientesTable from "../components/Stock/RubroIngrediente/RubroIngredientes";
 import RubrosProductosTable from "../components/Stock/RubroProducto/RubroProducto";
+import ShoppingCart from "../components/ShoppingCart/ShoppingCart";
 // import Admin from "../screens/Admin";
 // import Cashier from "../screens/Cashier";
 // import Detail from "../screens/Detail";
@@ -15,6 +16,7 @@ const IndexRouter = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<UserRouter />} />
+        <Route path="/carrito" element={<ShoppingCart/>} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable url="/assets/data/ingredientesEjemplo.json" />} />
         <Route path="/cocina/productos" element={<ProductosTable url="/assets/data/productosEjemplo.json" />} />
         <Route path="/cocina/rubros/ingredientes" element={<RubrosIngredientesTable url="/assets/data/dataTableRubrosIngredientes.json" />} />

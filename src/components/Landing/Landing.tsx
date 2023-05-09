@@ -3,10 +3,11 @@ import BotonesMenu from './BotonesMenu';
 import ImagenMenu from './ImagenMenu';
 import TarjetaComida from './TarjetaComida';
 import { Products } from '../../types/types';
-
+import ComoFunc from "./ComoFunc";
 
 
 export default function Landing() {
+    
     const producto1: Products = {
         Imagen: 'assets/img/pizza_casera_31391_orig.jpg',
         Nombre: 'Pizza',
@@ -36,12 +37,12 @@ export default function Landing() {
 
     return (
         <div >
-            <h1 className="display-1">Home</h1>
-            <div >
+            <div  style={{ background: "linear-gradient(to bottom, #fff, #cccc)",}} >
+                <h1 className="display-1">Home</h1> 
                 <ImagenMenu />
                 <h1 className="display-6"><strong>La mejor comida rápida</strong></h1>
                 <BotonesMenu />
-                <div >
+                <div  >
                     <input placeholder="Busqueda" className="Search_Food" style={{ marginRight: "10px" }}></input>
                     <i className="bi bi-search"></i>
                 </div>
@@ -83,9 +84,11 @@ export default function Landing() {
                     </div>
                 </div>
 
-
-
             </div>
+            
+            <ComoFunc backgroundImage={""}/>
+
         </div>
+
     );
 }

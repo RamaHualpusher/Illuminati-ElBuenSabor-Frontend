@@ -1,5 +1,4 @@
 import React from "react";
-import NavbarEmpleado from "../components/AdminPage/NavbarEmpleado";
 import NavBar from "../components/NavBar/Navbar";
 import Landing from "../components/Landing/Landing";
 import { Route, Routes } from "react-router-dom";
@@ -11,7 +10,6 @@ const UserRouter = () => {
   return (
     <div>
       <NavBar />
-      <NavbarEmpleado/>
       <Routes>
         <Route path="/" element={<Landing />} />
       </Routes>

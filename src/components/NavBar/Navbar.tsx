@@ -58,13 +58,13 @@ const Navbar: FC = () => {
             <li className="nav-item">
               <i
                 className="bi bi-search text-white"
-                style={{ fontSize: "1.5rem", marginRight: "10px" }}
+                style={{ fontSize: "2rem", marginRight: "10px" }}
               />
             </li>
             <li className="nav-item">
               <i
                 className="bi bi-cart text-white"
-                style={{ fontSize: "1.5rem", marginRight: "10px" }}
+                style={{ fontSize: "2rem", marginRight: "10px" }}
               />
             </li>
             {isAuthenticated && (
