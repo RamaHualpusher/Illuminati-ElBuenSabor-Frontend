@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 
-const NavbarEmpleado: FC = () => {
+const NavbarAdmin: FC = () => {
     const [navbarOpen, setNavbarOpen] = useState(false);
 
     const toggleNavbar = () => {
@@ -32,4 +32,4 @@ const NavbarEmpleado: FC = () => {
     )
 }
 
-export default NavbarEmpleado;
+export default NavbarAdmin;
