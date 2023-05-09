@@ -1,13 +1,13 @@
 import React from "react";
 import AdminPage from "../components/AdminPage/AdminPage";
-import AdminBar from "../components/AdminPage/NavbarAdmin";
+import NavbarAdmin from "../components/AdminPage/NavbarAdmin";
 import NavBar from "../components/NavBar/Navbar";
 
 const Admin = () => {
     return (
         <div>
             <NavBar/>
-            <AdminBar />
+            <NavbarAdmin title={"Admin"}/>
             <AdminPage />
         </div>
     );
