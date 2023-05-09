@@ -5,8 +5,11 @@ import { Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import AdminPage from "../components/AdminPage/AdminPage";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const UserRouter = () => {
+
+
   return (
     <div>
       <NavBar />
@@ -15,8 +18,7 @@ const UserRouter = () => {
       </Routes>
       <div className="d-flex justify-content-center mb-3">
         <div className="btn-group">
-          
-          <Button  onClick={() =>AdminPage} className="btn btn-success my-3">Pagina Admin</Button>
+          <Link to="/Admin" className="btn btn-success my-3">Admin</Link>
           <Link to="/cocina/ingredientes" className="btn btn-success my-3">Ingredientes</Link>
           <Link to="/cocina/productos" className="btn btn-success my-3">Productos</Link>
           <Link to="/cocina/rubros/ingredientes" className="btn btn-success my-3">Rubros Ingredientes</Link>
