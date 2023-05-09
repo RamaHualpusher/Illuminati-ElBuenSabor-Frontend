@@ -38,7 +38,7 @@ export default function OpcionesEmpleados() {
                     </Link>
                 </div>
                 <div className="col-md-3">
-                    <div className="card my-3"style={{ border: "1px solid black" }}>
+                    <div className="card my-3" style={{ border: "1px solid black" }}>
                         <div className="card-body">
                             <h5 className="card-title" style={{ color: "black" }}>Ranking Productos</h5>
                         </div>
@@ -81,11 +81,35 @@ export default function OpcionesEmpleados() {
                     </Link>
                 </div>
             </div>
+
             <div className="row justify-content-center">
                 <div className="col-md-3">
                     <div className="card my-3" style={{ border: "1px solid black" }}>
                         <div className="card-body">
                             <h5 className="card-title" style={{ color: "black" }}>Categorias</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="card my-3" style={{ border: "1px solid black" }}>
+                        <div className="card-body">
+                            <h5 className="card-title" style={{ color: "black" }}>Usuarios</h5>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="card my-3" style={{ border: "1px solid black" }}>
+                        <div className="card-body">
+                            <h5 className="card-title" style={{ color: "black" }}>Facturas</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row justify-content-center">
+                <div className="col-md-3">
+                    <div className="card my-3" style={{ border: "1px solid black" }}>
+                        <div className="card-body">
+                            <h5 className="card-title" style={{ color: "black" }}>Stock</h5>
                         </div>
                     </div>
                 </div>
