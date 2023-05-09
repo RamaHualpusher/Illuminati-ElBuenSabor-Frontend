@@ -8,7 +8,6 @@ const Admin = () => {
         <div>
             <NavBar/>
             <AdminBar />
-
             <AdminPage />
         </div>
     );
