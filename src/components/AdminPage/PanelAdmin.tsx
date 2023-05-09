@@ -14,6 +14,7 @@ const PanelAdmin: React.FC<NavbarAdminProps> = ({ title }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container" style={{ display: "flex", justifyContent: "center" }}>
+        
         <h1 className="Title_admin h1 text-white">{title}</h1>
       </div>
     </nav>
