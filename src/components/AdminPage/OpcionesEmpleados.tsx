@@ -81,7 +81,6 @@ export default function OpcionesEmpleados() {
                     </Link>
                 </div>
             </div>
-
             <div className="row justify-content-center">
                 <div className="col-md-3">
                     <div className="card my-3" style={{ border: "1px solid black" }}>
