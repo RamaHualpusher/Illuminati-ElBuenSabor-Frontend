@@ -3,10 +3,17 @@ import BotonesMenu from './BotonesMenu';
 import ImagenMenu from './ImagenMenu';
 import TarjetaComida from './TarjetaComida';
 import { Products } from '../../types/types';
-
+import ComoFunc from "./ComoFunc";
+import FoodSearch from "./FoodSearch";
 
 
 export default function Landing() {
+    
+    // const handleSearch = (searchTerm: string) => {
+    //     console.log(`Searching for "${searchTerm}"...`);
+    //     // Lógica para buscar comidas aquí
+    //   };
+
     const producto1: Products = {
         Imagen: 'assets/img/pizza_casera_31391_orig.jpg',
         Nombre: 'Pizza',
@@ -36,15 +43,11 @@ export default function Landing() {
 
     return (
         <div >
-            <h1 className="display-1">Home</h1>
-            <div >
+            <div  style={{ background: "linear-gradient(to bottom, #fff, #cccc)"}}  >
                 <ImagenMenu />
-                <h1 className="display-6"><strong>La mejor comida rápida</strong></h1>
                 <BotonesMenu />
-                <div >
-                    <input placeholder="Busqueda" className="Search_Food" style={{ marginRight: "10px" }}></input>
-                    <i className="bi bi-search"></i>
-                </div>
+                {/* <FoodSearch onSearch={handleSearch}/> */} 
+                {/* Aca deberia implementarse esto y en la linea 12 crear la logica de busqueda */}
 
                 <div className="d-flex justify-content-center mt-3">
                     <div className="card w-75">
@@ -83,9 +86,11 @@ export default function Landing() {
                     </div>
                 </div>
 
-
-
             </div>
+            
+            <ComoFunc backgroundImage={""}/>
+
         </div>
+
     );
 }
