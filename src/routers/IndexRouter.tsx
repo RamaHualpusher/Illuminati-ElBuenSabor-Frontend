@@ -7,6 +7,7 @@ import RubrosIngredientesTable from "../components/Stock/RubroIngrediente/RubroI
 import RubrosProductosTable from "../components/Stock/RubroProducto/RubroProducto";
 import ShoppingCart from "../components/ShoppingCart/ShoppingCart";
 import Admin from "../screens/Admin";
+import Employee from "../components/Users/Employees/Employee";
 import Bill from "../components/Bill/Bill";
 
 // import Cashier from "../screens/Cashier";
@@ -20,6 +21,7 @@ const IndexRouter = () => {
         <Route path="/" element={<UserRouter />} />
         <Route path="/admin" element={<Admin/>} />
         <Route path="/admin/facturas" element={<Bill/>} />
+        <Route path="/admin/employee" element={<Employee/>} />
         <Route path="/carrito" element={<ShoppingCart/>} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable url="/assets/data/ingredientesEjemplo.json" />} />
         <Route path="/cocina/productos" element={<ProductosTable url="/assets/data/productosEjemplo.json" />} />

@@ -1,0 +1,10 @@
+[
+    {
+      "id": 1,
+      "nombre": "Javier",
+      "apelido": "Scandura",
+      "email": "javier_scandura@hotmail.com",
+      "idRol": "empleado",
+      "estado": "1"
+    }
+]
