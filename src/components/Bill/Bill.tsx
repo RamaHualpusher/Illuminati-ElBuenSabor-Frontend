@@ -1,70 +1,30 @@
 import { cashierOrder } from '../../types/types';
-import React, { useState } from 'react'
-// import BillTable from './BillTable/BillTable';
+import React, { useState, useEffect } from 'react'
+import BillTable from './BillTable/BillTable';
+import AdminBar from '../NavBar/AdminBar';
+import { Container, Row, Col, Form, InputGroup, Button, FormControl } from 'react-bootstrap';
 
-export default function Billing() {
+interface BillProps { }
 
-  const productosPrueba: cashierOrder[] = [
-    {
-      IdPedido: 123456,
-      FechaPedido: "12/03/23/ 12:30",
-      FormaEntrega: "Delivery",
-      FormaPago: "Efectivo",
-      Pagado: "No",
-      Estado: "A Confirmar"
-    },
-    {
-      IdPedido: 123456,
-      FechaPedido: "12/03/23/ 12:30",
-      FormaEntrega: "Delivery",
-      FormaPago: "Efectivo",
-      Pagado: "Si",
-      Estado: "Delivery"
-    },
-    {
-      IdPedido: 123456,
-      FechaPedido: "12/03/23/ 12:30",
-      FormaEntrega: "Delivery",
-      FormaPago: "Efectivo",
-      Pagado: "Si",
-      Estado: "Listo"
-    },
-    {
-      IdPedido: 1,
-      FechaPedido: "12/03/23/ 12:30",
-      FormaEntrega: "Delivery",
-      FormaPago: "Efectivo",
-      Pagado: "No",
-      Estado: "A Confirmar"
-    },
-    {
-      IdPedido: 123456999,
-      FechaPedido: "12/03/23/ 12:30",
-      FormaEntrega: "Delivery",
-      FormaPago: "Efectivo",
-      Pagado: "Si",
-      Estado: "Delivery"
-    },
-    {
-      IdPedido: 123456,
-      FechaPedido: "12/03/23/ 12:30",
-      FormaEntrega: "Delivery",
-      FormaPago: "Efectivo",
-      Pagado: "Si",
-      Estado: "Listo"
-    }
-  ]
-
-  const [order, setOrder] = useState<cashierOrder[]>(productosPrueba);
-  const [orderComplete, setOrderComplete] = useState<cashierOrder[]>(productosPrueba);
+const Bill: React.FC<BillProps> = () => {
+  const [order, setOrder] = useState<cashierOrder[]>([]);
+  const [orderComplete, setOrderComplete] = useState<cashierOrder[]>([]);
   const [search, setSearch] = useState("");
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/assets/data/dataTableFacturas.json');
+      const data = await response.json();
+      setOrder(data);
+      setOrderComplete(data);
+    };
+    fetchData();
+  }, []);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     filter(e.target.value);
   };
-
 
   const filter = (serchParam: string) => {
     var serchResult = orderComplete.filter((productVal: cashierOrder) => {
@@ -93,27 +53,42 @@ export default function Billing() {
     setOrder(serchResult);
   };
 
-
   return (
-    <div >
-      <div className='Filter_Container'>
-        <div>
-          <span>Estado: </span>
-          <select className='Select_nivelStock'>
-            <option>Todos</option>
-            <option>Faltante</option>
-            <option>Optimo</option>
-            <option>Pedir</option>
-          </select>
-        </div>
-        <div className="Container_input">
-          <input placeholder="Busqueda" className="busqueda_comida" value={search} onChange={handleChange}></input>
-          <i className="fa-solid fa-magnifying-glass" style={{ color: "black" }}></i>
-        </div>
-      </div>
-      <div className='Container_Cashier_Table'>
-        {/* <BillingTable orders={order} /> */}
-      </div>
+    <div>
+      <AdminBar />
+      <Container fluid>
+        <Row className='mt-3'>
+          <Col sm={2}>
+            <Form.Select className='Select_nivelStock'>
+              <option>Todos</option>
+              <option>Faltante</option>
+              <option>Optimo</option>
+              <option>Pedir</option>
+            </Form.Select>
+          </Col>
+          <Col sm={4}>
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="Busqueda"
+                aria-label="Busqueda"
+                aria-describedby="basic-addon2"
+                value={search}
+                onChange={handleChange}
+              />
+              <Button variant="outline-secondary" id="button-addon2">
+                <i className="bi bi-search"></i>
+              </Button>
+            </InputGroup>
+          </Col>
+        </Row>
+        <Row className='mt-3'>
+          <Col>
+            <BillTable orders={order} />
+          </Col>
+        </Row>
+      </Container>
     </div>
-  )
-}
+  );
+};
+
+export default Bill;

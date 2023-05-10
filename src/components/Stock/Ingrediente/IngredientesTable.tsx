@@ -3,8 +3,7 @@ import { Table, Button } from 'react-bootstrap';
 import axios from 'axios';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
-import Navbar from '../../NavBar/AdminBar';
-
+import AdminBar from '../../NavBar/AdminBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export type Ingrediente = {
@@ -90,7 +89,7 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
 
   return (
     <>
-    <Navbar/>
+    <AdminBar/>
   <div className="d-flex justify-content-start align-items-center mb-3">
     <h3>Ingredientes</h3>
   </div>
