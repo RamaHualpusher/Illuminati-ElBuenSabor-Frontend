@@ -4,7 +4,7 @@ import BillTable from './BillTable/BillTable';
 import AdminBar from '../NavBar/AdminBar';
 import { Container, Row, Col, Form, InputGroup, Button, FormControl } from 'react-bootstrap';
 
-interface BillProps {}
+interface BillProps { }
 
 const Bill: React.FC<BillProps> = () => {
   const [order, setOrder] = useState<cashierOrder[]>([]);
@@ -13,7 +13,7 @@ const Bill: React.FC<BillProps> = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/assets/data/dataTableFacturasl.json');
+      const response = await fetch('/assets/data/dataTableFacturas.json');
       const data = await response.json();
       setOrder(data);
       setOrderComplete(data);
@@ -55,7 +55,7 @@ const Bill: React.FC<BillProps> = () => {
 
   return (
     <div>
-        <AdminBar/>
+      <AdminBar />
       <Container fluid>
         <Row className='mt-3'>
           <Col sm={2}>
@@ -76,14 +76,14 @@ const Bill: React.FC<BillProps> = () => {
                 onChange={handleChange}
               />
               <Button variant="outline-secondary" id="button-addon2">
-              <i className="bi bi-search"></i>
+                <i className="bi bi-search"></i>
               </Button>
             </InputGroup>
           </Col>
         </Row>
         <Row className='mt-3'>
           <Col>
-            <BillTable orders={order} /> 
+            <BillTable orders={order} />
           </Col>
         </Row>
       </Container>
