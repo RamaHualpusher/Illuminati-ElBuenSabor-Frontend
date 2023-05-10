@@ -3,7 +3,7 @@ import { Table, Button } from 'react-bootstrap';
 import axios from 'axios';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
-import Navbar from '../../NavBar/Navbar';
+import Navbar from '../../NavBar/AdminBar';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
