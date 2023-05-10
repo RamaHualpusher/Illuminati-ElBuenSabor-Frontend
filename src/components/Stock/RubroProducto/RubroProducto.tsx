@@ -5,7 +5,7 @@ import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Navbar from '../../NavBar/Navbar';
+import Navbar from '../../NavBar/AdminBar';
 
 export type Producto = {
   id: number;

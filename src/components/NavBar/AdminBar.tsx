@@ -2,6 +2,7 @@ import React, { FC, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
+import { BackButton } from "../BackButtom/backButtom";
 
 const AdminBar: FC = () => {
   const { isAuthenticated, user } = useAuth0();
@@ -18,18 +19,19 @@ const AdminBar: FC = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
+        <BackButton />
         <div className="d-flex align-items-center">
-        <a href="/" className="logo-iluminatti-1 me-2">
-          <img
-            className="logo-iluminatti-1 me-2"
-            src="/assets/img/logo-grupo-illuminati.jpg"
-            alt="logo"
-            style={{
-              width: "50px",
-              height: "50px",
-              borderRadius: "50%",
-            }}
-          />
+          <a href="/" className="logo-iluminatti-1 me-2" style={{ marginLeft: "30px" }}>
+            <img
+              className="logo-iluminatti-1 me-2"
+              src="/assets/img/logo-grupo-illuminati.jpg"
+              alt="logo"
+              style={{
+                width: "50px",
+                height: "50px",
+                borderRadius: "50%",
+              }}
+            />
           </a>
           <a className="navbar-brand" href="/">
             El Buen Sabor - Illuminati
@@ -40,9 +42,8 @@ const AdminBar: FC = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div
-          className={`collapse navbar-collapse justify-content-end ${
-            navbarOpen ? "show" : ""
-          }`}
+          className={`collapse navbar-collapse justify-content-end ${navbarOpen ? "show" : ""
+            }`}
         >
           <ul className="navbar-nav align-items-center">
             <li className="nav-item d-lg-none">
@@ -51,7 +52,7 @@ const AdminBar: FC = () => {
             <li className="nav-item d-lg-none">
               <span className="nav-link mb-2">Contacto</span>
             </li>
-            
+
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center">
                 <p className="nav-link mb-0">
