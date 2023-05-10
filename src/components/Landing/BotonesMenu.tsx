@@ -1,6 +1,5 @@
 import React, { FC, useState } from "react";
 import { Form } from "react-bootstrap";
-//import todos from "../../../public/assets/img/Iconos/todos.png";
 
 const BotonesMenu: FC = () => {
   const [selectedOption, setSelectedOption] = useState("Todos");
