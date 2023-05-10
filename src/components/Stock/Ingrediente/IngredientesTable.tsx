@@ -4,7 +4,6 @@ import axios from 'axios';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import AdminBar from '../../NavBar/AdminBar';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export type Ingrediente = {

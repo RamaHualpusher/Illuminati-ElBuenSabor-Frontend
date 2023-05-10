@@ -1,0 +1,18 @@
+[
+  {
+    "IdPedido": 123456,
+    "FechaPedido": "12/03/23/ 12:30",
+    "FormaEntrega": "Delivery",
+    "FormaPago": "Efectivo",
+    "Pagado": "No",
+    "Estado": "A Confirmar"
+  },
+  {
+    "IdPedido": 123457,
+    "FechaPedido": "12/03/23/ 12:35",
+    "FormaEntrega": "Take Away",
+    "FormaPago": "Tarjeta",
+    "Pagado": "Si",
+    "Estado": "Confirmado"
+  }
+]

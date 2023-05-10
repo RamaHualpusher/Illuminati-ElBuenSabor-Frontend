@@ -1,5 +1,5 @@
 import { cashierOrder } from '../../types/types';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import BillTable from './BillTable/BillTable';
 import AdminBar from '../NavBar/AdminBar';
 import { Container, Row, Col, Form, InputGroup, Button, FormControl } from 'react-bootstrap';
@@ -7,20 +7,19 @@ import { Container, Row, Col, Form, InputGroup, Button, FormControl } from 'reac
 interface BillProps {}
 
 const Bill: React.FC<BillProps> = () => {
-  const productosPrueba: cashierOrder[] = [
-    {
-      IdPedido: 123456,
-      FechaPedido: "12/03/23/ 12:30",
-      FormaEntrega: "Delivery",
-      FormaPago: "Efectivo",
-      Pagado: "No",
-      Estado: "A Confirmar"
-    }
-  ]
-
-  const [order, setOrder] = useState<cashierOrder[]>(productosPrueba);
-  const [orderComplete, setOrderComplete] = useState<cashierOrder[]>(productosPrueba);
+  const [order, setOrder] = useState<cashierOrder[]>([]);
+  const [orderComplete, setOrderComplete] = useState<cashierOrder[]>([]);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/assets/data/dataTableFacturasl.json');
+      const data = await response.json();
+      setOrder(data);
+      setOrderComplete(data);
+    };
+    fetchData();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
