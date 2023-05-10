@@ -2,7 +2,7 @@ import { cashierOrder } from '../../types/types';
 import React, { useState } from 'react'
 // import BillTable from './BillTable/BillTable';
 
-export default function Billing() {
+export default function Bill() {
 
   const productosPrueba: cashierOrder[] = [
     {
