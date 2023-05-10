@@ -25,4 +25,12 @@ export interface cashierOrder {
   Estado: string;
 }
 
+export interface cashierOrder {
+  IdPedido: number;
+  FechaPedido: string;
+  FormaEntrega: string;
+  FormaPago: string;
+  Pagado: string;
+  Estado: string;
+}
 //agregar aca las demas interfaces para completar dentro del codigo de front
