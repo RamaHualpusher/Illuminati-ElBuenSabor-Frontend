@@ -4,6 +4,7 @@ import Landing from "../components/Landing/Landing";
 import { Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
 
+//esto son los botones JAVI!!!!!
 const UserRouter = () => {
   return (
     <div>

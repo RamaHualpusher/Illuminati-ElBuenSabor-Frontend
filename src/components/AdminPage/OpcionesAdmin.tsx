@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function OpcionesEmpleados() {
+export default function OpcionesAdmin() {
     return (
         <div className="d-flex flex-column bd-highligt mb-3 bg-secondary">
             <div className="row justify-content-center">

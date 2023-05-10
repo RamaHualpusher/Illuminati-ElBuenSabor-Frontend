@@ -1,10 +1,10 @@
 import React from "react";
-import OpcionesEmpleados from "./OpcionesEmpleados";
+import OpcionesAdmin from "./OpcionesAdmin";
 
 export default function AdminPage(){
     return(
         <div >
-            <OpcionesEmpleados/>
+            <OpcionesAdmin/>
         </div>
     )
 }

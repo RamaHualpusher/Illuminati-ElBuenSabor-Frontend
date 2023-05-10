@@ -6,7 +6,7 @@ import ProductosTable from "../components/Stock/Producto/ProductosTable";
 import RubrosIngredientesTable from "../components/Stock/RubroIngrediente/RubroIngredientes";
 import RubrosProductosTable from "../components/Stock/RubroProducto/RubroProducto";
 import ShoppingCart from "../components/ShoppingCart/ShoppingCart";
- import Admin from "../screens/Admin";
+import Admin from "../screens/Admin";
 // import Cashier from "../screens/Cashier";
 // import Detail from "../screens/Detail";
 // import Delivery from "../screens/Delivery"
