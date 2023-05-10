@@ -9,7 +9,7 @@ const ComoFunc: React.FC<Props> = ({ backgroundImage }) => {
   return (
     <div
       style={{
-        backgroundImage: `url(/assets/img/FondoComoFunc.jpg)`,
+        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         height: "100vh",
         display: "flex",

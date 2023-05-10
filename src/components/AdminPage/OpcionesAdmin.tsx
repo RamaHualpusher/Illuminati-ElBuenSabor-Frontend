@@ -97,11 +97,13 @@ export default function OpcionesAdmin() {
                     </div>
                 </div>
                 <div className="col-md-3">
-                    <div className="card my-3" style={{ border: "1px solid black" }}>
-                        <div className="card-body">
-                            <h5 className="card-title" style={{ color: "black" }}>Facturas</h5>
+                    <Link to="/admin/facturas" className="card-link" style={{ color: "black", textDecoration: "none" }}>
+                        <div className="card my-3" style={{ border: "1px solid black" }}>
+                            <div className="card-body">
+                                <h5 className="card-title" style={{ color: "black" }}>Facturas</h5>
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             </div>
             <div className="row justify-content-center">

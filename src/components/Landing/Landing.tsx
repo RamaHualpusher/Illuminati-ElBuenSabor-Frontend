@@ -88,7 +88,7 @@ export default function Landing() {
 
             </div>
             
-            <ComoFunc backgroundImage={""}/>
+            <ComoFunc backgroundImage={"/assets/img/FondoComoFunc.jpg"}/>
 
         </div>
 
