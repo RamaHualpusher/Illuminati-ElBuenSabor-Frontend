@@ -6,7 +6,7 @@ import NavBar from "../components/NavBar/AdminBar";
 const Admin = () => {
     return (
         <div>
-            <NavBar/>
+            <NavBar/>            
             <PanelAdmin title={"Admin"}/>
             <AdminPage />
         </div>
