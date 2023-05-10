@@ -14,7 +14,6 @@ const BillTable = ({ orders }: BillTableProps) => {
           <th>FechaPedido</th>
           <th>FormaEntrega</th>
           <th>FormaPago</th>
-          <th>Pagado</th>
           <th>Estado</th>
         </tr>
       </thead>
@@ -25,7 +24,6 @@ const BillTable = ({ orders }: BillTableProps) => {
             <td>{order.FechaPedido}</td>
             <td>{order.FormaEntrega}</td>
             <td>{order.FormaPago}</td>
-            <td>{order.Pagado}</td>
             <td>{order.Estado}</td>
           </tr>
         ))}
