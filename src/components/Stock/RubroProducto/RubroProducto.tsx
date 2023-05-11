@@ -3,9 +3,7 @@ import { Table, Button } from 'react-bootstrap';
 import axios from 'axios';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Navbar from '../../NavBar/AdminBar';
 
 export type Producto = {
   id: number;
@@ -86,7 +84,6 @@ const RubrosProductosTable = ({ url }: RubrosProductosTableProps) => {
 
   return (
     <div>
-      <Navbar />
       <div className="d-flex justify-content-start m-3">
         <Button variant="success" onClick={handleAddModalOpen}>Agregar Producto</Button>
       </div>
