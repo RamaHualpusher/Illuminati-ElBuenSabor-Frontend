@@ -1,26 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
+import { Rol,Empleado } from "../../types/types";
 
 type EditEmpleadoModalProps = {
   show: boolean;
   handleClose: () => void;
   handleEmpleadoEdit: (empleado: Empleado) => void;
   selectedEmpleado: Empleado | null;
-};
-
-type Empleado = {
-  id: number;
-  nombre: string;
-  apellido: string;
-  email: string;
-  estado: number;
-  rol: Rol | null;
-};
-
-type Rol = {
-  idRol: number;
-  nombreRol: string;
 };
 
 const EditEmpleadoModal = ({
