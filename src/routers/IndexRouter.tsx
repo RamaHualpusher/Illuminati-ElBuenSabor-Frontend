@@ -9,6 +9,7 @@ import ShoppingCart from "../components/ShoppingCart/ShoppingCart";
 import Admin from "../screens/Admin";
 import Employee from "../components/Users/Employees/Employee";
 import Bill from "../components/Bill/Bill";
+import Cocinero from "../screens/Cocinero";
 
 // import Cashier from "../screens/Cashier";
 // import Detail from "../screens/Detail";
@@ -20,6 +21,7 @@ const IndexRouter = () => {
       <Routes>
         <Route path="/" element={<UserRouter />} />
         <Route path="/admin" element={<Admin/>} />
+        <Route path="/cocinero" element={<Cocinero/>}/>
         <Route path="/admin/facturas" element={<Bill/>} />
         <Route path="/admin/employee" element={<Employee/>} />
         <Route path="/carrito" element={<ShoppingCart/>} />

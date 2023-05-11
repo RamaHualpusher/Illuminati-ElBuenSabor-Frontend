@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button} from 'react-bootstrap';
 import axios from 'axios';
-import Navbar from '../../NavBar/AdminBar';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 
@@ -88,7 +87,6 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
 
   return (
     <div>
-      <Navbar />
         <div className="d-flex justify-content-start align-items-center mb-3">
         <h3>Productos</h3>
       </div>

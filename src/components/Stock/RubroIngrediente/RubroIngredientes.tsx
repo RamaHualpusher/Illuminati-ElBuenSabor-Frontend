@@ -3,7 +3,6 @@ import { Table, Button } from "react-bootstrap";
 import axios from "axios";
 import EditRubroIngredienteModal from "./EditRubroIngredienteModal";
 import AddRubroIngredienteModal from "./AddRubroIngredienteModal";
-import Navbar from '../../NavBar/AdminBar';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -93,7 +92,6 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
 
   return (
     <div>
-      <Navbar/>
       <div
         className="d-flex justify-content-start m-3">
         <Button variant="success" onClick={handleAddModalOpen}>
