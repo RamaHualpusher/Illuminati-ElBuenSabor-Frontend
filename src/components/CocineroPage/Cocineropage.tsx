@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link, Route } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import ProductosTable from "../Stock/Producto/ProductosTable";
 
@@ -7,38 +6,31 @@ export default function CocineroPage() {
 
     const [selectedOption, setSelectedOption] = useState("Null");
 
-    const [showProductos, setShowProductos] = useState(false);
+    
 
-    let elementDisplay = null;
+    //let elementDisplay = <div>Elija Elemento</div>
 
     const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
         setSelectedOption(event.currentTarget.value);
-        if (event.currentTarget.value === "concha") {
-            elementDisplay = <Route path="/cocina/productos" element={<ProductosTable url="/assets/data/productosEjemplo.json" />} />;
-            setShowProductos(true);
-        } else {
-            setShowProductos(false);
-            elementDisplay = null;
-        }
     };
 
     const styleButon = { color: "black", textDecoration: "none" };
 
     
-
-    /*if (selectedOption === "concha") {
-        elementDisplay = <Route path="/cocina/productos" element={<ProductosTable url="/assets/data/productosEjemplo.json" />} />;
-        setShowProductos(true);
-    } else {
-        setShowProductos(false);
-        elementDisplay = null;
+    /*const changeElement =(selectedOption:String) =>{
+        if (selectedOption==="concha"){
+            elementDisplay=<ProductosTable url="/assets/data/productosEjemplo.json" />;
+        }else{
+            elementDisplay=<div>Elija elemento</div>;
+        }
     }*/
+    
 
 
     return (
-        <div>
-            <div className="d-flex flex-column bd-highligt mb-3 bg-secondary">
-                <div className="row justify-content-center">
+        <Form>
+            <Form.Group className="d-flex flex-column bd-highligt mb-3 bg-secondary">
+                <Form.Label className="row justify-content-center">
                     <div className="col-md-3" >
                         {/*<Link to="/cocina/productos" className="card-link" style={{ color: "black", textDecoration: "none" }}>
                         <div className="card my-3" style={{ border: "1px solid black" }}>
@@ -92,9 +84,9 @@ export default function CocineroPage() {
                         </div>
                     </Link>
                 </div>*/}
-                </div>
-            </div>
-            <div>{showProductos && elementDisplay}</div>
-        </div>
+                </Form.Label>
+            </Form.Group>
+            
+        </Form>
     )
 }
