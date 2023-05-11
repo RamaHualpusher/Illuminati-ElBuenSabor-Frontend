@@ -55,7 +55,7 @@ const Bill: React.FC<BillProps> = () => {
 
   return (
     <div>
-      <AdminBar />
+      
       <Container fluid>
         <Row className='mt-3'>
           <Col sm={2}>
