@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Empleado, Rol } from "./EmpleadoTable";
+//import { Empleado, Rol } from "./EmpleadoTable";
 import axios from "axios";
+import { Rol, Empleado } from "../../types/types";
 
 type AddEmpleadoModalProps = {
   show: boolean;
@@ -99,31 +100,31 @@ const AddEmpleadoModal = ({
               value={selectedRol?.idRol || ""}
               onChange={(event) => {
                 const selectedIdRol = Number(event.target.value);
-                const selectedRol = roles.find(rol => rol.idRol === selectedIdRol);                   
-                    setSelectedRol(selectedRol || null);
-                    }}
-                    required
-                    >
-                    <option value="">Seleccione un rol</option>
-                    {roles.map(rol => (
-                    <option key={rol.idRol} value={rol.idRol}>
-                    {rol.nombreRol}
-                    </option>
-                    ))}
-                    </Form.Control>
-                    </Form.Group>
-                    </Modal.Body>
-                    <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                    Cancelar
-                    </Button>
-                    <Button variant="primary" type="submit">
-                    Agregar
-                    </Button>
-                    </Modal.Footer>
-                    </Form>
-                    </Modal>
-                    );
-                    };
-                    
-                    export default AddEmpleadoModal;
+                const selectedRol = roles.find(rol => rol.idRol === selectedIdRol);
+                setSelectedRol(selectedRol || null);
+              }}
+              required
+            >
+              <option value="">Seleccione un rol</option>
+              {roles.map(rol => (
+                <option key={rol.idRol} value={rol.idRol}>
+                  {rol.nombreRol}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancelar
+          </Button>
+          <Button variant="primary" type="submit">
+            Agregar
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  );
+};
+
+export default AddEmpleadoModal;

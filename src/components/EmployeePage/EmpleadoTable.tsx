@@ -3,20 +3,7 @@ import { Table, Dropdown, DropdownButton, InputGroup, FormControl, Button } from
 import axios from 'axios';
 import EditEmpleadoModal from './EditEmpleadoModal';
 import AddEmpleadoModal from './AddEmpleadoModal';
-
-export type Rol = {
-  idRol: number;
-  nombreRol: string;
-};
-
-export type Empleado = {
-  id: number;
-  nombre: string;
-  apellido: string;
-  email: string;
-  rol: Rol | null; // El rol puede ser nulo
-  estado: number;
-};
+import { Rol,Empleado } from "../../types/types";
 
 export type EmpleadoTableProps = {
   url: string;
