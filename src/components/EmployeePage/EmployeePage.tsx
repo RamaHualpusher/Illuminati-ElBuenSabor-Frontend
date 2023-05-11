@@ -1,10 +1,10 @@
 import React from "react";
-import OpcionesEmpleado from "./OpcionesEmpleado";
+import EmpleadoTable from "./EmpleadoTable";
 
 export default function EmployeePage(){
     return(
         <div >
-            <OpcionesEmpleado/>
+            <EmpleadoTable url="/assets/data/empleados.json"/>
         </div>
     )
 }
