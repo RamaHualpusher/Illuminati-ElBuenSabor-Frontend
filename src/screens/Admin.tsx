@@ -7,7 +7,7 @@ const Admin = () => {
     return (
         <div>
             <NavBar/>            
-            <PanelAdmin title={"Admin"}/>
+            <PanelAdmin title={"Administrador"}/>
             <AdminPage />
         </div>
     );
