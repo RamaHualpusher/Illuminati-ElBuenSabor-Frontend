@@ -1,92 +1,76 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
+import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
 import ProductosTable from "../Stock/Producto/ProductosTable";
+import RubrosIngredientesTable from "../Stock/RubroIngrediente/RubroIngredientes";
+import RubrosProductosTable from "../Stock/RubroProducto/RubroProducto";
 
 export default function CocineroPage() {
 
     const [selectedOption, setSelectedOption] = useState("Null");
 
-    
 
-    //let elementDisplay = <div>Elija Elemento</div>
+
+    let elementDisplay = <div>Elija Elemento</div>
 
     const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
         setSelectedOption(event.currentTarget.value);
     };
 
-    const styleButon = { color: "black", textDecoration: "none" };
-
-    
-    /*const changeElement =(selectedOption:String) =>{
-        if (selectedOption==="concha"){
-            elementDisplay=<ProductosTable url="/assets/data/productosEjemplo.json" />;
-        }else{
-            elementDisplay=<div>Elija elemento</div>;
-        }
-    }*/
     
 
 
     return (
         <Form>
-            <Form.Group className="d-flex flex-column bd-highligt mb-3 bg-secondary">
-                <Form.Label className="row justify-content-center">
-                    <div className="col-md-3" >
-                        {/*<Link to="/cocina/productos" className="card-link" style={{ color: "black", textDecoration: "none" }}>
-                        <div className="card my-3" style={{ border: "1px solid black" }}>
-                            <div className="card-body">
-                                <h5>Productos</h5>
-                            </div>
-                        </div>
-                    </Link>*/}
-
-                        <button className="card-link" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"null"}>
+            <Form.Group >
+                <Form.Label >
+                    <div  >
+                    <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Pedidos"}>
                             <div className="card my-3" style={{ border: "1px solid black" }}>
                                 <div className="card-body">
-                                    <h5>null</h5>
+                                    <h5>Pedidos</h5>
                                 </div>
                             </div>
                         </button>
-
-                        <button className="card-link" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"concha"}>
+                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Producto"}>
                             <div className="card my-3" style={{ border: "1px solid black" }}>
                                 <div className="card-body">
                                     <h5>Productos</h5>
                                 </div>
                             </div>
                         </button>
-
+                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Ingrediente"}>
+                            <div className="card my-3" style={{ border: "1px solid black" }}>
+                                <div className="card-body">
+                                    <h5>Ingredientes</h5>
+                                </div>
+                            </div>
+                        </button>
+                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Rubro Producto"}>
+                            <div className="card my-3" style={{ border: "1px solid black" }}>
+                                <div className="card-body">
+                                    <h5>Rubro Productos</h5>
+                                </div>
+                            </div>
+                        </button>
+                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Rubro Ingrediente"}>
+                            <div className="card my-3" style={{ border: "1px solid black" }}>
+                                <div className="card-body">
+                                    <h5>Rubro Ingredientes</h5>
+                                </div>
+                            </div>
+                        </button>
                     </div>
-                    {/*<div className="col-md-3">
-                    <Link to="/cocina/ingredientes" className="card-link" style={{ color: "black", textDecoration: "none" }}>
-                        <div className="card my-3" style={{ border: "1px solid black" }}>
-                            <div className="card-body">
-                                <h5>Ingredientes</h5>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
-                <div className="col-md-3">
-                    <Link to="/cocina/rubros/ingredientes" className="card-link" style={{ color: "black", textDecoration: "none" }}>
-                        <div className="card my-3" style={{ border: "1px solid black" }}>
-                            <div className="card-body">
-                                <h5>Rubros Ingredientes</h5>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
-                <div className="col-md-3">
-                    <Link to="/cocina/rubros/productos" className="card-link" style={{ color: "black", textDecoration: "none" }}>
-                        <div className="card my-3" style={{ border: "1px solid black" }}>
-                            <div className="card-body">
-                                <h5>Rubros Productos</h5>
-                            </div>
-                        </div>
-                    </Link>
-                </div>*/}
+
                 </Form.Label>
             </Form.Group>
-            
+            <div>
+                {selectedOption === 'Pedidos' && <p>Futuramente</p>}
+                {selectedOption === 'Producto' && <ProductosTable url="/assets/data/productosEjemplo.json" />}
+                {selectedOption === 'Ingrediente' && <IngredientesTable url="/assets/data/ingredientesEjemplo.json" />}
+                {selectedOption === 'Rubro Producto' && <RubrosProductosTable url="/assets/data/dataTableRubrosProductos.json" />}
+                {selectedOption === 'Rubro Ingrediente' && <RubrosIngredientesTable url="/assets/data/dataTableRubrosIngredientes.json" />}
+            </div>
         </Form>
     )
 }
