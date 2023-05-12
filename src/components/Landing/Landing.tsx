@@ -2,7 +2,7 @@ import React from "react";
 import BotonesMenu from './BotonesMenu';
 import ImagenMenu from './ImagenMenu';
 import TarjetaComida from './TarjetaComida';
-import { Products } from '../../types/types';
+import { Products } from '../../interface/interfaces';
 import ComoFunc from "./ComoFunc";
 import FoodSearch from "./FoodSearch";
 

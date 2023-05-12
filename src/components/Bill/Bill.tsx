@@ -1,4 +1,4 @@
-import { cashierOrder } from '../../types/types';
+import { cashierOrder } from '../../interface/interfaces';
 import React, { useState, useEffect } from 'react'
 import BillTable from './BillTable/BillTable';
 import AdminBar from '../NavBar/AdminBar';

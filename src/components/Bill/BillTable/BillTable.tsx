@@ -1,4 +1,4 @@
-import { cashierOrder } from '../../../types/types';
+import { cashierOrder } from '../../../interface/interfaces';
 import { Table } from 'react-bootstrap';
 
 interface BillTableProps {
