@@ -12,7 +12,7 @@ const Bill: React.FC<BillProps> = () => {
   const [search, setSearch] = useState("");
   const columns = [
     { label: "IdPedido", width: 100 },
-    { label: "FormaEntrega", width: 150 },
+    { label: "Forma de Entrega", width: 200 },
     { label: "FechaPedido", width: 150 },
     { label: "FormaPago", width: 150 }
   ];
