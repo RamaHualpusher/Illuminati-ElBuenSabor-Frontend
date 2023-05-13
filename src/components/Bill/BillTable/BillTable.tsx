@@ -10,21 +10,19 @@ const BillTable = ({ orders }: BillTableProps) => {
     <Table striped bordered hover>
       <thead>
         <tr>
-          <th>IdPedido</th>
-          <th>FechaPedido</th>
-          <th>FormaEntrega</th>
-          <th>FormaPago</th>
-          <th>Estado</th>
+          <th>IdFactura</th>
+          <th>Detalle</th>
+          <th>Fecha</th>
+          <th>Forma de Pago</th>
         </tr>
       </thead>
       <tbody>
         {orders.map((order) => (
           <tr key={order.IdPedido}>
             <td>{order.IdPedido}</td>
-            <td>{order.FechaPedido}</td>
             <td>{order.FormaEntrega}</td>
+            <td>{order.FechaPedido}</td>
             <td>{order.FormaPago}</td>
-            <td>{order.Estado}</td>
           </tr>
         ))}
       </tbody>

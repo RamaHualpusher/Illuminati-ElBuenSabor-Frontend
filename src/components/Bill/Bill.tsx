@@ -1,8 +1,7 @@
 import { cashierOrder } from '../../interface/interfaces';
 import React, { useState, useEffect } from 'react'
 import BillTable from './BillTable/BillTable';
-import AdminBar from '../NavBar/AdminBar';
-import { Container, Row, Col, Form, InputGroup, Button, FormControl } from 'react-bootstrap';
+import { Container, Row, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
 
 interface BillProps { }
 
@@ -32,19 +31,13 @@ const Bill: React.FC<BillProps> = () => {
         productVal.IdPedido.toString()
           .toLowerCase()
           .includes(serchParam.toLowerCase()) ||
-        productVal.FechaPedido?.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase()) ||
         productVal.FormaEntrega.toString()
           .toLowerCase()
           .includes(serchParam.toLowerCase()) ||
+        productVal.FechaPedido?.toString()
+          .toLowerCase()
+          .includes(serchParam.toLowerCase()) ||
         productVal.FormaPago.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase()) ||
-        productVal.Pagado.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase()) ||
-        productVal.Estado.toString()
           .toLowerCase()
           .includes(serchParam.toLowerCase())
       )
@@ -55,22 +48,14 @@ const Bill: React.FC<BillProps> = () => {
 
   return (
     <div>
-      
+
       <Container fluid>
         <Row className='mt-3'>
-          <Col sm={2}>
-            <Form.Select className='Select_nivelStock'>
-              <option>Todos</option>
-              <option>Faltante</option>
-              <option>Optimo</option>
-              <option>Pedir</option>
-            </Form.Select>
-          </Col>
-          <Col sm={4}>
-            <InputGroup className="mb-3">
+          <Col sm={10}><h1>Buscar Factura</h1>
+            <InputGroup className="mb-4">
               <FormControl
-                placeholder="Busqueda"
-                aria-label="Busqueda"
+                placeholder="Buscar"
+                aria-label="Buscar"
                 aria-describedby="basic-addon2"
                 value={search}
                 onChange={handleChange}

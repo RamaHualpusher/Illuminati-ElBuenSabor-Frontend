@@ -1,5 +1,4 @@
 import React ,{useState}from "react";
-import { Link } from "react-router-dom";
 import Employee from "../Users/Employees/Employee";
 import ProductosTable from "../Stock/Producto/ProductosTable";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
@@ -15,13 +14,8 @@ export default function OpcionesAdmin() {
         setSelectedOption(event.currentTarget.value);
     };
 
-
-
-    
-
     return (
         <div className="d-flex flex-row bd-highlight mb-3">
-            
         <div className="d-flex flex-column bd-highlight mb-3 bg-secondary p-3"
             style={{ width: "250px", height: "100vh", overflowY: "scroll" }}>
             <div className="row justify-content-start mb-3">

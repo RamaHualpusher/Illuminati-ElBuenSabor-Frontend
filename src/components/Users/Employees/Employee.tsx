@@ -5,9 +5,7 @@ import NavBar from "../../NavBar/AdminBar";
 
 const Employee = () => {
     return (
-        <div>
-            <NavBar/>            
-            <EmployeePanel title={"Empleados"}/>
+        <div>    
             <EmployeePage />
         </div>
     );
