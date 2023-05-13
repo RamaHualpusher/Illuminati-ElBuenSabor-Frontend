@@ -7,7 +7,7 @@ import RubrosProductosTable from "../Stock/RubroProducto/RubroProducto";
 import Bill from "../Bill/Bill";
 
 export default function OpcionesAdmin() {       //A MEDIDA QUE AGREGUEN NUEVOS OPTIONS CON RUTAS CAMBIEN EL
-                                                //VALOR DEL BOTON (value="employee")
+    //VALOR DEL BOTON (value="employee")
     const [selectedOption, setSelectedOption] = useState("Null");
 
     const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -25,11 +25,9 @@ export default function OpcionesAdmin() {       //A MEDIDA QUE AGREGUEN NUEVOS O
                             value="employee"
                             onClick={handleOptionChange}
                             className="btn btn-light btn-lg"
-                            style={{ color: "black", textDecoration: "none" }}
+                            style={{ color: "black", textDecoration: "none", width: "100%", border: "1px solid black" }}
                         >
-                            <div
-                                className="card-body p-1"
-                            >
+                            <div className="card-body p-1">
                                 <h6 className="card-title mb-0" style={{ color: "black" }}>
                                     Empleados
                                 </h6>
