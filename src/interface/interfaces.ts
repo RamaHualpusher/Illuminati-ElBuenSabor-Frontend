@@ -17,6 +17,7 @@ export interface OrderIngredient {
 
 
 export interface cashierOrder {
+  Total: any;
   IdPedido: number;
   FechaPedido: string;
   FormaEntrega: string;

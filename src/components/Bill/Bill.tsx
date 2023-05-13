@@ -1,7 +1,8 @@
 import { cashierOrder } from '../../interface/interfaces';
 import React, { useState, useEffect } from 'react'
-import BillTable from './BillTable/BillTable';
 import { Container, Row, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
+import { TablaGeneric } from '../TableGeneric/TableGeneric';
+
 
 interface BillProps { }
 
@@ -9,6 +10,18 @@ const Bill: React.FC<BillProps> = () => {
   const [order, setOrder] = useState<cashierOrder[]>([]);
   const [orderComplete, setOrderComplete] = useState<cashierOrder[]>([]);
   const [search, setSearch] = useState("");
+  const columns = [
+    { label: "IdPedido", width: 100 },
+    { label: "FormaEntrega", width: 150 },
+    { label: "FechaPedido", width: 150 },
+    { label: "FormaPago", width: 150 }
+  ];
+  const data = order.map((item) => [
+    item.IdPedido.toString(),
+    item.FormaEntrega.toString(),
+    item.FechaPedido?.toString(),
+    item.FormaPago.toString()
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +81,7 @@ const Bill: React.FC<BillProps> = () => {
         </Row>
         <Row className='mt-3'>
           <Col>
-            <BillTable orders={order} />
+            <TablaGeneric columns={columns} data={data} showButton={true} />
           </Col>
         </Row>
       </Container>
