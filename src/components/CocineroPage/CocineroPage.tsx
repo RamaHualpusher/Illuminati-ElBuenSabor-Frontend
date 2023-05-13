@@ -9,17 +9,9 @@ import Bill from "../Bill/Bill";
 export default function CocineroPage() {
 
     const [selectedOption, setSelectedOption] = useState("Null");
-
-
-
-    let elementDisplay = <div>Elija Elemento</div>
-
     const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
         setSelectedOption(event.currentTarget.value);
     };
-
-    
-
 
     return (
         <Form>
