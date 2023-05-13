@@ -6,7 +6,8 @@ import RubrosIngredientesTable from "../Stock/RubroIngrediente/RubroIngredientes
 import RubrosProductosTable from "../Stock/RubroProducto/RubroProducto";
 import Bill from "../Bill/Bill";
 
-export default function OpcionesAdmin() {       //A MEDIDA QUE AGREGUEN NUEVOS OPTIONS CON RUTAS CAMBIEN EL
+export default function OpcionesAdmin() {       
+    //A MEDIDA QUE AGREGUEN NUEVOS OPTIONS CON RUTAS CAMBIEN EL
     //VALOR DEL BOTON (value="employee")
     const [selectedOption, setSelectedOption] = useState("Null");
 

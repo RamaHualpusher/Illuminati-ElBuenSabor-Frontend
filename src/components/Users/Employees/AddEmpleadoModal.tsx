@@ -1,70 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+//import { Empleado, Rol } from "./EmpleadoTable";
 import axios from "axios";
-import { Rol,Empleado } from "../../interface/interfaces";
+import {Rol, Empleado } from "../../../interface/interfaces";
 
-type EditEmpleadoModalProps = {
+type AddEmpleadoModalProps = {
   show: boolean;
   handleClose: () => void;
-  handleEmpleadoEdit: (empleado: Empleado) => void;
-  selectedEmpleado: Empleado | null;
+  handleEmpleadoAdd: (empleado: Empleado) => void;
 };
 
-const EditEmpleadoModal = ({
+const AddEmpleadoModal = ({
   show,
   handleClose,
-  handleEmpleadoEdit,
-  selectedEmpleado,
-}: EditEmpleadoModalProps) => {
+  handleEmpleadoAdd,
+}: AddEmpleadoModalProps) => {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
-  const [estado, setEstado] = useState("");
-  const [rolId, setRolId] = useState<number | null>(null);
+  const [estado, setEstado] = useState(0);
+  const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
 
   useEffect(() => {
-    axios
-      .get<Rol[]>("/assets/data/idRolEjemplo.json")
-      .then((response) => {
+    axios.get<Rol[]>("URL_DEL_ENDPOINT_ROLES")
+      .then(response => {
         setRoles(response.data);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }, []);
 
-  useEffect(() => {
-    if (selectedEmpleado) {
-      setNombre(selectedEmpleado.nombre);
-      setApellido(selectedEmpleado.apellido);
-      setEmail(selectedEmpleado.email);
-      setEstado(selectedEmpleado.estado.toString());
-      setRolId(selectedEmpleado.rol?.idRol || null);
-    }
-  }, [selectedEmpleado]);
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (selectedEmpleado) {
-      const selectedRol = roles.find((rol) => rol.idRol === rolId);
-      const updatedEmpleado: Empleado = {
-        id: selectedEmpleado.id,
-        nombre,
-        apellido,
-        email,
-        estado: parseInt(estado),
-        rol: selectedRol || null,
-      };
-      handleEmpleadoEdit(updatedEmpleado);
-    }
+    const newEmpleado: Empleado = {
+      id: 0,
+      nombre,
+      apellido,
+      email,
+      estado,
+      rol: selectedRol || { idRol: 0, nombreRol: "" }, // Asignamos el rol seleccionado o un objeto vacío si no se seleccionó ningún rol
+    };
+    handleEmpleadoAdd(newEmpleado);
     handleClose();
   };
 
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Editar Empleado</Modal.Title>
+        <Modal.Title>Agregar Empleado</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
@@ -91,7 +76,7 @@ const EditEmpleadoModal = ({
           <Form.Group className="mb-3" controlId="formEmail">
             <Form.Label>Email</Form.Label>
             <Form.Control
-              type="email"
+              type="text"
               placeholder="Ingrese email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
@@ -100,27 +85,33 @@ const EditEmpleadoModal = ({
           </Form.Group>
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
-            <Form.Control type="text"
+            <Form.Control
+              type="number"
               placeholder="Ingrese estado"
               value={estado}
-              onChange={(event) => setEstado(event.target.value)}
+              onChange={(event) => setEstado(Number(event.target.value))}
               required
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formRol">
             <Form.Label>Rol</Form.Label>
-            <Form.Select
-              value={rolId || ""}
-              onChange={(event) => setRolId(parseInt(event.target.value))}
+            <Form.Control
+              as="select"
+              value={selectedRol?.idRol || ""}
+              onChange={(event) => {
+                const selectedIdRol = Number(event.target.value);
+                const selectedRol = roles.find(rol => rol.idRol === selectedIdRol);
+                setSelectedRol(selectedRol || null);
+              }}
               required
             >
               <option value="">Seleccione un rol</option>
-              {roles.map((rol) => (
+              {roles.map(rol => (
                 <option key={rol.idRol} value={rol.idRol}>
                   {rol.nombreRol}
                 </option>
               ))}
-            </Form.Select>
+            </Form.Control>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -128,7 +119,7 @@ const EditEmpleadoModal = ({
             Cancelar
           </Button>
           <Button variant="primary" type="submit">
-            Guardar Cambios
+            Agregar
           </Button>
         </Modal.Footer>
       </Form>
@@ -136,4 +127,4 @@ const EditEmpleadoModal = ({
   );
 };
 
-export default EditEmpleadoModal;
+export default AddEmpleadoModal;

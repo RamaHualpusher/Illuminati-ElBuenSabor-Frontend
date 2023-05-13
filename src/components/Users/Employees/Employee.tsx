@@ -1,7 +1,5 @@
 import React from "react";
-import EmployeePage from "../../EmployeePage/EmployeePage";
-import EmployeePanel from "../../EmployeePage/EmployeePanel";
-import NavBar from "../../NavBar/AdminBar";
+import EmployeePage from "./EmployeePage";
 
 const Employee = () => {
     return (
