@@ -10,6 +10,7 @@ const Bill: React.FC<BillProps> = () => {
   const [order, setOrder] = useState<cashierOrder[]>([]);
   const [orderComplete, setOrderComplete] = useState<cashierOrder[]>([]);
   const [search, setSearch] = useState("");
+  
   const columns = [
     { label: "IdPedido", width: 100 },
     { label: "Forma de Entrega", width: 200 },

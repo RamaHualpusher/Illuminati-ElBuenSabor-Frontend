@@ -1,23 +1,21 @@
 export interface Products {
-    Imagen: string;
-    Nombre: string;
-    Rubro: string;
-    PrecioVenta: number;
-    TiempoCocina: number;
-    Estado: string;
-    Descripcion: string;
-    Ingredients: OrderIngredient[]
+  Imagen: string;
+  Nombre: string;
+  Rubro: string;
+  PrecioVenta: number;
+  TiempoCocina: number;
+  Estado: string;
+  Descripcion: string;
+  Ingredients: OrderIngredient[];
 }
 
 export interface OrderIngredient {
-   Ingredient: string;
-   Cuantity: string;
-   UMedida: string;
+  Ingredient: string;
+  Cuantity: string;
+  UMedida: string;
 }
 
-
 export interface cashierOrder {
-  Total: any;
   IdPedido: number;
   FechaPedido: string;
   FormaEntrega: string;
@@ -26,17 +24,12 @@ export interface cashierOrder {
   Estado: string;
 }
 
-export type Rol = {
-  idRol: number;
-  nombreRol: string;
-};
-
-export type Empleado = {
-  id: number;
-  nombre: string;
-  apellido: string;
-  email: string;
-  rol: Rol | null; 
-  estado: number;
-};
+export interface Empleado {
+  Id: number;
+  Nombre: string;
+  Apellido: string;
+  Email: string;
+  Rol: string ;
+  Estado: number;
+}
 //agregar aca las demas interfaces para completar dentro del codigo de front

@@ -1,10 +1,26 @@
 [
-    {
-      "id": 1,
-      "nombre": "Javier",
-      "apelido": "Scandura",
-      "email": "javier_scandura@hotmail.com",
-      "idRol": "empleado",
-      "estado": "1"
-    }
+  {
+    "Id": 1,
+    "Nombre": "Juan",
+    "Apellido": "Pérez",
+    "Email": "juan.perez@example.com",
+    "Rol": "Empleado",
+    "Estado": 1
+  },
+  {
+    "Id": 1,
+    "Nombre": "Juan",
+    "Apellido": "Pérez",
+    "Email": "juan.perez@example.com",
+    "Rol": "Empleado",
+    "Estado": 1
+  },
+  {
+    "Id": 1,
+    "Nombre": "Juan",
+    "Apellido": "Pérez",
+    "Email": "juan.perez@example.com",
+    "Rol": "Empleado",
+    "Estado": 1
+  }
 ]

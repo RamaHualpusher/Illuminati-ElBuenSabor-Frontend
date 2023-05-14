@@ -1,33 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-//import { Empleado, Rol } from "./EmpleadoTable";
-import axios from "axios";
-import {Rol, Empleado } from "../../../interface/interfaces";
+import { Empleado } from "../../../interface/interfaces";
 
-type AddEmpleadoModalProps = {
+interface AddEmpleadoModalProps {
   show: boolean;
   handleClose: () => void;
   handleEmpleadoAdd: (empleado: Empleado) => void;
-};
+}
 
-const AddEmpleadoModal = ({
+const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   show,
   handleClose,
   handleEmpleadoAdd,
-}: AddEmpleadoModalProps) => {
+}) => {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
   const [estado, setEstado] = useState(0);
-  const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
-  const [roles, setRoles] = useState<Rol[]>([]);
+  const [selectedRol, setSelectedRol] = useState<string | null>(null);
+  const [roles, setRoles] = useState<string[]>([]);
+
 
   useEffect(() => {
-    axios.get<Rol[]>("URL_DEL_ENDPOINT_ROLES")
-      .then(response => {
-        setRoles(response.data);
+    fetch("URL_DEL_ENDPOINT_ROLES")
+      .then((response) => response.json())
+      .then((data) => {
+        setRoles(data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }, []);
@@ -35,13 +35,14 @@ const AddEmpleadoModal = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const newEmpleado: Empleado = {
-      id: 0,
-      nombre,
-      apellido,
-      email,
-      estado,
-      rol: selectedRol || { idRol: 0, nombreRol: "" }, // Asignamos el rol seleccionado o un objeto vacío si no se seleccionó ningún rol
+      Id: 0,
+      Nombre: nombre,
+      Apellido: apellido,
+      Email: email,
+      Rol: selectedRol || "",
+      Estado: estado,
     };
+
     handleEmpleadoAdd(newEmpleado);
     handleClose();
   };
@@ -97,18 +98,14 @@ const AddEmpleadoModal = ({
             <Form.Label>Rol</Form.Label>
             <Form.Control
               as="select"
-              value={selectedRol?.idRol || ""}
-              onChange={(event) => {
-                const selectedIdRol = Number(event.target.value);
-                const selectedRol = roles.find(rol => rol.idRol === selectedIdRol);
-                setSelectedRol(selectedRol || null);
-              }}
+              value={selectedRol || ""}
+              onChange={(event) => setSelectedRol(event.target.value)}
               required
             >
               <option value="">Seleccione un rol</option>
-              {roles.map(rol => (
-                <option key={rol.idRol} value={rol.idRol}>
-                  {rol.nombreRol}
+              {roles.map((rol) => (
+                <option key={rol} value={rol}>
+                  {rol}
                 </option>
               ))}
             </Form.Control>
