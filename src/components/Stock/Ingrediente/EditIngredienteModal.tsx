@@ -1,26 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Ingrediente } from "./IngredientesTable";
-import axios from "axios";
 
-type EditIngredienteModalProps = {
+interface Rubro {
+  id: number;
+  nombre: string;
+}
+
+interface Ingrediente {
+  id: number;
+  nombre: string;
+  rubro: string;
+  minStock: number;
+  stockActual: number;
+  precio: number;
+  um: string;
+}
+
+interface EditIngredienteModalProps {
   show: boolean;
   handleClose: () => void;
   handleIngredienteEdit: (ingrediente: Ingrediente) => void;
   selectedIngrediente: Ingrediente | null;
-};
+}
 
-type Rubro = {
-  id: number;
-  nombre: string;
-};
-
-const EditIngredienteModal = ({
+const EditIngredienteModal: React.FC<EditIngredienteModalProps> = ({
   show,
   handleClose,
   handleIngredienteEdit,
   selectedIngrediente,
-}: EditIngredienteModalProps) => {
+}) => {
   const [nombre, setNombre] = useState(selectedIngrediente?.nombre || "");
   const [rubro, setRubro] = useState(selectedIngrediente?.rubro || "");
   const [minStock, setMinStock] = useState(selectedIngrediente?.minStock || 0);
@@ -33,10 +41,10 @@ const EditIngredienteModal = ({
   const [rubroId, setRubroId] = useState<number | null>(null);
 
   useEffect(() => {
-    axios
-      .get<Rubro[]>("/assets/data/rubrosIngredientesEjemplo.json")
-      .then((response) => {
-        setRubros(response.data);
+    fetch("/assets/data/rubrosIngredientesEjemplo.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setRubros(data);
       })
       .catch((error) => {
         console.log(error);
