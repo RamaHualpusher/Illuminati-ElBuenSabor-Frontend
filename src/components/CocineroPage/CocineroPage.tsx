@@ -60,7 +60,7 @@ export default function CocineroPage() {
             <div>
                 {selectedOption === 'Pedidos' && <Bill/>}
                 {selectedOption === 'Producto' && <ProductosTable url="/assets/data/productosEjemplo.json" />}
-                {selectedOption === 'Ingrediente' && <IngredientesTable url="/assets/data/ingredientesEjemplo.json" />}
+                {selectedOption === 'Ingrediente' && <IngredientesTable />}
                 {selectedOption === 'Rubro Producto' && <RubrosProductosTable url="/assets/data/dataTableRubrosProductos.json" />}
                 {selectedOption === 'Rubro Ingrediente' && <RubrosIngredientesTable url="/assets/data/dataTableRubrosIngredientes.json" />}
             </div>
