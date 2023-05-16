@@ -1,95 +1,111 @@
-import React from "react";
-import BotonesMenu from './BotonesMenu';
-import ImagenMenu from './ImagenMenu';
-import TarjetaComida from './TarjetaComida';
-import { Products } from '../../interface/interfaces';
+import React, { useState } from "react";
+import BotonesMenu from "./BotonesMenu";
+import ImagenMenu from "./ImagenMenu";
+import TarjetaComida from "./TarjetaComida";
+import { Products } from "../../interface/interfaces";
 import ComoFunc from "./ComoFunc";
 
-
 export default function Landing() {
-    
-    // const handleSearch = (searchTerm: string) => {
-    //     console.log(`Searching for "${searchTerm}"...`);
-    //     // Lógica para buscar comidas aquí
-    //   };
+    const [selectedCategory, setSelectedCategory] = useState("Todos");
 
-    const producto1: Products = {
-        Imagen: 'assets/img/pizza_casera_31391_orig.jpg',
-        Nombre: 'Pizza',
-        Rubro: 'Comida rápida',
-        PrecioVenta: 5.99,
-        TiempoCocina: 10,
-        Estado: 'Disponible',
-        Descripcion: 'Una deliciosa hamburguesa con queso, lechuga y tomate',
-        Ingredients: [
-            {
-                Ingredient: "Salsa de tomate",
-                Cuantity: "150 gr",
-                UMedida: "ml"
-            },
-            {
-                Ingredient: "Queso mozzarella",
-                Cuantity: "100 gr",
-                UMedida: "gr"
-            },
-            {
-                Ingredient: "Albahaca fresca",
-                Cuantity: "10 hojas",
-                UMedida: "unidades"
-            }
-        ],
+    const handleCategoryChange = (category: string) => {
+        setSelectedCategory(category);
     };
 
-    return (
-        <div >
-            <div  style={{ background: "linear-gradient(to bottom, #fff, #cccc)"}}  >
-                <ImagenMenu />
-                <BotonesMenu />
-                {/* <FoodSearch onSearch={handleSearch}/> */} 
-                {/* Aca deberia implementarse esto y en la linea 12 crear la logica de busqueda */}
+    
 
-                <div className="d-flex justify-content-center mt-3">
-                    <div className="card w-75">
-                        <div className="row justify-content-center no-gutters mb-3 mt-3">
-                            <div className="col-md-4">
-                                <div className="mx-auto text-center">
-                                    <TarjetaComida imageSrc={producto1.Imagen} title={producto1.Nombre} text={producto1.Descripcion} buttonText={"Agregar al Carrito"} />
-                                </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="mx-auto text-center">
-                                    <TarjetaComida imageSrc={producto1.Imagen} title={producto1.Nombre} text={producto1.Descripcion} buttonText={"Agregar al Carrito"} />
-                                </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="mx-auto text-center">
-                                    <TarjetaComida imageSrc={producto1.Imagen} title={producto1.Nombre} text={producto1.Descripcion} buttonText={"Agregar al Carrito"} />
-                                </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="mx-auto text-center">
-                                    <TarjetaComida imageSrc={producto1.Imagen} title={producto1.Nombre} text={producto1.Descripcion} buttonText={"Agregar al Carrito"} />
-                                </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="mx-auto text-center">
-                                    <TarjetaComida imageSrc={producto1.Imagen} title={producto1.Nombre} text={producto1.Descripcion} buttonText={"Agregar al Carrito"} />
-                                </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="mx-auto text-center">
-                                    <TarjetaComida imageSrc={producto1.Imagen} title={producto1.Nombre} text={producto1.Descripcion} buttonText={"Agregar al Carrito"} />
-                                </div>
-                            </div>
+    const productos: Products[] = [
+        {
+            Imagen: "assets/img/pizza_casera_31391_orig.jpg",
+            Nombre: "Pizza",
+            Rubro: "Pizzas",
+            PrecioVenta: 5.99,
+            TiempoCocina: 10,
+            Estado: "Disponible",
+            Descripcion: "Una deliciosa pizza con queso y pepperoni",
+            Ingredients: [
+                {
+                    Ingredient: "Salsa de tomate",
+                    Cuantity: "150 gr",
+                    UMedida: "ml",
+                },
+                {
+                    Ingredient: "Queso mozzarella",
+                    Cuantity: "100 gr",
+                    UMedida: "gr",
+                },
+                {
+                    Ingredient: "Pepperoni",
+                    Cuantity: "50 gr",
+                    UMedida: "gr",
+                },
+            ],
+        },
+        {
+            Imagen: "assets/img/hamburguesa.jpg",
+            Nombre: "Hamburguesa",
+            Rubro: "Hamburguesas",
+            PrecioVenta: 6.99,
+            TiempoCocina: 8,
+            Estado: "Disponible",
+            Descripcion: "Una deliciosa hamburguesa con queso, lechuga y tomate",
+            Ingredients: [
+                {
+                    Ingredient: "Pan de hamburguesa",
+                    Cuantity: "1 unidad",
+                    UMedida: "unidad",
+                },
+                {
+                    Ingredient: "Carne de res",
+                    Cuantity: "150 gr",
+                    UMedida: "gr",
+                },
+                {
+                    Ingredient: "Queso cheddar",
+                    Cuantity: "50 gr",
+                    UMedida: "gr",
+                },
+                {
+                    Ingredient: "Lechuga",
+                    Cuantity: "50 gr",
+                    UMedida: "gr",
+                },
+                {
+                    Ingredient: "Tomate",
+                    Cuantity: "50 gr",
+                    UMedida: "gr",
+                },
+            ],
+        },
+    ];
+
+    const filteredProductos =
+        selectedCategory === "Todos"
+            ? productos
+            : productos.filter((producto) => producto.Rubro === selectedCategory);
+
+    return (
+        <div>
+            <ImagenMenu />
+            <BotonesMenu
+                onCategoryChange={handleCategoryChange}
+                selectedCategory={selectedCategory}
+            />
+            <div className="d-flex justify-content-center mt-3">
+                {filteredProductos.map((producto, index) => (
+                    <div className="col-md-4" key={index}>
+                        <div className="mx-auto text-center">
+                            <TarjetaComida
+                                imageSrc={producto.Imagen}
+                                title={producto.Nombre}
+                                text={producto.Descripcion}
+                                buttonText={"Agregar al Carrito"}
+                            />
                         </div>
                     </div>
-                </div>
-
+                ))}
             </div>
-            
-            <ComoFunc backgroundImage={"/assets/img/FondoComoFunc.jpg"}/>
-
+            <ComoFunc backgroundImage={"/assets/img/FondoComoFunc.jpg"} />
         </div>
-
     );
 }

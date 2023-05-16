@@ -1,21 +1,30 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Form } from "react-bootstrap";
 
-const BotonesMenu: FC = () => {
-  const [selectedOption, setSelectedOption] = useState("Todos");
+interface BotonesMenuProps {
+  selectedCategory: string;
+  onCategoryChange: (category: string) => void;
+}
 
-  const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setSelectedOption(event.currentTarget.value);
-  };
-
+const BotonesMenu: FC<BotonesMenuProps> = ({
+  selectedCategory,
+  onCategoryChange,
+}) => {
   const buttonStyle = {
     marginRight: "100px",
     border: "none",
-    outline: "none"
+    outline: "none",
   };
 
   const iconStyle = {
-    fontSize: "260%"
+    fontSize: "260%",
+  };
+
+  const handleOptionChange = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    const category = event.currentTarget.value;
+    onCategoryChange(category);
   };
 
   return (
@@ -23,60 +32,65 @@ const BotonesMenu: FC = () => {
       <Form.Group>
         <Form.Label>
           <div>
-            <button 
+            <button
               type="button"
-              className={` btn ${selectedOption === "Todos" ? "btn btn-dark" : "btn-outline-secondary"}`}
+              className={`btn ${selectedCategory === "Todos" ? "btn btn-dark" : "btn-outline-secondary"
+                }`}
               value="Todos"
               onClick={handleOptionChange}
               style={buttonStyle}
             >
               Todos
               <br />
-              <i className="bi bi-grid-3x3-gap" style={iconStyle}/>
+              <i className="bi bi-grid-3x3-gap" style={iconStyle} />
             </button>
             <button
               type="button"
-              className={`btn ${selectedOption === "Ofertas" ? "btn btn-dark" : "btn-outline-secondary"}`}
+              className={`btn ${selectedCategory === "Ofertas" ? "btn btn-dark" : "btn-outline-secondary"
+                }`}
               value="Ofertas"
               onClick={handleOptionChange}
               style={buttonStyle}
             >
               Ofertas
               <br />
-              <i className="bi bi-tag-fill" style={iconStyle}/>
+              <i className="bi bi-tag-fill" style={iconStyle} />
             </button>
             <button
               type="button"
-              className={`btn ${selectedOption === "Pizzas" ? "btn btn-dark" : "btn-outline-secondary"}`}
+              className={`btn ${selectedCategory === "Pizzas" ? "btn btn-dark" : "btn-outline-secondary"
+                }`}
               value="Pizzas"
               onClick={handleOptionChange}
               style={buttonStyle}
             >
               Pizza
               <br />
-              <i className="bi bi-fan" style={iconStyle}/>
+              <i className="bi bi-fan" style={iconStyle} />
             </button>
             <button
               type="button"
-              className={`btn ${selectedOption === "Burguer" ? "btn btn-dark" : "btn-outline-secondary"}`}
-              value="Burguer"
+              className={`btn ${selectedCategory === "Hamburguesas" ? "btn btn-dark" : "btn-outline-secondary"
+                }`}
+              value="Hamburguesas"
               onClick={handleOptionChange}
               style={buttonStyle}
             >
-              Burguer
+              Hamburguesas
               <br />
-              <i className="bi bi-slack" style={iconStyle}/>
+              <i className="bi bi-slack" style={iconStyle} />
             </button>
             <button
               type="button"
-              className={`btn ${selectedOption === "Bebidas" ? "btn btn-dark" : "btn-outline-secondary"}`}
+              className={`btn ${selectedCategory === "Bebidas" ? "btn btn-dark" : "btn-outline-secondary"
+                }`}
               value="Bebidas"
               onClick={handleOptionChange}
-              style={{...buttonStyle, marginRight: "0"}}
+              style={{ ...buttonStyle, marginRight: "0" }}
             >
               Bebidas
               <br />
-              <i className="bi bi-cup-straw" style={iconStyle}/>
+              <i className="bi bi-cup-straw" style={iconStyle} />
             </button>
           </div>
         </Form.Label>
@@ -86,6 +100,3 @@ const BotonesMenu: FC = () => {
 };
 
 export default BotonesMenu;
-
-
-
