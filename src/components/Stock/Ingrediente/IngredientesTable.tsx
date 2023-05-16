@@ -1,28 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Container, Col, Row,InputGroup, FormControl } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Ingrediente } from '../../../interface/interfaces';
 
-interface IngredientesTableProps {}
+interface IngredientesTableProps { }
 
 const IngredientesTable: React.FC<IngredientesTableProps> = () => {
-  const [data, setData] = useState<Ingrediente[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedIngrediente, setSelectedIngrediente] = useState<Ingrediente | null>(null);
+
+  const [data, setData] = useState<Ingrediente[]>([]);
+  const [dataComplete, setDataComplete] = useState<Ingrediente[]>([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("/assets/data/ingredientesEjemplo.json")
       .then(response => response.json())
       .then(data => {
         setData(data);
+        setDataComplete(data)
       })
       .catch(error => {
         console.log(error);
       });
   }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    filter(e.target.value);
+  };
+
+  const filter = (serchParam: string) => {
+    var serchResult = dataComplete.filter((productVal: Ingrediente) => {
+      if (
+        productVal.id.toString()
+          .toLowerCase()
+          .includes(serchParam.toLowerCase()) ||
+        productVal.nombre.toString()
+          .toLowerCase()
+          .includes(serchParam.toLowerCase()) ||
+        productVal.rubro?.toString()
+          .toLowerCase()
+          .includes(serchParam.toLowerCase()) ||
+        productVal.um.toString()
+          .toLowerCase()
+          .includes(serchParam.toLowerCase())
+      )
+        return productVal;
+    });
+    setData(serchResult);
+  };
 
   const handleEditModalOpen = (ingrediente: Ingrediente) => {
     setSelectedIngrediente(ingrediente);
@@ -95,48 +125,71 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       });
   }
   return (
-    <>
-      <div className="d-flex justify-content-start align-items-center mb-3">
-        <h3>Ingredientes</h3>
-      </div>
-      <div className="d-flex justify-content-start align-items-center mb-3">
-        <Button variant="success" onClick={handleAddModalOpen}>
-          Agregar Ingrediente
-        </Button>
-      </div>
+    <Container fluid>
+      <Row className="justify-content-start align-items-center mb-3">
+          <Col sm={10}><h1>Buscar Ingredientes</h1>
+            <InputGroup className="mb-4">
+              <FormControl
+                placeholder="Buscar"
+                aria-label="Buscar"
+                aria-describedby="basic-addon2"
+                value={search}
+                onChange={handleChange}
+              />
+              <Button variant="outline-secondary" id="button-addon2">
+                <i className="bi bi-search"></i>
+              </Button>
+            </InputGroup>
+          </Col>
+        </Row>
+      <Row className="justify-content-start align-items-center mb-3">
+        <Col>
+          <Button variant="success" onClick={handleAddModalOpen} className="float-start">
+            Agregar Ingrediente
+          </Button>
+        </Col>
+      </Row>
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>NOMBRE</th>
-            <th>RUBRO</th>
-            <th>MIN STOCK</th>
-            <th>STOCK ACTUAL</th>
-            <th>PRECIO</th>
-            <th>UM</th>
-            <th>EDITAR</th>
-            <th>ELIMINAR</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map(ingrediente => (
-            <tr key={ingrediente.id}>
-              <td>{ingrediente.nombre}</td>
-              <td>{ingrediente.rubro}</td>
-              <td>{ingrediente.minStock}</td>
-              <td>{ingrediente.stockActual}</td>
-              <td>${ingrediente.precio}</td>
-              <td>{ingrediente.um}</td>
-              <td>
-                <Button variant="primary" onClick={() => handleEditModalOpen(ingrediente)}>Editar</Button>
-              </td>
-              <td>
-                <Button variant="danger" onClick={() => handleIngredienteDelete(ingrediente)}>Eliminar</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <Row>
+        <Col>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>NOMBRE</th>
+                <th>RUBRO</th>
+                <th>MIN STOCK</th>
+                <th>STOCK ACTUAL</th>
+                <th>PRECIO</th>
+                <th>UM</th>
+                <th>EDITAR</th>
+                <th>ELIMINAR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((ingrediente) => (
+                <tr key={ingrediente.id}>
+                  <td>{ingrediente.nombre}</td>
+                  <td>{ingrediente.rubro}</td>
+                  <td>{ingrediente.minStock}</td>
+                  <td>{ingrediente.stockActual}</td>
+                  <td>${ingrediente.precio}</td>
+                  <td>{ingrediente.um}</td>
+                  <td>
+                    <Button variant="primary" onClick={() => handleEditModalOpen(ingrediente)}>
+                      Editar
+                    </Button>
+                  </td>
+                  <td>
+                    <Button variant="danger" onClick={() => handleIngredienteDelete(ingrediente)}>
+                      Eliminar
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
 
       <EditIngredienteModal
         show={editModalShow}
@@ -149,7 +202,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         handleClose={handleAddModalClose}
         handleIngredienteAdd={handleIngredienteAdd}
       />
-    </>
+    </Container>
   );
 };
 
