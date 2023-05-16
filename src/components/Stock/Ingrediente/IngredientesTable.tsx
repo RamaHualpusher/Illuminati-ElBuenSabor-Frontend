@@ -125,8 +125,9 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       });
   }
   return (
-    <Container fluid>
-      <Row className="justify-content-start align-items-center mb-3">
+    <div>
+      <Container fluid>
+        <Row className="justify-content-start align-items-center mb-3">
           <Col sm={10}><h1>Buscar Ingredientes</h1>
             <InputGroup className="mb-4">
               <FormControl
@@ -142,67 +143,68 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
             </InputGroup>
           </Col>
         </Row>
-      <Row className="justify-content-start align-items-center mb-3">
-        <Col>
-          <Button variant="success" onClick={handleAddModalOpen} className="float-start">
-            Agregar Ingrediente
-          </Button>
-        </Col>
-      </Row>
+        <Row className="justify-content-start align-items-center mb-3">
+          <Col>
+            <Button variant="success" onClick={handleAddModalOpen} className="float-start">
+              Agregar Ingrediente
+            </Button>
+          </Col>
+        </Row>
 
-      <Row>
-        <Col>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>NOMBRE</th>
-                <th>RUBRO</th>
-                <th>MIN STOCK</th>
-                <th>STOCK ACTUAL</th>
-                <th>PRECIO</th>
-                <th>UM</th>
-                <th>EDITAR</th>
-                <th>ELIMINAR</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((ingrediente) => (
-                <tr key={ingrediente.id}>
-                  <td>{ingrediente.nombre}</td>
-                  <td>{ingrediente.rubro}</td>
-                  <td>{ingrediente.minStock}</td>
-                  <td>{ingrediente.stockActual}</td>
-                  <td>${ingrediente.precio}</td>
-                  <td>{ingrediente.um}</td>
-                  <td>
-                    <Button variant="primary" onClick={() => handleEditModalOpen(ingrediente)}>
-                      Editar
-                    </Button>
-                  </td>
-                  <td>
-                    <Button variant="danger" onClick={() => handleIngredienteDelete(ingrediente)}>
-                      Eliminar
-                    </Button>
-                  </td>
+        <Row>
+          <Col>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>NOMBRE</th>
+                  <th>RUBRO</th>
+                  <th>MIN STOCK</th>
+                  <th>STOCK ACTUAL</th>
+                  <th>PRECIO</th>
+                  <th>UM</th>
+                  <th>EDITAR</th>
+                  <th>ELIMINAR</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Col>
-      </Row>
+              </thead>
+              <tbody>
+                {data.map((ingrediente) => (
+                  <tr key={ingrediente.id}>
+                    <td>{ingrediente.nombre}</td>
+                    <td>{ingrediente.rubro}</td>
+                    <td>{ingrediente.minStock}</td>
+                    <td>{ingrediente.stockActual}</td>
+                    <td>${ingrediente.precio}</td>
+                    <td>{ingrediente.um}</td>
+                    <td>
+                      <Button variant="primary" onClick={() => handleEditModalOpen(ingrediente)}>
+                        Editar
+                      </Button>
+                    </td>
+                    <td>
+                      <Button variant="danger" onClick={() => handleIngredienteDelete(ingrediente)}>
+                        Eliminar
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
 
-      <EditIngredienteModal
-        show={editModalShow}
-        handleClose={handleEditModalClose}
-        handleIngredienteEdit={handleIngredienteEdit}
-        selectedIngrediente={selectedIngrediente}
-      />
-      <AddIngredienteModal
-        show={addModalShow}
-        handleClose={handleAddModalClose}
-        handleIngredienteAdd={handleIngredienteAdd}
-      />
-    </Container>
+        <EditIngredienteModal
+          show={editModalShow}
+          handleClose={handleEditModalClose}
+          handleIngredienteEdit={handleIngredienteEdit}
+          selectedIngrediente={selectedIngrediente}
+        />
+        <AddIngredienteModal
+          show={addModalShow}
+          handleClose={handleAddModalClose}
+          handleIngredienteAdd={handleIngredienteAdd}
+        />
+      </Container>
+    </div>
   );
 };
 
