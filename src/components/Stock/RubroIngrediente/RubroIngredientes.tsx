@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import EditRubroIngredienteModal from "./EditRubroIngredienteModal";
 import AddRubroIngredienteModal from "./AddRubroIngredienteModal";
 import { RubrosIngredientes } from "../../../interface/interfaces";

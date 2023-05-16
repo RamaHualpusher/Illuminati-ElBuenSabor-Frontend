@@ -1,29 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Container, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, Container, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { Ingrediente } from '../../../interface/interfaces';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 
-interface IngredientesTableProps {}
+interface IngredientesTableProps { }
 
-const IngredientesTable : React.FC<IngredientesTableProps> = () => {
-  //const [order, setOrder] = useState<Ingrediente[]>([]);
+const IngredientesTable: React.FC<IngredientesTableProps> = () => {
+
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedIngrediente, setSelectedIngrediente] = useState<Ingrediente | null>(null);
-
-  const [order, setOrder] = useState<Ingrediente[]>([]);
+  const [dataIngr, setDataIngr] = useState<Ingrediente[]>([]);
   const [dataComplete, setDataComplete] = useState<Ingrediente[]>([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    
+
     const fetchData = async () => {
       try {
         const response = await fetch("/assets/data/ingredientesEjemplo.json");
         const responseData = await response.json();
-        setOrder(responseData);
+        setDataIngr(responseData);
         setDataComplete(responseData);
       } catch (error) {
         console.log(error);
@@ -34,29 +33,26 @@ const IngredientesTable : React.FC<IngredientesTableProps> = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    filter(e.target.value);
+  };
+  const handleSearch = () => {
+    filter(search);
   };
 
-  const filter = (serchParam: string) => {
-    var serchResult = dataComplete.filter((productVal: Ingrediente) => {
+
+  const filter = (searchParam: string) => {
+    const searchResult = dataComplete.filter((productVal: Ingrediente) => {
       if (
-        productVal.id.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase()) ||
-        productVal.nombre.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase()) ||
-        productVal.rubro?.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase()) ||
-        productVal.um.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase())
-      )
+        productVal.id.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.rubro?.toString().toLowerCase().includes(searchParam.toLowerCase())
+      ) {
         return productVal;
+      }
+      return null;
     });
-    setOrder(serchResult);
+    setDataIngr(searchResult);
   };
+
 
   const handleEditModalOpen = (ingrediente: Ingrediente) => {
     setSelectedIngrediente(ingrediente);
@@ -87,11 +83,11 @@ const IngredientesTable : React.FC<IngredientesTableProps> = () => {
       });
       const updatedProducto = await response.json();
 
-      const newData = [...order];
+      const newData = [...dataIngr];
       const index = newData.findIndex((item) => item.id === producto.id);
       newData[index] = updatedProducto;
 
-      setOrder(newData);
+      setDataIngr(newData);
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +104,7 @@ const IngredientesTable : React.FC<IngredientesTableProps> = () => {
       });
       const newProducto = await response.json();
 
-      setOrder([...order, newProducto]);
+      setDataIngr([...dataIngr, newProducto]);
     } catch (error) {
       console.log(error);
     }
@@ -130,12 +126,12 @@ const IngredientesTable : React.FC<IngredientesTableProps> = () => {
     { label: "Nombre", width: 200 },
     { label: "Rubro", width: 100 },
     { label: "Min Stock", width: 100 },
-    { label: "Stock Actual", width: 100 },
+    { label: "Stock Actual", width: 120 },
     { label: "Precio", width: 80 },
     { label: "UM", width: 50 }
   ];
 
-  const data = order.map((ingrediente) => [
+  const data = dataIngr.map((ingrediente) => [
     ingrediente.nombre.toString(),
     ingrediente.rubro.toString(),
     ingrediente.minStock.toString(),
@@ -148,7 +144,8 @@ const IngredientesTable : React.FC<IngredientesTableProps> = () => {
     <div>
       <Container fluid>
         <Row className="justify-content-start align-items-center mb-3">
-          <Col sm={10}><h1>Buscar Ingredientes</h1>
+          <Col sm={10}>
+            <h1>Buscar Ingredientes</h1>
             <InputGroup className="mb-4">
               <FormControl
                 placeholder="Buscar"
@@ -157,7 +154,7 @@ const IngredientesTable : React.FC<IngredientesTableProps> = () => {
                 value={search}
                 onChange={handleChange}
               />
-              <Button variant="outline-secondary" id="button-addon2">
+              <Button variant="outline-secondary" id="button-addon2" onClick={handleSearch}>
                 <i className="bi bi-search"></i>
               </Button>
             </InputGroup>
@@ -171,10 +168,6 @@ const IngredientesTable : React.FC<IngredientesTableProps> = () => {
           </Col>
         </Row>
       </Container>
-
-
-
-
       <div>
         <TablaGeneric columns={columns} data={data} showButton={true} />
       </div>
