@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button} from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
 import axios from 'axios';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 
 export type Producto = {
   id: number;
@@ -19,7 +20,7 @@ type ProductosTableProps = {
 };
 
 const ProductosTable = ({ url }: ProductosTableProps) => {
-  const [data, setData] = useState<Producto[]>([]);
+  const [order, setOrder] = useState<Producto[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
@@ -27,7 +28,7 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
   useEffect(() => {
     axios.get<Producto[]>(url)
       .then(response => {
-        setData(response.data);
+        setOrder(response.data);
       })
       .catch(error => {
         console.log(error);
@@ -55,10 +56,10 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
   const handleProductoEdit = (producto: Producto) => {
     axios.put(`${url}/${producto.id}`, producto)
       .then(response => {
-        const newData = [...data];
+        const newData = [...order];
         const index = newData.findIndex(item => item.id === producto.id);
         newData[index] = response.data;
-        setData(newData);
+        setOrder(newData);
       })
       .catch(error => {
         console.log(error);
@@ -68,7 +69,7 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
   const handleProductoAdd = (producto: Producto) => {
     axios.post(url, producto)
       .then(response => {
-        setData([...data, response.data]);
+        setOrder([...order, response.data]);
       })
       .catch(error => {
         console.log(error);
@@ -78,16 +79,30 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
   const handleProductoDelete = (producto: Producto) => {
     axios.delete(`${url}/${producto.id}`)
       .then(response => {
-        setData(data.filter(item => item.id !== producto.id));
+        setOrder(order.filter(item => item.id !== producto.id));
       })
       .catch(error => {
         console.log(error);
       });
   }
 
+  const columns = [
+    { label: "Nombre", width: 150 },
+    { label: "Rubro", width: 100 },
+    { label: "Tiempo (min)", width: 60 },
+    { label: "Precio", width: 50 }
+  ];
+
+  const data = order.map((item) => [
+    item.nombre.toString(),
+    item.rubro.toString(),
+    item.tiempo.toString(),
+    item.precio.toString()
+  ]);
+
   return (
     <div>
-        <div className="d-flex justify-content-start align-items-center mb-3">
+      <div className="d-flex justify-content-start align-items-center mb-3">
         <h3>Productos</h3>
       </div>
       <div className="d-flex justify-content-start align-items-center mb-3">
@@ -96,7 +111,13 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
         </Button>
       </div>
 
-      <Table striped bordered hover>
+      <div>
+        <TablaGeneric columns={columns} data={data} showButton={true} />
+      </div>
+
+
+
+      {/*      <Table striped bordered hover>
         <thead>
           <tr>
             <th>NOMBRE</th>
@@ -108,7 +129,7 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {data.map(producto => (
+          {order.map(producto => (
             <tr key={producto.id}>
               <td>{producto.nombre}</td>
               <td>{producto.rubro}</td>
@@ -124,20 +145,20 @@ const ProductosTable = ({ url }: ProductosTableProps) => {
       ))}
     </tbody>
   </Table>
-
-  <EditProductoModal
-    show={editModalShow}
-    handleClose={handleEditModalClose}
-    handleProductoEdit={handleProductoEdit}
-    selectedProducto={selectedProducto}
-  />
-  <AddProductoModal
-    show={addModalShow}
-    handleClose={handleAddModalClose}
-    handleProductoAdd={handleProductoAdd}
-  />
-</div>
-);
+          */}
+      <EditProductoModal
+        show={editModalShow}
+        handleClose={handleEditModalClose}
+        handleProductoEdit={handleProductoEdit}
+        selectedProducto={selectedProducto}
+      />
+      <AddProductoModal
+        show={addModalShow}
+        handleClose={handleAddModalClose}
+        handleProductoAdd={handleProductoAdd}
+      />
+    </div>
+  );
 };
 
 export default ProductosTable;

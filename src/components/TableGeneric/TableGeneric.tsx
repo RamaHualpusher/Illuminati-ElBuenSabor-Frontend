@@ -23,7 +23,7 @@ export const TablaGeneric: React.FC<Props> = ({ columns, data, showButton }) => 
                 {column.label}
               </th>
             ))}
-            {showButton && <th>Button</th>}
+            {showButton && <th style={{width:100}}>Button</th>}
           </tr>
         </thead>
         <tbody>
@@ -32,7 +32,7 @@ export const TablaGeneric: React.FC<Props> = ({ columns, data, showButton }) => 
               {row.map((cell, cellIndex) => (
                 <td key={cellIndex}>{cell}</td>
               ))}
-              {showButton && <td><button className="btn btn-primary">Boton</button></td>}
+              {showButton && <td><button className="btn btn-primary" >Boton</button></td>}
             </tr>
           ))}
         </tbody>

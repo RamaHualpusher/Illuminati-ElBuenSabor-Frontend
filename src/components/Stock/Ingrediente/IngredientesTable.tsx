@@ -4,6 +4,7 @@ import axios from 'axios';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 
 export type Ingrediente = {
   id: number;
@@ -20,7 +21,7 @@ type IngredientesTableProps = {
 };
 
 const IngredientesTable = ({ url }: IngredientesTableProps) => {
-  const [data, setData] = useState<Ingrediente[]>([]);
+  const [order, setOrder] = useState<Ingrediente[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedIngrediente, setSelectedIngrediente] = useState<Ingrediente | null>(null);
@@ -28,7 +29,7 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
   useEffect(() => {
     axios.get<Ingrediente[]>(url)
       .then(response => {
-        setData(response.data);
+        setOrder(response.data);
       })
       .catch(error => {
         console.log(error);
@@ -56,10 +57,10 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
   const handleIngredienteEdit = (ingrediente: Ingrediente) => {
     axios.put(`${url}/${ingrediente.id}`, ingrediente)
       .then(response => {
-        const newData = [...data];
+        const newData = [...order];
         const index = newData.findIndex(item => item.id === ingrediente.id);
         newData[index] = response.data;
-        setData(newData);
+        setOrder(newData);
       })
       .catch(error => {
         console.log(error);
@@ -69,22 +70,40 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
   const handleIngredienteAdd = (ingrediente: Ingrediente) => {
     axios.post(url, ingrediente)
       .then(response => {
-        setData([...data, response.data]);
+        setOrder([...order, response.data]);
       })
       .catch(error => {
         console.log(error);
       });
   }
-
+/*
   const handleIngredienteDelete = (ingrediente: Ingrediente) => {
     axios.delete(`${url}/${ingrediente.id}`)
       .then(response => {
-        setData(data.filter(item => item.id !== ingrediente.id));
+        setOrder(data.filter(item => item.id !== ingrediente.id));
       })
       .catch(error => {
         console.log(error);
       });
   }
+*/
+const columns = [
+  { label: "Nombre", width: 200 },
+  { label: "Rubro", width: 100 },
+  { label: "Min Stock", width: 100 },
+  { label: "Stock Actual", width: 100 },
+  { label: "Precio" , width:80},
+  { label: "UM" , width:50}
+];
+
+  const data = order.map((ingrediente) => [
+    ingrediente.nombre.toString(),
+    ingrediente.rubro.toString(),
+    ingrediente.minStock.toString(),
+    ingrediente.stockActual.toString(),
+    ingrediente.precio.toString(),
+    ingrediente.um.toString()
+  ]);
 
   return (
     <>
@@ -97,6 +116,11 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
     </Button>
   </div>
 
+
+  <div>
+    <TablaGeneric columns={columns} data={data}showButton={true}/>
+  </div>
+    {/*
   <Table striped bordered hover>
     <thead>
       <tr>
@@ -135,12 +159,12 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
     handleClose={handleEditModalClose}
     handleIngredienteEdit={handleIngredienteEdit}
     selectedIngrediente={selectedIngrediente}
-  />
+      />*/}
   <AddIngredienteModal
     show={addModalShow}
     handleClose={handleAddModalClose}
     handleIngredienteAdd={handleIngredienteAdd}
-  />
+      />
 </>
 );
 };
