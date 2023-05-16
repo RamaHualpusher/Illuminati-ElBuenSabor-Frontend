@@ -1,158 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BotonesMenu from "./BotonesMenu";
 import ImagenMenu from "./ImagenMenu";
 import TarjetaComida from "./TarjetaComida";
 import { Products } from "../../interface/interfaces";
 import ComoFunc from "./ComoFunc";
+import SearchBar from "../SearchBar/SearchBar";
+
 
 export default function Landing() {
     const [selectedCategory, setSelectedCategory] = useState("Todos");
+    const [produc, setProduc] = useState<Products[]>([]);
+    const [producComplete, setProducComplete] = useState<Products[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch('assets/data/productosLanding');
+            const data = await response.json();
+            setProduc(data);
+            setProducComplete(data);
+        };
+        fetchData();
+    }, []);
+
+    const filter = (searchParam: string) => {
+        const searchResult = producComplete.filter((productVal: Products) => {
+            if (
+                productVal.Nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+                productVal.Rubro.toString().toLowerCase().includes(searchParam.toLowerCase())
+            ) {
+                return productVal;
+            }
+            return null;
+        });
+        setProduc(searchResult);
+    };
+
+    const handleSearch = (searchParam: string) => {
+        filter(searchParam);
+    };
+
+
 
     const handleCategoryChange = (category: string) => {
         setSelectedCategory(category);
     };
 
-    const productos: Products[] = [
-        {
-            Imagen: "assets/img/pizza_casera_31391_orig.jpg",
-            Nombre: "Pizza",
-            Rubro: "Pizzas",
-            PrecioVenta: 5.99,
-            TiempoCocina: 10,
-            Estado: "Disponible",
-            Descripcion: "Una deliciosa pizza con queso y pepperoni",
-            Ingredients: [
-                {
-                    Ingredient: "Salsa de tomate",
-                    Cuantity: "150 gr",
-                    UMedida: "ml",
-                },
-                {
-                    Ingredient: "Queso mozzarella",
-                    Cuantity: "100 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Pepperoni",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-            ],
-        },
-        {
-            Imagen: "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
-            Nombre: "Hamburguesa",
-            Rubro: "Hamburguesas",
-            PrecioVenta: 6.99,
-            TiempoCocina: 8,
-            Estado: "Disponible",
-            Descripcion: "Una deliciosa hamburguesa con queso, lechuga y tomate",
-            Ingredients: [
-                {
-                    Ingredient: "Pan de hamburguesa",
-                    Cuantity: "1 unidad",
-                    UMedida: "unidad",
-                },
-                {
-                    Ingredient: "Carne de res",
-                    Cuantity: "150 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Queso cheddar",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Lechuga",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Tomate",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-            ],
-        },
-        {
-            Imagen: "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
-            Nombre: "Hamburguesa",
-            Rubro: "Hamburguesas",
-            PrecioVenta: 6.99,
-            TiempoCocina: 8,
-            Estado: "Disponible",
-            Descripcion: "Una deliciosa hamburguesa con queso, lechuga y tomate",
-            Ingredients: [
-                {
-                    Ingredient: "Pan de hamburguesa",
-                    Cuantity: "1 unidad",
-                    UMedida: "unidad",
-                },
-                {
-                    Ingredient: "Carne de res",
-                    Cuantity: "150 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Queso cheddar",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Lechuga",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Tomate",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-            ],
-        },
-        {
-            Imagen: "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
-            Nombre: "Hamburguesa",
-            Rubro: "Hamburguesas",
-            PrecioVenta: 6.99,
-            TiempoCocina: 8,
-            Estado: "Disponible",
-            Descripcion: "Una deliciosa hamburguesa con queso, lechuga y tomate",
-            Ingredients: [
-                {
-                    Ingredient: "Pan de hamburguesa",
-                    Cuantity: "1 unidad",
-                    UMedida: "unidad",
-                },
-                {
-                    Ingredient: "Carne de res",
-                    Cuantity: "150 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Queso cheddar",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Lechuga",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-                {
-                    Ingredient: "Tomate",
-                    Cuantity: "50 gr",
-                    UMedida: "gr",
-                },
-            ],
-        },
-    ];
-
     const filteredProductos =
         selectedCategory === "Todos"
-            ? productos
-            : productos.filter((producto) => producto.Rubro === selectedCategory);
+            ? produc
+            : produc.filter((produc) => produc.Rubro === selectedCategory);
 
     const getTarjetaComidaContainerClass = (totalTarjetas: number) => {
         if (totalTarjetas <= 1) {
@@ -169,6 +65,11 @@ export default function Landing() {
     return (
         <div>
             <ImagenMenu />
+            <div className="d-flex justify-content-center">
+                <div className="w-50">
+                    <SearchBar onSearch={handleSearch} />
+                </div>
+            </div>
             <BotonesMenu
                 onCategoryChange={handleCategoryChange}
                 selectedCategory={selectedCategory}

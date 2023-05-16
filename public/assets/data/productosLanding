@@ -1,0 +1,172 @@
+[
+  {
+    "Imagen": "assets/img/pizza_casera_31391_orig.jpg",
+    "Nombre": "Pizza",
+    "Rubro": "Pizzas",
+    "PrecioVenta": 5.99,
+    "TiempoCocina": 10,
+    "Estado": "Disponible",
+    "Descripcion": "Una deliciosa pizza con queso y pepperoni",
+    "Ingredients": [
+      {
+        "Ingredient": "Salsa de tomate",
+        "Cuantity": "150 gr",
+        "UMedida": "ml"
+      },
+      {
+        "Ingredient": "Queso mozzarella",
+        "Cuantity": "100 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Pepperoni",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      }
+    ]
+  },
+  {
+    "Imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
+    "Nombre": "Hamburguesa",
+    "Rubro": "Hamburguesas",
+    "PrecioVenta": 6.99,
+    "TiempoCocina": 8,
+    "Estado": "Disponible",
+    "Descripcion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
+    "Ingredients": [
+      {
+        "Ingredient": "Pan de hamburguesa",
+        "Cuantity": "1 unidad",
+        "UMedida": "unidad"
+      },
+      {
+        "Ingredient": "Carne de res",
+        "Cuantity": "150 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Queso cheddar",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Lechuga",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Tomate",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      }
+    ]
+  },
+  {
+    "Imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
+    "Nombre": "Hamburguesa",
+    "Rubro": "Hamburguesas",
+    "PrecioVenta": 6.99,
+    "TiempoCocina": 8,
+    "Estado": "Disponible",
+    "Descripcion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
+    "Ingredients": [
+      {
+        "Ingredient": "Pan de hamburguesa",
+        "Cuantity": "1 unidad",
+        "UMedida": "unidad"
+      },
+      {
+        "Ingredient": "Carne de res",
+        "Cuantity": "150 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Queso cheddar",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Lechuga",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Tomate",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      }
+    ]
+  },
+  {
+    "Imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
+    "Nombre": "Hamburguesa",
+    "Rubro": "Hamburguesas",
+    "PrecioVenta": 6.99,
+    "TiempoCocina": 8,
+    "Estado": "Disponible",
+    "Descripcion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
+    "Ingredients": [
+      {
+        "Ingredient": "Pan de hamburguesa",
+        "Cuantity": "1 unidad",
+        "UMedida": "unidad"
+      },
+      {
+        "Ingredient": "Carne de res",
+        "Cuantity": "150 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Queso cheddar",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Lechuga",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Tomate",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      }
+    ]
+  },
+  {
+    "Imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
+    "Nombre": "Hamburguesa",
+    "Rubro": "Hamburguesas",
+    "PrecioVenta": 6.99,
+    "TiempoCocina": 8,
+    "Estado": "Disponible",
+    "Descripcion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
+    "Ingredients": [
+      {
+        "Ingredient": "Pan de hamburguesa",
+        "Cuantity": "1 unidad",
+        "UMedida": "unidad"
+      },
+      {
+        "Ingredient": "Carne de res",
+        "Cuantity": "150 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Queso cheddar",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Lechuga",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      },
+      {
+        "Ingredient": "Tomate",
+        "Cuantity": "50 gr",
+        "UMedida": "gr"
+      }
+    ]
+  }
+]

@@ -34,10 +34,6 @@ const Navbar: FC = () => {
           <a className="navbar-brand" href="/">
             El Buen Sabor - Illuminati
           </a>
-          <div className="d-none d-lg-block">
-            <span className="nav-link me-4">Menu</span>
-            <span className="nav-link">Contacto</span>
-          </div>
         </div>
 
         <button className="navbar-toggler" type="button" onClick={toggleNavbar}>
