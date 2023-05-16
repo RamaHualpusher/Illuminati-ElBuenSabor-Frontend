@@ -22,7 +22,7 @@ const IndexRouter = () => {
         <Route path="/cocinero" element={<Cocinero/>}/>
         <Route path="/carrito" element={<ShoppingCart/>} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
-        <Route path="/cocina/productos" element={<ProductosTable url="/assets/data/productosEjemplo.json" />} />
+        <Route path="/cocina/productos" element={<ProductosTable/>} />
         <Route path="/cocina/rubros/ingredientes" element={<RubrosIngredientesTable url="/assets/data/dataTableRubrosIngredientes.json" />} />
         <Route path="/cocina/rubros/productos" element={<RubrosProductosTable url="/assets/data/dataTableRubrosProductos.json" />} />
       </Routes>

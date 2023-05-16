@@ -2,19 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Container, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { TablaGeneric } from '../../TableGeneric/TableGeneric';
+import { Ingrediente } from '../../../interface/interfaces';
 import axios from 'axios';
-
-export type Ingrediente = {
-  id: number;
-  nombre: string;
-  rubro: string;
-  minStock: number;
-  stockActual: number;
-  precio: number;
-  um: string;
-}
+import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 
 type IngredientesTableProps = {
   url: string;

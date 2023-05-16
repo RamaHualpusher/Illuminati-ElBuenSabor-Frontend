@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Producto } from "./ProductosTable";
+import { Producto } from "../../../interface/interfaces";
 import axios from "axios";
 
 type EditProductoModalProps = {

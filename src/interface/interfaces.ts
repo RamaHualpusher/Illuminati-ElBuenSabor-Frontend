@@ -47,4 +47,12 @@ export interface Ingrediente {
   precio: number;
   um: string;
 }
+
+export interface Producto {
+  id: number;
+  nombre: string;
+  rubro: string;
+  tiempo: number;
+  precio: number;
+}
 //agregar aca las demas interfaces para completar dentro del codigo de front
