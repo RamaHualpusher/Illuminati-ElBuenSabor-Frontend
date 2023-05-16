@@ -1,11 +1,11 @@
 import React, { FC, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { RubroIngrediente } from './RubroIngredientes';
+import { RubrosIngredientes } from '../../../interface/interfaces';
 
 type AddRubroIngredienteModalProps = {
   show: boolean;
   handleClose: () => void;
-  handleRubroIngredienteAdd: (rubroIngrediente: RubroIngrediente) => void;
+  handleRubroIngredienteAdd: (rubroIngrediente: RubrosIngredientes) => void;
 };
 
 const AddRubroIngredienteModal: FC<AddRubroIngredienteModalProps> = ({
@@ -13,7 +13,7 @@ const AddRubroIngredienteModal: FC<AddRubroIngredienteModalProps> = ({
   handleClose,
   handleRubroIngredienteAdd,
 }) => {
-  const [rubroIngrediente, setRubroIngrediente] = useState<RubroIngrediente>({
+  const [rubroIngrediente, setRubroIngrediente] = useState<RubrosIngredientes>({
     id: 0,
     nombre: '',
     rubro: '',

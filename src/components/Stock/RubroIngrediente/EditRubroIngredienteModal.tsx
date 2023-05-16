@@ -1,12 +1,12 @@
 import React, { FC, useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { RubroIngrediente } from './RubroIngredientes';
+import { RubrosIngredientes } from '../../../interface/interfaces';
 
 type EditRubroIngredienteModalProps = {
   show: boolean;
   handleClose: () => void;
-  handleRubroIngredienteEdit: (rubroIngrediente: RubroIngrediente) => void;
-  selectedRubroIngrediente: RubroIngrediente | null;
+  handleRubroIngredienteEdit: (rubroIngrediente: RubrosIngredientes) => void;
+  selectedRubroIngrediente: RubrosIngredientes | null;
 };
 
 const EditRubroIngredienteModal: FC<EditRubroIngredienteModalProps> = ({
@@ -15,7 +15,7 @@ const EditRubroIngredienteModal: FC<EditRubroIngredienteModalProps> = ({
   handleRubroIngredienteEdit,
   selectedRubroIngrediente,
 }) => {
-  const [rubroIngrediente, setRubroIngrediente] = useState<RubroIngrediente>({
+  const [rubroIngrediente, setRubroIngrediente] = useState<RubrosIngredientes>({
     id: 0,
     nombre: '',
     rubro: '',

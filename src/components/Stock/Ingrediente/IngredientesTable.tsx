@@ -3,14 +3,11 @@ import { Table, Button, Container, Col, Row, InputGroup, FormControl } from 'rea
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { Ingrediente } from '../../../interface/interfaces';
-import axios from 'axios';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 
-type IngredientesTableProps = {
-  url: string;
-};
+interface IngredientesTableProps {}
 
-const IngredientesTable = ({ url }: IngredientesTableProps) => {
+const IngredientesTable : React.FC<IngredientesTableProps> = () => {
   //const [order, setOrder] = useState<Ingrediente[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
@@ -21,13 +18,18 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    axios.get<Ingrediente[]>(url)
-      .then(response => {
-        setOrder(response.data);
-      })
-      .catch(error => {
+    
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/assets/data/ingredientesEjemplo.json");
+        const responseData = await response.json();
+        setOrder(responseData);
+        setDataComplete(responseData);
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+    fetchData();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,28 +76,43 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
     setAddModalShow(false);
   }
 
-  const handleIngredienteEdit = (ingrediente: Ingrediente) => {
-    axios.put(`${url}/${ingrediente.id}`, ingrediente)
-      .then(response => {
-        const newData = [...order];
-        const index = newData.findIndex(item => item.id === ingrediente.id);
-        newData[index] = response.data;
-        setOrder(newData);
-      })
-      .catch(error => {
-        console.log(error);
+  const handleIngredienteEdit = async (producto: Ingrediente) => {
+    try {
+      const response = await fetch(`${"/assets/data/ingredientesEjemplo.json"}/${producto.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(producto),
       });
-  }
+      const updatedProducto = await response.json();
 
-  const handleIngredienteAdd = (ingrediente: Ingrediente) => {
-    axios.post(url, ingrediente)
-      .then(response => {
-        setOrder([...order, response.data]);
-      })
-      .catch(error => {
-        console.log(error);
+      const newData = [...order];
+      const index = newData.findIndex((item) => item.id === producto.id);
+      newData[index] = updatedProducto;
+
+      setOrder(newData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleIngredienteAdd = async (ingrediente: Ingrediente) => {
+    try {
+      const response = await fetch("/assets/data/ingredientesEjemplo.json", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(ingrediente),
       });
-  }
+      const newProducto = await response.json();
+
+      setOrder([...order, newProducto]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   /*
     const handleIngredienteDelete = (ingrediente: Ingrediente) => {
       fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingrediente.id}`, {

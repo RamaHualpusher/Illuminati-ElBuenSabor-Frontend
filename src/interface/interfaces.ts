@@ -55,4 +55,10 @@ export interface Producto {
   tiempo: number;
   precio: number;
 }
+
+export interface RubrosIngredientes{
+  id: number;
+  nombre: string;
+  rubro: string;
+}
 //agregar aca las demas interfaces para completar dentro del codigo de front

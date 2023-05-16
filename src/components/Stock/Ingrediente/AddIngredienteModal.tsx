@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Ingrediente,Rubro } from '../../../interface/interfaces';
+import { Ingrediente, Rubro} from '../../../interface/interfaces';
+
+
 
 interface AddIngredienteModalProps {
   show: boolean;

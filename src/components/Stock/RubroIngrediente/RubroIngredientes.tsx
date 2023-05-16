@@ -1,40 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "react-bootstrap";
-import axios from "axios";
 import EditRubroIngredienteModal from "./EditRubroIngredienteModal";
 import AddRubroIngredienteModal from "./AddRubroIngredienteModal";
+import { RubrosIngredientes } from "../../../interface/interfaces";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import { TablaGeneric } from "../../TableGeneric/TableGeneric";
 
-export type RubroIngrediente = {
-  id: number;
-  nombre: string;
-  rubro: string;
-};
 
-type RubrosIngredientesTableProps = {
-  url: string;
-};
 
-const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
-  const [order, setOrder] = useState<RubroIngrediente[]>([]);
+interface RubrosIngredientesTableProps { }
+
+const RubrosIngredientesTable : React.FC<RubrosIngredientesTableProps>= () => {
+  const [order, setOrder] = useState<RubrosIngredientes[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
-  const [selectedRubroIngrediente, setSelectedRubroIngrediente] =
-    useState<RubroIngrediente | null>(null);
+  const [dataComplete, setdataComplete] = useState<RubrosIngredientes[]>([]);
+  const [selectedRubroIngrediente, setSelectedRubroIngrediente] = useState<RubrosIngredientes | null>(null);
 
-  useEffect(() => {
-    axios
-      .get<RubroIngrediente[]>(url)
-      .then((response) => {
-        setOrder(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [url]);
+    useEffect(() => {
+    
+      const fetchData = async () => {
+        try {
+          const response = await fetch("/assets/data/dataTableRubrosIngredientes.json");
+          const responseData = await response.json();
+          setOrder(responseData);
+          setdataComplete(responseData);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    }, []);
 
-  const handleEditModalOpen = (rubroIngrediente: RubroIngrediente) => {
+  const handleEditModalOpen = (rubroIngrediente: RubrosIngredientes) => {
     setSelectedRubroIngrediente(rubroIngrediente);
     setEditModalShow(true);
   };
@@ -52,50 +51,63 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
     setAddModalShow(false);
   };
 
-  const handleRubroIngredienteEdit = (rubroIngrediente: RubroIngrediente) => {
-    axios
-      .put(`${url}/${rubroIngrediente.id}`, rubroIngrediente)
-      .then((response) => {
-        const newData = [...order];
-        const index = newData.findIndex(
-          (item) => item.id === rubroIngrediente.id
-        );
-        newData[index] = response.data;
-        setOrder(newData);
-      })
-      .catch((error) => {
-        console.log(error);
+
+  const handleRubroIngredienteEdit = async (rubroIngrediente: RubrosIngredientes) => {
+    try {
+      const response = await fetch(`${"/assets/data/dataTableRubrosIngredientes.json"}/${rubroIngrediente.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(rubroIngrediente),
       });
+      const updatedProducto = await response.json();
+
+      const newData = [...order];
+      const index = newData.findIndex((item) => item.id === rubroIngrediente.id);
+      newData[index] = updatedProducto;
+
+      setOrder(newData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleRubroIngredienteAdd = (rubroIngrediente: RubroIngrediente) => {
-    axios
-      .post(url, rubroIngrediente)
-      .then((response) => {
-        setOrder([...order, response.data]);
-      })
-      .catch((error) => {
-        console.log(error);
+  const handleRubroIngredienteAdd = async (rubroIngrediente: RubrosIngredientes) => {
+    try {
+      const response = await fetch("/assets/data/dataTableRubrosIngredientes.json", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(rubroIngrediente),
       });
+      const newProducto = await response.json();
+
+      setOrder([...order, newProducto]);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleRubroIngredienteDelete = (rubroIngrediente: RubroIngrediente) => {
-    axios
-      .delete(`${url}/${rubroIngrediente.id}`)
-      .then((response) => {
-        setOrder(order.filter((item) => item.id !== rubroIngrediente.id));
-      })
-      .catch((error) => {
-        console.log(error);
+  const handleRubroIngredienteDelete = async (rubroIngrediente: RubrosIngredientes) => {
+    try {
+      await fetch(`${"/assets/data/productosEjemplo.json"}/${rubroIngrediente.id}`, {
+        method: 'DELETE',
       });
+
+      setOrder(order.filter((item) => item.id !== rubroIngrediente.id));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const column =[
-    {label: "Rubro", width:100},
-    {label: "Nombre", width:100}
+  const column = [
+    { label: "Rubro", width: 100 },
+    { label: "Nombre", width: 100 }
   ];
 
-  const data = order.map((item) =>[
+  const data = order.map((item) => [
     item.rubro.toString(),
     item.nombre.toString()
   ])
@@ -109,7 +121,10 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
         </Button>
         {/* <DropdownButton options={options} /> */}
       </div>
-{/*
+      <div>
+        <TablaGeneric columns={column} data={data} showButton={true}/>
+      </div>
+      {/*
       <Table striped bordered hover>
         <thead>
           <tr>

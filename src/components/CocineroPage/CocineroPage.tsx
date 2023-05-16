@@ -62,7 +62,7 @@ export default function CocineroPage() {
                 {selectedOption === 'Producto' && <ProductosTable/>}
                 {selectedOption === 'Ingrediente' && <IngredientesTable />}
                 {selectedOption === 'Rubro Producto' && <RubrosProductosTable url="/assets/data/dataTableRubrosProductos.json" />}
-                {selectedOption === 'Rubro Ingrediente' && <RubrosIngredientesTable url="/assets/data/dataTableRubrosIngredientes.json" />}
+                {selectedOption === 'Rubro Ingrediente' && <RubrosIngredientesTable />}
             </div>
         </Form>
     )

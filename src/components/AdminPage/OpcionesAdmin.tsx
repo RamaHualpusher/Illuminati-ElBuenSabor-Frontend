@@ -249,7 +249,7 @@ export default function OpcionesAdmin() {
                 {selectedOption === "employee" && <Employee />}
                 {selectedOption === "productos" && <ProductosTable/>}
                 {selectedOption === "ingredientes" && <IngredientesTable />}
-                {selectedOption === "rubrosingredientes" && <RubrosIngredientesTable url="/assets/data/dataTableRubrosIngredientes.json" />}
+                {selectedOption === "rubrosingredientes" && <RubrosIngredientesTable />}
                 {selectedOption === "rubroproductos" && <RubrosProductosTable url="/assets/data/dataTableRubrosProductos.json" />}
                 {selectedOption === "facturas" && <Bill />}
             </div>
