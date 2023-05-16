@@ -1,7 +1,8 @@
 import { cashierOrder } from '../../interface/interfaces';
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
+import { Container, Row, Col} from 'react-bootstrap';
 import { TablaGeneric } from '../TableGeneric/TableGeneric';
+import SearchBar from '../SearchBar/SearchBar';
 
 
 interface BillProps { }
@@ -9,8 +10,7 @@ interface BillProps { }
 const Bill: React.FC<BillProps> = () => {
   const [order, setOrder] = useState<cashierOrder[]>([]);
   const [orderComplete, setOrderComplete] = useState<cashierOrder[]>([]);
-  const [search, setSearch] = useState("");
-  
+
   const columns = [
     { label: "IdPedido", width: 100 },
     { label: "Forma de Entrega", width: 200 },
@@ -34,30 +34,23 @@ const Bill: React.FC<BillProps> = () => {
     fetchData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    filter(e.target.value);
+  const filter = (searchParam: string) => {
+    const searchResult = orderComplete.filter((productVal: cashierOrder) => {
+      if (
+        productVal.IdPedido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.FormaEntrega.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.FechaPedido?.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.FormaPago.toString().toLowerCase().includes(searchParam.toLowerCase())
+      ) {
+        return productVal;
+      }
+      return null;
+    });
+    setOrder(searchResult);
   };
 
-  const filter = (serchParam: string) => {
-    var serchResult = orderComplete.filter((productVal: cashierOrder) => {
-      if (
-        productVal.IdPedido.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase()) ||
-        productVal.FormaEntrega.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase()) ||
-        productVal.FechaPedido?.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase()) ||
-        productVal.FormaPago.toString()
-          .toLowerCase()
-          .includes(serchParam.toLowerCase())
-      )
-        return productVal;
-    });
-    setOrder(serchResult);
+  const handleSearch = (searchParam: string) => {
+    filter(searchParam);
   };
 
   return (
@@ -65,18 +58,7 @@ const Bill: React.FC<BillProps> = () => {
       <Container fluid>
         <Row className='mt-3'>
           <Col sm={10}><h1>Buscar Factura</h1>
-            <InputGroup className="mb-4">
-              <FormControl
-                placeholder="Buscar"
-                aria-label="Buscar"
-                aria-describedby="basic-addon2"
-                value={search}
-                onChange={handleChange}
-              />
-              <Button variant="outline-secondary" id="button-addon2">
-                <i className="bi bi-search"></i>
-              </Button>
-            </InputGroup>
+            <SearchBar onSearch={handleSearch} />
           </Col>
         </Row>
         <Row className='mt-3'>

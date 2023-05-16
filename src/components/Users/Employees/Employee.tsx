@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Empleado } from "../../../interface/interfaces";
 import { TablaGeneric } from "../../TableGeneric/TableGeneric";
-import { Container, Row, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
+import { Container, Row, Col} from 'react-bootstrap';
+import SearchBar from "../../SearchBar/SearchBar";
 
 const Employee = () => {
     const [employees, setEmployees] = useState<Empleado[]>([]);
     const [employeesComplete, setEmployeesComplete] = useState<Empleado[]>([]);
-    const [search, setSearch] = useState("");
 
     const columns = [
         { label: "IdEmpleado", width: 100 },
@@ -34,23 +34,23 @@ const Employee = () => {
             .catch((error) => console.log(error));
     }, []);
 
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-        filter(e.target.value);
-    };
-
     const filter = (searchParam: string) => {
-        var searchResult = employeesComplete.filter((employeeVal: Empleado) => {
+        const searchResult = employeesComplete.filter((employeeVal: Empleado) => {
             if (
                 employeeVal.Id.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 employeeVal.Nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 employeeVal.Apellido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 employeeVal.Email.toString().toLowerCase().includes(searchParam.toLowerCase())
-            )
+            ) {
                 return employeeVal;
+            }
+            return null;
         });
         setEmployees(searchResult);
+    };
+
+    const handleSearch = (searchParam: string) => {
+        filter(searchParam);
     };
 
     return (
@@ -59,18 +59,7 @@ const Employee = () => {
                 <Row className="mt-3">
                     <Col sm={10}>
                         <h1>Buscar Empleado</h1>
-                        <InputGroup className="mb-4">
-                            <FormControl
-                                placeholder="Buscar"
-                                aria-label="Buscar"
-                                aria-describedby="basic-addon2"
-                                value={search}
-                                onChange={handleChange}
-                            />
-                            <Button variant="outline-secondary" id="button-addon2">
-                                <i className="bi bi-search"></i>
-                            </Button>
-                        </InputGroup>
+                        <SearchBar onSearch={handleSearch} />
                     </Col>
                 </Row>
                 <Row className="mt-3">

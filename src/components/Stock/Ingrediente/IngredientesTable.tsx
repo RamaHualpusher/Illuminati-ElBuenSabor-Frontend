@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, Container, Col, Row } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { Ingrediente } from '../../../interface/interfaces';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
+import SearchBar from '../../SearchBar/SearchBar';
 
 interface IngredientesTableProps { }
 
 const IngredientesTable: React.FC<IngredientesTableProps> = () => {
-
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedIngrediente, setSelectedIngrediente] = useState<Ingrediente | null>(null);
-  const [dataIngr, setDataIngr] = useState<Ingrediente[]>([]);
-  const [dataComplete, setDataComplete] = useState<Ingrediente[]>([]);
-  const [search, setSearch] = useState("");
+  const [ingred, setIngred] = useState<Ingrediente[]>([]);
+  const [ingredComplete, setIngredComplete] = useState<Ingrediente[]>([]);
 
   useEffect(() => {
 
@@ -22,8 +21,8 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       try {
         const response = await fetch("/assets/data/ingredientesEjemplo.json");
         const responseData = await response.json();
-        setDataIngr(responseData);
-        setDataComplete(responseData);
+        setIngred(responseData);
+        setIngredComplete(responseData);
       } catch (error) {
         console.log(error);
       }
@@ -31,16 +30,8 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     fetchData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
-  const handleSearch = () => {
-    filter(search);
-  };
-
-
   const filter = (searchParam: string) => {
-    const searchResult = dataComplete.filter((productVal: Ingrediente) => {
+    const searchResult = ingredComplete.filter((productVal: Ingrediente) => {
       if (
         productVal.id.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
         productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
@@ -50,9 +41,12 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       }
       return null;
     });
-    setDataIngr(searchResult);
+    setIngred(searchResult);
   };
 
+  const handleSearch = (searchParam: string) => {
+    filter(searchParam);
+  };
 
   const handleEditModalOpen = (ingrediente: Ingrediente) => {
     setSelectedIngrediente(ingrediente);
@@ -83,11 +77,11 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       });
       const updatedProducto = await response.json();
 
-      const newData = [...dataIngr];
+      const newData = [...ingred];
       const index = newData.findIndex((item) => item.id === producto.id);
       newData[index] = updatedProducto;
 
-      setDataIngr(newData);
+      setIngred(newData);
     } catch (error) {
       console.log(error);
     }
@@ -104,7 +98,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       });
       const newProducto = await response.json();
 
-      setDataIngr([...dataIngr, newProducto]);
+      setIngred([...ingred, newProducto]);
     } catch (error) {
       console.log(error);
     }
@@ -131,7 +125,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     { label: "UM", width: 50 }
   ];
 
-  const data = dataIngr.map((ingrediente) => [
+  const data = ingred.map((ingrediente) => [
     ingrediente.nombre.toString(),
     ingrediente.rubro.toString(),
     ingrediente.minStock.toString(),
@@ -146,18 +140,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         <Row className="justify-content-start align-items-center mb-3">
           <Col sm={10}>
             <h1>Buscar Ingredientes</h1>
-            <InputGroup className="mb-4">
-              <FormControl
-                placeholder="Buscar"
-                aria-label="Buscar"
-                aria-describedby="basic-addon2"
-                value={search}
-                onChange={handleChange}
-              />
-              <Button variant="outline-secondary" id="button-addon2" onClick={handleSearch}>
-                <i className="bi bi-search"></i>
-              </Button>
-            </InputGroup>
+            <SearchBar onSearch={handleSearch} />
           </Col>
         </Row>
         <Row className="justify-content-start align-items-center mb-3">

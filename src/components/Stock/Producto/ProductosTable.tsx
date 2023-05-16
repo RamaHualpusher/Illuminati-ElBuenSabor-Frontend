@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Table, Button, InputGroup, FormControl  } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 import { Producto } from '../../../interface/interfaces';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
+import SearchBar from '../../SearchBar/SearchBar';
 
 interface ProductosTableProps { }
 
@@ -11,18 +12,17 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
-  const [order, setOrder] = useState<Producto[]>([]);
-  const [dataComplete, setdataComplete] = useState<Producto[]>([]);
-  const [search, setSearch] = useState("");
+  const [produc, setProduc] = useState<Producto[]>([]);
+  const [producComplete, setProducComplete] = useState<Producto[]>([]);
 
   useEffect(() => {
-    
+
     const fetchData = async () => {
       try {
         const response = await fetch("/assets/data/productosEjemplo.json");
         const responseData = await response.json();
-        setOrder(responseData);
-        setdataComplete(responseData);
+        setProduc(responseData);
+        setProducComplete(responseData);
       } catch (error) {
         console.log(error);
       }
@@ -30,17 +30,8 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     fetchData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
-
-  const handleSearch = () => {
-    filter(search);
-  };
-
-
   const filter = (searchParam: string) => {
-    const searchResult = dataComplete.filter((productVal: Producto) => {
+    const searchResult = producComplete.filter((productVal: Producto) => {
       if (
         productVal.id.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
         productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
@@ -50,7 +41,11 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       }
       return null;
     });
-    setOrder(searchResult);
+    setProduc(searchResult);
+  };
+
+  const handleSearch = (searchParam: string) => {
+    filter(searchParam);
   };
 
 
@@ -83,11 +78,11 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       });
       const updatedProducto = await response.json();
 
-      const newData = [...order];
+      const newData = [...produc];
       const index = newData.findIndex((item) => item.id === producto.id);
       newData[index] = updatedProducto;
 
-      setOrder(newData);
+      setProduc(newData);
     } catch (error) {
       console.log(error);
     }
@@ -104,7 +99,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       });
       const newProducto = await response.json();
 
-      setOrder([...order, newProducto]);
+      setProduc([...produc, newProducto]);
     } catch (error) {
       console.log(error);
     }
@@ -116,7 +111,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         method: 'DELETE',
       });
 
-      setOrder(order.filter((item) => item.id !== producto.id));
+      setProduc(produc.filter((item) => item.id !== producto.id));
     } catch (error) {
       console.log(error);
     }
@@ -129,7 +124,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     { label: "Precio", width: 50 }
   ];
 
-  const data = order.map((item) => [
+  const data = produc.map((item) => [
     item.nombre.toString(),
     item.rubro.toString(),
     item.tiempo.toString(),
@@ -143,18 +138,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       <Row className="justify-content-start align-items-center mb-3">
         <Col sm={10}>
           <h1>Buscar Ingredientes</h1>
-          <InputGroup className="mb-4">
-            <FormControl
-              placeholder="Buscar"
-              aria-label="Buscar"
-              aria-describedby="basic-addon2"
-              value={search}
-              onChange={handleChange}
-            />
-            <Button variant="outline-secondary" id="button-addon2" onClick={handleSearch}>
-              <i className="bi bi-search"></i>
-            </Button>
-          </InputGroup>
+          <SearchBar onSearch={handleSearch} />
         </Col>
       </Row>
 
@@ -166,8 +150,8 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         </Col>
       </Row>
       <Row>
-        <TablaGeneric columns={columns} data={data} showButton={true}/>
-        
+        <TablaGeneric columns={columns} data={data} showButton={true} />
+
         {/*
         <Col>
           <Table striped bordered hover>
