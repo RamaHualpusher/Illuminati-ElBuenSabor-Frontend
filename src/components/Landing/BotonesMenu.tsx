@@ -13,7 +13,7 @@ interface BotonesMenuProps {
 }
 
 const buttonStyle = {
-  marginRight: "100px",
+  marginRight: "70px",
   border: "none",
   outline: "none",
 };
@@ -54,36 +54,28 @@ const BotonesMenu: FC<BotonesMenuProps> = ({
     },
   ];
 
-  const handleOptionChange = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    const category = event.currentTarget.value;
+  const handleOptionChange = (category: string) => {
     onCategoryChange(category);
   };
 
   return (
     <Form className="d-flex justify-content-center align-items-center">
-      <Form.Group>
-        <Form.Label>
-          <div>
-            {buttons.map((button) => (
-              <button
-                key={button.value}
-                type="button"
-                className={`btn ${selectedCategory === button.value ? "btn btn-dark" : "btn-outline-secondary"
-                  }`}
-                value={button.value}
-                onClick={handleOptionChange}
-                style={buttonStyle}
-              >
-                {button.label}
-                <br />
-                <i className={button.icon} style={iconStyle} />
-              </button>
-            ))}
-          </div>
-        </Form.Label>
-      </Form.Group>
+      {buttons.map((button) => (
+        <button
+          key={button.value}
+          type="button"
+          className={`btn ${
+            selectedCategory === button.value ? "btn-dark" : "btn-outline-secondary"
+          }`}
+          value={button.value}
+          onClick={() => handleOptionChange(button.value)}
+          style={buttonStyle}
+        >
+          {button.label}
+          <br />
+          <i className={button.icon} style={iconStyle} />
+        </button>
+      ))}
     </Form>
   );
 };
