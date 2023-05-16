@@ -1,23 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Container, Col, Row,InputGroup, FormControl } from 'react-bootstrap';
+import { Table, Button, Container, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
+import axios from 'axios';
 
-interface IngredientesTableProps { }
+export type Ingrediente = {
+  id: number;
+  nombre: string;
+  rubro: string;
+  minStock: number;
+  stockActual: number;
+  precio: number;
+  um: string;
+}
 
 type IngredientesTableProps = {
   url: string;
 };
 
 const IngredientesTable = ({ url }: IngredientesTableProps) => {
-  const [order, setOrder] = useState<Ingrediente[]>([]);
+  //const [order, setOrder] = useState<Ingrediente[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedIngrediente, setSelectedIngrediente] = useState<Ingrediente | null>(null);
 
-  const [data, setData] = useState<Ingrediente[]>([]);
+  const [order, setOrder] = useState<Ingrediente[]>([]);
   const [dataComplete, setDataComplete] = useState<Ingrediente[]>([]);
   const [search, setSearch] = useState("");
 
@@ -54,7 +63,7 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
       )
         return productVal;
     });
-    setData(serchResult);
+    setOrder(serchResult);
   };
 
   const handleEditModalOpen = (ingrediente: Ingrediente) => {
@@ -97,27 +106,27 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
         console.log(error);
       });
   }
-/*
-  const handleIngredienteDelete = (ingrediente: Ingrediente) => {
-    fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingrediente.id}`, {
-      method: 'DELETE',
-    })
-      .then(response => {
-        setOrder(data.filter(item => item.id !== ingrediente.id));
+  /*
+    const handleIngredienteDelete = (ingrediente: Ingrediente) => {
+      fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingrediente.id}`, {
+        method: 'DELETE',
       })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-*/
-const columns = [
-  { label: "Nombre", width: 200 },
-  { label: "Rubro", width: 100 },
-  { label: "Min Stock", width: 100 },
-  { label: "Stock Actual", width: 100 },
-  { label: "Precio" , width:80},
-  { label: "UM" , width:50}
-];
+        .then(response => {
+          setOrder(data.filter(item => item.id !== ingrediente.id));
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  */
+  const columns = [
+    { label: "Nombre", width: 200 },
+    { label: "Rubro", width: 100 },
+    { label: "Min Stock", width: 100 },
+    { label: "Stock Actual", width: 100 },
+    { label: "Precio", width: 80 },
+    { label: "UM", width: 50 }
+  ];
 
   const data = order.map((ingrediente) => [
     ingrediente.nombre.toString(),
@@ -154,12 +163,15 @@ const columns = [
             </Button>
           </Col>
         </Row>
+      </Container>
 
 
-  <div>
-    <TablaGeneric columns={columns} data={data}showButton={true}/>
-  </div>
-    {/*
+
+
+      <div>
+        <TablaGeneric columns={columns} data={data} showButton={true} />
+      </div>
+      {/*
   <Table striped bordered hover>
     <thead>
       <tr>
@@ -192,20 +204,19 @@ const columns = [
       ))}
     </tbody>
   </Table>
-
-  <EditIngredienteModal
-    show={editModalShow}
-    handleClose={handleEditModalClose}
-    handleIngredienteEdit={handleIngredienteEdit}
-    selectedIngrediente={selectedIngrediente}
-      />*/}
-  <AddIngredienteModal
-    show={addModalShow}
-    handleClose={handleAddModalClose}
-    handleIngredienteAdd={handleIngredienteAdd}
+*/}
+      <EditIngredienteModal
+        show={editModalShow}
+        handleClose={handleEditModalClose}
+        handleIngredienteEdit={handleIngredienteEdit}
+        selectedIngrediente={selectedIngrediente}
       />
-</>
-);
+      <AddIngredienteModal
+        show={addModalShow}
+        handleClose={handleAddModalClose}
+        handleIngredienteAdd={handleIngredienteAdd}
+      />
+    </div>
+  );
 };
-
 export default IngredientesTable;
