@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Container, Col, Row,InputGroup, FormControl } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Ingrediente } from '../../../interface/interfaces';
 
 interface IngredientesTableProps { }
