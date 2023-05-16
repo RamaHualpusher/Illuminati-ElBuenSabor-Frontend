@@ -17,7 +17,7 @@ type RubrosIngredientesTableProps = {
 };
 
 const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
-  const [data, setData] = useState<RubroIngrediente[]>([]);
+  const [order, setOrder] = useState<RubroIngrediente[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedRubroIngrediente, setSelectedRubroIngrediente] =
@@ -27,7 +27,7 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
     axios
       .get<RubroIngrediente[]>(url)
       .then((response) => {
-        setData(response.data);
+        setOrder(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -56,12 +56,12 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
     axios
       .put(`${url}/${rubroIngrediente.id}`, rubroIngrediente)
       .then((response) => {
-        const newData = [...data];
+        const newData = [...order];
         const index = newData.findIndex(
           (item) => item.id === rubroIngrediente.id
         );
         newData[index] = response.data;
-        setData(newData);
+        setOrder(newData);
       })
       .catch((error) => {
         console.log(error);
@@ -72,7 +72,7 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
     axios
       .post(url, rubroIngrediente)
       .then((response) => {
-        setData([...data, response.data]);
+        setOrder([...order, response.data]);
       })
       .catch((error) => {
         console.log(error);
@@ -83,12 +83,22 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
     axios
       .delete(`${url}/${rubroIngrediente.id}`)
       .then((response) => {
-        setData(data.filter((item) => item.id !== rubroIngrediente.id));
+        setOrder(order.filter((item) => item.id !== rubroIngrediente.id));
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  const column =[
+    {label: "Rubro", width:100},
+    {label: "Nombre", width:100}
+  ];
+
+  const data = order.map((item) =>[
+    item.rubro.toString(),
+    item.nombre.toString()
+  ])
 
   return (
     <div>
@@ -99,7 +109,7 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
         </Button>
         {/* <DropdownButton options={options} /> */}
       </div>
-
+{/*
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -110,7 +120,7 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item) => (
+          {order.map((item) => (
             <tr key={item.id}>
               <td>{item.rubro}</td>
               <td>{item.nombre}</td>
@@ -134,7 +144,7 @@ const RubrosIngredientesTable = ({ url }: RubrosIngredientesTableProps) => {
           ))}
         </tbody>
       </Table>
-
+*/}
       <EditRubroIngredienteModal
         show={editModalShow}
         handleClose={handleEditModalClose}
