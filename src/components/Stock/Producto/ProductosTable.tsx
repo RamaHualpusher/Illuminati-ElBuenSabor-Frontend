@@ -3,6 +3,7 @@ import { Container, Row, Col, Table, Button, InputGroup, FormControl  } from 're
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 import { Producto } from '../../../interface/interfaces';
+import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 
 interface ProductosTableProps { }
 
@@ -10,7 +11,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
-  const [data, setData] = useState<Producto[]>([]);
+  const [order, setOrder] = useState<Producto[]>([]);
   const [dataComplete, setdataComplete] = useState<Producto[]>([]);
   const [search, setSearch] = useState("");
 
@@ -20,7 +21,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       try {
         const response = await fetch("/assets/data/productosEjemplo.json");
         const responseData = await response.json();
-        setData(responseData);
+        setOrder(responseData);
         setdataComplete(responseData);
       } catch (error) {
         console.log(error);
@@ -49,7 +50,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       }
       return null;
     });
-    setData(searchResult);
+    setOrder(searchResult);
   };
 
 
@@ -82,11 +83,11 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       });
       const updatedProducto = await response.json();
 
-      const newData = [...data];
+      const newData = [...order];
       const index = newData.findIndex((item) => item.id === producto.id);
       newData[index] = updatedProducto;
 
-      setData(newData);
+      setOrder(newData);
     } catch (error) {
       console.log(error);
     }
@@ -103,7 +104,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       });
       const newProducto = await response.json();
 
-      setData([...data, newProducto]);
+      setOrder([...order, newProducto]);
     } catch (error) {
       console.log(error);
     }
@@ -115,7 +116,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         method: 'DELETE',
       });
 
-      setData(data.filter((item) => item.id !== producto.id));
+      setOrder(order.filter((item) => item.id !== producto.id));
     } catch (error) {
       console.log(error);
     }
@@ -135,19 +136,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     item.precio.toString()
   ]);
 
-  const columns = [
-    { label: "Nombre", width: 150 },
-    { label: "Rubro", width: 100 },
-    { label: "Tiempo (min)", width: 60 },
-    { label: "Precio", width: 50 }
-  ];
 
-  const data = order.map((item) => [
-    item.nombre.toString(),
-    item.rubro.toString(),
-    item.tiempo.toString(),
-    item.precio.toString()
-  ]);
 
   return (
     <Container>
@@ -177,6 +166,9 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         </Col>
       </Row>
       <Row>
+        <TablaGeneric columns={columns} data={data} showButton={true}/>
+        
+        {/*
         <Col>
           <Table striped bordered hover>
             <thead>
@@ -190,7 +182,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((producto) => (
+              {order.map((producto) => (
                 <tr key={producto.id}>
                   <td>{producto.nombre}</td>
                   <td>{producto.rubro}</td>
@@ -216,7 +208,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
               ))}
             </tbody>
           </Table>
-        </Col>
+        </Col>*/}
       </Row>
       <EditProductoModal
         show={editModalShow}
