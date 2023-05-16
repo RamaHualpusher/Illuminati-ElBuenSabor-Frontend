@@ -17,6 +17,7 @@ const Card: React.FC<CardProps> = ({ imageSrc, title, text, buttonText }) => {
         style={{
           width: '100%',
           height: '150px',
+          objectFit: 'cover',
           borderRadius: '0%',
         }}
       />
