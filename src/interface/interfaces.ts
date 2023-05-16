@@ -32,4 +32,19 @@ export interface Empleado {
   Rol: string ;
   Estado: number;
 }
+
+export interface Rubro {
+  id: number;
+  nombre: string;
+}
+
+export interface Ingrediente {
+  id: number;
+  nombre: string;
+  rubro: string;
+  minStock: number;
+  stockActual: number;
+  precio: number;
+  um: string;
+}
 //agregar aca las demas interfaces para completar dentro del codigo de front

@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'react-bootstrap';
-import axios from 'axios';
+import { Table, Button, Container, Col, Row,InputGroup, FormControl } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 
-export type Ingrediente = {
-  id: number;
-  nombre: string;
-  rubro: string;
-  minStock: number;
-  stockActual: number;
-  precio: number;
-  um: string;
-};
+interface IngredientesTableProps { }
 
 type IngredientesTableProps = {
   url: string;
@@ -26,6 +17,10 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedIngrediente, setSelectedIngrediente] = useState<Ingrediente | null>(null);
 
+  const [data, setData] = useState<Ingrediente[]>([]);
+  const [dataComplete, setDataComplete] = useState<Ingrediente[]>([]);
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     axios.get<Ingrediente[]>(url)
       .then(response => {
@@ -34,7 +29,33 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
       .catch(error => {
         console.log(error);
       });
-  }, [url]);
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    filter(e.target.value);
+  };
+
+  const filter = (serchParam: string) => {
+    var serchResult = dataComplete.filter((productVal: Ingrediente) => {
+      if (
+        productVal.id.toString()
+          .toLowerCase()
+          .includes(serchParam.toLowerCase()) ||
+        productVal.nombre.toString()
+          .toLowerCase()
+          .includes(serchParam.toLowerCase()) ||
+        productVal.rubro?.toString()
+          .toLowerCase()
+          .includes(serchParam.toLowerCase()) ||
+        productVal.um.toString()
+          .toLowerCase()
+          .includes(serchParam.toLowerCase())
+      )
+        return productVal;
+    });
+    setData(serchResult);
+  };
 
   const handleEditModalOpen = (ingrediente: Ingrediente) => {
     setSelectedIngrediente(ingrediente);
@@ -78,7 +99,9 @@ const IngredientesTable = ({ url }: IngredientesTableProps) => {
   }
 /*
   const handleIngredienteDelete = (ingrediente: Ingrediente) => {
-    axios.delete(`${url}/${ingrediente.id}`)
+    fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingrediente.id}`, {
+      method: 'DELETE',
+    })
       .then(response => {
         setOrder(data.filter(item => item.id !== ingrediente.id));
       })
@@ -106,15 +129,31 @@ const columns = [
   ]);
 
   return (
-    <>
-  <div className="d-flex justify-content-start align-items-center mb-3">
-    <h3>Ingredientes</h3>
-  </div>
-  <div className="d-flex justify-content-start align-items-center mb-3">
-        <Button variant="success" onClick={handleAddModalOpen}>
-      Agregar Ingrediente
-    </Button>
-  </div>
+    <div>
+      <Container fluid>
+        <Row className="justify-content-start align-items-center mb-3">
+          <Col sm={10}><h1>Buscar Ingredientes</h1>
+            <InputGroup className="mb-4">
+              <FormControl
+                placeholder="Buscar"
+                aria-label="Buscar"
+                aria-describedby="basic-addon2"
+                value={search}
+                onChange={handleChange}
+              />
+              <Button variant="outline-secondary" id="button-addon2">
+                <i className="bi bi-search"></i>
+              </Button>
+            </InputGroup>
+          </Col>
+        </Row>
+        <Row className="justify-content-start align-items-center mb-3">
+          <Col>
+            <Button variant="success" onClick={handleAddModalOpen} className="float-start">
+              Agregar Ingrediente
+            </Button>
+          </Col>
+        </Row>
 
 
   <div>

@@ -1,39 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import { Ingrediente } from "./IngredientesTable";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { Ingrediente,Rubro } from '../../../interface/interfaces';
 
-type AddIngredienteModalProps = {
+interface AddIngredienteModalProps {
   show: boolean;
   handleClose: () => void;
   handleIngredienteAdd: (ingrediente: Ingrediente) => void;
-};
-type Rubro = {
-  id: number;
-  nombre: string;
-};
-const AddIngredienteModal = ({
+}
+
+const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
   show,
   handleClose,
   handleIngredienteAdd,
-}: AddIngredienteModalProps) => {
-  const [nombre, setNombre] = useState("");
-  const [rubro, setRubro] = useState("");
+}) => {
+  const [nombre, setNombre] = useState('');
+  const [rubro, setRubro] = useState('');
   const [minStock, setMinStock] = useState(0);
   const [stockActual, setStockActual] = useState(0);
   const [precio, setPrecio] = useState(0);
-  const [um, setUM] = useState("");
+  const [um, setUM] = useState('');
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [rubroId, setRubroId] = useState<number | null>(null);
 
-
   useEffect(() => {
-    axios
-      .get<Rubro[]>("/assets/data/rubrosIngredientesEjemplo.json")
-      .then((response) => {
-        setRubros(response.data);
+    fetch('/assets/data/rubrosIngredientesEjemplo.json')
+      .then(response => response.json())
+      .then(data => {
+        setRubros(data);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }, []);

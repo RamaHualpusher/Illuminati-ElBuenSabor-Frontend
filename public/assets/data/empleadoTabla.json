@@ -9,18 +9,18 @@
   },
   {
     "Id": 1,
-    "Nombre": "Juan",
-    "Apellido": "Pérez",
-    "Email": "juan.perez@example.com",
-    "Rol": "Empleado",
+    "Nombre": "Gonzalo",
+    "Apellido": "Lisanti",
+    "Email": "gonza.lisanti@example.com",
+    "Rol": "Cajero",
     "Estado": 1
   },
   {
     "Id": 1,
-    "Nombre": "Juan",
-    "Apellido": "Pérez",
-    "Email": "juan.perez@example.com",
-    "Rol": "Empleado",
+    "Nombre": "Javier",
+    "Apellido": "Scandura",
+    "Email": "javier.scandura@example.com",
+    "Rol": "Cocinero",
     "Estado": 1
   }
 ]

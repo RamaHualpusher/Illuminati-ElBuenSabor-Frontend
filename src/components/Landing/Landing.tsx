@@ -4,7 +4,6 @@ import ImagenMenu from './ImagenMenu';
 import TarjetaComida from './TarjetaComida';
 import { Products } from '../../interface/interfaces';
 import ComoFunc from "./ComoFunc";
-import FoodSearch from "./FoodSearch";
 
 
 export default function Landing() {

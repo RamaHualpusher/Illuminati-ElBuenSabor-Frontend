@@ -1,65 +1,57 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import { Ingrediente } from "./IngredientesTable";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { Ingrediente, Rubro} from '../../../interface/interfaces';
 
-type EditIngredienteModalProps = {
+interface EditIngredienteModalProps {
   show: boolean;
   handleClose: () => void;
   handleIngredienteEdit: (ingrediente: Ingrediente) => void;
   selectedIngrediente: Ingrediente | null;
-};
+}
 
-type Rubro = {
-  id: number;
-  nombre: string;
-};
-
-const EditIngredienteModal = ({
+const EditIngredienteModal: React.FC<EditIngredienteModalProps> = ({
   show,
   handleClose,
   handleIngredienteEdit,
   selectedIngrediente,
-}: EditIngredienteModalProps) => {
-  const [nombre, setNombre] = useState(selectedIngrediente?.nombre || "");
-  const [rubro, setRubro] = useState(selectedIngrediente?.rubro || "");
+}) => {
+  const [nombre, setNombre] = useState(selectedIngrediente?.nombre || '');
+  const [rubro, setRubro] = useState(selectedIngrediente?.rubro || '');
   const [minStock, setMinStock] = useState(selectedIngrediente?.minStock || 0);
-  const [stockActual, setStockActual] = useState(
-    selectedIngrediente?.stockActual || 0
-  );
+  const [stockActual, setStockActual] = useState(selectedIngrediente?.stockActual || 0);
   const [precio, setPrecio] = useState(selectedIngrediente?.precio || 0);
-  const [um, setUM] = useState(selectedIngrediente?.um || "");
+  const [um, setUM] = useState(selectedIngrediente?.um || '');
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [rubroId, setRubroId] = useState<number | null>(null);
 
   useEffect(() => {
-    axios
-      .get<Rubro[]>("/assets/data/rubrosIngredientesEjemplo.json")
-      .then((response) => {
-        setRubros(response.data);
+    fetch('/assets/data/rubrosIngredientesEjemplo.json')
+      .then(response => response.json())
+      .then(data => {
+        setRubros(data);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }, []);
 
   useEffect(() => {
-    setNombre(selectedIngrediente?.nombre || "");
-    setRubro(selectedIngrediente?.rubro || "");
+    setNombre(selectedIngrediente?.nombre || '');
+    setRubro(selectedIngrediente?.rubro || '');
     setMinStock(selectedIngrediente?.minStock || 0);
     setStockActual(selectedIngrediente?.stockActual || 0);
     setPrecio(selectedIngrediente?.precio || 0);
-    setUM(selectedIngrediente?.um || "");
+    setUM(selectedIngrediente?.um || '');
   }, [selectedIngrediente]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedIngrediente) {
-      const selectedRubro = rubros.find((rubro) => rubro.id === rubroId);
+      const selectedRubro = rubros.find(rubro => rubro.id === rubroId);
       const updatedIngrediente: Ingrediente = {
         id: selectedIngrediente.id,
         nombre,
-        rubro: selectedRubro?.nombre || "",
+        rubro: selectedRubro?.nombre || '',
         minStock,
         stockActual,
         precio,
@@ -69,7 +61,6 @@ const EditIngredienteModal = ({
     }
     handleClose();
   };
-
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
