@@ -10,9 +10,25 @@ interface Props {
   columns: Column[];
   data: string[][];
   showButton?: boolean;
+  buttonEdit: (rowData:string[])=> void;
+  buttonDelete:(rowData:string[])=>void;
 }
 
-export const TablaGeneric: React.FC<Props> = ({ columns, data, showButton }) => {
+export interface buttonAction {
+  label:string;
+  onClick:(rowData:string[]) =>void;
+}
+
+export const TablaGeneric: React.FC<Props> = ({ columns, data, buttonEdit, buttonDelete, showButton, }) => {
+
+  const handleEdit=(rowData:string[])=>{
+    buttonEdit(rowData);
+  };
+  const handleDelete=(rowData:string[])=>{
+    buttonDelete(rowData);
+  };
+
+
   return (
     <div>
       <Table striped bordered hover>
@@ -23,7 +39,8 @@ export const TablaGeneric: React.FC<Props> = ({ columns, data, showButton }) => 
                 {column.label}
               </th>
             ))}
-            {showButton && <th style={{width:100}}>Button</th>}
+            {showButton && <th style={{width:100}}>Editar</th>}
+            {showButton && <th style={{width:100}}>Eliminar</th>}
           </tr>
         </thead>
         <tbody>
@@ -32,7 +49,8 @@ export const TablaGeneric: React.FC<Props> = ({ columns, data, showButton }) => 
               {row.map((cell, cellIndex) => (
                 <td key={cellIndex}>{cell}</td>
               ))}
-              {showButton && <td><button className="btn btn-primary" >Boton</button></td>}
+              {showButton  && <td><button className="btn btn-primary" onClick={()=>handleEdit(row)}>Editar</button></td>}
+              {showButton  && <td><button className="btn btn-primary" onClick={()=>handleDelete(row)}>Eliminar</button></td>}
             </tr>
           ))}
         </tbody>

@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 import { Producto } from '../../../interface/interfaces';
-import { TablaGeneric } from '../../TableGeneric/TableGeneric';
+import { TablaGeneric, buttonAction} from '../../TableGeneric/TableGeneric';
 import SearchBar from '../../SearchBar/SearchBar';
 
 interface ProductosTableProps { }
@@ -49,8 +49,16 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   };
 
 
-  const handleEditModalOpen = (producto: Producto) => {
-    setSelectedProducto(producto);
+  const handleEditModalOpen = (rowData: string[]) => {
+    event?.preventDefault();
+    //let producto:Producto=
+    setSelectedProducto({
+      id:+rowData[0],
+      nombre:rowData[1],
+      rubro:rowData[2],
+      tiempo:+rowData[3],
+      precio:+rowData[4],
+      });
     setEditModalShow(true);
   };
 
@@ -105,7 +113,15 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     }
   };
 
-  const handleProductoDelete = async (producto: Producto) => {
+  const handleProductoDelete = async (rowData: string[]) => {
+    event?.preventDefault();
+    const producto:Producto={
+      id:+rowData[0],
+      nombre:rowData[1],
+      rubro:rowData[2],
+      tiempo:+rowData[3],
+      precio:+rowData[4],
+      }
     try {
       await fetch(`${"/assets/data/productosEjemplo.json"}/${producto.id}`, {
         method: 'DELETE',
@@ -118,6 +134,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   };
 
   const columns = [
+    {label:"Id", width:10},
     { label: "Nombre", width: 150 },
     { label: "Rubro", width: 100 },
     { label: "Tiempo (min)", width: 60 },
@@ -125,6 +142,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   ];
 
   const data = produc.map((item) => [
+    item.id.toString(),
     item.nombre.toString(),
     item.rubro.toString(),
     item.tiempo.toString(),
@@ -132,6 +150,34 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   ]);
 
 
+
+  
+
+/*const handleBotonEdit= (rowData:string[])=>{
+  let usar:Producto={
+    id:+rowData[0],
+    nombre:rowData[1],
+    rubro:rowData[2],
+    tiempo:+rowData[3],
+    precio:+rowData[4],
+    }
+  handleEditModalOpen(usar);
+}
+const handleBotonDelete= (rowData:string[])=>{
+  let usar:Producto={
+    id:+rowData[0],
+    nombre:rowData[1],
+    rubro:rowData[2],
+    tiempo:+rowData[3],
+    precio:+rowData[4],
+    }
+  handleProductoDelete(usar);
+}*/
+
+  /*const botones:buttonAction[]=[
+    {label:"Editar",onClick:handleBotonEdit},
+    {label:"Eliminar",onClick:handleBotonDelete}
+  ]*/
 
   return (
     <Container>
@@ -150,7 +196,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         </Col>
       </Row>
       <Row>
-        <TablaGeneric columns={columns} data={data} showButton={true} />
+        <TablaGeneric columns={columns} data={data}  buttonEdit={handleEditModalOpen} buttonDelete={handleProductoDelete} showButton={true}/>
 
         {/*
         <Col>
