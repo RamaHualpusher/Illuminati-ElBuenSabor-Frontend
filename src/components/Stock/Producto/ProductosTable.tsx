@@ -49,8 +49,8 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   };
 
 
-  const handleEditModalOpen = (rowData: string[]) => {
-    event?.preventDefault();
+  const handleEditModalOpen = (rowData: string[],e:React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     //let producto:Producto=
     setSelectedProducto({
       id:+rowData[0],
@@ -113,8 +113,8 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     }
   };
 
-  const handleProductoDelete = async (rowData: string[]) => {
-    event?.preventDefault();
+  const handleProductoDelete = async (rowData: string[], e:React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     const producto:Producto={
       id:+rowData[0],
       nombre:rowData[1],

@@ -10,8 +10,8 @@ interface Props {
   columns: Column[];
   data: string[][];
   showButton?: boolean;
-  buttonEdit: (rowData:string[])=> void;
-  buttonDelete:(rowData:string[])=>void;
+  buttonEdit: (rowData:string[],e:React.MouseEvent<HTMLButtonElement>)=> void;
+  buttonDelete:(rowData:string[],e:React.MouseEvent<HTMLButtonElement>)=>void;
 }
 
 export interface buttonAction {
@@ -21,11 +21,11 @@ export interface buttonAction {
 
 export const TablaGeneric: React.FC<Props> = ({ columns, data, buttonEdit, buttonDelete, showButton, }) => {
 
-  const handleEdit=(rowData:string[])=>{
-    buttonEdit(rowData);
+  const handleEdit=(rowData:string[],e:React.MouseEvent<HTMLButtonElement>)=>{
+    buttonEdit(rowData,e);
   };
-  const handleDelete=(rowData:string[])=>{
-    buttonDelete(rowData);
+  const handleDelete=(rowData:string[],e:React.MouseEvent<HTMLButtonElement>)=>{
+    buttonDelete(rowData,e);
   };
 
 
@@ -49,8 +49,8 @@ export const TablaGeneric: React.FC<Props> = ({ columns, data, buttonEdit, butto
               {row.map((cell, cellIndex) => (
                 <td key={cellIndex}>{cell}</td>
               ))}
-              {showButton  && <td><button className="btn btn-primary" onClick={()=>handleEdit(row)}>Editar</button></td>}
-              {showButton  && <td><button className="btn btn-primary" onClick={()=>handleDelete(row)}>Eliminar</button></td>}
+              {showButton  && <td><button className="btn btn-success" onClick={(e)=>handleEdit(row, e)}>Editar</button></td>}
+              {showButton  && <td><button className="btn btn-danger" onClick={(e)=>handleDelete(row, e)}>Eliminar</button></td>}
             </tr>
           ))}
         </tbody>

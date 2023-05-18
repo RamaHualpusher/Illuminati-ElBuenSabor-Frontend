@@ -53,6 +53,8 @@ const Bill: React.FC<BillProps> = () => {
     filter(searchParam);
   };
 
+  const defaultAct= (data:any)=>{};
+
   return (
     <div>
       <Container fluid>
@@ -63,7 +65,7 @@ const Bill: React.FC<BillProps> = () => {
         </Row>
         <Row className='mt-3'>
           <Col>
-            <TablaGeneric columns={columns} data={data} showButton={true} />
+            <TablaGeneric columns={columns} data={data} showButton={false} buttonEdit={defaultAct} buttonDelete={defaultAct}/>
           </Col>
         </Row>
       </Container>

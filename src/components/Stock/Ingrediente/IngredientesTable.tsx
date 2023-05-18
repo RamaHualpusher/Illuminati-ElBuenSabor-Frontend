@@ -48,7 +48,17 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     filter(searchParam);
   };
 
-  const handleEditModalOpen = (ingrediente: Ingrediente) => {
+  const handleEditModalOpen = (rowData: string[], e:React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const ingrediente:Ingrediente={
+      id:+rowData[0],
+      nombre:rowData[1],
+      rubro:rowData[2],
+      minStock:+rowData[3],
+      stockActual:+rowData[4],
+      precio:+rowData[5],
+      um:rowData[6]
+    };
     setSelectedIngrediente(ingrediente);
     setEditModalShow(true);
   }
@@ -103,20 +113,31 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       console.log(error);
     }
   };
-  /*
-    const handleIngredienteDelete = (ingrediente: Ingrediente) => {
+  
+    const handleIngredienteDelete = (rowData: string[],e:React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      const ingrediente:Ingrediente={
+        id:+rowData[0],
+        nombre:rowData[1],
+        rubro:rowData[2],
+        minStock:+rowData[3],
+        stockActual:+rowData[4],
+        precio:+rowData[5],
+        um:rowData[6]
+      };
       fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingrediente.id}`, {
         method: 'DELETE',
       })
         .then(response => {
-          setOrder(data.filter(item => item.id !== ingrediente.id));
+          setIngred(ingred.filter(item => item.id !== ingrediente.id));
         })
         .catch(error => {
           console.log(error);
         });
     }
-  */
+  
   const columns = [
+    { label: "Id", width:10},
     { label: "Nombre", width: 200 },
     { label: "Rubro", width: 100 },
     { label: "Min Stock", width: 100 },
@@ -126,6 +147,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
   ];
 
   const data = ingred.map((ingrediente) => [
+    ingrediente.id.toString(),
     ingrediente.nombre.toString(),
     ingrediente.rubro.toString(),
     ingrediente.minStock.toString(),
@@ -152,7 +174,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         </Row>
       </Container>
       <div>
-        <TablaGeneric columns={columns} data={data} showButton={true} />
+        <TablaGeneric columns={columns} data={data} showButton={true} buttonEdit={handleEditModalOpen} buttonDelete={handleIngredienteDelete}/>
       </div>
       {/*
   <Table striped bordered hover>

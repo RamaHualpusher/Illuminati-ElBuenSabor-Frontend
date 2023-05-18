@@ -112,6 +112,8 @@ const RubrosIngredientesTable : React.FC<RubrosIngredientesTableProps>= () => {
     item.nombre.toString()
   ])
 
+  const defaultAct=(data:any)=>{};
+
   return (
     <div>
       <div
@@ -122,7 +124,7 @@ const RubrosIngredientesTable : React.FC<RubrosIngredientesTableProps>= () => {
         {/* <DropdownButton options={options} /> */}
       </div>
       <div>
-        <TablaGeneric columns={column} data={data} showButton={true}/>
+        <TablaGeneric columns={column} data={data} showButton={true} buttonEdit={defaultAct} buttonDelete={defaultAct}/>
       </div>
       {/*
       <Table striped bordered hover>

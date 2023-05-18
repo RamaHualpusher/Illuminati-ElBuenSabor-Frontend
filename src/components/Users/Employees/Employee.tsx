@@ -49,6 +49,8 @@ const Employee = () => {
         setEmployees(searchResult);
     };
 
+    const defaultAct=(data:any)=>{};
+
     const handleSearch = (searchParam: string) => {
         filter(searchParam);
     };
@@ -64,7 +66,7 @@ const Employee = () => {
                 </Row>
                 <Row className="mt-3">
                     <Col>
-                        <TablaGeneric columns={columns} data={data} showButton={true} />
+                        <TablaGeneric columns={columns} data={data} showButton={false} buttonEdit={defaultAct} buttonDelete={defaultAct}/>
                     </Col>
                 </Row>
             </Container>
