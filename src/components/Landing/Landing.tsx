@@ -14,7 +14,7 @@ export default function Landing() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('assets/data/productosLanding');
+            const response = await fetch('assets/data/productosLanding.json');
             const data = await response.json();
             setProduc(data);
             setProducComplete(data);
