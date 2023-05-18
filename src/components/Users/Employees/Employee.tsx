@@ -60,7 +60,7 @@ const Employee = () => {
             <Container fluid>
                 <Row className="mt-3">
                     <Col sm={10}>
-                        <h1>Buscar Usuario</h1>
+                        <h1>Buscar Empleado</h1>
                         <SearchBar onSearch={handleSearch} />
                     </Col>
                 </Row>
