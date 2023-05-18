@@ -1,18 +1,46 @@
 [
   {
-    "IdPedido": 123456,
-    "FechaPedido": "12/03/23/ 12:30",
-    "FormaEntrega": "Delivery",
-    "FormaPago": "Efectivo",
-    "Pagado": "No",
-    "Estado": "A Confirmar"
+    "idPedido": 123456,
+    "numeroPedido": 123456,
+    "fechaPedido": "2023-03-14",
+    "horaEstimadaFin": null,
+    "tipoEnvio": "Delivery",
+    "TipoEntregaPedido": {
+      "idTipoEntregaPedido": 1,
+      "descripcion": "Delivery"
+    },
+    "EstadoPedido": {
+      "idEstadoPedido": 1,
+      "descripcion": "A Confirmar"
+    },
+    "TipoPago": {
+      "idTipoPago": 1,
+      "descripcion": "Efectivo",
+      "MercadoPagoData": null
+    },
+    "Usuario": null,
+    "Articulo": null
   },
   {
-    "IdPedido": 123457,
-    "FechaPedido": "12/03/23/ 12:35",
-    "FormaEntrega": "Take Away",
-    "FormaPago": "Tarjeta",
-    "Pagado": "Si",
-    "Estado": "Confirmado"
+    "idPedido": 123457,
+    "numeroPedido": 123457,
+    "fechaPedido": "2023-03-12",
+    "horaEstimadaFin": null,
+    "tipoEnvio": "Take Away",
+    "TipoEntregaPedido": {
+      "idTipoEntregaPedido": 2,
+      "descripcion": "Take Away"
+    },
+    "EstadoPedido": {
+      "idEstadoPedido": 2,
+      "descripcion": "Confirmado"
+    },
+    "TipoPago": {
+      "idTipoPago": 2,
+      "descripcion": "Tarjeta",
+      "MercadoPagoData": null
+    },
+    "Usuario": null,
+    "Articulo": null
   }
 ]

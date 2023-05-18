@@ -1,4 +1,4 @@
-import { cashierOrder } from '../../interface/interfaces';
+import { Pedido } from '../../interface/interfaces';
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col} from 'react-bootstrap';
 import { TablaGeneric } from '../TableGeneric/TableGeneric';
@@ -8,20 +8,20 @@ import SearchBar from '../SearchBar/SearchBar';
 interface BillProps { }
 
 const Bill: React.FC<BillProps> = () => {
-  const [order, setOrder] = useState<cashierOrder[]>([]);
-  const [orderComplete, setOrderComplete] = useState<cashierOrder[]>([]);
+  const [order, setOrder] = useState<Pedido[]>([]);
+  const [orderComplete, setOrderComplete] = useState<Pedido[]>([]);
 
   const columns = [
-    { label: "IdPedido", width: 100 },
-    { label: "Forma de Entrega", width: 200 },
-    { label: "FechaPedido", width: 150 },
-    { label: "FormaPago", width: 150 }
+    { label: "Número Factura", width: 100 },
+    { label: "Tipo de Entrega", width: 200 },
+    { label: "Fecha del Pedido", width: 150 },
+    { label: "Tipo de Pago", width: 150 }
   ];
   const data = order.map((item) => [
-    item.IdPedido.toString(),
-    item.FormaEntrega.toString(),
-    item.FechaPedido?.toString(),
-    item.FormaPago.toString()
+    item.numeroPedido.toString(),
+    item.TipoEntregaPedido.descripcion.toString(),
+    item.fechaPedido?.toString(),
+    item.TipoPago.descripcion.toString()
   ]);
 
   useEffect(() => {
@@ -35,12 +35,12 @@ const Bill: React.FC<BillProps> = () => {
   }, []);
 
   const filter = (searchParam: string) => {
-    const searchResult = orderComplete.filter((productVal: cashierOrder) => {
+    const searchResult = orderComplete.filter((productVal: Pedido) => {
       if (
-        productVal.IdPedido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.FormaEntrega.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.FechaPedido?.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.FormaPago.toString().toLowerCase().includes(searchParam.toLowerCase())
+        productVal.numeroPedido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.TipoEntregaPedido.descripcion.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.fechaPedido?.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.TipoPago.descripcion.toString().toLowerCase().includes(searchParam.toLowerCase())
       ) {
         return productVal;
       }

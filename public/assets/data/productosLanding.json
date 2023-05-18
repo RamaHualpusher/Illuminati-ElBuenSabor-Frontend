@@ -26,36 +26,62 @@
     ]
   },
   {
-    "Imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
-    "Nombre": "Hamburguesa",
-    "Rubro": "Hamburguesas",
-    "PrecioVenta": 6.99,
-    "TiempoCocina": 8,
+    "Imagen": "assets/img/pizza_casera_31391_orig.jpg",
+    "Nombre": "Pizza",
+    "Rubro": "Pizzas",
+    "PrecioVenta": 5.99,
+    "TiempoCocina": 10,
     "Estado": "Disponible",
-    "Descripcion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
+    "Descripcion": "Una deliciosa pizza con queso y pepperoni",
     "Ingredients": [
       {
-        "Ingredient": "Pan de hamburguesa",
-        "Cuantity": "1 unidad",
-        "UMedida": "unidad"
-      },
-      {
-        "Ingredient": "Carne de res",
+        "Ingredient": "Salsa de tomate",
         "Cuantity": "150 gr",
+        "UMedida": "ml"
+      },
+      {
+        "Ingredient": "Queso mozzarella",
+        "Cuantity": "100 gr",
         "UMedida": "gr"
       },
       {
-        "Ingredient": "Queso cheddar",
+        "Ingredient": "Pepperoni",
         "Cuantity": "50 gr",
         "UMedida": "gr"
+      }
+    ]
+  },
+  {
+    "Imagen": "assets/img/Cocacola-Soda-500ml-Grande.jpg",
+    "Nombre": "Coca-Cola 500ml",
+    "Rubro": "Bebidas",
+    "PrecioVenta": 3.5,
+    "TiempoCocina": 0,
+    "Estado": "Disponible",
+    "Descripcion": "Una refrescante lata de CocaCola",
+    "Ingredients": []
+  },
+  {
+    "Imagen": "assets/img/pizza_casera_31391_orig.jpg",
+    "Nombre": "Pizza",
+    "Rubro": "Pizzas",
+    "PrecioVenta": 5.99,
+    "TiempoCocina": 10,
+    "Estado": "Disponible",
+    "Descripcion": "Una deliciosa pizza con queso y pepperoni",
+    "Ingredients": [
+      {
+        "Ingredient": "Salsa de tomate",
+        "Cuantity": "150 gr",
+        "UMedida": "ml"
       },
       {
-        "Ingredient": "Lechuga",
-        "Cuantity": "50 gr",
+        "Ingredient": "Queso mozzarella",
+        "Cuantity": "100 gr",
         "UMedida": "gr"
       },
       {
-        "Ingredient": "Tomate",
+        "Ingredient": "Pepperoni",
         "Cuantity": "50 gr",
         "UMedida": "gr"
       }
