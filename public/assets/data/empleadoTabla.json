@@ -1,26 +1,21 @@
 [
   {
-    "Id": 1,
-    "Nombre": "Juan",
-    "Apellido": "Pérez",
-    "Email": "juan.perez@example.com",
-    "Rol": "Empleado",
-    "Estado": 1
-  },
-  {
-    "Id": 1,
-    "Nombre": "Gonzalo",
-    "Apellido": "Lisanti",
-    "Email": "gonza.lisanti@example.com",
-    "Rol": "Cajero",
-    "Estado": 1
-  },
-  {
-    "Id": 1,
-    "Nombre": "Javier",
-    "Apellido": "Scandura",
-    "Email": "javier.scandura@example.com",
-    "Rol": "Cocinero",
-    "Estado": 1
+    "idUsuario": 1,
+    "nombre": "John",
+    "apellido": "Doe",
+    "email": "johndoe@example.com",
+    "clave": "password123",
+    "telefono": "1234567890",
+    "Rol": {
+      "idRol": 1,
+      "nombreRol": "Admin"
+    },
+    "Domicilio": {
+      "idDomicilio": 1,
+      "calle": "Street 123",
+      "numero": 123,
+      "localidad": "City"
+    }
   }
+  
 ]

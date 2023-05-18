@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Empleado } from "../../../interface/interfaces";
+import { Usuario, Rol, Domicilio } from "../../../interface/interfaces";
 
 interface AddEmpleadoModalProps {
   show: boolean;
   handleClose: () => void;
-  handleEmpleadoAdd: (empleado: Empleado) => void;
+  handleEmpleadoAdd: (empleado: Usuario) => void;
 }
 
 const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
@@ -16,16 +16,27 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
-  const [estado, setEstado] = useState(0);
-  const [selectedRol, setSelectedRol] = useState<string | null>(null);
-  const [roles, setRoles] = useState<string[]>([]);
-
+  const [clave, setClave] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
+  const [selectedDomicilio, setSelectedDomicilio] = useState<Domicilio | null>(null);
+  const [roles, setRoles] = useState<Rol[]>([]);
+  const [domicilios, setDomicilios] = useState<Domicilio[]>([]);
 
   useEffect(() => {
-    fetch("URL_DEL_ENDPOINT_ROLES")
+    fetch("/assets/data/productosEjemplo.json")
       .then((response) => response.json())
       .then((data) => {
         setRoles(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    fetch("/assets/data/productosEjemplo.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setDomicilios(data);
       })
       .catch((error) => {
         console.log(error);
@@ -34,13 +45,15 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const newEmpleado: Empleado = {
-      Id: 0,
-      Nombre: nombre,
-      Apellido: apellido,
-      Email: email,
-      Rol: selectedRol || "",
-      Estado: estado,
+    const newEmpleado: Usuario = {
+      idUsuario: 0,
+      nombre,
+      apellido,
+      email,
+      clave,
+      telefono,
+      Rol: selectedRol || { idRol: 0, nombreRol: "" },
+      Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: "" },
     };
 
     handleEmpleadoAdd(newEmpleado);
@@ -84,8 +97,18 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formEstado">
-            <Form.Label>Estado</Form.Label>
+          <Form.Group className="mb-3" controlId="formClave">
+            <Form.Label>Clave</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Ingrese clave"
+              value={clave}
+              onChange={(event) => setClave(event.target.value)}
+              required
+            />
+          </Form.Group>
+          {/* <Form.Group className="mb-3" controlId="formEstado"> */}
+            {/* <Form.Label>Estado</Form.Label>
             <Form.Control
               type="number"
               placeholder="Ingrese estado"
@@ -93,19 +116,55 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
               onChange={(event) => setEstado(Number(event.target.value))}
               required
             />
+          </Form.Group> */}
+          <Form.Group className="mb-3" controlId="formTelefono">
+            <Form.Label>Teléfono</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese teléfono"
+              value={telefono}
+              onChange={(event) => setTelefono(event.target.value)}
+              required
+            />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formRol">
             <Form.Label>Rol</Form.Label>
             <Form.Control
               as="select"
-              value={selectedRol || ""}
-              onChange={(event) => setSelectedRol(event.target.value)}
+              value={selectedRol?.idRol || ""}
+              onChange={(event) => {
+                const selectedIdRol = parseInt(event.target.value);
+                const selectedRol = roles.find((rol) => rol.idRol === selectedIdRol) || null;
+                setSelectedRol(selectedRol);
+              }}
               required
             >
               <option value="">Seleccione un rol</option>
               {roles.map((rol) => (
-                <option key={rol} value={rol}>
-                  {rol}
+                <option key={rol.idRol} value={rol.idRol}>
+                  {rol.nombreRol}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formDomicilio">
+            <Form.Label>Domicilio</Form.Label>
+            <Form.Control
+              as="select"
+              value={selectedDomicilio?.idDomicilio || ""}
+              onChange={(event) => {
+                const selectedIdDomicilio = parseInt(event.target.value);
+                const selectedDomicilio = domicilios.find(
+                  (domicilio) => domicilio.idDomicilio === selectedIdDomicilio
+                ) || null;
+                setSelectedDomicilio(selectedDomicilio);
+              }}
+              required
+            >
+              <option value="">Seleccione un domicilio</option>
+              {domicilios.map((domicilio) => (
+                <option key={domicilio.idDomicilio} value={domicilio.idDomicilio}>
+                  {domicilio.calle} {domicilio.numero}, {domicilio.localidad}
                 </option>
               ))}
             </Form.Control>

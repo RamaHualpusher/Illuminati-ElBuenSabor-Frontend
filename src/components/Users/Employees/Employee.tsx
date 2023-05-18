@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Empleado } from "../../../interface/interfaces";
+import { Usuario } from "../../../interface/interfaces";
 import { TablaGeneric } from "../../TableGeneric/TableGeneric";
 import { Container, Row, Col} from 'react-bootstrap';
 import SearchBar from "../../SearchBar/SearchBar";
 
 const Employee = () => {
-    const [employees, setEmployees] = useState<Empleado[]>([]);
-    const [employeesComplete, setEmployeesComplete] = useState<Empleado[]>([]);
+    const [employees, setEmployees] = useState<Usuario[]>([]);
+    const [employeesComplete, setEmployeesComplete] = useState<Usuario[]>([]);
 
     const columns = [
-        { label: "IdEmpleado", width: 100 },
-        { label: "Nombre", width: 200 },
-        { label: "Apellido", width: 200 },
-        { label: "Email", width: 200 },
+        { label: "idUsuario", width: 100 },
+        { label: "nombre", width: 200 },
+        { label: "apellido", width: 200 },
+        { label: "email", width: 200 },
     ];
 
     const data = employees
         ? employees.map((item) => [
-            item.Id.toString(),
-            item.Nombre.toString(),
-            item.Apellido.toString(),
-            item.Email.toString(),
+            item.idUsuario.toString(),
+            item.nombre.toString(),
+            item.apellido.toString(),
+            item.email.toString(),
         ])
         : [];
 
@@ -35,12 +35,12 @@ const Employee = () => {
     }, []);
 
     const filter = (searchParam: string) => {
-        const searchResult = employeesComplete.filter((employeeVal: Empleado) => {
+        const searchResult = employeesComplete.filter((employeeVal: Usuario) => {
             if (
-                employeeVal.Id.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-                employeeVal.Nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-                employeeVal.Apellido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-                employeeVal.Email.toString().toLowerCase().includes(searchParam.toLowerCase())
+                employeeVal.idUsuario.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+                employeeVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+                employeeVal.apellido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+                employeeVal.email.toString().toLowerCase().includes(searchParam.toLowerCase())
             ) {
                 return employeeVal;
             }
@@ -60,7 +60,7 @@ const Employee = () => {
             <Container fluid>
                 <Row className="mt-3">
                     <Col sm={10}>
-                        <h1>Buscar Empleado</h1>
+                        <h1>Buscar Usuario</h1>
                         <SearchBar onSearch={handleSearch} />
                     </Col>
                 </Row>
