@@ -183,7 +183,7 @@ const handleBotonDelete= (rowData:string[])=>{
     <Container>
       <Row className="justify-content-start align-items-center mb-3">
         <Col sm={10}>
-          <h1>Buscar Ingredientes</h1>
+          <h1>Buscar Productos</h1>
           <SearchBar onSearch={handleSearch} />
         </Col>
       </Row>
