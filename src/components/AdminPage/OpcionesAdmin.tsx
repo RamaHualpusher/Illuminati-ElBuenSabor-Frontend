@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import Employee from "../Users/Employees/Employee";
 import ProductosTable from "../Stock/Producto/ProductosTable";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
-import RubrosIngredientesTable from "../Stock/RubroIngrediente/RubroIngredientes";
-import RubrosProductosTable from "../Stock/RubroProducto/RubroProducto";
 import Bill from "../Bill/Bill";
 
-export default function OpcionesAdmin() {       
+export default function OpcionesAdmin() {
     //A MEDIDA QUE AGREGUEN NUEVOS OPTIONS CON RUTAS CAMBIEN EL
     //VALOR DEL BOTON (value="employee")
     const [selectedOption, setSelectedOption] = useState("Null");
@@ -144,40 +142,6 @@ export default function OpcionesAdmin() {
                 <div className="row justify-content-start mb-3">
                     <div className="col">
                         <button
-                            value="rubrosingredientes"
-                            onClick={handleOptionChange}
-                            className="btn btn-light btn-lg"
-                            style={{ color: "black", textDecoration: "none", width: "100%", border: "1px solid black" }}
-                        >
-                            <div className="card-body p-1">
-                                <h6 className="card-title mb-0" style={{ color: "black" }}>
-                                    Rubro Ingredientes
-                                </h6>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <div className="row justify-content-start mb-3">
-                    <div className="col">
-                        <button
-                            value="rubroproductos"
-                            onClick={handleOptionChange}
-                            className="btn btn-light btn-lg"
-                            style={{ color: "black", textDecoration: "none", width: "100%", border: "1px solid black" }}
-                        >
-                            <div className="card-body p-1">
-                                <h6 className="card-title mb-0" style={{ color: "black" }}>
-                                    Rubro Productos
-                                </h6>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <div className="row justify-content-start mb-3">
-                    <div className="col">
-                        <button
                             value="employee"
                             onClick={handleOptionChange}
                             className="btn btn-light btn-lg"
@@ -225,32 +189,12 @@ export default function OpcionesAdmin() {
                         </button>
                     </div>
                 </div>
-
-                <div className="row justify-content-start mb-3">
-                    <div className="col">
-                        <button
-                            value="employee"
-                            onClick={handleOptionChange}
-                            className="btn btn-light btn-lg"
-                            style={{ color: "black", textDecoration: "none", width: "100%", border: "1px solid black" }}
-                        >
-                            <div className="card-body p-1">
-                                <h6 className="card-title mb-0" style={{ color: "black" }}>
-                                    Rubro Ingredientes
-                                </h6>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-
             </div>
+            
             <div>
                 {selectedOption === "employee" && <Employee />}
-                {selectedOption === "productos" && <ProductosTable/>}
+                {selectedOption === "productos" && <ProductosTable />}
                 {selectedOption === "ingredientes" && <IngredientesTable />}
-                {selectedOption === "rubrosingredientes" && <RubrosIngredientesTable />}
-                {selectedOption === "rubroproductos" && <RubrosProductosTable url="/assets/data/dataTableRubrosProductos.json" />}
                 {selectedOption === "facturas" && <Bill />}
             </div>
 

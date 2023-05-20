@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
 import ProductosTable from "../Stock/Producto/ProductosTable";
-import RubrosIngredientesTable from "../Stock/RubroIngrediente/RubroIngredientes";
-import RubrosProductosTable from "../Stock/RubroProducto/RubroProducto";
 import Bill from "../Bill/Bill";
 
 export default function CocineroPage() {
@@ -61,8 +59,6 @@ export default function CocineroPage() {
                 {selectedOption === 'Pedidos' && <Bill/>}
                 {selectedOption === 'Producto' && <ProductosTable/>}
                 {selectedOption === 'Ingrediente' && <IngredientesTable />}
-                {selectedOption === 'Rubro Producto' && <RubrosProductosTable url="/assets/data/dataTableRubrosProductos.json" />}
-                {selectedOption === 'Rubro Ingrediente' && <RubrosIngredientesTable />}
             </div>
         </Form>
     )

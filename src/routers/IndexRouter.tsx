@@ -3,8 +3,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserRouter from "./UserRouter";
 import IngredientesTable from "../components/Stock/Ingrediente/IngredientesTable";
 import ProductosTable from "../components/Stock/Producto/ProductosTable";
-import RubrosIngredientesTable from "../components/Stock/RubroIngrediente/RubroIngredientes";
-import RubrosProductosTable from "../components/Stock/RubroProducto/RubroProducto";
 import ShoppingCart from "../components/ShoppingCart/ShoppingCart";
 import Admin from "../screens/Admin";
 import Cocinero from "../screens/Cocinero";
@@ -18,13 +16,11 @@ const IndexRouter = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<UserRouter />} />
-        <Route path="/admin" element={<Admin/>} />
-        <Route path="/cocinero" element={<Cocinero/>}/>
-        <Route path="/carrito" element={<ShoppingCart/>} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/cocinero" element={<Cocinero />} />
+        <Route path="/carrito" element={<ShoppingCart />} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
-        <Route path="/cocina/productos" element={<ProductosTable/>} />
-        <Route path="/cocina/rubros/ingredientes" element={<RubrosIngredientesTable />} />
-        <Route path="/cocina/rubros/productos" element={<RubrosProductosTable url="/assets/data/dataTableRubrosProductos.json" />} />
+        <Route path="/cocina/productos" element={<ProductosTable />} />
       </Routes>
     </BrowserRouter>
   );
