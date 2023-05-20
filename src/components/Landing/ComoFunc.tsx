@@ -17,87 +17,42 @@ const ComoFunc: React.FC<Props> = ({ backgroundImage }) => {
         justifyContent: "center"
       }}
     >
-      <div className="d-flex align-items-center justify-content-center" style={{ height: "100vh"  }}>
+      <div className="d-flex align-items-center justify-content-center" style={{ height: "100vh" }}>
         <Container>
-          <h1 >¿Como Funciona?</h1>
+          <h1 className="text-center">¿Cómo Funciona?</h1>
           <Row className="justify-content-center">
             <Col lg={4} md={6} xs={12} className="text-center">
-              <div
-                style={{
-                  width: "200px",
-                  height: "200px",
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(255,255,255,0.5)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "20px",
-                  border: "2px solid black",
-                }}
-              >
-                <i className="bi bi-hand-index-thumb" style={{ fontSize: "5rem", marginBottom: "10px" }}/>
+              <div className="circle-div bg-light d-flex flex-column align-items-center justify-content-center mb-4 rounded-circle mx-auto" style={{ width: "200px", height: "200px" }}>
+                <i className="bi bi-hand-index-thumb" style={{ fontSize: "5rem" }} />
               </div>
-              <div style={{ width: "200px" }}>
-               <h5>1-Elegí tu comida</h5> 
-                <div style={{ marginTop: "20px" }}>
-                  Encontra en nuestro Menu la comida que más te guste y ordená directamente desde la aplicación.
-                </div>
-              </div>
-
-            </Col>
-            <Col lg={4} md={6} xs={12} className="text-center">
-              <div
-                style={{
-                  width: "200px",
-                  height: "200px",
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(255,255,255,0.5)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "20px",
-                  border: "2px solid black",
-                }}
-              >
-                <i className="bi bi-bag" style={{ fontSize: "5rem", marginBottom: "10px" }}/> 
-              </div>
-              <div style={{ width: "200px" }}>
-                <h5>2-Hacé tu orden</h5> 
-                <div style={{ marginTop: "20px" }}>
-                  De forma fácil y rápida. Podes pagar online o en la entrega.
-                </div>
+              <div>
+                <h5>1-Elegí tu comida</h5>
+                <p>
+                  Encontrá en nuestro menú la comida que más te guste y ordénala directamente desde la aplicación.
+                </p>
               </div>
             </Col>
             <Col lg={4} md={6} xs={12} className="text-center">
-              <div
-                style={{
-                  width: "200px",
-                  height: "200px",
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(255,255,255,0.5)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "20px",
-                  border: "2px solid black",
-                }}
-              >
-                <i className="bi bi-car-front" style={{ fontSize: "5rem", marginBottom: "10px" }}/> 
+              <div className="circle-div bg-light d-flex flex-column align-items-center justify-content-center mb-4 rounded-circle mx-auto" style={{ width: "200px", height: "200px" }}>
+                <i className="bi bi-bag" style={{ fontSize: "5rem" }} />
               </div>
-              <div style={{ width: "200px" }}>
-                <h5> 3-Recibí tu comida</h5>
-                <div style={{ marginTop: "20px" }}>
-                  Retira tu pedido en nuestro local o te lo llevamos a la puerta de tu casa y disfruta de nuestra comida.
-                </div>
+              <div>
+                <h5>2-Hacé tu orden</h5>
+                <p>De forma fácil y rápida. Podés pagar online o en la entrega.</p>
+              </div>
+            </Col>
+            <Col lg={4} md={6} xs={12} className="text-center">
+              <div className="circle-div bg-light d-flex flex-column align-items-center justify-content-center mb-4 rounded-circle mx-auto" style={{ width: "200px", height: "200px" }}>
+                <i className="bi bi-car-front" style={{ fontSize: "5rem" }} />
+              </div>
+              <div>
+                <h5>3-Recibí tu comida</h5>
+                <p>Retirá tu pedido en nuestro local o te lo llevamos a la puerta de tu casa y disfrutá de nuestra comida.</p>
               </div>
             </Col>
           </Row>
         </Container>
       </div>
-
     </div>
   );
 };
