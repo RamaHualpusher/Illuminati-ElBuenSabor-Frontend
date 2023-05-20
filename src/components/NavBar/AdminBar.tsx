@@ -46,13 +46,6 @@ const AdminBar: FC = () => {
             }`}
         >
           <ul className="navbar-nav align-items-center">
-            <li className="nav-item d-lg-none">
-              <span className="nav-link me-4">Menu</span>
-            </li>
-            <li className="nav-item d-lg-none">
-              <span className="nav-link mb-2">Contacto</span>
-            </li>
-
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center">
                 <p className="nav-link mb-0">
