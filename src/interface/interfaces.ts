@@ -126,4 +126,3 @@ export interface Domicilio {
   numero: number;
   localidad: string;
 }
-//agregar aca las demas interfaces para completar dentro del codigo de front
