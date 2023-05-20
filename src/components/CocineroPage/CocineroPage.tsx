@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
 import ProductosTable from "../Stock/Producto/ProductosTable";
-import Bill from "../Bill/Bill";
 
 export default function CocineroPage() {
 
@@ -16,7 +15,7 @@ export default function CocineroPage() {
             <Form.Group >
                 <Form.Label >
                     <div  >
-                    <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Pedidos"}>
+                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Pedidos"}>
                             <div className="card my-3" style={{ border: "1px solid black" }}>
                                 <div className="card-body">
                                     <h5>Pedidos</h5>
@@ -37,27 +36,12 @@ export default function CocineroPage() {
                                 </div>
                             </div>
                         </button>
-                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Rubro Producto"}>
-                            <div className="card my-3" style={{ border: "1px solid black" }}>
-                                <div className="card-body">
-                                    <h5>Rubro Productos</h5>
-                                </div>
-                            </div>
-                        </button>
-                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Rubro Ingrediente"}>
-                            <div className="card my-3" style={{ border: "1px solid black" }}>
-                                <div className="card-body">
-                                    <h5>Rubro Ingredientes</h5>
-                                </div>
-                            </div>
-                        </button>
                     </div>
 
                 </Form.Label>
             </Form.Group>
             <div>
-                {selectedOption === 'Pedidos' && <Bill/>}
-                {selectedOption === 'Producto' && <ProductosTable/>}
+                {selectedOption === 'Producto' && <ProductosTable />}
                 {selectedOption === 'Ingrediente' && <IngredientesTable />}
             </div>
         </Form>
