@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Usuario, Rol, Domicilio } from "../../../interface/interfaces";
+import { Rol } from "../../../interface/Rol";
+import { Usuario } from "../../../interface/Usuario";
+import { Domicilio } from "../../../interface/Domicilio";
+
 
 interface AddEmpleadoModalProps {
   show: boolean;
@@ -53,7 +56,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       clave,
       telefono,
       Rol: selectedRol || { idRol: 0, nombreRol: "" },
-      Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: "" },
+      Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: ""},
     };
 
     handleEmpleadoAdd(newEmpleado);

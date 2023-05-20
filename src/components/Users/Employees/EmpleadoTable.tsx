@@ -3,7 +3,8 @@ import { Container, Row, Col, Button, Table, Dropdown, DropdownButton, InputGrou
 import axios from 'axios';
 import EditEmpleadoModal from './EditEmpleadoModal';
 import AddEmpleadoModal from './AddEmpleadoModal';
-import { Rol, Usuario } from "../../../interface/interfaces";
+import { Usuario } from "../../../interface/Usuario";
+
 
 export type EmpleadoTableProps = {
   url: string;

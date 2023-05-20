@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Rol, Usuario } from "../../../interface/interfaces";
+import { Rol } from "../../../interface/Rol";
+import { Usuario } from "../../../interface/Usuario";
 
 type EditEmpleadoModalProps = {
   show: boolean;
