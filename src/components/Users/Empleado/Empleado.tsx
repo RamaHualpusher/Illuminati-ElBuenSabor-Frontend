@@ -22,18 +22,18 @@ const Empleado = () => {
         { label: "Rol", width: 150 },
     ];
 
-    const data = empleados
-        ? empleados.map((item) => [
-            item.idUsuario.toString(),
-            item.nombre.toString(),
-            item.apellido.toString(),
-            item.email.toString(),
-            item.Rol.nombreRol.toString(),
-        ])
-        : [];
+    const data = empleados.map((item) => [
+        item.idUsuario.toString(),
+        item.nombre.toString(),
+        item.apellido.toString(),
+        item.email.toString(),
+        item.Rol.nombreRol.toString(),
+    ]);
+
+    const API_URL = "assets/data/empleadoTabla.json";
 
     useEffect(() => {
-        fetch('assets/data/empleadoTabla.json')
+        fetch(API_URL)
             .then((response) => response.json())
             .then((data) => {
                 setEmpleados(data);
@@ -48,7 +48,8 @@ const Empleado = () => {
                 employeeVal.idUsuario.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 employeeVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 employeeVal.apellido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-                employeeVal.email.toString().toLowerCase().includes(searchParam.toLowerCase())
+                employeeVal.email.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+                employeeVal.Rol.nombreRol.toString().toLowerCase().includes(searchParam.toLowerCase())
             ) {
                 return employeeVal;
             }
@@ -60,70 +61,49 @@ const Empleado = () => {
     const handleSearch = (searchParam: string) => {
         filter(searchParam);
     };
-    //BOTONES AGREGAR
-    const handleEmpleadoAdd = async (empleado: Usuario) => {
+
+    const handleEmpleadoRequest = async (method: string, endpoint: string, body?: object) => {
         try {
-            const response = await fetch("assets/data/empleadoTabla.json", {
-                method: 'POST',
+            const response = await fetch(endpoint, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(empleado),
+                body: JSON.stringify(body),
             });
-            const newProducto = await response.json();
 
-            setEmpleados([...empleados, newProducto]);
+            if (response.ok) {
+                const data = await response.json();
+                return data;
+            } else {
+                throw new Error('Error al realizar la solicitud');
+            }
         } catch (error) {
             console.log(error);
         }
     };
 
-    const handleAddModalOpen = () => {
-        setAddModalShow(true);
-    };
-    const handleAddModalClose = () => {
-        setAddModalShow(false);
-    };
-    //BOTONES EDIT
-    const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        setSelectedUsuario({
-            idUsuario: +rowData[0],
-            nombre: rowData[1],
-            apellido: rowData[2],
-            email: rowData[3],
-            telefono: rowData[4],
-            Rol: { idRol: parseInt(rowData[5]), nombreRol: '' },
-        });
-        setEditModalShow(true);
-    };
-
-    const handleEditModalClose = () => {
-        setEditModalShow(false);
-        setSelectedUsuario(null);
+    const handleEmpleadoAdd = async (empleado: Usuario) => {
+        const newEmpleado = await handleEmpleadoRequest('POST', API_URL, empleado);
+        if (newEmpleado) {
+            setEmpleados([...empleados, newEmpleado]);
+        }
     };
 
     const handleEmpleadoEdit = async (empleado: UsuarioEdit) => {
-        try {
-            const response = await fetch(`${"assets/data/empleadoTabla.json"}/${empleado.idUsuario}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(empleado),
-            });
-            const updatedProducto = await response.json();
-
-            const newData = [...empleados];
-            const index = newData.findIndex((item) => item.idUsuario === empleado.idUsuario);
-            newData[index] = updatedProducto;
-
+        const updatedEmpleado = await handleEmpleadoRequest(
+            'PUT',
+            `${API_URL}/${empleado.idUsuario}`,
+            empleado
+        );
+        if (updatedEmpleado) {
+            const newData = empleados.map((item) =>
+                item.idUsuario === empleado.idUsuario ? updatedEmpleado : item
+            );
             setEmpleados(newData);
-        } catch (error) {
-            console.log(error);
         }
     };
-    //BOTON DE ELIMINAR
+
     const handleEmpleadoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const usuario: UsuarioEdit = {
@@ -133,16 +113,41 @@ const Empleado = () => {
             email: rowData[3],
             telefono: rowData[4],
             Rol: { idRol: parseInt(rowData[5]), nombreRol: '' },
-        }
-        try {
-            await fetch(`${"assets/data/empleadoTabla.json"}/${usuario.idUsuario}`, {
-                method: 'DELETE',
-            });
+        };
 
+        try {
+            await handleEmpleadoRequest('DELETE', `${API_URL}/${usuario.idUsuario}`);
             setEmpleados(empleados.filter((item) => item.idUsuario !== usuario.idUsuario));
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleAddModalOpen = () => {
+        setAddModalShow(true);
+    };
+
+    const handleAddModalClose = () => {
+        setAddModalShow(false);
+    };
+
+    const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        const selectedEmpleado: UsuarioEdit = {
+            idUsuario: +rowData[0],
+            nombre: rowData[1],
+            apellido: rowData[2],
+            email: rowData[3],
+            telefono: rowData[4],
+            Rol: { idRol: parseInt(rowData[5]), nombreRol: '' },
+        };
+        setSelectedUsuario(selectedEmpleado);
+        setEditModalShow(true);
+    };
+
+    const handleEditModalClose = () => {
+        setEditModalShow(false);
+        setSelectedUsuario(null);
     };
 
     return (
@@ -163,7 +168,8 @@ const Empleado = () => {
                 </Row>
                 <Row className="mt-3">
                     <Col>
-                        <TablaGeneric columns={columns} data={data} showButton={true} buttonEdit={handleEditModalOpen} buttonDelete={handleEmpleadoDelete} />
+                        <TablaGeneric columns={columns} data={data} showButton={true}
+                            buttonEdit={handleEditModalOpen} buttonDelete={handleEmpleadoDelete} />
                     </Col>
                 </Row>
                 <AddEmpleadoModal
