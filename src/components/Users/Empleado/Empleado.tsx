@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Usuario } from "../../../interface/Usuario";
 import { TablaGeneric } from "../../TableGeneric/TableGeneric";
 import { Container, Row, Col} from 'react-bootstrap';
-import SearchBar from "../../Buscador/Buscador";
+import Buscador from "../../Buscador/Buscador";
 
 const Employee = () => {
     const [employees, setEmployees] = useState<Usuario[]>([]);
@@ -61,7 +61,7 @@ const Employee = () => {
                 <Row className="mt-3">
                     <Col sm={10}>
                         <h1>Buscar Empleado</h1>
-                        <SearchBar onSearch={handleSearch} />
+                        <Buscador onSearch={handleSearch} />
                     </Col>
                 </Row>
                 <Row className="mt-3">

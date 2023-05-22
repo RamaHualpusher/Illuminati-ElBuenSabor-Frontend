@@ -4,7 +4,7 @@ import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 import { Producto } from '../../../interface/interfaces';
 import { TablaGeneric} from '../../TableGeneric/TableGeneric';
-import SearchBar from '../../Buscador/Buscador';
+import Buscador from '../../Buscador/Buscador';
 
 interface ProductosTableProps { }
 
@@ -153,7 +153,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       <Row className="justify-content-start align-items-center mb-3">
         <Col sm={10}>
           <h1>Buscar Productos</h1>
-          <SearchBar onSearch={handleSearch} />
+          <Buscador onSearch={handleSearch} />
         </Col>
       </Row>
 

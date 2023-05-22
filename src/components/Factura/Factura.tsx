@@ -2,7 +2,7 @@ import { Pedido } from '../../interface/interfaces';
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col} from 'react-bootstrap';
 import { TablaGeneric } from '../TableGeneric/TableGeneric';
-import SearchBar from '../Buscador/Buscador';
+import Buscador from '../Buscador/Buscador';
 
 
 interface BillProps { }
@@ -60,7 +60,7 @@ const Bill: React.FC<BillProps> = () => {
       <Container fluid>
         <Row className='mt-3'>
           <Col sm={10}><h1>Buscar Factura</h1>
-            <SearchBar onSearch={handleSearch} />
+            <Buscador onSearch={handleSearch} />
           </Col>
         </Row>
         <Row className='mt-3'>

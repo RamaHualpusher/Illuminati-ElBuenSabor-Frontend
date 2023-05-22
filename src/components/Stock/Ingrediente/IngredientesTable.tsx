@@ -4,7 +4,7 @@ import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { Ingrediente } from '../../../interface/interfaces';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
-import SearchBar from '../../Buscador/Buscador';
+import Buscador from '../../Buscador/Buscador';
 
 interface IngredientesTableProps { }
 
@@ -162,7 +162,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         <Row className="justify-content-start align-items-center mb-3">
           <Col sm={10}>
             <h1>Buscar Ingredientes</h1>
-            <SearchBar onSearch={handleSearch} />
+            <Buscador onSearch={handleSearch} />
           </Col>
         </Row>
         <Row className="justify-content-start align-items-center mb-3">
