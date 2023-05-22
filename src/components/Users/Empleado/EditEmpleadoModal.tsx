@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { Rol } from "../../../interface/Rol";
-import { UsuarioEdit } from "../../../interface/Usuario";
+import { EditUsuarioFromAdmin } from "../../../interface/Usuario";
 
 interface EditEmpleadoModalProps {
   show: boolean;
   handleClose: () => void;
-  handleEmpleadoEdit: (empleado: UsuarioEdit) => void;
-  selectedEmpleado: UsuarioEdit | null;
+  handleEmpleadoEdit: (empleado: EditUsuarioFromAdmin) => void;
+  selectedEmpleado: EditUsuarioFromAdmin | null;
 }
 
 const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
@@ -48,7 +48,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
     event.preventDefault();
     if (selectedEmpleado) {
       const selectedRol = roles.find((rol) => rol.idRol === rolId);
-      const updatedEmpleado: UsuarioEdit = {
+      const updatedEmpleado: EditUsuarioFromAdmin = {
         ...selectedEmpleado,
         nombre,
         apellido,

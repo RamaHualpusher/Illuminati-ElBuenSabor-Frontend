@@ -12,7 +12,7 @@ export interface Usuario {
   Domicilio: Domicilio;
 }
 
-export interface UsuarioEdit {
+export interface EditUsuarioFromAdmin {
   idUsuario: number;
   nombre: string;
   apellido: string;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Usuario } from "../../../interface/Usuario";
-import { UsuarioEdit } from "../../../interface/Usuario";
+import { EditUsuarioFromAdmin } from "../../../interface/Usuario";
 import { TablaGeneric } from "../../TableGeneric/TableGeneric";
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import Buscador from "../../Buscador/Buscador";
@@ -12,7 +12,7 @@ const Empleado = () => {
     const [empleadosComplete, setEmpleadosComplete] = useState<Usuario[]>([]);
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
-    const [selectedUsuario, setSelectedUsuario] = useState<UsuarioEdit | null>(null);
+    const [selectedUsuario, setSelectedUsuario] = useState<EditUsuarioFromAdmin | null>(null);
 
     const columns = [
         { label: "idUsuario", width: 100 },
@@ -90,7 +90,7 @@ const Empleado = () => {
         }
     };
 
-    const handleEmpleadoEdit = async (empleado: UsuarioEdit) => {
+    const handleEmpleadoEdit = async (empleado: EditUsuarioFromAdmin) => {
         const updatedEmpleado = await handleEmpleadoRequest(
             'PUT',
             `${API_URL}/${empleado.idUsuario}`,
@@ -106,7 +106,7 @@ const Empleado = () => {
 
     const handleEmpleadoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const usuario: UsuarioEdit = {
+        const usuario: EditUsuarioFromAdmin = {
             idUsuario: +rowData[0],
             nombre: rowData[1],
             apellido: rowData[2],
@@ -133,7 +133,7 @@ const Empleado = () => {
 
     const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const selectedEmpleado: UsuarioEdit = {
+        const selectedEmpleado: EditUsuarioFromAdmin = {
             idUsuario: +rowData[0],
             nombre: rowData[1],
             apellido: rowData[2],
