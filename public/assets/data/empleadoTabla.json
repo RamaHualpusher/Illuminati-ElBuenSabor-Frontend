@@ -16,6 +16,24 @@
       "numero": 123,
       "localidad": "City"
     }
+  },
+  {
+    "idUsuario": 2,
+    "nombre": "Pepe",
+    "apellido": "Roberte",
+    "email": "pepeRob@example.com",
+    "clave": "password321",
+    "telefono": "1234567890",
+    "Rol": {
+      "idRol": 1,
+      "nombreRol": "Cajero"
+    },
+    "Domicilio": {
+      "idDomicilio": 1,
+      "calle": "Street 123",
+      "numero": 123,
+      "localidad": "City"
+    }
   }
   
 ]

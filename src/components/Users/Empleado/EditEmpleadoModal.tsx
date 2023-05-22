@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { Rol } from "../../../interface/Rol";
-import { Usuario } from "../../../interface/Usuario";
+import { UsuarioEdit } from "../../../interface/Usuario";
 
 interface EditEmpleadoModalProps {
   show: boolean;
   handleClose: () => void;
-  handleEmpleadoEdit: (empleado: Usuario) => void;
-  selectedEmpleado: Usuario | null;
+  handleEmpleadoEdit: (empleado: UsuarioEdit) => void;
+  selectedEmpleado: UsuarioEdit | null;
 }
 
 const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
@@ -19,7 +19,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
-  const [estado, setEstado] = useState("");
+  const [telefono, setTelefono] = useState("");
   const [rolId, setRolId] = useState<number | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
 
@@ -39,8 +39,8 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
       setNombre(selectedEmpleado.nombre);
       setApellido(selectedEmpleado.apellido);
       setEmail(selectedEmpleado.email);
-    //   setEstado(selectedEmpleado.estado.toString());
-      setRolId(selectedEmpleado.Rol?.idRol || null);
+      setTelefono(selectedEmpleado.telefono);
+      setRolId(selectedEmpleado.Rol.idRol);
     }
   }, [selectedEmpleado]);
 
@@ -48,18 +48,18 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
     event.preventDefault();
     if (selectedEmpleado) {
       const selectedRol = roles.find((rol) => rol.idRol === rolId);
-      const updatedEmpleado: Usuario = {
+      const updatedEmpleado: UsuarioEdit = {
         ...selectedEmpleado,
         nombre,
         apellido,
         email,
-        // estado: parseInt(estado),
-        // Rol: selectedRol || undefined,
+        Rol: selectedRol !== undefined ? selectedRol : selectedEmpleado.Rol,
       };
       handleEmpleadoEdit(updatedEmpleado);
     }
     handleClose();
   };
+
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -95,16 +95,6 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
               placeholder="Ingrese email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formEstado">
-            <Form.Label>Estado</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese estado"
-              value={estado}
-              onChange={(event) => setEstado(event.target.value)}
               required
             />
           </Form.Group>
