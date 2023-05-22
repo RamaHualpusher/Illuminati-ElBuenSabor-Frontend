@@ -3,12 +3,12 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { Rol } from "../../../interface/Rol";
 import { Usuario } from "../../../interface/Usuario";
 
-type EditEmpleadoModalProps = {
+interface EditEmpleadoModalProps {
   show: boolean;
   handleClose: () => void;
   handleEmpleadoEdit: (empleado: Usuario) => void;
   selectedEmpleado: Usuario | null;
-};
+}
 
 const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
   show,

@@ -64,7 +64,7 @@ const Employee = () => {
                         <Buscador onSearch={handleSearch} />
                     </Col>
                 </Row>
-                <Row className="mt-3">
+                <Row className="mt-3">              
                     <Col>
                         <TablaGeneric columns={columns} data={data} showButton={false} buttonEdit={defaultAct} buttonDelete={defaultAct}/>
                     </Col>

@@ -4,7 +4,6 @@ import { Rol } from "../../../interface/Rol";
 import { Usuario } from "../../../interface/Usuario";
 import { Domicilio } from "../../../interface/Domicilio";
 
-
 interface AddEmpleadoModalProps {
   show: boolean;
   handleClose: () => void;
@@ -21,13 +20,14 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [email, setEmail] = useState("");
   const [clave, setClave] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [selectedUsuario, setSelectedUsuario] = useState<Usuario | null>(null);
   const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
   const [selectedDomicilio, setSelectedDomicilio] = useState<Domicilio | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
   const [domicilios, setDomicilios] = useState<Domicilio[]>([]);
 
   useEffect(() => {
-    fetch("/assets/data/productosEjemplo.json")
+    fetch("/assets/data/idRolEjemplo.json")
       .then((response) => response.json())
       .then((data) => {
         setRoles(data);
@@ -58,11 +58,9 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       Rol: selectedRol || { idRol: 0, nombreRol: "" },
       Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: ""},
     };
-
     handleEmpleadoAdd(newEmpleado);
     handleClose();
   };
-
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -110,16 +108,6 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
               required
             />
           </Form.Group>
-          {/* <Form.Group className="mb-3" controlId="formEstado"> */}
-            {/* <Form.Label>Estado</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese estado"
-              value={estado}
-              onChange={(event) => setEstado(Number(event.target.value))}
-              required
-            />
-          </Form.Group> */}
           <Form.Group className="mb-3" controlId="formTelefono">
             <Form.Label>Teléfono</Form.Label>
             <Form.Control
