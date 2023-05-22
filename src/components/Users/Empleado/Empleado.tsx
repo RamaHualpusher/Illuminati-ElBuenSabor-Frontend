@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Usuario } from "../../../interface/Usuario";
 import { TablaGeneric } from "../../TableGeneric/TableGeneric";
 import { Container, Row, Col} from 'react-bootstrap';
-import SearchBar from "../../SearchBar/SearchBar";
+import SearchBar from "../../Buscador/Buscador";
 
 const Employee = () => {
     const [employees, setEmployees] = useState<Usuario[]>([]);

@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
-import { BackButton } from "../BackButtom/backButtom";
+import { BackButton } from "../BackButtom/BackButtom";
 
 const AdminBar: FC = () => {
   const { isAuthenticated, user } = useAuth0();

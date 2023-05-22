@@ -4,7 +4,7 @@ import ImagenMenu from "./ImagenMenu";
 import TarjetaComida from "./TarjetaComida";
 import { Products } from "../../interface/interfaces";
 import ComoFunc from "./ComoFunc";
-import SearchBar from "../SearchBar/SearchBar";
+import SearchBar from "../Buscador/Buscador";
 
 
 export default function Landing() {

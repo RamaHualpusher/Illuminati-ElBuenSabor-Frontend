@@ -2,7 +2,7 @@ import { Pedido } from '../../interface/interfaces';
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col} from 'react-bootstrap';
 import { TablaGeneric } from '../TableGeneric/TableGeneric';
-import SearchBar from '../SearchBar/SearchBar';
+import SearchBar from '../Buscador/Buscador';
 
 
 interface BillProps { }

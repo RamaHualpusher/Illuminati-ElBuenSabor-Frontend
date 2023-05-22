@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Employee from "../Users/Employees/Employee";
+import Employee from "../Users/Empleado/Empleado";
 import ProductosTable from "../Stock/Producto/ProductosTable";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
-import Bill from "../Bill/Bill";
+import Factura from "../Factura/Factura"
 
 export default function OpcionesAdmin() {
     //A MEDIDA QUE AGREGUEN NUEVOS OPTIONS CON RUTAS CAMBIEN EL
@@ -195,7 +195,7 @@ export default function OpcionesAdmin() {
                 {selectedOption === "employee" && <Employee />}
                 {selectedOption === "productos" && <ProductosTable />}
                 {selectedOption === "ingredientes" && <IngredientesTable />}
-                {selectedOption === "facturas" && <Bill />}
+                {selectedOption === "facturas" && <Factura />}
             </div>
 
         </div>

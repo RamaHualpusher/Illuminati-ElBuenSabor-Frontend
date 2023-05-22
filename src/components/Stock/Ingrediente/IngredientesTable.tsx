@@ -4,7 +4,7 @@ import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { Ingrediente } from '../../../interface/interfaces';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
-import SearchBar from '../../SearchBar/SearchBar';
+import SearchBar from '../../Buscador/Buscador';
 
 interface IngredientesTableProps { }
 

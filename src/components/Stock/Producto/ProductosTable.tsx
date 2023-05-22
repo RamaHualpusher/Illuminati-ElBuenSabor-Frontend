@@ -3,8 +3,8 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 import { Producto } from '../../../interface/interfaces';
-import { TablaGeneric, buttonAction} from '../../TableGeneric/TableGeneric';
-import SearchBar from '../../SearchBar/SearchBar';
+import { TablaGeneric} from '../../TableGeneric/TableGeneric';
+import SearchBar from '../../Buscador/Buscador';
 
 interface ProductosTableProps { }
 
@@ -16,6 +16,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   const [producComplete, setProducComplete] = useState<Producto[]>([]);
 
   useEffect(() => {
+    
 
     const fetchData = async () => {
       try {
@@ -51,7 +52,6 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
 
   const handleEditModalOpen = (rowData: string[],e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    //let producto:Producto=
     setSelectedProducto({
       id:+rowData[0],
       nombre:rowData[1],
@@ -148,37 +148,6 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     item.tiempo.toString(),
     item.precio.toString()
   ]);
-
-
-
-  
-
-/*const handleBotonEdit= (rowData:string[])=>{
-  let usar:Producto={
-    id:+rowData[0],
-    nombre:rowData[1],
-    rubro:rowData[2],
-    tiempo:+rowData[3],
-    precio:+rowData[4],
-    }
-  handleEditModalOpen(usar);
-}
-const handleBotonDelete= (rowData:string[])=>{
-  let usar:Producto={
-    id:+rowData[0],
-    nombre:rowData[1],
-    rubro:rowData[2],
-    tiempo:+rowData[3],
-    precio:+rowData[4],
-    }
-  handleProductoDelete(usar);
-}*/
-
-  /*const botones:buttonAction[]=[
-    {label:"Editar",onClick:handleBotonEdit},
-    {label:"Eliminar",onClick:handleBotonDelete}
-  ]*/
-
   return (
     <Container>
       <Row className="justify-content-start align-items-center mb-3">
@@ -197,48 +166,6 @@ const handleBotonDelete= (rowData:string[])=>{
       </Row>
       <Row>
         <TablaGeneric columns={columns} data={data}  buttonEdit={handleEditModalOpen} buttonDelete={handleProductoDelete} showButton={true}/>
-
-        {/*
-        <Col>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>NOMBRE</th>
-                <th>RUBRO</th>
-                <th>TIEMPO (min)</th>
-                <th>PRECIO</th>
-                <th>EDITAR</th>
-                <th>ELIMINAR</th>
-              </tr>
-            </thead>
-            <tbody>
-              {order.map((producto) => (
-                <tr key={producto.id}>
-                  <td>{producto.nombre}</td>
-                  <td>{producto.rubro}</td>
-                  <td>{producto.tiempo}</td>
-                  <td>${producto.precio}</td>
-                  <td>
-                    <Button
-                      variant="primary"
-                      onClick={() => handleEditModalOpen(producto)}
-                    >
-                      Editar
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      variant="danger"
-                      onClick={() => handleProductoDelete(producto)}
-                    >
-                      Eliminar
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Col>*/}
       </Row>
       <EditProductoModal
         show={editModalShow}
