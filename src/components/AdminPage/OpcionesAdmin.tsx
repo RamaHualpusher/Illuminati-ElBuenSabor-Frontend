@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import Employee from "../Users/Empleado/Empleado";
 import ProductosTable from "../Stock/Producto/ProductosTable";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
-import Factura from "../Factura/Factura"
+import Factura from "../Factura/Factura";
+import Cliente from "../Users/Clientes/Clientes";
 
 export default function OpcionesAdmin() {
     //A MEDIDA QUE AGREGUEN NUEVOS OPTIONS CON RUTAS CAMBIEN EL
@@ -24,8 +25,7 @@ export default function OpcionesAdmin() {
                             value="employee"
                             onClick={handleOptionChange}
                             className="btn btn-light btn-lg"
-                            style={{ color: "black", textDecoration: "none", width: "100%", border: "1px solid black" }}
-                        >
+                            style={{ color: "black", textDecoration: "none", width: "100%", border: "1px solid black" }}>
                             <div className="card-body p-1">
                                 <h6 className="card-title mb-0" style={{ color: "black" }}>
                                     Empleados
@@ -38,7 +38,7 @@ export default function OpcionesAdmin() {
                 <div className="row justify-content-start mb-3">
                     <div className="col">
                         <button
-                            value="employee"
+                            value="clientes"
                             onClick={handleOptionChange}
                             className="btn btn-light btn-lg"
                             style={{ color: "black", textDecoration: "none", width: "100%", border: "1px solid black" }}
@@ -196,6 +196,7 @@ export default function OpcionesAdmin() {
                 {selectedOption === "productos" && <ProductosTable />}
                 {selectedOption === "ingredientes" && <IngredientesTable />}
                 {selectedOption === "facturas" && <Factura />}
+                {selectedOption === "clientes" && <Cliente />}
             </div>
 
         </div>

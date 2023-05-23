@@ -1,30 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Rol } from "../../../interface/Rol";
 import { Usuario } from "../../../interface/Usuario";
+import { Rol } from "../../../interface/Rol";
 import { Domicilio } from "../../../interface/Domicilio";
 
-interface AddEmpleadoModalProps {
+interface EditClienteModalProps {
   show: boolean;
   handleClose: () => void;
-  handleEmpleadoAdd: (empleado: Usuario) => void;
+  handleClienteEdit: (cliente: Usuario) => void;
+  selectedCliente: Usuario | null;
 }
 
-const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
+const EditClienteModal: React.FC<EditClienteModalProps> = ({
   show,
   handleClose,
-  handleEmpleadoAdd,
+  handleClienteEdit,
+  selectedCliente,
 }) => {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
-  const [clave, setClave] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [selectedUsuario, setSelectedUsuario] = useState<Usuario | null>(null);
-  const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
-  const [selectedDomicilio, setSelectedDomicilio] = useState<Domicilio | null>(null);
+  const [rolId, setRolId] = useState<number | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
-  const [domicilios, setDomicilios] = useState<Domicilio[]>([]);
+  const [domicilio, setDomicilio] = useState<Domicilio>({
+    idDomicilio: 0,
+    calle: "",
+    numero: 0,
+    localidad: "",
+  });
 
   useEffect(() => {
     fetch("/assets/data/idRolEjemplo.json")
@@ -35,36 +39,41 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       .catch((error) => {
         console.log(error);
       });
-
-    fetch("/assets/data/productosEjemplo.json")
-      .then((response) => response.json())
-      .then((data) => {
-        setDomicilios(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }, []);
+
+  useEffect(() => {
+    if (selectedCliente) {
+      setNombre(selectedCliente.nombre);
+      setApellido(selectedCliente.apellido);
+      setEmail(selectedCliente.email);
+      setTelefono(selectedCliente.telefono);
+      setRolId(selectedCliente.Rol.idRol);
+      setDomicilio(selectedCliente.Domicilio);
+    }
+  }, [selectedCliente]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const newEmpleado: Usuario = {
-      idUsuario: 0,
-      nombre,
-      apellido,
-      email,
-      clave,
-      telefono,
-      Rol: selectedRol || { idRol: 0, nombreRol: "" },
-      Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: ""},
-    };
-    handleEmpleadoAdd(newEmpleado);
+    if (selectedCliente) {
+      const selectedRol = roles.find((rol) => rol.idRol === rolId);
+      const updatedCliente: Usuario = {
+        ...selectedCliente,
+        nombre,
+        apellido,
+        email,
+        telefono,
+        Rol: selectedRol !== undefined ? selectedRol : selectedCliente.Rol,
+        Domicilio: domicilio,
+      };
+      handleClienteEdit(updatedCliente);
+    }
     handleClose();
   };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar Empleado</Modal.Title>
+        <Modal.Title>Editar Cliente</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
@@ -91,20 +100,10 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
           <Form.Group className="mb-3" controlId="formEmail">
             <Form.Label>Email</Form.Label>
             <Form.Control
-              type="text"
+              type="email"
               placeholder="Ingrese email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formClave">
-            <Form.Label>Clave</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Ingrese clave"
-              value={clave}
-              onChange={(event) => setClave(event.target.value)}
               required
             />
           </Form.Group>
@@ -120,14 +119,9 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
           </Form.Group>
           <Form.Group className="mb-3" controlId="formRol">
             <Form.Label>Rol</Form.Label>
-            <Form.Control
-              as="select"
-              value={selectedRol?.idRol || ""}
-              onChange={(event) => {
-                const selectedIdRol = parseInt(event.target.value);
-                const selectedRol = roles.find((rol) => rol.idRol === selectedIdRol) || null;
-                setSelectedRol(selectedRol);
-              }}
+            <Form.Select
+              value={rolId || ""}
+              onChange={(event) => setRolId(parseInt(event.target.value))}
               required
             >
               <option value="">Seleccione un rol</option>
@@ -136,29 +130,46 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
                   {rol.nombreRol}
                 </option>
               ))}
-            </Form.Control>
+            </Form.Select>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formDomicilio">
-            <Form.Label>Domicilio</Form.Label>
+          <Form.Group className="mb-3" controlId="formCalle">
+            <Form.Label>Calle</Form.Label>
             <Form.Control
-              as="select"
-              value={selectedDomicilio?.idDomicilio || ""}
-              onChange={(event) => {
-                const selectedIdDomicilio = parseInt(event.target.value);
-                const selectedDomicilio = domicilios.find(
-                  (domicilio) => domicilio.idDomicilio === selectedIdDomicilio
-                ) || null;
-                setSelectedDomicilio(selectedDomicilio);
-              }}
+              type="text"
+              placeholder="Ingrese calle"
+              value={domicilio.calle}
+              onChange={(event) =>
+                setDomicilio({ ...domicilio, calle: event.target.value })
+              }
               required
-            >
-              <option value="">Seleccione un domicilio</option>
-              {domicilios.map((domicilio) => (
-                <option key={domicilio.idDomicilio} value={domicilio.idDomicilio}>
-                  {domicilio.calle} {domicilio.numero} {domicilio.localidad}
-                </option>
-              ))}
-            </Form.Control>
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formNumero">
+            <Form.Label>Número</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Ingrese número"
+              value={domicilio.numero}
+              onChange={(event) =>
+                setDomicilio({
+                  ...domicilio,
+                  numero: parseInt(event.target.value),
+                })
+              }
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formLocalidad">
+            <Form.Label>Localidad</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese localidad"
+              value={domicilio.localidad}
+              onChange={(event) =>
+                setDomicilio({ ...domicilio, localidad: event.target.value })
+              }
+              required
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -166,7 +177,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
             Cancelar
           </Button>
           <Button variant="primary" type="submit">
-            Agregar
+            Guardar Cambios
           </Button>
         </Modal.Footer>
       </Form>
@@ -174,4 +185,4 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   );
 };
 
-export default AddEmpleadoModal;
+export default EditClienteModal;

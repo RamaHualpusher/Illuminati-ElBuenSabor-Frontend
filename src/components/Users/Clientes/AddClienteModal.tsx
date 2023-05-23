@@ -4,16 +4,16 @@ import { Rol } from "../../../interface/Rol";
 import { Usuario } from "../../../interface/Usuario";
 import { Domicilio } from "../../../interface/Domicilio";
 
-interface AddEmpleadoModalProps {
+interface AddClienteModalProps {
   show: boolean;
   handleClose: () => void;
-  handleEmpleadoAdd: (empleado: Usuario) => void;
+  handleClienteAdd: (cliente: Usuario) => void;
 }
 
-const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
+const AddClienteModal: React.FC<AddClienteModalProps> = ({
   show,
   handleClose,
-  handleEmpleadoAdd,
+  handleClienteAdd,
 }) => {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
@@ -36,7 +36,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
         console.log(error);
       });
 
-    fetch("/assets/data/productosEjemplo.json")
+    fetch("/assets/data/clienteTabla.json")
       .then((response) => response.json())
       .then((data) => {
         setDomicilios(data);
@@ -48,7 +48,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const newEmpleado: Usuario = {
+    const newCliente: Usuario = {
       idUsuario: 0,
       nombre,
       apellido,
@@ -56,15 +56,16 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       clave,
       telefono,
       Rol: selectedRol || { idRol: 0, nombreRol: "" },
-      Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: ""},
+      Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: "" },
     };
-    handleEmpleadoAdd(newEmpleado);
+    handleClienteAdd(newCliente);
     handleClose();
   };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar Empleado</Modal.Title>
+        <Modal.Title>Agregar Cliente</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
@@ -155,7 +156,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
               <option value="">Seleccione un domicilio</option>
               {domicilios.map((domicilio) => (
                 <option key={domicilio.idDomicilio} value={domicilio.idDomicilio}>
-                  {domicilio.calle} {domicilio.numero} {domicilio.localidad}
+                  {domicilio.calle}, {domicilio.numero}, {domicilio.localidad}
                 </option>
               ))}
             </Form.Control>
@@ -174,4 +175,4 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   );
 };
 
-export default AddEmpleadoModal;
+export default AddClienteModal;
