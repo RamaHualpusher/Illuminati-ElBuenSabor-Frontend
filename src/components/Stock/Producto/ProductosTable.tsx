@@ -3,8 +3,9 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
 import { Producto } from '../../../interface/interfaces';
-import { TablaGeneric} from '../../TableGeneric/TableGeneric';
+import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 import Buscador from '../../Buscador/Buscador';
+import { handleRequest } from '../../FuncionRequest/FuncionRequest';
 
 interface ProductosTableProps { }
 
@@ -16,12 +17,9 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   const [producComplete, setProducComplete] = useState<Producto[]>([]);
 
   useEffect(() => {
-    
-
     const fetchData = async () => {
       try {
-        const response = await fetch("/assets/data/productosEjemplo.json");
-        const responseData = await response.json();
+        const responseData = await handleRequest('GET', '/assets/data/productosEjemplo.json');
         setProduc(responseData);
         setProducComplete(responseData);
       } catch (error) {
@@ -49,16 +47,15 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     filter(searchParam);
   };
 
-
-  const handleEditModalOpen = (rowData: string[],e:React.MouseEvent<HTMLButtonElement>) => {
+  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setSelectedProducto({
-      id:+rowData[0],
-      nombre:rowData[1],
-      rubro:rowData[2],
-      tiempo:+rowData[3],
-      precio:+rowData[4],
-      });
+      id: +rowData[0],
+      nombre: rowData[1],
+      rubro: rowData[2],
+      tiempo: +rowData[3],
+      precio: +rowData[4],
+    });
     setEditModalShow(true);
   };
 
@@ -77,14 +74,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
 
   const handleProductoEdit = async (producto: Producto) => {
     try {
-      const response = await fetch(`${"/assets/data/productosEjemplo.json"}/${producto.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(producto),
-      });
-      const updatedProducto = await response.json();
+      const updatedProducto = await handleRequest('PUT', `/assets/data/productosEjemplo.json/${producto.id}`, producto);
 
       const newData = [...produc];
       const index = newData.findIndex((item) => item.id === producto.id);
@@ -98,14 +88,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
 
   const handleProductoAdd = async (producto: Producto) => {
     try {
-      const response = await fetch("/assets/data/productosEjemplo.json", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(producto),
-      });
-      const newProducto = await response.json();
+      const newProducto = await handleRequest('POST', '/assets/data/productosEjemplo.json', producto);
 
       setProduc([...produc, newProducto]);
     } catch (error) {
@@ -113,19 +96,17 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     }
   };
 
-  const handleProductoDelete = async (rowData: string[], e:React.MouseEvent<HTMLButtonElement>) => {
+  const handleProductoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const producto:Producto={
-      id:+rowData[0],
-      nombre:rowData[1],
-      rubro:rowData[2],
-      tiempo:+rowData[3],
-      precio:+rowData[4],
-      }
+    const producto: Producto = {
+      id: +rowData[0],
+      nombre: rowData[1],
+      rubro: rowData[2],
+      tiempo: +rowData[3],
+      precio: +rowData[4],
+    };
     try {
-      await fetch(`${"/assets/data/productosEjemplo.json"}/${producto.id}`, {
-        method: 'DELETE',
-      });
+      await handleRequest('DELETE', `/assets/data/productosEjemplo.json/${producto.id}`);
 
       setProduc(produc.filter((item) => item.id !== producto.id));
     } catch (error) {
@@ -134,7 +115,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   };
 
   const columns = [
-    {label:"Id", width:10},
+    { label: "Id", width: 10 },
     { label: "Nombre", width: 150 },
     { label: "Rubro", width: 100 },
     { label: "Tiempo (min)", width: 60 },
@@ -148,6 +129,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     item.tiempo.toString(),
     item.precio.toString()
   ]);
+
   return (
     <Container>
       <Row className="justify-content-start align-items-center mb-3">
@@ -165,7 +147,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         </Col>
       </Row>
       <Row>
-        <TablaGeneric columns={columns} data={data}  buttonEdit={handleEditModalOpen} buttonDelete={handleProductoDelete} showButton={true}/>
+        <TablaGeneric columns={columns} data={data} showButton={true} buttonEdit={handleEditModalOpen} buttonDelete={handleProductoDelete} />
       </Row>
       <EditProductoModal
         show={editModalShow}
