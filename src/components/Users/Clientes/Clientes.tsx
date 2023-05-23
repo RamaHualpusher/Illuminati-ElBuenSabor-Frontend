@@ -6,7 +6,6 @@ import { TablaGeneric } from "../../TableGeneric/TableGeneric";
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import Buscador from "../../Buscador/Buscador";
 import EditClienteModal from "./EditClienteModal";
-import AddClienteModal from "./AddClienteModal";
 
 const Clientes = () => {
     const [clientes, setClientes] = useState<Usuario[]>([]);
@@ -179,13 +178,7 @@ const Clientes = () => {
                         <h1>Buscar Cliente</h1>
                         <Buscador onSearch={handleSearch} />
                     </Col>
-                    <Row className="mb-3">
-                        <Col className="d-flex justify-content-start">
-                            <Button variant="primary" onClick={handleAddModalOpen}>
-                                Agregar Cliente
-                            </Button>
-                        </Col>
-                    </Row>
+                    
                 </Row>
                 <Row className="mt-3">
                     <Col>
@@ -193,11 +186,6 @@ const Clientes = () => {
                             buttonEdit={handleEditModalOpen} buttonDelete={handleClienteDelete} />
                     </Col>
                 </Row>
-                <AddClienteModal
-                    show={addModalShow}
-                    handleClose={handleAddModalClose}
-                    handleClienteAdd={handleClienteAdd} />
-
                 <EditClienteModal
                     show={editModalShow}
                     handleClose={handleEditModalClose}
