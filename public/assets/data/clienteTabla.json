@@ -1,5 +1,4 @@
-{
-    "usuarios": [
+[
       {
         "idUsuario": 1,
         "nombre": "Juan",
@@ -55,5 +54,5 @@
         }
       }
     ]
-  }
+  
   

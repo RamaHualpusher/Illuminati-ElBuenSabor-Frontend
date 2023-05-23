@@ -156,7 +156,7 @@ const AddClienteModal: React.FC<AddClienteModalProps> = ({
               <option value="">Seleccione un domicilio</option>
               {domicilios.map((domicilio) => (
                 <option key={domicilio.idDomicilio} value={domicilio.idDomicilio}>
-                  {domicilio.calle}, {domicilio.numero}, {domicilio.localidad}
+                  {domicilio.calle} {domicilio.numero} {domicilio.localidad}
                 </option>
               ))}
             </Form.Control>
