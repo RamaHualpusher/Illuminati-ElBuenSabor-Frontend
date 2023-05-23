@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Usuario } from "../../../interface/Usuario";
-import { Rol } from "../../../interface/Rol";
-import { Domicilio } from "../../../interface/Domicilio";
 import { TablaGeneric } from "../../TableGeneric/TableGeneric";
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import Buscador from "../../Buscador/Buscador";
