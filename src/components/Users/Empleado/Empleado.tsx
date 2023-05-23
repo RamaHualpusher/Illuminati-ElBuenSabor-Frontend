@@ -6,7 +6,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import Buscador from "../../Buscador/Buscador";
 import EditEmpleadoModal from "./EditEmpleadoModal";
 import AddEmpleadoModal from "./AddEmpleadoModal";
-import { handleRequest } from "../../FuncionesAPI/FuncionesAPI";
+import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 
 const Empleado = () => {
     const [empleados, setEmpleados] = useState<Usuario[]>([]);
@@ -48,7 +48,6 @@ const Empleado = () => {
     const filter = (searchParam: string) => {
         const searchResult = empleadosComplete.filter((employeeVal: Usuario) => {
             if (
-                employeeVal.idUsuario.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 employeeVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 employeeVal.apellido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 employeeVal.email.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
