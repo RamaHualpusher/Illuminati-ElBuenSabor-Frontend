@@ -53,6 +53,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
         nombre,
         apellido,
         email,
+        telefono,
         Rol: selectedRol !== undefined ? selectedRol : selectedEmpleado.Rol,
       };
       handleEmpleadoEdit(updatedEmpleado);
@@ -95,6 +96,16 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
               placeholder="Ingrese email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formTelefono">
+            <Form.Label>Telefono</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese Teléfono"
+              value={telefono}
+              onChange={(event) => setTelefono(event.target.value)}
               required
             />
           </Form.Group>

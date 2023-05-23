@@ -20,7 +20,6 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [email, setEmail] = useState("");
   const [clave, setClave] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [selectedUsuario, setSelectedUsuario] = useState<Usuario | null>(null);
   const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
   const [selectedDomicilio, setSelectedDomicilio] = useState<Domicilio | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
