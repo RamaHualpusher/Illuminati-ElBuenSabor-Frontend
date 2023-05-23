@@ -65,13 +65,6 @@ const Clientes = () => {
         filter(searchParam);
     };
 
-    const handleClienteAdd = async (cliente: Usuario) => {
-        const newCliente = await handleRequest('POST', API_URL, cliente);
-        if (newCliente) {
-            setClientes([...clientes, newCliente]);
-        }
-    };
-
     const handleClienteEdit = async (cliente: Usuario) => {
         const updatedCliente = await handleRequest(
             'PUT',
