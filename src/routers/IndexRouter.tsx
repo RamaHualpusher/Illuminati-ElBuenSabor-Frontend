@@ -3,12 +3,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserRouter from "./UserRouter";
 import IngredientesTable from "../components/Stock/Ingrediente/IngredientesTable";
 import ProductosTable from "../components/Stock/Producto/ProductosTable";
-import ShoppingCart from "../components/CarritoCompras/CarritoCompras";
+import CarritoCompras from "../components/CarritoCompras/CarritoCompras";
 import Admin from "../screens/Admin";
 import Cocinero from "../screens/Cocinero";
+import DetalleProducto from "../screens/DetalleProducto";
 
 // import Cashier from "../screens/Cashier";
-// import Detail from "../screens/Detail";
 // import Delivery from "../screens/Delivery"
 
 const IndexRouter = () => {
@@ -18,9 +18,10 @@ const IndexRouter = () => {
         <Route path="/" element={<UserRouter />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/cocinero" element={<Cocinero />} />
-        <Route path="/carrito" element={<ShoppingCart />} />
+        <Route path="/carrito" element={<CarritoCompras />} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />
+        <Route path="/productos/:id" element={<DetalleProducto />} />
       </Routes>
     </BrowserRouter>
   );
