@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Producto } from "../../../interface/interfaces";
-import axios from "axios";
+import { ProductoManufacturado } from "../../../interface/ProductoManufacturado";
+import { Rubro } from "../../../interface/Rubro";
 
-type EditProductoModalProps = {
+interface EditProductoModalProps {
   show: boolean;
   handleClose: () => void;
-  handleProductoEdit: (producto: Producto) => void;
-  selectedProducto: Producto | null;
-};
-
-type Rubro = {
-  id: number;
-  nombre: string;
-};
+  handleProductoEdit: (producto: ProductoManufacturado) => void;
+  selectedProducto: ProductoManufacturado | null;
+}
 
 const EditProductoModal = ({
   show,
@@ -22,17 +17,17 @@ const EditProductoModal = ({
   selectedProducto,
 }: EditProductoModalProps) => {
   const [nombre, setNombre] = useState(selectedProducto?.nombre || "");
-  const [rubro, setRubro] = useState(selectedProducto?.rubro || "");
-  const [tiempo, setTiempo] = useState(selectedProducto?.tiempo || 0);
-  const [precio, setPrecio] = useState(selectedProducto?.precio || 0);
+  const [rubro, setRubro] = useState(selectedProducto?.Rubro?.nombre || "");
+  const [tiempo, setTiempo] = useState(selectedProducto?.tiempoEstimadoCocina || 0);
+  //const [precio, setPrecio] = useState(selectedProducto?.precio || 0); //Implementar precio
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [rubroId, setRubroId] = useState<number | null>(null);
 
   useEffect(() => {
-    axios
-      .get<Rubro[]>("/assets/data/rubrosProductosEjemplo.json")
-      .then((response) => {
-        setRubros(response.data);
+    fetch("/assets/data/rubrosProductosEjemplo.json")
+      .then((response) => response.json())
+      .then((data: Rubro[]) => {
+        setRubros(data);
       })
       .catch((error) => {
         console.log(error);
@@ -41,21 +36,26 @@ const EditProductoModal = ({
 
   useEffect(() => {
     setNombre(selectedProducto?.nombre || "");
-    setRubro(selectedProducto?.rubro || "");
-    setTiempo(selectedProducto?.tiempo || 0);
-    setPrecio(selectedProducto?.precio || 0);
+    setRubro(selectedProducto?.Rubro?.nombre || "");
+    setTiempo(selectedProducto?.tiempoEstimadoCocina || 0);
+    //setPrecio(selectedProducto?.precio || 0); //Implementar precio
   }, [selectedProducto]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedProducto) {
-      const selectedRubro = rubros.find((rubro) => rubro.id === rubroId);
-      const updatedProducto: Producto = {
-        id: selectedProducto.id,
+      const selectedRubro = rubros.find((rubro) => rubro.idRubro === rubroId);
+      const updatedProducto: ProductoManufacturado = {
+        idProductoManufacturado: selectedProducto.idProductoManufacturado,
         nombre,
-        rubro: selectedRubro?.nombre || "",
-        tiempo,
-        precio,
+        tiempoEstimadoCocina: tiempo,
+        denominacion: selectedProducto.denominacion,
+        imagen: selectedProducto.imagen,
+        stockActual: selectedProducto.stockActual,
+        stockMinimo: selectedProducto.stockMinimo,
+        preparacion: selectedProducto.preparacion,
+        Ingrediente: selectedProducto.Ingrediente,
+        Rubro: selectedRubro || { idRubro: 0, nombre: "" },
       };
       handleProductoEdit(updatedProducto);
     }
@@ -91,44 +91,44 @@ const EditProductoModal = ({
             >
               <option value="">Seleccione un rubro</option>
               {rubros.map((rubro) => (
-            <option key={rubro.id} value={rubro.id}>
-              {rubro.nombre}
-            </option>
-          ))}
-        </Form.Select>
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formTiempo">
-        <Form.Label>Tiempo (min)</Form.Label>
-        <Form.Control
-          type="number"
-          placeholder="Ingrese tiempo en minutos"
-          value={tiempo}
-          onChange={(event) => setTiempo(parseInt(event.target.value))}
-          required
-        />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="formPrecio">
-        <Form.Label>Precio</Form.Label>
-        <Form.Control
-          type="number"
-          placeholder="Ingrese precio"
-          value={precio}
-          onChange={(event) => setPrecio(parseFloat(event.target.value))}
-          required
-        />
-      </Form.Group>
-    </Modal.Body>
-    <Modal.Footer>
-      <Button variant="secondary" onClick={handleClose}>
-        Cancelar
-      </Button>
-      <Button variant="primary" type="submit">
-        Guardar Cambios
-      </Button>
-    </Modal.Footer>
-  </Form>
-</Modal>
-);
+                <option key={rubro.idRubro} value={rubro.idRubro}>
+                  {rubro.nombre}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formTiempo">
+            <Form.Label>Tiempo (min)</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Ingrese tiempo en minutos"
+              value={tiempo}
+              onChange={(event) => setTiempo(parseInt(event.target.value))}
+              required
+            />
+          </Form.Group>
+          {/* <Form.Group className="mb-3" controlId="formPrecio">
+            <Form.Label>Precio</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Ingrese precio"
+              value={precio}
+              onChange={(event) => setPrecio(parseFloat(event.target.value))}
+              required
+            />
+          </Form.Group> */}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancelar
+          </Button>
+          <Button variant="primary" type="submit">
+            Guardar Cambios
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  );
 };
 
 export default EditProductoModal;

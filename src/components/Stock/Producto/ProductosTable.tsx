@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
-import { Producto } from '../../../interface/interfaces';
+import { ProductoManufacturado } from '../../../interface/ProductoManufacturado';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 import Buscador from '../../Buscador/Buscador';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
@@ -12,14 +12,14 @@ interface ProductosTableProps { }
 const ProductosTable: React.FC<ProductosTableProps> = () => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
-  const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
-  const [produc, setProduc] = useState<Producto[]>([]);
-  const [producComplete, setProducComplete] = useState<Producto[]>([]);
+  const [selectedProducto, setSelectedProducto] = useState<ProductoManufacturado | null>(null);
+  const [produc, setProduc] = useState<ProductoManufacturado[]>([]);
+  const [producComplete, setProducComplete] = useState<ProductoManufacturado[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await handleRequest('GET', '/assets/data/productosEjemplo.json');
+        const responseData = await handleRequest('GET', 'assets/data/productosLanding.json');
         setProduc(responseData);
         setProducComplete(responseData);
       } catch (error) {
@@ -30,11 +30,11 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   }, []);
 
   const filter = (searchParam: string) => {
-    const searchResult = producComplete.filter((productVal: Producto) => {
+    const searchResult = producComplete.filter((productVal: ProductoManufacturado) => {
       if (
-        productVal.id.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.idProductoManufacturado.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
         productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.rubro?.toString().toLowerCase().includes(searchParam.toLowerCase())
+        productVal.Rubro.nombre?.toString().toLowerCase().includes(searchParam.toLowerCase())
       ) {
         return productVal;
       }
@@ -51,7 +51,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     let i:number=0;
     let x:boolean=true;
     while(x){
-      if(producComplete[i].id===id){
+      if(producComplete[i].idProductoManufacturado===id){
         return producComplete[i];
       }
       i=i+1;
@@ -79,12 +79,12 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     setAddModalShow(false);
   };
 
-  const handleProductoEdit = async (producto: Producto) => {
+  const handleProductoEdit = async (producto: ProductoManufacturado) => {
     try {
-      const updatedProducto = await handleRequest('PUT', `/assets/data/productosEjemplo.json/${producto.id}`, producto);
+      const updatedProducto = await handleRequest('PUT', `assets/data/productosLanding.json/${producto.idProductoManufacturado}`, producto);
 
       const newData = [...produc];
-      const index = newData.findIndex((item) => item.id === producto.id);
+      const index = newData.findIndex((item) => item.idProductoManufacturado === producto.idProductoManufacturado);
       newData[index] = updatedProducto;
 
       setProduc(newData);
@@ -93,9 +93,9 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     }
   };
 
-  const handleProductoAdd = async (producto: Producto) => {
+  const handleProductoAdd = async (producto: ProductoManufacturado) => {
     try {
-      const newProducto = await handleRequest('POST', '/assets/data/productosEjemplo.json', producto);
+      const newProducto = await handleRequest('POST', 'assets/data/productosLanding.json', producto);
 
       setProduc([...produc, newProducto]);
     } catch (error) {
@@ -107,11 +107,11 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     e.preventDefault();
     const productoId:number=+rowData[0]
     try {
-      await fetch(`${"/assets/data/productosEjemplo.json"}/${productoId}`, {
+      await fetch(`${"assets/data/productosLanding.json"}/${productoId}`, {
         method: 'DELETE',
       });
 
-      setProduc(produc.filter((item) => item.id !== productoId));
+      setProduc(produc.filter((item) => item.idProductoManufacturado !== productoId));
     } catch (error) {
       console.log(error);
     }
@@ -122,15 +122,15 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     { label: "Nombre", width: 150 },
     { label: "Rubro", width: 100 },
     { label: "Tiempo (min)", width: 60 },
-    { label: "Precio", width: 50 }
+    //{ label: "Precio", width: 50 }
   ];
 
   const data = produc.map((item) => [
-    item.id.toString(),
+    item.idProductoManufacturado.toString(),
     item.nombre.toString(),
-    item.rubro.toString(),
-    item.tiempo.toString(),
-    item.precio.toString()
+    item.Rubro.nombre.toString(),
+    item.tiempoEstimadoCocina.toString(),
+    // item.precio.toString() //aca hay que poner el precio
   ]);
 
   return (
@@ -158,11 +158,11 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         handleProductoEdit={handleProductoEdit}
         selectedProducto={selectedProducto}
       />
-      <AddProductoModal
+      {/* <AddProductoModal
         show={addModalShow}
         handleClose={handleAddModalClose}
         handleProductoAdd={handleProductoAdd}
-      />
+      /> */}
     </Container>
   );
 };

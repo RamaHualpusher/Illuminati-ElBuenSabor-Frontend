@@ -1,11 +1,11 @@
 [
     {
       "id": 1,
-      "nombre": "Comida Rápida"
+      "nombre": "Pizzas"
     },
     {
       "id": 2,
-      "nombre": "Postres"
+      "nombre": "Hamburguesas"
     },
     {
       "id": 3,
@@ -13,7 +13,7 @@
     },
     {
       "id": 4,
-      "nombre": "Comida Saludable"
+      "nombre": "Ofertas"
     }
   ]
   
