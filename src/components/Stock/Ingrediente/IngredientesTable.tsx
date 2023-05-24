@@ -48,18 +48,21 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     filter(searchParam);
   };
 
+  const ingredienteGeneric= (id:number) =>{
+    let i:number=0;
+    let x:boolean=true;
+    while(x){
+      if(ingredComplete[i].id===+id){
+        return ingredComplete[i];
+      }
+      i=i+1; 
+    }
+    return ingredComplete[0];
+  };
+
   const handleEditModalOpen = (rowData: string[], e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const ingrediente:Ingrediente={
-      id:+rowData[0],
-      nombre:rowData[1],
-      rubro:rowData[2],
-      minStock:+rowData[3],
-      stockActual:+rowData[4],
-      precio:+rowData[5],
-      um:rowData[6]
-    };
-    setSelectedIngrediente(ingrediente);
+    setSelectedIngrediente(ingredienteGeneric(+rowData[0]));
     setEditModalShow(true);
   }
 
@@ -116,20 +119,12 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
   
     const handleIngredienteDelete = (rowData: string[],e:React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      const ingrediente:Ingrediente={
-        id:+rowData[0],
-        nombre:rowData[1],
-        rubro:rowData[2],
-        minStock:+rowData[3],
-        stockActual:+rowData[4],
-        precio:+rowData[5],
-        um:rowData[6]
-      };
-      fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingrediente.id}`, {
+      const ingredienteId:number=+rowData[0];
+      fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingredienteId}`, {
         method: 'DELETE',
       })
         .then(response => {
-          setIngred(ingred.filter(item => item.id !== ingrediente.id));
+          setIngred(ingred.filter(item => item.id !== ingredienteId));
         })
         .catch(error => {
           console.log(error);

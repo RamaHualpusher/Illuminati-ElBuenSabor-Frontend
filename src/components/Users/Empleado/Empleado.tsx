@@ -106,18 +106,11 @@ const Empleado = () => {
 
     const handleEmpleadoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const usuario: EditUsuarioFromAdmin = {
-            idUsuario: +rowData[0],
-            nombre: rowData[1],
-            apellido: rowData[2],
-            email: rowData[3],
-            telefono: rowData[4],
-            Rol: { idRol: parseInt(rowData[5]), nombreRol: '' },
-        };
+        const usuarioId: number=+rowData[0];
 
         try {
-            await handleEmpleadoRequest('DELETE', `${API_URL}/${usuario.idUsuario}`);
-            setEmpleados(empleados.filter((item) => item.idUsuario !== usuario.idUsuario));
+            await handleEmpleadoRequest('DELETE', `${API_URL}/${usuarioId}`);
+            setEmpleados(empleados.filter((item) => item.idUsuario !== usuarioId));
         } catch (error) {
             console.log(error);
         }
@@ -131,17 +124,40 @@ const Empleado = () => {
         setAddModalShow(false);
     };
 
+
+    const usuarioRow = (id:number)=>{
+        let i:number=0;
+        let x:boolean=true;
+        while(x){
+            if(empleadosComplete[i].idUsuario===id){
+                let usuarioRe:EditUsuarioFromAdmin={
+                    idUsuario:empleadosComplete[i].idUsuario,
+                    nombre:empleadosComplete[i].nombre,
+                    apellido:empleadosComplete[i].apellido,
+                    email:empleadosComplete[i].email,
+                    telefono:empleadosComplete[i].telefono,
+                    Rol:empleadosComplete[i].Rol
+                };
+                return usuarioRe;
+                x=false;
+            }
+            i=i+1;
+        }
+        let usuarioRe:EditUsuarioFromAdmin={
+            idUsuario:empleadosComplete[0].idUsuario,
+            nombre:empleadosComplete[0].nombre,
+            apellido:empleadosComplete[0].apellido,
+            email:empleadosComplete[0].email,
+            telefono:empleadosComplete[0].telefono,
+            Rol:empleadosComplete[0].Rol
+        };
+
+        return usuarioRe;
+    }
+
     const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const selectedEmpleado: EditUsuarioFromAdmin = {
-            idUsuario: +rowData[0],
-            nombre: rowData[1],
-            apellido: rowData[2],
-            email: rowData[3],
-            telefono: rowData[4],
-            Rol: { idRol: parseInt(rowData[5]), nombreRol: '' },
-        };
-        setSelectedUsuario(selectedEmpleado);
+        setSelectedUsuario(usuarioRow(+rowData[0]));
         setEditModalShow(true);
     };
 
