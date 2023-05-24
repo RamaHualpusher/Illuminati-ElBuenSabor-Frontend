@@ -81,48 +81,32 @@ const Clientes = () => {
 
     const handleClienteDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const cliente: Usuario = {
-            idUsuario: +rowData[0],
-            nombre: rowData[1],
-            apellido: rowData[2],
-            email: rowData[3],
-            clave: '',
-            telefono: rowData[4],
-            Rol: { idRol: parseInt(rowData[5]), nombreRol: '' },
-            Domicilio: {
-                idDomicilio: 0,
-                calle: '',
-                numero: 0,
-                localidad: '',
-            },
-        };
+        const clienteId:number=+rowData[0];
 
         try {
-            await handleRequest('DELETE', `${API_URL}/${cliente.idUsuario}`);
-            setClientes(clientes.filter((item) => item.idUsuario !== cliente.idUsuario));
+            await handleRequest('DELETE', `${API_URL}/${clienteId}`);
+            setClientes(clientes.filter((item) => item.idUsuario !== clienteId));
         } catch (error) {
             console.log(error);
         }
     };
 
+    const usuarioRow = (id:number)=>{
+        let i:number=0;
+        let x:boolean=true;
+        while(x){
+            if(clientesComplete[i].idUsuario===id){
+                return clientesComplete[i];
+                x=false;
+            }
+            i=i+1;
+        }
+        return clientesComplete[0];
+    }
+
     const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const selectedCliente: Usuario = {
-            idUsuario: +rowData[0],
-            nombre: rowData[1],
-            apellido: rowData[2],
-            email: rowData[3],
-            clave: '',
-            telefono: rowData[4],
-            Rol: { idRol: parseInt(rowData[5]), nombreRol: '' },
-            Domicilio: {
-                idDomicilio: 0,
-                calle: '',
-                numero: 0,
-                localidad: '',
-            },
-        };
-        setSelectedCliente(selectedCliente);
+        setSelectedCliente(usuarioRow(+rowData[0]));
         setEditModalShow(true);
     };
 

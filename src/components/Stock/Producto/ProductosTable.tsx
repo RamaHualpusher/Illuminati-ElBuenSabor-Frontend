@@ -47,15 +47,22 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     filter(searchParam);
   };
 
-  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+  const getProducto =(id:number)=>{
+    let i:number=0;
+    let x:boolean=true;
+    while(x){
+      if(producComplete[i].id===id){
+        return producComplete[i];
+      }
+      i=i+1;
+    }
+    return producComplete[0];
+  }
+  
+
+  const handleEditModalOpen = (rowData: string[],e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setSelectedProducto({
-      id: +rowData[0],
-      nombre: rowData[1],
-      rubro: rowData[2],
-      tiempo: +rowData[3],
-      precio: +rowData[4],
-    });
+    setSelectedProducto(getProducto(+rowData[0]));
     setEditModalShow(true);
   };
 
@@ -98,17 +105,13 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
 
   const handleProductoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const producto: Producto = {
-      id: +rowData[0],
-      nombre: rowData[1],
-      rubro: rowData[2],
-      tiempo: +rowData[3],
-      precio: +rowData[4],
-    };
+    const productoId:number=+rowData[0]
     try {
-      await handleRequest('DELETE', `/assets/data/productosEjemplo.json/${producto.id}`);
+      await fetch(`${"/assets/data/productosEjemplo.json"}/${productoId}`, {
+        method: 'DELETE',
+      });
 
-      setProduc(produc.filter((item) => item.id !== producto.id));
+      setProduc(produc.filter((item) => item.id !== productoId));
     } catch (error) {
       console.log(error);
     }

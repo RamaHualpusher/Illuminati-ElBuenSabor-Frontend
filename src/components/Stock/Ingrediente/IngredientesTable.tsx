@@ -47,18 +47,21 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     filter(searchParam);
   };
 
-  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+  const ingredienteGeneric= (id:number) =>{
+    let i:number=0;
+    let x:boolean=true;
+    while(x){
+      if(ingredComplete[i].id===+id){
+        return ingredComplete[i];
+      }
+      i=i+1; 
+    }
+    return ingredComplete[0];
+  };
+
+  const handleEditModalOpen = (rowData: string[], e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const ingrediente: Ingrediente = {
-      id: +rowData[0],
-      nombre: rowData[1],
-      rubro: rowData[2],
-      minStock: +rowData[3],
-      stockActual: +rowData[4],
-      precio: +rowData[5],
-      um: rowData[6],
-    };
-    setSelectedIngrediente(ingrediente);
+    setSelectedIngrediente(ingredienteGeneric(+rowData[0]));
     setEditModalShow(true);
   };
 
@@ -98,27 +101,21 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       console.log(error);
     }
   };
-
-  const handleIngredienteDelete = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const ingrediente: Ingrediente = {
-      id: +rowData[0],
-      nombre: rowData[1],
-      rubro: rowData[2],
-      minStock: +rowData[3],
-      stockActual: +rowData[4],
-      precio: +rowData[5],
-      um: rowData[6],
-    };
-    handleRequest('DELETE', `/assets/data/ingredientesEjemplo.json/${ingrediente.id}`)
-      .then(() => {
-        setIngred(ingred.filter(item => item.id !== ingrediente.id));
+  
+    const handleIngredienteDelete = (rowData: string[],e:React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      const ingredienteId:number=+rowData[0];
+      fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingredienteId}`, {
+        method: 'DELETE',
       })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
+        .then(response => {
+          setIngred(ingred.filter(item => item.id !== ingredienteId));
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  
   const columns = [
     { label: "Id", width: 10 },
     { label: "Nombre", width: 200 },

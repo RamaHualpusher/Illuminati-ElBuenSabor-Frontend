@@ -30,7 +30,7 @@ const Card: React.FC<CardProps> = ({ imageSrc, title, text, buttonText, id }) =>
           {buttonText}
         </a>
         <Link to={`/productos/${id}`} className="btn btn-primary float-right">
-          Ver Detalles
+          Ver Detalles  
         </Link>
       </div>
     </div>
