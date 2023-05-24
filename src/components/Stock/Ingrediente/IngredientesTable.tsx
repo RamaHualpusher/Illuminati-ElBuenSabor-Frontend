@@ -5,6 +5,7 @@ import AddIngredienteModal from './AddIngredienteModal';
 import { Ingrediente } from '../../../interface/interfaces';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 import Buscador from '../../Buscador/Buscador';
+import { handleRequest } from '../../FuncionRequest/FuncionRequest';
 
 interface IngredientesTableProps { }
 
@@ -16,11 +17,9 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
   const [ingredComplete, setIngredComplete] = useState<Ingrediente[]>([]);
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
-        const response = await fetch("/assets/data/ingredientesEjemplo.json");
-        const responseData = await response.json();
+        const responseData = await handleRequest('GET', '/assets/data/ingredientesEjemplo.json');
         setIngred(responseData);
         setIngredComplete(responseData);
       } catch (error) {
@@ -64,31 +63,24 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     e.preventDefault();
     setSelectedIngrediente(ingredienteGeneric(+rowData[0]));
     setEditModalShow(true);
-  }
+  };
 
   const handleEditModalClose = () => {
     setSelectedIngrediente(null);
     setEditModalShow(false);
-  }
+  };
 
   const handleAddModalOpen = () => {
     setAddModalShow(true);
-  }
+  };
 
   const handleAddModalClose = () => {
     setAddModalShow(false);
-  }
+  };
 
   const handleIngredienteEdit = async (producto: Ingrediente) => {
     try {
-      const response = await fetch(`${"/assets/data/ingredientesEjemplo.json"}/${producto.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(producto),
-      });
-      const updatedProducto = await response.json();
+      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.id}`, producto);
 
       const newData = [...ingred];
       const index = newData.findIndex((item) => item.id === producto.id);
@@ -102,14 +94,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
 
   const handleIngredienteAdd = async (ingrediente: Ingrediente) => {
     try {
-      const response = await fetch("/assets/data/ingredientesEjemplo.json", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(ingrediente),
-      });
-      const newProducto = await response.json();
+      const newProducto = await handleRequest('POST', '/assets/data/ingredientesEjemplo.json', ingrediente);
 
       setIngred([...ingred, newProducto]);
     } catch (error) {
@@ -132,7 +117,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     }
   
   const columns = [
-    { label: "Id", width:10},
+    { label: "Id", width: 10 },
     { label: "Nombre", width: 200 },
     { label: "Rubro", width: 100 },
     { label: "Min Stock", width: 100 },
@@ -169,42 +154,8 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         </Row>
       </Container>
       <div>
-        <TablaGeneric columns={columns} data={data} showButton={true} buttonEdit={handleEditModalOpen} buttonDelete={handleIngredienteDelete}/>
+        <TablaGeneric columns={columns} data={data} showButton={true} buttonEdit={handleEditModalOpen} buttonDelete={handleIngredienteDelete} />
       </div>
-      {/*
-  <Table striped bordered hover>
-    <thead>
-      <tr>
-        <th>NOMBRE</th>
-        <th>RUBRO</th>
-        <th>MIN STOCK</th>
-        <th>STOCK ACTUAL</th>
-        <th>PRECIO</th>
-        <th>UM</th>
-        <th>EDITAR</th>
-        <th>ELIMINAR</th>
-      </tr>
-    </thead>
-    <tbody>
-      {data.map(ingrediente => (
-        <tr key={ingrediente.id}>
-          <td>{ingrediente.nombre}</td>
-          <td>{ingrediente.rubro}</td>
-          <td>{ingrediente.minStock}</td>
-          <td>{ingrediente.stockActual}</td>
-          <td>${ingrediente.precio}</td>
-          <td>{ingrediente.um}</td>
-          <td>
-            <Button variant="primary" onClick={() => handleEditModalOpen(ingrediente)}>Editar</Button>
-          </td>
-          <td>
-            <Button variant="danger" onClick={() => handleIngredienteDelete(ingrediente)}>Eliminar</Button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </Table>
-*/}
       <EditIngredienteModal
         show={editModalShow}
         handleClose={handleEditModalClose}
@@ -219,4 +170,5 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     </div>
   );
 };
+
 export default IngredientesTable;

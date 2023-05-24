@@ -6,6 +6,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import Buscador from "../../Buscador/Buscador";
 import EditEmpleadoModal from "./EditEmpleadoModal";
 import AddEmpleadoModal from "./AddEmpleadoModal";
+import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 
 const Empleado = () => {
     const [empleados, setEmpleados] = useState<Usuario[]>([]);
@@ -62,36 +63,16 @@ const Empleado = () => {
         filter(searchParam);
     };
 
-    const handleEmpleadoRequest = async (method: string, endpoint: string, body?: object) => {
-        try {
-            const response = await fetch(endpoint, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                return data;
-            } else {
-                throw new Error('Error al realizar la solicitud');
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     const handleEmpleadoAdd = async (empleado: Usuario) => {
-        const newEmpleado = await handleEmpleadoRequest('POST', API_URL, empleado);
+        const newEmpleado = await handleRequest('POST', API_URL, empleado);
         if (newEmpleado) {
             setEmpleados([...empleados, newEmpleado]);
         }
     };
 
     const handleEmpleadoEdit = async (empleado: EditUsuarioFromAdmin) => {
-        const updatedEmpleado = await handleEmpleadoRequest(
+        const updatedEmpleado = await handleRequest(
             'PUT',
             `${API_URL}/${empleado.idUsuario}`,
             empleado
@@ -109,7 +90,7 @@ const Empleado = () => {
         const usuarioId: number=+rowData[0];
 
         try {
-            await handleEmpleadoRequest('DELETE', `${API_URL}/${usuarioId}`);
+            await handleRequest('DELETE', `${API_URL}/${usuarioId}`);
             setEmpleados(empleados.filter((item) => item.idUsuario !== usuarioId));
         } catch (error) {
             console.log(error);
@@ -151,7 +132,6 @@ const Empleado = () => {
             telefono:empleadosComplete[0].telefono,
             Rol:empleadosComplete[0].Rol
         };
-
         return usuarioRe;
     }
 

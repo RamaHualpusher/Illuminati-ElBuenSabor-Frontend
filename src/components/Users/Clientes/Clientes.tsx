@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Usuario } from "../../../interface/Usuario";
 import { TablaGeneric } from "../../TableGeneric/TableGeneric";
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col} from 'react-bootstrap';
 import Buscador from "../../Buscador/Buscador";
 import EditClienteModal from "./EditClienteModal";
+import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 
 const Clientes = () => {
     const [clientes, setClientes] = useState<Usuario[]>([]);
     const [clientesComplete, setClientesComplete] = useState<Usuario[]>([]);
     const [editModalShow, setEditModalShow] = useState(false);
-    const [addModalShow, setAddModalShow] = useState(false);
     const [selectedCliente, setSelectedCliente] = useState<Usuario | null>(null);
 
     const columns = [
@@ -47,7 +47,6 @@ const Clientes = () => {
     const filter = (searchParam: string) => {
         const searchResult = clientesComplete.filter((clienteVal: Usuario) => {
             if (
-                clienteVal.idUsuario.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 clienteVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 clienteVal.apellido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
                 clienteVal.email.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
@@ -66,36 +65,8 @@ const Clientes = () => {
         filter(searchParam);
     };
 
-    const handleClienteRequest = async (method: string, endpoint: string, body?: object) => {
-        try {
-            const response = await fetch(endpoint, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                return data;
-            } else {
-                throw new Error('Error al realizar la solicitud');
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const handleClienteAdd = async (cliente: Usuario) => {
-        const newCliente = await handleClienteRequest('POST', API_URL, cliente);
-        if (newCliente) {
-            setClientes([...clientes, newCliente]);
-        }
-    };
-
     const handleClienteEdit = async (cliente: Usuario) => {
-        const updatedCliente = await handleClienteRequest(
+        const updatedCliente = await handleRequest(
             'PUT',
             `${API_URL}/${cliente.idUsuario}`,
             cliente
@@ -113,19 +84,11 @@ const Clientes = () => {
         const clienteId:number=+rowData[0];
 
         try {
-            await handleClienteRequest('DELETE', `${API_URL}/${clienteId}`);
+            await handleRequest('DELETE', `${API_URL}/${clienteId}`);
             setClientes(clientes.filter((item) => item.idUsuario !== clienteId));
         } catch (error) {
             console.log(error);
         }
-    };
-
-    const handleAddModalOpen = () => {
-        setAddModalShow(true);
-    };
-
-    const handleAddModalClose = () => {
-        setAddModalShow(false);
     };
 
     const usuarioRow = (id:number)=>{
