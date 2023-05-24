@@ -9,10 +9,11 @@ const DetallePage = () => {
 
     useEffect(() => {
         if (id) {
-            fetch('assets/data/productosLanding.json')
-                .then(response => response.json())
+            fetch('assets/data/productoDetalle.json') //error aca
+                .then(response => response.json() )
                 .then(data => {
-                    const productoEncontrado = data.find((producto: ProductoManufacturadoVenta) => producto.idProductoManufacturadoVenta === parseInt(id));
+                    const productoEncontrado = data.find((producto: ProductoManufacturado) => producto.idProductoManufacturado === parseInt(id));
+                    console.log("entro:"+ productoEncontrado);
                     setProducto(productoEncontrado);
                 })
                 .catch(error => console.error(error));

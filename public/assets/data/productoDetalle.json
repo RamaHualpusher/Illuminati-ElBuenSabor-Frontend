@@ -1,290 +1,86 @@
 [
-    {
-      "idProductoManufacturadoVenta": 1,
-      "precioVenta": 0,
-      "cantidad": 0,
-      "fecha": "2023-05-20T00:00:00.000Z",
-      "ProductoManufacturado": [
+  {
+    "idProductoManufacturadoVenta": 1,
+    "precioVenta": 10.99,
+    "cantidad": 5,
+    "fecha": "2023-05-20T00:00:00.000Z",
+    "ProductoManufacturado": {
+      "idProductoManufacturado": 1,
+      "nombre": "Pizza",
+      "tiempoEstimadoCocina": 10,
+      "denominacion": "Pizzas",
+      "imagen": "assets/img/pizza_casera_31391_orig.jpg",
+      "stockActual": 20,
+      "stockMinimo": 5,
+      "preparacion": "Una deliciosa pizza con queso y pepperoni",
+      "Ingrediente": [
         {
-          "idProductoManufacturado": 1,
-          "nombre": "Pizza",
-          "tiempoEstimadoCocina": 10,
-          "denominacion": "Pizzas",
-          "imagen": "assets/img/pizza_casera_31391_orig.jpg",
-          "stockActual": 0,
-          "stockMinimo": 0,
-          "preparacion": "Una deliciosa pizza con queso y pepperoni",
-          "Ingrediente": [
-            {
-              "ingredient": "Salsa de tomate",
-              "cuantity": "150 gr",
-              "uMedida": "ml"
-            },
-            {
-              "ingredient": "Queso mozzarella",
-              "cuantity": "100 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Pepperoni",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            }
-          ],
-          "Rubro": {
-            "idRubro": 1,
-            "nombre": "Pizzas"
-          }
-        }
-      ]
-    },
-    {
-      "idProductoManufacturadoVenta": 2,
-      "precioVenta": 0,
-      "cantidad": 0,
-      "fecha": "2023-05-20T00:00:00.000Z",
-      "ProductoManufacturado": [
+          "ingredient": "Salsa de tomate",
+          "cantidad": "150 gr",
+          "uMedida": "ml"
+        },
         {
-          "idProductoManufacturado": 2,
-          "nombre": "Pizza",
-          "tiempoEstimadoCocina": 10,
-          "denominacion": "Pizzas",
-          "imagen": "assets/img/pizza_casera_31391_orig.jpg",
-          "stockActual": 0,
-          "stockMinimo": 0,
-          "preparacion": "Una deliciosa pizza con queso y pepperoni",
-          "Ingrediente": [
-            {
-              "ingredient": "Salsa de tomate",
-              "cuantity": "150 gr",
-              "uMedida": "ml"
-            },
-            {
-              "ingredient": "Queso mozzarella",
-              "cuantity": "100 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Pepperoni",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            }
-          ],
-          "Rubro": {
-            "idRubro": 1,
-            "nombre": "Pizzas"
-          }
-        }
-      ]
-    },
-    {
-      "idProductoManufacturadoVenta": 3,
-      "precioVenta": 0,
-      "cantidad": 0,
-      "fecha": "2023-05-20T00:00:00.000Z",
-      "ProductoManufacturado": [
+          "ingredient": "Queso mozzarella",
+          "cantidad": "100 gr",
+          "uMedida": "gr"
+        },
         {
-          "idProductoManufacturado": 3,
-          "nombre": "Coca-Cola 500ml",
-          "tiempoEstimadoCocina": 0,
-          "denominacion": "Bebidas",
-          "imagen": "assets/img/Cocacola-Soda-500ml-Grande.jpg",
-          "stockActual": 0,
-          "stockMinimo": 0,
-          "preparacion": "Una refrescante lata de CocaCola",
-          "Ingrediente": [],
-          "Rubro": {
-            "idRubro": 2,
-            "nombre": "Bebidas"
-          }
+          "ingredient": "Pepperoni",
+          "cantidad": "50 gr",
+          "uMedida": "gr"
         }
-      ]
-    },
-    {
-      "idProductoManufacturadoVenta": 4,
-      "precioVenta": 0,
-      "cantidad": 0,
-      "fecha": "2023-05-20T00:00:00.000Z",
-      "ProductoManufacturado": [
-        {
-          "idProductoManufacturado": 4,
-          "nombre": "Pizza",
-          "tiempoEstimadoCocina": 10,
-          "denominacion": "Pizzas",
-          "imagen": "assets/img/pizza_casera_31391_orig.jpg",
-          "stockActual": 0,
-          "stockMinimo": 0,
-          "preparacion": "Una deliciosa pizza con queso y pepperoni",
-          "Ingrediente": [
-            {
-              "ingredient": "Salsa de tomate",
-              "cuantity": "150 gr",
-              "uMedida": "ml"
-            },
-            {
-              "ingredient": "Queso mozzarella",
-              "cuantity": "100 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Pepperoni",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            }
-          ],
-          "Rubro": {
-            "idRubro": 1,
-            "nombre": "Pizzas"
-          }
-        }
-      ]
-    },
-    {
-      "idProductoManufacturadoVenta": 5,
-      "precioVenta": 0,
-      "cantidad": 0,
-      "fecha": "2023-05-20T00:00:00.000Z",
-      "ProductoManufacturado": [
-        {
-          "idProductoManufacturado": 5,
-          "nombre": "Hamburguesa",
-          "tiempoEstimadoCocina": 8,
-          "denominacion": "Hamburguesas",
-          "imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
-          "stockActual": 0,
-          "stockMinimo": 0,
-          "preparacion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
-          "Ingrediente": [
-            {
-              "ingredient": "Pan de hamburguesa",
-              "cuantity": "1 unidad",
-              "uMedida": "unidad"
-            },
-            {
-              "ingredient": "Carne de res",
-              "cuantity": "150 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Queso cheddar",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Lechuga",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Tomate",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            }
-          ],
-          "Rubro": {
-            "idRubro": 3,
-            "nombre": "Hamburguesas"
-          }
-        }
-      ]
-    },
-    {
-      "idProductoManufacturadoVenta": 6,
-      "precioVenta": 0,
-      "cantidad": 0,
-      "fecha": "2023-05-20T00:00:00.000Z",
-      "ProductoManufacturado": [
-        {
-          "idProductoManufacturado": 6,
-          "nombre": "Hamburguesa",
-          "tiempoEstimadoCocina": 8,
-          "denominacion": "Hamburguesas",
-          "imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
-          "stockActual": 0,
-          "stockMinimo": 0,
-          "preparacion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
-          "Ingrediente": [
-            {
-              "ingredient": "Pan de hamburguesa",
-              "cuantity": "1 unidad",
-              "uMedida": "unidad"
-            },
-            {
-              "ingredient": "Carne de res",
-              "cuantity": "150 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Queso cheddar",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Lechuga",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Tomate",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            }
-          ],
-          "Rubro": {
-            "idRubro": 3,
-            "nombre": "Hamburguesas"
-          }
-        }
-      ]
-    },
-    {
-      "idProductoManufacturadoVenta": 7,
-      "precioVenta": 0,
-      "cantidad": 0,
-      "fecha": "2023-05-20T00:00:00.000Z",
-      "ProductoManufacturado": [
-        {
-          "idProductoManufacturado": 7,
-          "nombre": "Hamburguesa",
-          "tiempoEstimadoCocina": 8,
-          "denominacion": "Hamburguesas",
-          "imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
-          "stockActual": 0,
-          "stockMinimo": 0,
-          "preparacion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
-          "Ingrediente": [
-            {
-              "ingredient": "Pan de hamburguesa",
-              "cuantity": "1 unidad",
-              "uMedida": "unidad"
-            },
-            {
-              "ingredient": "Carne de res",
-              "cuantity": "150 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Queso cheddar",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Lechuga",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            },
-            {
-              "ingredient": "Tomate",
-              "cuantity": "50 gr",
-              "uMedida": "gr"
-            }
-          ],
-          "Rubro": {
-            "idRubro": 3,
-            "nombre": "Hamburguesas"
-          }
-        }
-      ]
+      ],
+      "Rubro": {
+        "idRubro": 1,
+        "nombre": "Pizzas"
+      }
     }
-  ]
-  
+  },
+  {
+    "idProductoManufacturadoVenta": 2,
+    "precioVenta": 7.5,
+    "cantidad": 3,
+    "fecha": "2023-05-20T00:00:00.000Z",
+    "ProductoManufacturado": {
+      "idProductoManufacturado": 2,
+      "nombre": "Hamburguesa",
+      "tiempoEstimadoCocina": 8,
+      "denominacion": "Hamburguesas",
+      "imagen": "assets/img/hamburguesa.jpg",
+      "stockActual": 15,
+      "stockMinimo": 2,
+      "preparacion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
+      "Ingrediente": [
+        {
+          "ingredient": "Pan de hamburguesa",
+          "cantidad": "1 unidad",
+          "uMedida": "unidad"
+        },
+        {
+          "ingredient": "Carne de res",
+          "cantidad": "150 gr",
+          "uMedida": "gr"
+        },
+        {
+          "ingredient": "Queso cheddar",
+          "cantidad": "50 gr",
+          "uMedida": "gr"
+        },
+        {
+          "ingredient": "Lechuga",
+          "cantidad": "50 gr",
+          "uMedida": "gr"
+        },
+        {
+          "ingredient": "Tomate",
+          "cantidad": "50 gr",
+          "uMedida": "gr"
+        }
+      ],
+      "Rubro": {
+        "idRubro": 3,
+        "nombre": "Hamburguesas"
+      }
+    }
+  }
+]
