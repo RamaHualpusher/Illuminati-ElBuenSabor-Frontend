@@ -14,7 +14,7 @@ const RankingClientes = () => {
     ];
 
     useEffect(() => {
-        const API_URL = "assets/data/empleadoTabla.json";
+        const API_URL = "";//Poner la url correspondiente
         fetch(API_URL)
             .then((response) => response.json())
             .then((data) => {
