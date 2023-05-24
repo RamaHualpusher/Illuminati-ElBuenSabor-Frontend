@@ -4,6 +4,7 @@ import ProductosTable from "../Stock/Producto/ProductosTable";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
 import Factura from "../Factura/Factura";
 import Cliente from "../Users/Clientes/Clientes";
+import RankingClientes from "../RankingClientes/RankingClientes";
 
 export default function OpcionesAdmin() {
     //A MEDIDA QUE AGREGUEN NUEVOS OPTIONS CON RUTAS CAMBIEN EL
@@ -57,6 +58,7 @@ export default function OpcionesAdmin() {
             {selectedOption === "ingredientes" && <IngredientesTable />}
             {selectedOption === "facturas" && <Factura />}
             {selectedOption === "clientes" && <Cliente />}
+            {selectedOption === "rankingClientes" && <RankingClientes/>}
           </div>
       
         </div>
