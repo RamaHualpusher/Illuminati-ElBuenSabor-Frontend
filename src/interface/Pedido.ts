@@ -4,6 +4,7 @@ import { TipoPago } from "./TipoPago";
 import { Usuario } from "./Usuario";
 import { Articulo } from "./Articulo";
 import { ProductoManufacturado } from "./ProductoManufacturado";
+
 export interface Pedido {
   idPedido: number;
   numeroPedido: number;
