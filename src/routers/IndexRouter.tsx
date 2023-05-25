@@ -7,6 +7,7 @@ import CarritoCompras from "../components/CarritoCompras/CarritoCompras";
 import Admin from "../screens/Admin";
 import Cocinero from "../screens/Cocinero";
 import DetalleProducto from "../screens/DetalleProducto";
+import Cajero from "../screens/Cajero";
 
 // import Cashier from "../screens/Cashier";
 // import Delivery from "../screens/Delivery"
@@ -18,6 +19,7 @@ const IndexRouter = () => {
         <Route path="/" element={<UserRouter />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/cocinero" element={<Cocinero />} />
+        <Route path="/cajero" element={<Cajero />} />
         <Route path="/carrito" element={<CarritoCompras />} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />

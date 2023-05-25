@@ -1,0 +1,77 @@
+[
+    {
+      "idPedido": 123456,
+      "numeroPedido": 123456,
+      "fechaPedido": "2023-03-14",
+      "horaEstimadaFin": "2023-03-14T10:30:00",
+      "tipoEnvio": "Delivery",
+      "TipoEntregaPedido": {
+        "idTipoEntregaPedido": 1,
+        "descripcion": "Delivery"
+      },
+      "EstadoPedido": {
+        "idEstadoPedido": 1,
+        "descripcion": "A Confirmar"
+      },
+      "TipoPago": {
+        "idTipoPago": 1,
+        "descripcion": "Efectivo"
+      },
+      "Usuario": {
+        "idUsuario": 1,
+        "nombre": "Juan"
+      },
+      "Articulo": [
+        {
+          "idArticulo": 1,
+          "nombre": "Pizza"
+        }
+      ],
+      "ProductoManufacturado": [
+        {
+          "idProductoManufacturado": 1,
+          "nombre": "Hamburguesa"
+        }
+      ]
+    },
+    {
+      "idPedido": 123457,
+      "numeroPedido": 123457,
+      "fechaPedido": "2023-03-12",
+      "horaEstimadaFin": "2023-03-12T11:45:00",
+      "tipoEnvio": "Take Away",
+      "TipoEntregaPedido": {
+        "idTipoEntregaPedido": 2,
+        "descripcion": "Take Away"
+      },
+      "EstadoPedido": {
+        "idEstadoPedido": 2,
+        "descripcion": "Confirmado"
+      },
+      "TipoPago": {
+        "idTipoPago": 2,
+        "descripcion": "Tarjeta"
+      },
+      "Usuario": {
+        "idUsuario": 2,
+        "nombre": "María"
+      },
+      "Articulo": [
+        {
+          "idArticulo": 2,
+          "nombre": "Ensalada"
+        },
+        {
+          "idArticulo": 3,
+          "nombre": "Bebida"
+        }
+      ],
+      "ProductoManufacturado": [
+        {
+          "idProductoManufacturado": 2,
+          "nombre": "Sushi"
+        }
+      ]
+    }
+  ]
+  
