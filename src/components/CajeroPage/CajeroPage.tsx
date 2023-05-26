@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Table, Form } from "react-bootstrap";
+import { Card, Form, Row, Col } from "react-bootstrap";
 import { Pedido } from "../../interface/Pedido";
-import { EstadoPedido } from "../../interface/EstadoPedido";
 
 const CajeroPage = () => {
     const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -21,7 +20,9 @@ const CajeroPage = () => {
         fetchPedidos();
     }, []);
 
-    
+    const handleEstadoFiltroChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setFiltroEstado(event.target.value);
+    };
 
     const filteredPedidos = pedidos.filter(pedido => {
         if (filtroEstado === "") {
@@ -34,34 +35,28 @@ const CajeroPage = () => {
     return (
         <div>
             <h1>Pedidos Pendientes</h1>
-            {/* <Form.Select value={filtroEstado} onChange={handleEstadoFiltroChange}>
+            <Form.Select value={filtroEstado} onChange={handleEstadoFiltroChange}>
                 <option value="">Todos los estados</option>
-                <option value={EstadoPedido.A_CONFIRMAR.descripcion}>A confirmar</option>
-                <option value={EstadoPedido.EN_COCINA.descripcion}>En cocina</option>
-                <option value={EstadoPedido.LISTO.descripcion}>Listo</option>
-                <option value={EstadoPedido.EN_DELIVERY.descripcion}>En delivery</option>
-                <option value={EstadoPedido.ENTREGADO.descripcion}>Entregado</option>
-            </Form.Select> */}
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Número de Pedido</th>
-                        <th>Hora Estimada de Fin</th>
-                        <th>Fecha del Pedido</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredPedidos.map(pedido => (
-                        <tr key={pedido.idPedido}>
-                            <td>{pedido.numeroPedido}</td>
-                            <td>{pedido.horaEstimadaFin ? new Date(pedido.horaEstimadaFin).toLocaleTimeString() : ""}</td>
-                            <td>{new Date(pedido.fechaPedido).toLocaleDateString()}</td>
-                            <td>{pedido.EstadoPedido.descripcion}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+                {/* Agrega las opciones de estado aquí */}
+            </Form.Select>
+            <div className="card-container">
+                {filteredPedidos.map(pedido => (
+                    <Card key={pedido.idPedido} className="pedido-card">
+                        <Card.Body>
+                            <Row>
+                                <Col sm={6}>
+                                    <Card.Text>Número de Pedido: {pedido.numeroPedido}</Card.Text>
+                                    <Card.Text>Hora Estimada de Fin: {pedido.horaEstimadaFin ? new Date(pedido.horaEstimadaFin).toLocaleTimeString() : ""}</Card.Text>
+                                    <Card.Text>Fecha del Pedido: {new Date(pedido.fechaPedido).toLocaleDateString()}</Card.Text>
+                                </Col>
+                                <Col sm={6}>
+                                    <Card.Text className="text-end">Estado: {pedido.EstadoPedido.descripcion}</Card.Text>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                ))}
+            </div>
         </div>
     );
 };
