@@ -56,6 +56,8 @@ const EditProductoModal = ({
         preparacion: selectedProducto.preparacion,
         Ingrediente: selectedProducto.Ingrediente,
         Rubro: selectedRubro || { idRubro: 0, nombre: "" },
+        ProductoManufacturadoCosto: [],
+        ProductoManufacturadoVenta: []
       };
       handleProductoEdit(updatedProducto);
     }
