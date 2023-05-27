@@ -18,6 +18,7 @@ const UserRouter = () => {
         <div className="btn-group">
           <Link to="/Admin" className="btn btn-success my-3">Admin</Link>
           <Link to="/Cocinero" className="btn btn-success my-3">Cocinero</Link>
+          <Link to="/Cajero" className="btn btn-success my-3">Cajero</Link>
         </div>
       </div>
       <Footer/>
