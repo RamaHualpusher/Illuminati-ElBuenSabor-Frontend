@@ -24,7 +24,7 @@ const DetallePage = () => {
         return <div>Cargando...</div>;
     }
 
-    const primerProducto: ProductoManufacturado = producto.ProductoManufacturado[0];
+    const primerProducto: ProductoManufacturado = producto.ProductoManufacturado as unknown as ProductoManufacturado;
     const fechaFormateada = new Date(producto.fecha).toLocaleDateString();
 
     return (

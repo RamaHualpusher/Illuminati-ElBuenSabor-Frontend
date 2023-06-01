@@ -9,7 +9,7 @@
       "nombre": "Pizza",
       "tiempoEstimadoCocina": 10,
       "denominacion": "Pizzas",
-      "imagen": "assets/img/pizza_casera_31391_orig.jpg",
+      "imagen": "/assets/img/pizza_casera_31391_orig.jpg",
       "stockActual": 20,
       "stockMinimo": 5,
       "preparacion": "Una deliciosa pizza con queso y pepperoni",
