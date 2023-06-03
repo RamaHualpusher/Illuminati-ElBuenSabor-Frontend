@@ -19,6 +19,7 @@ const UserRouter = () => {
           <Link to="/Admin" className="btn btn-success my-3">Admin</Link>
           <Link to="/Cocinero" className="btn btn-success my-3">Cocinero</Link>
           <Link to="/Cajero" className="btn btn-success my-3">Cajero</Link>
+          <Link to="/Delivery" className="btn btn-success my-3">Delivery</Link>
         </div>
       </div>
       <Footer/>

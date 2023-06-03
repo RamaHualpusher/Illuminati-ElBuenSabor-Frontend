@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form, Row, Col } from "react-bootstrap";
 import { Pedido } from "../../interface/Pedido";
 import Buscador from "../Buscador/Buscador";
-import PedidoList from "./PedidoList";
+import PedidoList from "../Pedidos/PedidoList";
 
 const CajeroPage = () => {
     const [pedidos, setPedidos] = useState<Pedido[]>([]);

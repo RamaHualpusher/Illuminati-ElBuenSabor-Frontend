@@ -32,7 +32,7 @@ const EstadoPedido: React.FC<EstadoPedidoProps> = ({ estado }) => {
                 fontWeight: "bold"
             }}
         >
-            Estado: {estado}
+            {estado}
         </Card.Text>
     );
 };

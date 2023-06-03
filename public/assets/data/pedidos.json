@@ -185,5 +185,44 @@
         "nombre": "Sándwich"
       }
     ]
+  },
+  {
+    "idPedido": 123461,
+    "numeroPedido": 123461,
+    "fechaPedido": "2023-04-25",
+    "horaEstimadaFin": "2023-03-20T13:15:00",
+    "tipoEnvio": "Envío a domicilio",
+    "TipoEntregaPedido": {
+      "idTipoEntregaPedido": 1,
+      "descripcion": "Retiro en local"
+    },
+    "EstadoPedido": {
+      "idEstadoPedido": 5,
+      "descripcion": "En delivery"
+    },
+    "TipoPago": {
+      "idTipoPago": 2,
+      "descripcion": "Pago realizado"
+    },
+    "Usuario": {
+      "idUsuario": 5,
+      "nombre": "Anuel"
+    },
+    "Articulo": [
+      {
+        "idArticulo": 7,
+        "nombre": "Hamburguesa Completa"
+      },
+      {
+        "idArticulo": 8,
+        "nombre": "Papas fritas"
+      }
+    ],
+    "ProductoManufacturado": [
+      {
+        "idProductoManufacturado": 5,
+        "nombre": "Sándwich"
+      }
+    ]
   }
 ]

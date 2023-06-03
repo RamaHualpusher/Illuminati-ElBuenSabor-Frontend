@@ -9,9 +9,8 @@ import Cocinero from "../screens/Cocinero";
 import DetalleProducto from "../screens/DetalleProducto";
 import Cajero from "../screens/Cajero";
 import DetallePage from "../components/Landing/DetallePage";
-
-// import Cashier from "../screens/Cashier";
-// import Delivery from "../screens/Delivery"
+import Delivery from "../screens/Delivery";
+import DetallePedido from "../components/Pedidos/DetallePedido";
 
 const IndexRouter = () => {
   return (
@@ -21,6 +20,8 @@ const IndexRouter = () => {
         <Route path="/admin" element={<Admin />} />
         <Route path="/cocinero" element={<Cocinero />} />
         <Route path="/cajero" element={<Cajero />} />
+        <Route path="/delivery" element={<Delivery />} />
+        <Route path="/pedido/:id" element={<DetallePedido />} />
         <Route path="/carrito" element={<CarritoCompras />} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />

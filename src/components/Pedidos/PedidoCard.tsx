@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import EstadoPedido from "./EstadoPedido";
 import { Pedido } from "../../interface/Pedido";
+import { Link } from "react-router-dom";
 
 interface PedidoCardProps {
     pedido: Pedido;
@@ -45,6 +46,20 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido }) 
                                     >
                                         En delivery
                                     </button>
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={() => cambiarEstadoPedido("Entregado")}
+                                        disabled={pedido.TipoEntregaPedido.descripcion !== "Retiro en local" || pedido.TipoPago.descripcion !== "Pago realizado"}
+                                    >
+                                        Entregado
+                                    </button>
+                                </>
+                            )}
+                            {pedido.EstadoPedido.descripcion === "En delivery" && (
+                                <>
+                                    <Link to={`/pedido/${pedido.idPedido}`} className="btn btn-primary me-2">
+                                        Ver detalles
+                                    </Link>
                                     <button
                                         className="btn btn-primary"
                                         onClick={() => cambiarEstadoPedido("Entregado")}
