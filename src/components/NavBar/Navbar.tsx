@@ -45,12 +45,6 @@ const Navbar: FC = () => {
           }`}
         >
           <ul className="navbar-nav align-items-center">
-            <li className="nav-item d-lg-none">
-              <span className="nav-link me-4">Menu</span>
-            </li>
-            <li className="nav-item d-lg-none">
-              <span className="nav-link mb-2">Contacto</span>
-            </li>
             <li className="nav-item">
               <i
                 className="bi bi-search text-white"

@@ -157,7 +157,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         handleClose={handleEditModalClose}
         handleProductoEdit={handleProductoEdit}
         selectedProducto={selectedProducto}
-      />
+      /> 
       {/* <AddProductoModal
         show={addModalShow}
         handleClose={handleAddModalClose}
