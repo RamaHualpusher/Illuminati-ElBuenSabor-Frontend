@@ -6,8 +6,7 @@ const DetalleProducto = () => {
     return (
         <div>
             <Navbar/>
-            <DetallePage/>            
-            
+            <DetallePage/>       
         </div>
     );
 };

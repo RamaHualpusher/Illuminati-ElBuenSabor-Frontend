@@ -29,17 +29,20 @@ const DetallePage = () => {
 
     return (
         <div className="container">
-            <div className="row justify-content-center">
+            <div className="row justify-content-center align-items-center vh-100">
                 <div className="col-12 col-md-8 text-center">
-                    {primerProducto && <h1>{primerProducto.nombre}</h1>}
+                    {primerProducto && <h1 className='display-1'>{primerProducto.nombre}</h1>}
                     {primerProducto && (
-                        <div className="card" style={{ width: '18rem' }}>
+                        <div className="card text-center" style={{ width: '30rem' }}>
                             <img src={primerProducto.imagen} className="card-img-top" alt={primerProducto.nombre} />
                             <div className="card-body">
-                                <h5 className="card-title">{primerProducto.denominacion}</h5>
-                                <p className="card-text">Precio de venta: {producto.precioVenta}</p>
+                                <h5 className="card-text">Detalles: {primerProducto.preparacion}</h5>
+                                <p className="card-text">Precio de venta: ${producto.precioVenta}</p>
                                 <p className="card-text">Cantidad: {producto.cantidad}</p>
                                 <p className="card-text">Fecha: {fechaFormateada}</p>
+                                <p className="card-text">Rubro: {primerProducto.Rubro.nombre}</p>
+                                
+                                <p className="card-text">Preparacion: {primerProducto.preparacion}</p>
                             </div>
                         </div>
                     )}
