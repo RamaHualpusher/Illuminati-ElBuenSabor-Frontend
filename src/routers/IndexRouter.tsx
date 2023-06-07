@@ -22,7 +22,7 @@ const IndexRouter = () => {
         <Route path="/cajero" element={<Cajero />} />
         <Route path="/delivery" element={<Delivery />} />
         <Route path="/pedido/:id" element={<DetallePedido />} />
-        <Route path="/carrito" element={<CarritoCompras />} />
+        <Route path="/carrito" element={<CarritoCompras thumbnail={undefined} price={undefined} title={undefined} quantity={undefined} addToCart={undefined} />} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />
         <Route path="/productos/:id" element={<DetalleProducto />} />

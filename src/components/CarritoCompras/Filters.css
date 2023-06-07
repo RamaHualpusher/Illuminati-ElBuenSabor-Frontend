@@ -1,0 +1,14 @@
+.filters {
+  display: flex;
+  align-items: center;
+  /* esto es para que se separen entre ellos */
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* aca se busca que los filters dentro de cada div tenga una separacion de 1rem */
+.filters > div {
+  display: flex;
+  gap: 1rem;
+}
