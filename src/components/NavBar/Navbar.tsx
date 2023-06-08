@@ -1,14 +1,13 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useContext } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
-import { Cart } from "../CarritoCompras/Cart";
-import { FiltersProvider } from '../CarritoCompras/contex/filters'
-import { CartProvider } from '../CarritoCompras/contex/cart'
+import { CartContext } from "../CarritoCompras/CartProvider";
 
 const Navbar: FC = () => {
   const { isAuthenticated, user } = useAuth0();
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const { cartItems } = useContext(CartContext); // Obtener el estado del carrito de compras
 
   const toggleNavbar = () => {
     setNavbarOpen(!navbarOpen);
@@ -43,8 +42,9 @@ const Navbar: FC = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div
-          className={`collapse navbar-collapse justify-content-end ${navbarOpen ? "show" : ""
-            }`}
+          className={`collapse navbar-collapse justify-content-end ${
+            navbarOpen ? "show" : ""
+          }`}
         >
           <ul className="navbar-nav align-items-center">
             <li className="nav-item">
@@ -53,11 +53,13 @@ const Navbar: FC = () => {
                 style={{ fontSize: "2rem", marginRight: "10px" }}
               />
             </li>
-            <FiltersProvider>
-              <CartProvider>
-                <Cart />
-              </CartProvider>
-            </FiltersProvider>
+            <li className="nav-item">
+              <i
+                className="bi bi-cart text-white"
+                style={{ fontSize: "2rem", marginRight: "10px", cursor: "pointer" }}
+                onClick={() => console.log(cartItems)} // Aquí puedes mostrar el contenido del carrito como desees
+              />
+            </li>
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center">
                 <p className="nav-link mb-0">

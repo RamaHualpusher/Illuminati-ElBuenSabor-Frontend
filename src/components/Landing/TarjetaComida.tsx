@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 interface CardProps {
@@ -9,9 +9,15 @@ interface CardProps {
   buttonText: string;
 }
 
-const Card: React.FC<CardProps> = ({ imageSrc, title, text, buttonText, id }) => {
+const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText, id }) => {
+  const [showCart, setShowCart] = useState(false);
+
+  const handleCartClick = () => {
+    setShowCart(true);
+  };
+
   return (
-    <div className="card" style={{ width: '18rem', marginBottom: '20px', marginLeft: '16px'}}>
+    <div className="card" style={{ width: '18rem', marginBottom: '20px', marginLeft: '16px' }}>
       <img
         className="card-img-top"
         src={imageSrc}
@@ -23,18 +29,24 @@ const Card: React.FC<CardProps> = ({ imageSrc, title, text, buttonText, id }) =>
           borderRadius: '0%',
         }}
       />
+
       <div className="card-body">
+
         <h5 className="card-title">{title}</h5>
         <p className="card-text">{text}</p>
-        <a href="#" className="btn btn-primary mb-2">
+
+        <button onClick={handleCartClick} className="btn btn-primary mb-2">
           {buttonText}
-        </a>
+        </button>
         <Link to={`/productos/${id}`} className="btn btn-primary float-right">
-          Ver Detalles  
+          Ver Detalles
         </Link>
+
       </div>
     </div>
   );
 };
 
-export default Card;
+export default TarjetaComida;
+
+
