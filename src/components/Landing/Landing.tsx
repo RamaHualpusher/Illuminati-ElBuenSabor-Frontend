@@ -11,7 +11,7 @@ export default function Landing() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [produc, setProduc] = useState<ProductoManufacturado[]>([]);
   const [producComplete, setProducComplete] = useState<ProductoManufacturado[]>([]);
-  const { addToCart, cartItems  } = useContext(CartContext); 
+  const { addToCart, cartItems} = useContext(CartContext); 
 
   useEffect(() => {
     const fetchData = async () => {

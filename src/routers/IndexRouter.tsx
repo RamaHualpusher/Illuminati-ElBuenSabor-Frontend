@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserRouter from "./UserRouter";
 import IngredientesTable from "../components/Stock/Ingrediente/IngredientesTable";
 import ProductosTable from "../components/Stock/Producto/ProductosTable";
-import CarritoCompras from "../components/CarritoCompras/CarritoCompras";
+import CartItem from "../components/CarritoCompras/CartItem";
 import Admin from "../screens/Admin";
 import Cocinero from "../screens/Cocinero";
 import DetalleProducto from "../screens/DetalleProducto";
@@ -22,7 +22,7 @@ const IndexRouter = () => {
         <Route path="/cajero" element={<Cajero />} />
         <Route path="/delivery" element={<Delivery />} />
         <Route path="/pedido/:id" element={<DetallePedido />} />
-        <Route path="/carrito" element={<CarritoCompras/>} />
+        <Route path="/carrito" element={<CartItem/>} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />
         <Route path="/productos/:id" element={<DetalleProducto />} />
