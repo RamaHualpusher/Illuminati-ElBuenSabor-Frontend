@@ -3,14 +3,20 @@ import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import { CartContext } from "../CarritoCompras/CartProvider";
+import CartItem from "../CarritoCompras/CartItem";
 
 const Navbar: FC = () => {
   const { isAuthenticated, user } = useAuth0();
   const [navbarOpen, setNavbarOpen] = useState(false);
   const { cartItems } = useContext(CartContext); // Obtener el estado del carrito de compras
+  const [cartOpen, setCartOpen] = useState(false);
 
   const toggleNavbar = () => {
     setNavbarOpen(!navbarOpen);
+  };
+
+  const toggleCart = () => {
+    setCartOpen(!cartOpen);
   };
 
   const getFirstName = (fullName: string) => {
@@ -53,15 +59,22 @@ const Navbar: FC = () => {
               />
             </li>
             <li className="nav-item">
-              <i
-                className="bi bi-cart text-white"
-                style={{ fontSize: "2rem", marginRight: "10px" }}
-              >
-                {cartItems.length > 0 && (
-                  <span className="badge bg-danger">{cartItems.length}</span>
-                )}
-              </i>
+              <button className="btn btn-link" onClick={() => setCartOpen(!cartOpen)}>
+                <i className="bi bi-cart text-white" style={{ fontSize: "2rem", marginRight: "10px" }}>
+                  {cartItems.length > 0 && (
+                    <span className="badge bg-danger">{cartItems.length}</span>
+                  )}
+                </i>
+              </button>
+              {cartOpen && cartItems.length > 0 && (
+                <div className="cart-dropdown">
+                  {cartItems.map((item) => (
+                    <CartItem key={item.id} item={item} />
+                  ))}
+                </div>
+              )}
             </li>
+
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center">
                 <p className="nav-link mb-0">

@@ -13,10 +13,11 @@ interface CardProps {
 
 const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText, id }) => {
   const [showCart, setShowCart] = useState(false);
-  const { addToCart } = useContext(CartContext); // Obtener la función addToCart del contexto del carrito
+  const { addToCart } = useContext(CartContext); 
+
 
   const handleCartClick = () => {
-    const item = { id, name: title, quantity: 1, price: 0, title }; // Removiendo la propiedad 'image'
+    const item = { id, name: title, quantity: 1, price: 0, image:imageSrc, title }; 
     addToCart(item);
     setShowCart(true);
   };

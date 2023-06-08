@@ -11,7 +11,7 @@ export default function Landing() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [produc, setProduc] = useState<ProductoManufacturado[]>([]);
   const [producComplete, setProducComplete] = useState<ProductoManufacturado[]>([]);
-  const { addToCart } = useContext(CartContext); 
+  const { addToCart, cartItems  } = useContext(CartContext); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,8 +87,7 @@ export default function Landing() {
                   filteredProductos.length
                 )}`}
                 key={index}
-              >
-               
+              >               
                 <TarjetaComida
                   id={producto.idProductoManufacturado}
                   imageSrc={producto.imagen}
@@ -99,7 +98,9 @@ export default function Landing() {
                     id: producto.idProductoManufacturado,
                     name: producto.nombre,
                     quantity: 1,
-                    price: 0
+                    price: 0,
+                    image: producto.imagen,
+                    title: producto.nombre
                   })}
                 />
               </div>

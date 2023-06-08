@@ -5,6 +5,8 @@ interface CartItem {
     name: string;
     quantity: number;
     price: number;
+    image: string;
+    title: string;
 }
 
 interface CartProviderProps {

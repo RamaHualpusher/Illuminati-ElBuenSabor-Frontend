@@ -9,8 +9,7 @@ import Footer from "../components/Footer/Footer";
 const UserRouter = () => {
   return (
     <div>
-      <NavBar />
-      
+      <NavBar />      
       <Routes>
         <Route path="/" element={<Landing />} />
       </Routes>
