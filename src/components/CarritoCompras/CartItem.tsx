@@ -2,13 +2,14 @@ import React, { useContext } from 'react';
 import { CartContext } from './CartProvider';
 
 interface CartItem {
-  id: number;
-  name: string;
-  quantity: number;
-  price: number;
-  image: string; // Añade la propiedad 'image' al tipo CartItem
-  title: string; // Añade la propiedad 'title' al tipo CartItem
-}
+    id: number;
+    name: string;
+    quantity: number;
+    price: number;
+    image: string;
+    title: string;
+  }
+  
 
 interface CartItemProps {
   item: CartItem;

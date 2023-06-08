@@ -42,9 +42,8 @@ const Navbar: FC = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div
-          className={`collapse navbar-collapse justify-content-end ${
-            navbarOpen ? "show" : ""
-          }`}
+          className={`collapse navbar-collapse justify-content-end ${navbarOpen ? "show" : ""
+            }`}
         >
           <ul className="navbar-nav align-items-center">
             <li className="nav-item">
@@ -56,9 +55,12 @@ const Navbar: FC = () => {
             <li className="nav-item">
               <i
                 className="bi bi-cart text-white"
-                style={{ fontSize: "2rem", marginRight: "10px", cursor: "pointer" }}
-                onClick={() => console.log(cartItems)} // Aquí puedes mostrar el contenido del carrito como desees
-              />
+                style={{ fontSize: "2rem", marginRight: "10px" }}
+              >
+                {cartItems.length > 0 && (
+                  <span className="badge bg-danger">{cartItems.length}</span>
+                )}
+              </i>
             </li>
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center">

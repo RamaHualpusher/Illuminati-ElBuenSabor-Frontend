@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import BotonesMenu from "./BotonesMenu";
 import ImagenMenu from "./ImagenMenu";
 import TarjetaComida from "./TarjetaComida";
 import ComoFunc from "./ComoFunc";
 import SearchBar from "../Buscador/Buscador";
 import { ProductoManufacturado } from "../../interface/ProductoManufacturado";
+import { CartContext } from "../CarritoCompras/CartProvider";
 
 export default function Landing() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [produc, setProduc] = useState<ProductoManufacturado[]>([]);
   const [producComplete, setProducComplete] = useState<ProductoManufacturado[]>([]);
-  
+  const { addToCart } = useContext(CartContext); 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -93,6 +95,12 @@ export default function Landing() {
                   title={producto.nombre}
                   text={producto.preparacion}
                   buttonText={"Agregar al Carrito"}
+                  onButtonClick={() => addToCart({
+                    id: producto.idProductoManufacturado,
+                    name: producto.nombre,
+                    quantity: 1,
+                    price: 0
+                  })}
                 />
               </div>
             ))}

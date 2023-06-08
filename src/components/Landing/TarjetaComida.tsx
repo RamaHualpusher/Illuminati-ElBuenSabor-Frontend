@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { CartContext } from '../CarritoCompras/CartProvider';
 
 interface CardProps {
   id: number;
@@ -7,14 +8,19 @@ interface CardProps {
   title: string;
   text: string;
   buttonText: string;
+  onButtonClick: () => void;
 }
 
 const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText, id }) => {
   const [showCart, setShowCart] = useState(false);
+  const { addToCart } = useContext(CartContext); // Obtener la función addToCart del contexto del carrito
 
   const handleCartClick = () => {
+    const item = { id, name: title, quantity: 1, price: 0, title }; // Removiendo la propiedad 'image'
+    addToCart(item);
     setShowCart(true);
   };
+  
 
   return (
     <div className="card" style={{ width: '18rem', marginBottom: '20px', marginLeft: '16px' }}>
@@ -48,5 +54,6 @@ const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText,
 };
 
 export default TarjetaComida;
+
 
 
