@@ -4,12 +4,17 @@ import Landing from "../components/Landing/Landing";
 import { Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer/Footer";
+import CartProvider from "../components/CarritoCompras/CartProvider";
 
 //esto son los botones JAVI!!!!!
 const UserRouter = () => {
   return (
     <div>
-      <NavBar />      
+      {/* es importante el cartPrpovider para el entorno */}
+      <CartProvider>
+        <NavBar />
+      </CartProvider>
+      
       <Routes>
         <Route path="/" element={<Landing />} />
       </Routes>
@@ -19,9 +24,10 @@ const UserRouter = () => {
           <Link to="/Cocinero" className="btn btn-success my-3">Cocinero</Link>
           <Link to="/Cajero" className="btn btn-success my-3">Cajero</Link>
           <Link to="/Delivery" className="btn btn-success my-3">Delivery</Link>
+          <Link to="/mercadopago" className="btn btn-success my-3">Mercado Prueba</Link>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

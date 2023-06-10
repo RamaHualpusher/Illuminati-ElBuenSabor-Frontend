@@ -2,8 +2,10 @@ import React, { FC, useState, useContext } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
+
+
 import { CartContext } from "../CarritoCompras/CartProvider";
-import CartItem from "../CarritoCompras/CartItem";
+import CartWindow from "../CarritoCompras/CartWindow";
 
 const Navbar: FC = () => {
   const { isAuthenticated, user } = useAuth0();
@@ -15,9 +17,20 @@ const Navbar: FC = () => {
     setNavbarOpen(!navbarOpen);
   };
 
+
+
+
   const toggleCart = () => {
     setCartOpen(!cartOpen);
+    console.log('El estado de cartOpen es:', cartOpen);
+    console.log('cartItems:', cartItems);
   };
+
+
+
+
+
+  
 
   const getFirstName = (fullName: string) => {
     return fullName.split(" ")[0];
@@ -58,22 +71,25 @@ const Navbar: FC = () => {
                 style={{ fontSize: "2rem", marginRight: "10px" }}
               />
             </li>
+
+
+{/* guiate desde aca rama */}
             <li className="nav-item">
-              <button className="btn btn-link" onClick={() => setCartOpen(!cartOpen)}>
-                <i className="bi bi-cart text-white" style={{ fontSize: "2rem", marginRight: "10px" }}>
+              <button className="btn btn-link" onClick={toggleCart}>
+                <i className="bi bi-cart text-white mr-3" style={{ fontSize: "2rem"}}>
                   {cartItems.length > 0 && (
-                    <span className="badge bg-danger">{cartItems.length}</span>
+                    <span className="badge bg-danger">{cartItems.length}</span>                    
                   )}
                 </i>
-              </button>
+              </button>              
               {cartOpen && cartItems.length > 0 && (
-                <div className="cart-dropdown">
-                  {cartItems.map((item) => (
-                    <CartItem key={item.id} item={item} />
-                  ))}
-                </div>
+                <CartWindow cartItems={cartItems} />
               )}
             </li>
+
+
+
+
 
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center">
