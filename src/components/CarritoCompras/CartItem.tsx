@@ -22,20 +22,22 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const { removeFromCart, incrementItem, decrementItem } = useContext(CartContext);
 
   return (
-    <div className="d-flex align-items-start">
+    <div className="d-flex align-items-start w-100">
       <div>
-        <img src={item.image} alt={item.name} className="img-fluid rounded-circle me-2" style={{width: '50px', height: '50px'}} />
+        <img src={item.image} alt={item.name} className="img-fluid rounded-circle me-2" style={{width: "50px", height: "50px"}}/>
       </div>
-      <div>
+      <div className="flex-grow-1">
         <h3 className="h5">{item.name}</h3>
-        <p className="small mb-1">
-          <button className="btn btn-sm btn-outline-secondary" onClick={() => decrementItem(item.id)}>-</button>
-          Cantidad: {item.quantity}
-          <button className="btn btn-sm btn-outline-secondary" onClick={() => incrementItem(item.id)}>+</button>
-        </p>
-        <button className="btn btn-sm btn-outline-danger" onClick={() => removeFromCart(item.id)}>
-          <i className="bi bi-trash"></i>
-        </button>
+        <div className="d-flex justify-content-between align-items-center">
+          <div>
+            <button className="btn btn-sm btn-outline-secondary mx-1" onClick={() => decrementItem(item.id)}>-</button>
+            <button className="btn btn-sm btn-outline-secondary mx-1 px-3 p-2" disabled><span className='h6 text-light'> {item.quantity} </span></button>
+            <button className="btn btn-sm btn-outline-secondary mx-1" onClick={() => incrementItem(item.id)}>+</button>
+          </div>
+          <button className="btn btn-sm btn-outline-danger" onClick={() => removeFromCart(item.id)}>
+            <i className="bi bi-trash"></i>
+          </button>
+        </div>
       </div>
     </div>
   );

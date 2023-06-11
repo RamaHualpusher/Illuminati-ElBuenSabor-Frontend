@@ -1,7 +1,7 @@
 import React, { FC, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Dropdown, DropdownButton, ListGroup } from 'react-bootstrap';
-
+import './Navbar.css';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import { CartContext } from '../CarritoCompras/CartProvider';
@@ -20,6 +20,10 @@ const Navbar: FC = () => {
   const getFirstName = (fullName: string) => {
     return fullName.split(' ')[0];
   };
+
+  const toggleCart = () => {
+    setCartOpen(!cartOpen);
+  }
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -50,22 +54,36 @@ const Navbar: FC = () => {
               <DropdownButton
                 title={
                   <>
-                    <i className="bi bi-cart text-white" style={{ fontSize: '2rem', marginRight: '10px' }}></i>
+                    <i className="bi bi-cart text-white" style={{ fontSize: '2rem', marginRight: '10px' }} onClick={toggleCart}></i>
                     {cartItems.length > 0 && <span className="badge bg-danger">{cartItems.length}</span>}
                   </>
                 }
                 variant="link"
+                menuVariant="dark"
+                show={cartOpen}
               >
-                {cartItems.length > 0 ? (
-                  <ListGroup>
-                    {cartItems.map((item) => 
-                      <CartItem key={item.id} item={item} />
+                <button 
+                  className="btn-close close-btn" 
+                  aria-label="Close" 
+                  onClick={() => setCartOpen(false)}
+                ></button>
+                <h3 className='p-3'>Carrito de compras El Buen Sabor</h3>
+                {cartOpen && (
+                  <>
+                    {cartItems.length > 0 ? (
+                      <ListGroup className='dropdown-menu-custom align-items-center w-100 p-2'>
+                        {cartItems.map((item) => 
+                          <CartItem key={item.id} item={item} />
+                        )}
+                      </ListGroup>
+                    ) : (
+                      <Dropdown.Item disabled>No hay items en el carrito</Dropdown.Item>
                     )}
-                  </ListGroup>
-                ) : (
-                  <Dropdown.Item disabled>No hay items en el carrito</Dropdown.Item>
+                    <Dropdown.Item>
+                      <button className='btn btn-success w-100 my-2'>Comprar</button>  
+                    </Dropdown.Item>
+                  </>
                 )}
-                <Dropdown.Item>Confirmar compra</Dropdown.Item>
               </DropdownButton>
             </li>
             {isAuthenticated && (
