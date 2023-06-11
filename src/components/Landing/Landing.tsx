@@ -99,7 +99,7 @@ export default function Landing() {
                       id: producto.idProductoManufacturado,
                       name: producto.nombre,
                       quantity: 1,
-                      price: 0,
+                      price: 100 + Math.floor(Math.random() * 400),//aleatorio entre 100 y 500,
                       image: producto.imagen,
                       title: producto.nombre,
                     })

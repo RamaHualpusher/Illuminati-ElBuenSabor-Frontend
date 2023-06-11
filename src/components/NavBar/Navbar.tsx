@@ -62,6 +62,10 @@ const Navbar: FC = () => {
                 menuVariant="dark"
                 show={cartOpen}
               >
+                <div className="container-fluid dropdown-menu-custom">
+
+
+                
                 <button 
                   className="btn-close close-btn" 
                   aria-label="Close" 
@@ -71,7 +75,7 @@ const Navbar: FC = () => {
                 {cartOpen && (
                   <>
                     {cartItems.length > 0 ? (
-                      <ListGroup className='dropdown-menu-custom align-items-center w-100 p-2'>
+                      <ListGroup className='align-items-center w-100 p-2'>
                         {cartItems.map((item) => 
                           <CartItem key={item.id} item={item} />
                         )}
@@ -84,6 +88,7 @@ const Navbar: FC = () => {
                     </Dropdown.Item>
                   </>
                 )}
+                </div>
               </DropdownButton>
             </li>
             {isAuthenticated && (

@@ -27,7 +27,10 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
         <img src={item.image} alt={item.name} className="img-fluid rounded-circle me-2" style={{width: "50px", height: "50px"}}/>
       </div>
       <div className="flex-grow-1">
-        <h3 className="h5">{item.name}</h3>
+        <div className='d-flex justifi-content-between align-items-center'>
+        <h3 className="h5 flex-grow-1">{item.name}</h3>
+        <p>${item.price}</p>
+        </div>
         <div className="d-flex justify-content-between align-items-center">
           <div>
             <button className="btn btn-sm btn-outline-secondary mx-1" onClick={() => decrementItem(item.id)}>-</button>
@@ -39,6 +42,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
           </button>
         </div>
       </div>
+      
     </div>
   );
 };
