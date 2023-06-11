@@ -6,15 +6,11 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer/Footer";
 import { CartProvider } from "../components/CarritoCompras/CartProvider";
 
-//esto son los botones JAVI!!!!!
 const UserRouter = () => {
   return (
     <div>
-      {/* es importante el cartPrpovider para el entorno */}
-      <CartProvider>
-        <NavBar />
-      </CartProvider>
-      
+      <NavBar />
+
       <Routes>
         <Route path="/" element={<Landing />} />
       </Routes>
