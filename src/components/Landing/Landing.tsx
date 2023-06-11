@@ -94,15 +94,18 @@ export default function Landing() {
                   title={producto.nombre}
                   text={producto.preparacion}
                   buttonText={"Agregar al Carrito"}
-                  onButtonClick={() => addToCart({
-                    id: producto.idProductoManufacturado,
-                    name: producto.nombre,
-                    quantity: 1,
-                    price: 0,
-                    image: producto.imagen,
-                    title: producto.nombre
-                  })}
+                  onButtonClick={() =>
+                    addToCart({
+                      id: producto.idProductoManufacturado,
+                      name: producto.nombre,
+                      quantity: 1,
+                      price: 0,
+                      image: producto.imagen,
+                      title: producto.nombre,
+                    })
+                  }
                 />
+
               </div>
             ))}
           </div>

@@ -1,96 +1,73 @@
-import React, { FC, useState, useContext } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
+import React, { FC, useState, useContext } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Dropdown, DropdownButton, ListGroup } from 'react-bootstrap';
 
-
-import { CartContext } from "../CarritoCompras/CartProvider";
-import CartWindow from "../CarritoCompras/CartWindow";
+import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
+import { CartContext } from '../CarritoCompras/CartProvider';
+import CartItem from '../CarritoCompras/CartItem';
 
 const Navbar: FC = () => {
   const { isAuthenticated, user } = useAuth0();
   const [navbarOpen, setNavbarOpen] = useState(false);
-  const { cartItems } = useContext(CartContext); // Obtener el estado del carrito de compras
+  const { cartItems, removeFromCart } = useContext(CartContext);
   const [cartOpen, setCartOpen] = useState(false);
 
   const toggleNavbar = () => {
     setNavbarOpen(!navbarOpen);
   };
 
-
-
-
-  const toggleCart = () => {
-    setCartOpen(!cartOpen);
-    console.log('El estado de cartOpen es:', cartOpen);
-    console.log('cartItems:', cartItems);
-  };
-
-
-
-
-
-  
-
   const getFirstName = (fullName: string) => {
-    return fullName.split(" ")[0];
+    return fullName.split(' ')[0];
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
         <div className="d-flex align-items-center">
-          <a href="/" className="logo-iluminatti-1 me-2">
-            <img
-              className="logo-iluminatti-1 me-2"
-              src="/assets/img/logo-grupo-illuminati.jpg"
-              alt="logo"
-              style={{
-                width: "50px",
-                height: "50px",
-                borderRadius: "50%",
-              }}
-            />
-          </a>
-          <a className="navbar-brand" href="/">
-            El Buen Sabor - Illuminati
-          </a>
+          <img
+            className="img-fluid rounded-circle me-2"
+            src="/assets/img/logo-grupo-illuminati.jpg"
+            alt="logo"
+            style={{
+              width: '50px',
+              height: '50px',
+            }}
+          />
+          <a className="navbar-brand" href="/">El Buen Sabor - Illuminati</a>
         </div>
-
+  
         <button className="navbar-toggler" type="button" onClick={toggleNavbar}>
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div
-          className={`collapse navbar-collapse justify-content-end ${navbarOpen ? "show" : ""
-            }`}
-        >
+  
+        <div className={`collapse navbar-collapse justify-content-end ${navbarOpen ? 'show' : ''}`}>
           <ul className="navbar-nav align-items-center">
             <li className="nav-item">
-              <i
-                className="bi bi-search text-white"
-                style={{ fontSize: "2rem", marginRight: "10px" }}
-              />
+              <i className="bi bi-search text-white" style={{ fontSize: '2rem', marginRight: '10px' }}></i>
             </li>
-
-
-{/* guiate desde aca rama */}
             <li className="nav-item">
-              <button className="btn btn-link" onClick={toggleCart}>
-                <i className="bi bi-cart text-white mr-3" style={{ fontSize: "2rem"}}>
-                  {cartItems.length > 0 && (
-                    <span className="badge bg-danger">{cartItems.length}</span>                    
-                  )}
-                </i>
-              </button>              
-              {cartOpen && cartItems.length > 0 && (
-                <CartWindow cartItems={cartItems} />
-              )}
+              <DropdownButton
+                title={
+                  <>
+                    <i className="bi bi-cart text-white" style={{ fontSize: '2rem', marginRight: '10px' }}></i>
+                    {cartItems.length > 0 && <span className="badge bg-danger">{cartItems.length}</span>}
+                  </>
+                }
+                variant="link"
+              >
+                {cartItems.length > 0 ? (
+                  <ListGroup>
+                    {cartItems.map((item) => 
+                      <CartItem key={item.id} item={item} />
+                    )}
+                  </ListGroup>
+                ) : (
+                  <Dropdown.Item disabled>No hay items en el carrito</Dropdown.Item>
+                )}
+                <Dropdown.Item>Confirmar compra</Dropdown.Item>
+              </DropdownButton>
             </li>
-
-
-
-
-
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center">
                 <p className="nav-link mb-0">
@@ -99,11 +76,10 @@ const Navbar: FC = () => {
                 <img
                   src={user?.picture}
                   alt="imagen usuario"
+                  className="img-fluid rounded-circle me-2"
                   style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "50%",
-                    marginRight: "10px",
+                    width: '50px',
+                    height: '50px',
                   }}
                 />
               </li>
@@ -117,5 +93,4 @@ const Navbar: FC = () => {
     </nav>
   );
 };
-
 export default Navbar;

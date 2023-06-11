@@ -11,7 +11,6 @@ import Cajero from "../screens/Cajero";
 import DetallePage from "../components/Landing/DetallePage";
 import Delivery from "../screens/Delivery";
 import DetallePedido from "../components/Pedidos/DetallePedido";
-import Prueba from "../components/MercadoPago/prueba";
 
 const IndexRouter = () => {
   return (
@@ -27,7 +26,6 @@ const IndexRouter = () => {
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />
         <Route path="/productos/:id" element={<DetalleProducto />} />
-        <Route path="/mercadopago" element={<Prueba/>}></Route>
       </Routes>
     </BrowserRouter>
   );

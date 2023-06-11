@@ -19,33 +19,22 @@ interface CartItemProps {
 }
 
 export const CartItem: React.FC<CartItemProps> = ({ item }) => {
-  const { removeFromCart } = useContext(CartContext);
+  const { removeFromCart, incrementItem, decrementItem } = useContext(CartContext);
 
   return (
-    <div className="cart-item">
-      <img src={item.image} alt={item.name} className="cart-item__image" />
-      <div className="cart-item__details">
-        <h3 className="cart-item__name">{item.name}</h3>
-        <p className="cart-item__title">{item.title}</p>
-        <p className="cart-item__quantity">Cantidad: {item.quantity}</p>
-        <p className="cart-item__price">Price: ${item.price}</p>
-        {item.productoManufacturado && (
-          <div>
-            <h4>Producto Manufacturado:</h4>
-            <p>Nombre: {item.productoManufacturado.nombre}</p>
-            {/* Agrega más propiedades del producto manufacturado según tus necesidades */}
-          </div>
-        )}
-        {item.productoManufacturadoVenta && (
-          <div>
-            <h4>Producto Manufacturado Venta:</h4>
-            <p>ID: {item.productoManufacturadoVenta.idProductoManufacturadoVenta}</p>
-            <p>Precio de venta: {item.productoManufacturadoVenta.precioVenta}</p>
-            {/* Agrega más propiedades del producto manufacturado venta según tus necesidades */}
-          </div>
-        )}
-        <button className="cart-item__remove" onClick={() => removeFromCart(item.id)}>
-          Eliminar
+    <div className="d-flex align-items-start">
+      <div>
+        <img src={item.image} alt={item.name} className="img-fluid rounded-circle me-2" style={{width: '50px', height: '50px'}} />
+      </div>
+      <div>
+        <h3 className="h5">{item.name}</h3>
+        <p className="small mb-1">
+          <button className="btn btn-sm btn-outline-secondary" onClick={() => decrementItem(item.id)}>-</button>
+          Cantidad: {item.quantity}
+          <button className="btn btn-sm btn-outline-secondary" onClick={() => incrementItem(item.id)}>+</button>
+        </p>
+        <button className="btn btn-sm btn-outline-danger" onClick={() => removeFromCart(item.id)}>
+          <i className="bi bi-trash"></i>
         </button>
       </div>
     </div>
@@ -53,6 +42,3 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
 };
 
 export default CartItem;
-
-
-

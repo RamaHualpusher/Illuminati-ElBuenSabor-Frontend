@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../CarritoCompras/CartProvider';
 
@@ -11,17 +11,14 @@ interface CardProps {
   onButtonClick: () => void;
 }
 
-const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText, id }) => {
-  const [showCart, setShowCart] = useState(false);
-  const { addToCart } = useContext(CartContext); 
 
+const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText, id }) => {
+  const { addToCart } = useContext(CartContext);
 
   const handleCartClick = () => {
-    const item = { id, name: title, quantity: 1, price: 0, image:imageSrc, title }; 
+    const item = { id, name: title, quantity: 1, price: 0, image: imageSrc, title };
     addToCart(item);
-    setShowCart(true);
   };
-  
 
   return (
     <div className="card" style={{ width: '18rem', marginBottom: '20px', marginLeft: '16px' }}>
@@ -38,7 +35,6 @@ const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText,
       />
 
       <div className="card-body">
-
         <h5 className="card-title">{title}</h5>
         <p className="card-text">{text}</p>
 
@@ -48,13 +44,9 @@ const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText,
         <Link to={`/productos/${id}`} className="btn btn-primary float-right">
           Ver Detalles
         </Link>
-
       </div>
     </div>
   );
 };
 
 export default TarjetaComida;
-
-
-

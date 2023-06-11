@@ -4,7 +4,7 @@ import Landing from "../components/Landing/Landing";
 import { Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer/Footer";
-import CartProvider from "../components/CarritoCompras/CartProvider";
+import { CartProvider } from "../components/CarritoCompras/CartProvider";
 
 //esto son los botones JAVI!!!!!
 const UserRouter = () => {
