@@ -68,7 +68,8 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    // fixed top sirve para dejar fijo el navBar
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div className="container">
         <div className="d-flex align-items-center">
           <img
