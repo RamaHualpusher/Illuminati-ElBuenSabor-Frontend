@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Employee from "../Users/Empleado/Empleado";
+import Empleado from "../Users/Empleado/Empleado";
 import ProductosTable from "../Stock/Producto/ProductosTable";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
 import Factura from "../Factura/Factura";
@@ -54,7 +54,7 @@ export default function OpcionesAdmin() {
           </div>
       
           <div>
-            {selectedOption === "employee" && <Employee />}
+            {selectedOption === "employee" && <Empleado />}
             {selectedOption === "productos" && <ProductosTable />}
             {selectedOption === "ingredientes" && <IngredientesTable />}
             {selectedOption === "facturas" && <Factura />}

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { Producto } from "../../../interface/interfaces";
+import { ProductoManufacturado } from "../../../interface/ProductoManufacturado";
 import axios from "axios";
 
 type AddProductoModalProps = {
   show: boolean;
   handleClose: () => void;
-  handleProductoAdd: (producto: Producto) => void;
+  handleProductoAdd: (producto: ProductoManufacturado) => void;
 };
 
 type Rubro = {
@@ -39,12 +39,16 @@ const AddProductoModal = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const newProducto: Producto = {
-      id: 0,
+    const newProducto: ProductoManufacturado = {
+      idProductoManufacturado: 0,
       nombre,
-      rubro,
-      tiempo,
-      precio,
+      Rubro:{idRubro:0,nombre:""},
+      tiempoEstimadoCocina:0,
+      denominacion:"",
+      imagen:"",
+      stockActual:0,
+      stockMinimo:0,
+      preparacion:"",
     };
     handleProductoAdd(newProducto);
     handleClose();
@@ -53,7 +57,7 @@ const AddProductoModal = ({
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar Producto</Modal.Title>
+        <Modal.Title>Agregar ProductoManufacturado</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>

@@ -1,31 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Ingrediente, Rubro} from '../../../interface/interfaces';
+import { Ingredientes } from '../../../interface/Ingredientes';
+import { Rubro } from '../../../interface/Rubro';
+import { UnidadMedida } from '../../../interface/UnidadMedida';
 
-interface EditIngredienteModalProps {
+interface EditIngredientesModalProps {
   show: boolean;
   handleClose: () => void;
-  handleIngredienteEdit: (ingrediente: Ingrediente) => void;
-  selectedIngrediente: Ingrediente | null;
+  handleIngredientesEdit: (Ingredientes: Ingredientes) => void;
+  selectedIngredientes: Ingredientes | null;
 }
 
-const EditIngredienteModal: React.FC<EditIngredienteModalProps> = ({
+const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
   show,
   handleClose,
-  handleIngredienteEdit,
-  selectedIngrediente,
+  handleIngredientesEdit,
+  selectedIngredientes,
 }) => {
-  const [nombre, setNombre] = useState(selectedIngrediente?.nombre || '');
-  const [rubro, setRubro] = useState(selectedIngrediente?.rubro || '');
-  const [minStock, setMinStock] = useState(selectedIngrediente?.minStock || 0);
-  const [stockActual, setStockActual] = useState(selectedIngrediente?.stockActual || 0);
-  const [precio, setPrecio] = useState(selectedIngrediente?.precio || 0);
-  const [um, setUM] = useState(selectedIngrediente?.um || '');
+  const [nombre, setNombre] = useState(selectedIngredientes?.nombre || '');
+  const [rubro, setRubro] = useState(selectedIngredientes?.Rubro || '');
+  const [minStock, setMinStock] = useState(selectedIngredientes?.stockMinimo || 0);
+  const [stockActual, setStockActual] = useState(selectedIngredientes?.stockActual || 0);
+  const [estado, setEstado] = useState(selectedIngredientes?.estado || false);
+  const [um, setUM] = useState(selectedIngredientes?.UnidadMedida || '');
   const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [unidadMedida, setUnidadMedida] = useState<UnidadMedida[]>([]);
   const [rubroId, setRubroId] = useState<number | null>(null);
+  const [idUM, setIdUM] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('/assets/data/rubrosIngredientesEjemplo.json')
+    fetch('/assets/data/rubrosIngredientessEjemplo.json')
       .then(response => response.json())
       .then(data => {
         setRubros(data);
@@ -36,35 +40,36 @@ const EditIngredienteModal: React.FC<EditIngredienteModalProps> = ({
   }, []);
 
   useEffect(() => {
-    setNombre(selectedIngrediente?.nombre || '');
-    setRubro(selectedIngrediente?.rubro || '');
-    setMinStock(selectedIngrediente?.minStock || 0);
-    setStockActual(selectedIngrediente?.stockActual || 0);
-    setPrecio(selectedIngrediente?.precio || 0);
-    setUM(selectedIngrediente?.um || '');
-  }, [selectedIngrediente]);
+    setNombre(selectedIngredientes?.nombre || '');
+    setRubro(selectedIngredientes?.Rubro || '');
+    setMinStock(selectedIngredientes?.stockMinimo || 0);
+    setStockActual(selectedIngredientes?.stockActual || 0);
+    setUM(selectedIngredientes?.UnidadMedida || '');
+    setEstado(selectedIngredientes?.estado || false);
+  }, [selectedIngredientes]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (selectedIngrediente) {
-      const selectedRubro = rubros.find(rubro => rubro.id === rubroId);
-      const updatedIngrediente: Ingrediente = {
-        id: selectedIngrediente.id,
-        nombre,
-        rubro: selectedRubro?.nombre || '',
-        minStock,
-        stockActual,
-        precio,
-        um,
+    if (selectedIngredientes) {
+      const selectedRubro = rubros.find(rubro => rubro.idRubro === rubroId);
+      const selectedUnidaMedida=unidadMedida.find(unidad=> unidad.idUnidadMedida===idUM)
+      const updatedIngredientes: Ingredientes = {
+        idIngredientes: selectedIngredientes.idIngredientes,
+        nombre:selectedIngredientes.nombre,
+        Rubro: selectedRubro||{ idRubro: 0, nombre: "" },
+        stockMinimo:selectedIngredientes.stockMinimo,
+        stockActual:selectedIngredientes.stockActual,
+        UnidadMedida:selectedUnidaMedida||{idUnidadMedida:0,denominacion:""},
+        estado:selectedIngredientes.estado,
       };
-      handleIngredienteEdit(updatedIngrediente);
+      handleIngredientesEdit(updatedIngredientes);
     }
     handleClose();
   };
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Editar Ingrediente</Modal.Title>
+        <Modal.Title>Editar Ingredientes</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
@@ -90,7 +95,7 @@ const EditIngredienteModal: React.FC<EditIngredienteModalProps> = ({
             >
               <option value="">Seleccione un rubro</option>
               {rubros.map((rubro) => (
-                <option key={rubro.id} value={rubro.id}>
+                <option key={rubro.idRubro} value={rubro.idRubro}>
                   {rubro.nombre}
                 </option>
               ))}
@@ -116,25 +121,24 @@ const EditIngredienteModal: React.FC<EditIngredienteModalProps> = ({
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formPrecio">
-            <Form.Label>Precio</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese precio"
-              value={precio}
-              onChange={(event) => setPrecio(parseFloat(event.target.value))}
-              required
-            />
-          </Form.Group>
+          
           <Form.Group className="mb-3" controlId="formUM">
             <Form.Label>UM</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese unidad de medida"
-              value={um}
-              onChange={(event) => setUM(event.target.value)}
+            <Form.Select
+              value={idUM || ""}
+              onChange={(event) => {
+                setUM(event.target.value);
+                setIdUM(parseInt(event.target.value));
+              }}
               required
-            />
+            >
+              <option value="">Seleccione una Unida de Medida</option>
+              {unidadMedida.map((um) => (
+                <option key={um.idUnidadMedida} value={um.idUnidadMedida}>
+                  {um.denominacion}
+                </option>
+              ))}
+            </Form.Select>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -150,4 +154,4 @@ const EditIngredienteModal: React.FC<EditIngredienteModalProps> = ({
   );
 };
 
-export default EditIngredienteModal;
+export default EditIngredientesModal;

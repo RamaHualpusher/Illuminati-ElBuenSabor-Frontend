@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Ingrediente, Rubro} from '../../../interface/interfaces';
+import { Ingredientes } from '../../../interface/Ingredientes';
+import { Rubro } from '../../../interface/Rubro';
+import { UnidadMedida } from '../../../interface/UnidadMedida';
+
 
 
 
 interface AddIngredienteModalProps {
   show: boolean;
   handleClose: () => void;
-  handleIngredienteAdd: (ingrediente: Ingrediente) => void;
+  handleIngredienteAdd: (ingrediente: Ingredientes) => void;
 }
 
 const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
@@ -16,7 +19,7 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
   handleIngredienteAdd,
 }) => {
   const [nombre, setNombre] = useState('');
-  const [rubro, setRubro] = useState('');
+  const [rubro, setRubro] = useState<Rubro|null>(null);
   const [minStock, setMinStock] = useState(0);
   const [stockActual, setStockActual] = useState(0);
   const [precio, setPrecio] = useState(0);
@@ -37,14 +40,22 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const newIngrediente: Ingrediente = {
-      id: 0,
+    const rubroDefecto:Rubro={
+      idRubro: 0,
+      nombre: "",
+    };
+    const umDefecto:UnidadMedida={
+      idUnidadMedida: 0,
+      denominacion:"",
+    };
+    const newIngrediente: Ingredientes = {
+      idIngredientes: 0,
       nombre,
-      rubro: rubro,
-      minStock,
+      Rubro: rubroDefecto,
+      stockMinimo:0,
       stockActual,
-      precio,
-      um,
+      UnidadMedida:umDefecto,
+      estado:false,
     };
     handleIngredienteAdd(newIngrediente);
     handleClose();
@@ -75,7 +86,7 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
             >
               <option value="">Seleccione un rubro</option>
               {rubros.map((rubro) => (
-                <option key={rubro.id} value={rubro.id}>
+                <option key={rubro.idRubro} value={rubro.idRubro}>
                   {rubro.nombre}
                 </option>
               ))}

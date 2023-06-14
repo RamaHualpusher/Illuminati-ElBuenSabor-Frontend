@@ -1,4 +1,4 @@
-import { Pedido } from '../../interface/interfaces';
+import { Pedido } from '../../interface/Pedido';
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col} from 'react-bootstrap';
 import { TablaGeneric } from '../TableGeneric/TableGeneric';

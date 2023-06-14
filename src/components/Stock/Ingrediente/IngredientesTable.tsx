@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Container, Col, Row } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
-import { Ingrediente } from '../../../interface/interfaces';
+import { Ingredientes } from '../../../interface/Ingredientes';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 import Buscador from '../../Buscador/Buscador';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
@@ -12,9 +12,9 @@ interface IngredientesTableProps { }
 const IngredientesTable: React.FC<IngredientesTableProps> = () => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
-  const [selectedIngrediente, setSelectedIngrediente] = useState<Ingrediente | null>(null);
-  const [ingred, setIngred] = useState<Ingrediente[]>([]);
-  const [ingredComplete, setIngredComplete] = useState<Ingrediente[]>([]);
+  const [selectedIngrediente, setSelectedIngrediente] = useState<Ingredientes | null>(null);
+  const [ingred, setIngred] = useState<Ingredientes[]>([]);
+  const [ingredComplete, setIngredComplete] = useState<Ingredientes[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,11 +30,11 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
   }, []);
 
   const filter = (searchParam: string) => {
-    const searchResult = ingredComplete.filter((productVal: Ingrediente) => {
+    const searchResult = ingredComplete.filter((productVal: Ingredientes) => {
       if (
-        productVal.id.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.idIngredientes.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
         productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.rubro?.toString().toLowerCase().includes(searchParam.toLowerCase())
+        productVal.Rubro?.toString().toLowerCase().includes(searchParam.toLowerCase())
       ) {
         return productVal;
       }
@@ -51,10 +51,14 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     let i:number=0;
     let x:boolean=true;
     while(x){
-      if(ingredComplete[i].id===+id){
+      if (i >= ingredComplete.length) {
+        // No se encontró el ingrediente, salir del ciclo
+        x = false;
+      } else if (ingredComplete[i].idIngredientes === +id) {
+        // Ingrediente encontrado
         return ingredComplete[i];
       }
-      i=i+1; 
+      i = i + 1; 
     }
     return ingredComplete[0];
   };
@@ -78,12 +82,12 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     setAddModalShow(false);
   };
 
-  const handleIngredienteEdit = async (producto: Ingrediente) => {
+  const handleIngredienteEdit = async (producto: Ingredientes) => {
     try {
-      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.id}`, producto);
+      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.idIngredientes}`, producto);
 
       const newData = [...ingred];
-      const index = newData.findIndex((item) => item.id === producto.id);
+      const index = newData.findIndex((item) => item.idIngredientes === producto.idIngredientes);
       newData[index] = updatedProducto;
 
       setIngred(newData);
@@ -92,9 +96,9 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     }
   };
 
-  const handleIngredienteAdd = async (ingrediente: Ingrediente) => {
+  const handleIngredienteAdd = async (Ingredientes: Ingredientes) => {
     try {
-      const newProducto = await handleRequest('POST', '/assets/data/ingredientesEjemplo.json', ingrediente);
+      const newProducto = await handleRequest('POST', '/assets/data/ingredientesEjemplo.json', Ingredientes);
 
       setIngred([...ingred, newProducto]);
     } catch (error) {
@@ -109,7 +113,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         method: 'DELETE',
       })
         .then(response => {
-          setIngred(ingred.filter(item => item.id !== ingredienteId));
+          setIngred(ingred.filter(item => item.idIngredientes !== ingredienteId));
         })
         .catch(error => {
           console.log(error);
@@ -126,14 +130,14 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     { label: "UM", width: 50 }
   ];
 
-  const data = ingred.map((ingrediente) => [
-    ingrediente.id.toString(),
-    ingrediente.nombre.toString(),
-    ingrediente.rubro.toString(),
-    ingrediente.minStock.toString(),
-    ingrediente.stockActual.toString(),
-    ingrediente.precio.toString(),
-    ingrediente.um.toString()
+  const data = ingred.map((Ingredientes) => [
+    Ingredientes.idIngredientes.toString(),
+    Ingredientes.nombre.toString(),
+    Ingredientes.Rubro.toString(),
+    Ingredientes.stockMinimo.toString(),
+    Ingredientes.stockActual.toString(),
+    Ingredientes.estado.toString(),// Esto es un boolean y no se que puede ser el string
+    Ingredientes.UnidadMedida.toString()
   ]);
 
   return (
@@ -148,7 +152,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         <Row className="justify-content-start align-items-center mb-3">
           <Col>
             <Button variant="success" onClick={handleAddModalOpen} className="float-start">
-              Agregar Ingrediente
+              Agregar Ingredientes
             </Button>
           </Col>
         </Row>
@@ -159,8 +163,8 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       <EditIngredienteModal
         show={editModalShow}
         handleClose={handleEditModalClose}
-        handleIngredienteEdit={handleIngredienteEdit}
-        selectedIngrediente={selectedIngrediente}
+        handleIngredientesEdit={handleIngredienteEdit}
+        selectedIngredientes={selectedIngrediente}
       />
       <AddIngredienteModal
         show={addModalShow}
