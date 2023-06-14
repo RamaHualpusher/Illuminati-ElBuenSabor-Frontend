@@ -57,7 +57,7 @@ const CajeroPage = () => {
                 (EstadoPedido.descripcion === "Listo" && nuevoEstado === "En delivery" && TipoEntregaPedido.descripcion === "Envío a domicilio") ||
                 (EstadoPedido.descripcion === "Listo" && nuevoEstado === "Entregado" && TipoEntregaPedido.descripcion === "Retiro en local" && TipoPago.descripcion === "Pago realizado")
             ) {
-                setPedidoSeleccionado({ ...pedidoSeleccionado, EstadoPedido: { idOrderStatus: 0, descripcion: nuevoEstado, tiempo: "0" } });
+                setPedidoSeleccionado({ ...pedidoSeleccionado, EstadoPedido: { idEstadoPedido: 0, descripcion: nuevoEstado, tiempo: "0" } });
             }
         }
     };

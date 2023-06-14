@@ -1,5 +1,5 @@
 export interface MercadoPagoDatos {
-    idMercadoPagoData: number;
+    idMercadoPagoDatos: number;
     identificadorPago: number;
     fechaCreacion: Date;
     fechaAprobacion: Date;

@@ -1,4 +1,5 @@
 import { ProductoManufacturado } from "./ProductoManufacturado";
+
 export interface ProductoManufacturadoCosto {
     idProductoManufacturadoCosto: number;
     precioCosto: number;

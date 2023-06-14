@@ -3,14 +3,15 @@ import { Rol } from "./Rol";
 
 export interface Usuario {
   idUsuario: number;
-  nombre: string; 
+  nombre: string;
   apellido: string;
   email: string;
   clave: string;
   telefono: string;
-  Rol: Rol;
   Domicilio: Domicilio;
+  Rol: Rol;
 }
+
 
 export interface EditUsuarioFromAdmin {
   idUsuario: number;
@@ -19,4 +20,19 @@ export interface EditUsuarioFromAdmin {
   email: string;
   telefono: string;
   Rol: Rol;
+}
+
+export interface UsuarioCompleto {
+  idUsuarioCompleto: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+  clave: string;
+  telefono: string;
+  idDomicilio: number;
+  calle: string;
+  numero: number;
+  localidad: string;
+  idRol: number;
+  nombreRol: string;
 }

@@ -5,7 +5,7 @@ export interface Articulo {
     idArticulo: number;
     denominacion: string;
     precioCompra: number;
-    precioVenta: number;
+    // precioVenta: number;
     stockMinimo: number;
     stockActual: number;
     esBebida: boolean;

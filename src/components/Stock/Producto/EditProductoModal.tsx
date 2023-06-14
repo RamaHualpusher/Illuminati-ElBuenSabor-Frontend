@@ -54,10 +54,10 @@ const EditProductoModal = ({
         stockActual: selectedProducto.stockActual,
         stockMinimo: selectedProducto.stockMinimo,
         preparacion: selectedProducto.preparacion,
-        Ingrediente: selectedProducto.Ingrediente,
+        // Ingrediente: selectedProducto.Ingrediente,
         Rubro: selectedRubro || { idRubro: 0, nombre: "" },
-        ProductoManufacturadoCosto: [],
-        ProductoManufacturadoVenta: []
+        // ProductoManufacturadoCosto: [],
+        // ProductoManufacturadoVenta: []
       };
       handleProductoEdit(updatedProducto);
     }

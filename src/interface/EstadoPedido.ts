@@ -1,5 +1,5 @@
 export interface EstadoPedido {
-    idOrderStatus: number;
+    idEstadoPedido: number;
     descripcion: string;
     tiempo: string;
   }

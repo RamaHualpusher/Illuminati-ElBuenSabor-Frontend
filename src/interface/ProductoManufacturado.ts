@@ -1,7 +1,7 @@
-import { ProductoManufacturadoVenta } from './ProductoManufacturadoVenta';
-import { ProductoManufacturadoCosto } from './ProductoManufacturadoCosto';
+// import { ProductoManufacturadoVenta } from './ProductoManufacturadoVenta';
+// import { ProductoManufacturadoCosto } from './ProductoManufacturadoCosto';
 import { Rubro } from "./Rubro";
-import { Ingrediente } from "./Ingrediente";
+// import { Ingrediente } from "./Ingrediente";
 
 export interface ProductoManufacturado {
   idProductoManufacturado: number;
@@ -11,9 +11,9 @@ export interface ProductoManufacturado {
   imagen: string;
   stockActual: number;
   stockMinimo: number;
-  preparacion: string;
-  Ingrediente: Ingrediente[];
+  preparacion: string;  
   Rubro: Rubro;
-  ProductoManufacturadoCosto: ProductoManufacturadoCosto[];
-  ProductoManufacturadoVenta: ProductoManufacturadoVenta[];
+  // Ingrediente: Ingrediente[];
+  // ProductoManufacturadoCosto: ProductoManufacturadoCosto[];
+  // ProductoManufacturadoVenta: ProductoManufacturadoVenta[];
 }
