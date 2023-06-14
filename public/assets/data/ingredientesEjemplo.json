@@ -1,25 +1,43 @@
 [{
-	"id": 1,
-	"nombre": "Harina de trigo",
-	"rubro": "Harinas",
-	"minStock": 10,
-	"stockActual": 20,
-	"precio": 3.5,
-	"um": "kg"
+    "idIngredientes": 1,
+    "nombre": "Harina de trigo",
+    "estado": true,
+    "stockMinimo": 10,
+    "stockActual": 20,
+    "Rubro": {
+        "idRubro": 1,
+        "nombre": "Harinas"
+    },
+    "UnidadMedida": {
+        "idUnidadMedida": 1,
+        "denominacion": "kg"
+    }
 }, {
-	"id": 2,
-	"nombre": "Azúcar",
-	"rubro": "Endulzantes",
-	"minStock": 5,
-	"stockActual": 8,
-	"precio": 2,
-	"um": "kg"
+    "idIngredientes": 2,
+    "nombre": "Azúcar",
+    "estado": true,
+    "stockMinimo": 5,
+    "stockActual": 8,
+    "Rubro": {
+        "idRubro": 2,
+        "nombre": "Endulzantes"
+    },
+    "UnidadMedida": {
+        "idUnidadMedida": 1,
+        "denominacion": "kg"
+    }
 }, {
-	"id": 3,
-	"nombre": "Aceite de oliva",
-	"rubro": "Aceites",
-	"minStock": 3,
-	"stockActual": 4,
-	"precio": 10,
-	"um": "l"
+    "idIngredientes": 3,
+    "nombre": "Aceite de oliva",
+    "estado": true,
+    "stockMinimo": 3,
+    "stockActual": 4,
+    "Rubro": {
+        "idRubro": 3,
+        "nombre": "Aceites"
+    },
+    "UnidadMedida": {
+        "idUnidadMedida": 2,
+        "denominacion": "l"
+    }
 }]
