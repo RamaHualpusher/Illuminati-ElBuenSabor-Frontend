@@ -21,6 +21,20 @@ En resumen, el sistema de restaurante "El buen sabor" cuenta con diferentes inte
 - [@GonzaloLisanti](https://www.github.com/GonzaloLisanti)
 - [@JavierScan](https://www.github.com/JavierScan)
 
+## Ejecución
+
+- Clonar el repositorio
+
+- Node.js: Se especifica una dependencia de "react": "^18.2.0", lo que indica que se requiere Node.js 14.x o superior para soportar React 18.2.0. Sin embargo, para estar seguro, se recomienda utilizar la última versión estable de Node.js disponible.
+
+- npm: No se especifica una versión mínima requerida para npm en el archivo package.json. Por lo tanto, puedes usar la versión de npm que se incluye en la instalación de Node.js.
+- Abrir el proyecto en Visual Studio Code
+- Abrir una terminal integrada
+- Ejecutar el comando “npm install”
+- Luego de la instalación ejecutar el comando “npm start”
+- El servidor quedará ejecutándose en el puerto 3000
+- Se podrá acceder a la SPA usando el enlace http://localhost:3000/
+
 ## 🔗 Wireframing de la App en Figma
 
 [![Figma - Wireframing](https://img.shields.io/badge/Figma-000?style=for-the-badge&logo=ko-fi&logoColor=white)](<https://www.figma.com/file/6PdtTbrVlb80sUHITQU1SW/Wireframing-(Copy)?node-id=0-1&t=SLQ8y9nIo9hn908e-0>)
