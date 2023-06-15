@@ -8,7 +8,7 @@ import Admin from "../screens/Admin";
 import Cocinero from "../screens/Cocinero";
 import DetalleProducto from "../screens/DetalleProducto";
 import Cajero from "../screens/Cajero";
-import DetallePage from "../components/Landing/DetallePage";
+// import DetallePage from "../components/Landing/DetallePage";
 import Delivery from "../screens/Delivery";
 import DetallePedido from "../components/Pedidos/DetallePedido";
 

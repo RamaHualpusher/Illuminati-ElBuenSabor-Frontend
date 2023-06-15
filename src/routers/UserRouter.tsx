@@ -4,13 +4,11 @@ import Landing from "../components/Landing/Landing";
 import { Route, Routes } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer/Footer";
-import { CartProvider } from "../components/CarritoCompras/CartProvider";
 
 const UserRouter = () => {
   return (
     <div>
       <NavBar />
-
       <Routes>
         <Route path="/" element={<Landing />} />
       </Routes>
