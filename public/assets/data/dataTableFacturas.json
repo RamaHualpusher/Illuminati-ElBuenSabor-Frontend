@@ -1,6 +1,6 @@
 [
   {
-    "idPedido": 123456,
+    "idPedido": 1,
     "numeroPedido": 123456,
     "fechaPedido": "2023-03-14",
     "horaEstimadaFin": null,
@@ -11,18 +11,18 @@
     },
     "EstadoPedido": {
       "idEstadoPedido": 1,
-      "descripcion": "A Confirmar"
+      "descripcion": "A Confirmar",
+      "tiempo": ""
     },
     "TipoPago": {
       "idTipoPago": 1,
       "descripcion": "Efectivo",
-      "MercadoPagoData": null
+      "MercadoPagoDatos": null
     },
-    "Usuario": null,
-    "Articulo": null
+    "Usuario": null
   },
   {
-    "idPedido": 123457,
+    "idPedido": 2,
     "numeroPedido": 123457,
     "fechaPedido": "2023-03-12",
     "horaEstimadaFin": null,
@@ -33,14 +33,81 @@
     },
     "EstadoPedido": {
       "idEstadoPedido": 2,
-      "descripcion": "Confirmado"
+      "descripcion": "Confirmado",
+      "tiempo": ""
     },
     "TipoPago": {
       "idTipoPago": 2,
       "descripcion": "Tarjeta",
-      "MercadoPagoData": null
+      "MercadoPagoDatos": null
     },
-    "Usuario": null,
-    "Articulo": null
+    "Usuario": null
+  },
+  {
+    "idPedido": 3,
+    "numeroPedido": 123458,
+    "fechaPedido": "2023-06-15",
+    "horaEstimadaFin": null,
+    "tipoEnvio": "Delivery",
+    "TipoEntregaPedido": {
+      "idTipoEntregaPedido": 1,
+      "descripcion": "Delivery"
+    },
+    "EstadoPedido": {
+      "idEstadoPedido": 1,
+      "descripcion": "A Confirmar",
+      "tiempo": ""
+    },
+    "TipoPago": {
+      "idTipoPago": 1,
+      "descripcion": "Efectivo",
+      "MercadoPagoDatos": null
+    },
+    "Usuario": null
+  },
+  {
+    "idPedido": 4,
+    "numeroPedido": 123459,
+    "fechaPedido": "2023-06-15",
+    "horaEstimadaFin": null,
+    "tipoEnvio": "Delivery",
+    "TipoEntregaPedido": {
+      "idTipoEntregaPedido": 1,
+      "descripcion": "Delivery"
+    },
+    "EstadoPedido": {
+      "idEstadoPedido": 1,
+      "descripcion": "A Confirmar",
+      "tiempo": ""
+    },
+    "TipoPago": {
+      "idTipoPago": 1,
+      "descripcion": "Efectivo",
+      "MercadoPagoDatos": null
+    },
+    "Usuario": null
+  },
+  {
+    "idPedido": 5,
+    "numeroPedido": 123460,
+    "fechaPedido": "2023-06-15",
+    "horaEstimadaFin": null,
+    "tipoEnvio": "Take Away",
+    "TipoEntregaPedido": {
+      "idTipoEntregaPedido": 2,
+      "descripcion": "Take Away"
+    },
+    "EstadoPedido": {
+      "idEstadoPedido": 2,
+      "descripcion": "Confirmado",
+      "tiempo": ""
+    },
+    "TipoPago": {
+      "idTipoPago": 2,
+      "descripcion": "Tarjeta",
+      "MercadoPagoDatos": null
+    },
+    "Usuario": null
   }
 ]
+

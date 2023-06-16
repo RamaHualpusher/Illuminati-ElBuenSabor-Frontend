@@ -4,6 +4,7 @@ import { TipoPago } from "./TipoPago";
 import { Usuario } from "./Usuario";
 // import { Articulo } from "./Articulo";
 // import { ProductoManufacturado } from "./ProductoManufacturado";
+import { DetallePedido } from "./DetallePedido";
 
 export interface Pedido {
   idPedido: number;
@@ -15,6 +16,8 @@ export interface Pedido {
   EstadoPedido: EstadoPedido;
   TipoPago: TipoPago;
   Usuario: Usuario;
-  // Articulo: Articulo[];
-  // ProductoManufacturado: ProductoManufacturado[];
+  DetallePedido: DetallePedido[];
 }
+
+// Articulo: Articulo[];
+  // ProductoManufacturado: ProductoManufacturado[];

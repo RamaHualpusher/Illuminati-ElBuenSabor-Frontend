@@ -8,34 +8,44 @@ import Buscador from '../Buscador/Buscador';
 interface BillProps { }
 
 const Bill: React.FC<BillProps> = () => {
-  const [order, setOrder] = useState<Pedido[]>([]);
-  const [orderComplete, setOrderComplete] = useState<Pedido[]>([]);
+  const [pedido, setPedido] = useState<Pedido[]>([]);
+  const [pedidoComplete, setPedidoComplete] = useState<Pedido[]>([]);
 
   const columns = [
-    { label: "Número Factura", width: 100 },
-    { label: "Tipo de Entrega", width: 200 },
     { label: "Fecha del Pedido", width: 150 },
-    { label: "Tipo de Pago", width: 150 }
+    { label: "Número Factura", width: 100 },
+    { label: "Usuario", width: 150 },    
+    { label: "Tipo de Entrega", width: 200 },    
+    { label: "Tipo de Pago", width: 150 },
+    { label: "Tipo de envio", width: 150 },
+    { label: "PDF", width: 150 }
   ];
-  const data = order.map((item) => [
-    item.numeroPedido.toString(),
-    item.TipoEntregaPedido.descripcion.toString(),
+  
+  const data = pedido.map((item) => [
     item.fechaPedido?.toString(),
-    item.TipoPago.descripcion.toString()
+    item.numeroPedido.toString(),
+    item.Usuario.nombre.toString(),
+    item.Usuario.apellido.toString(),
+    item.TipoEntregaPedido.descripcion.toString(),
+    item.TipoPago.descripcion.toString(),
+    item.tipoEnvio.toString(),
+    item.EstadoPedido.descripcion.toString(), 
+    ...item.DetallePedido.map((detalle) => detalle.subtotal.toString()),
+    ...item.DetallePedido.map((detalle) => detalle.cantidad.toString()),
   ]);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch('/assets/data/dataTableFacturas.json');
       const data = await response.json();
-      setOrder(data);
-      setOrderComplete(data);
+      setPedido(data);
+      setPedidoComplete(data);
     };
     fetchData();
   }, []);
 
   const filter = (searchParam: string) => {
-    const searchResult = orderComplete.filter((productVal: Pedido) => {
+    const searchResult = pedidoComplete.filter((productVal: Pedido) => {
       if (
         productVal.numeroPedido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
         productVal.TipoEntregaPedido.descripcion.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
@@ -46,7 +56,7 @@ const Bill: React.FC<BillProps> = () => {
       }
       return null;
     });
-    setOrder(searchResult);
+    setPedido(searchResult);
   };
 
   const handleSearch = (searchParam: string) => {

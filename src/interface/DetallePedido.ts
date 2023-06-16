@@ -7,6 +7,6 @@ export interface DetallePedido {
     cantidad: number;
     subtotal: number;
     Articulo: Articulo[];
-    Pedido: Pedido[];
+    Pedido: Pedido;
     ProductoManufacturado: ProductoManufacturado[];    
   }
