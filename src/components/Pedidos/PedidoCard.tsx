@@ -7,9 +7,11 @@ import { Link } from "react-router-dom";
 interface PedidoCardProps {
     pedido: Pedido;
     cambiarEstadoPedido: (nuevoEstado: string) => void;
+    btnTikect: boolean;
+    phat: string;
 }
 
-const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido }) => {
+const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, btnTikect, phat }) => {
     return (
         <Card className="pedido-card mb-2">
             <Card.Body>
@@ -27,6 +29,13 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido }) 
                             <EstadoPedido estado={pedido.EstadoPedido.descripcion} />
                         </div>
                         <div className="d-flex justify-content-end mt-3">
+                            {btnTikect === true && (
+                                <>
+                                    <Link to={`/factura/${pedido.idPedido}/${phat}`} className="btn btn-primary me-2">
+                                        Ticket
+                                    </Link>
+                                </>
+                            )}
                             {pedido.EstadoPedido.descripcion === "A confirmar" && (
                                 <>
                                     <button className="btn btn-primary me-2" onClick={() => cambiarEstadoPedido("A cocina")} disabled={pedido.TipoEntregaPedido.descripcion === "Retiro en local"}>
@@ -69,6 +78,7 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido }) 
                                     </button>
                                 </>
                             )}
+
                         </div>
                     </Col>
                 </Row>

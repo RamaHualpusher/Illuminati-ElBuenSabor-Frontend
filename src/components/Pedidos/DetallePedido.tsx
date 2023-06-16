@@ -6,16 +6,16 @@ const DetallePedido: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [pedido, setPedido] = useState<Pedido>();
 
-    // useEffect(() => { //aca cambiar la url (se necesita el back)
-    //     if (id) {
-    //         fetch(`/api/pedidos/${id}`)
-    //             .then(response => response.json())
-    //             .then(data => {
-    //                 setPedido(data);
-    //             })
-    //             .catch(error => console.error(error));
-    //     }
-    // }, [id]);
+     /*useEffect(() => { //aca cambiar la url (se necesita el back)
+         if (id) {
+             fetch(`/assets/data/pedidos/${id}`)
+                 .then(response => response.json())
+                 .then(data => {
+                     setPedido(data);
+                 })
+                 .catch(error => console.error(error));
+         }
+     }, [id]);*/
 
     if (!pedido) {
         return <div>Cargando...</div>;

@@ -89,7 +89,7 @@ const CajeroPage = () => {
                     <Buscador onSearch={handleSearch} />
                 </div>
             </div>
-            <PedidoList pedidos={filteredPedidos} cambiarEstadoPedido={cambiarEstadoPedido} />
+            <PedidoList pedidos={filteredPedidos} cambiarEstadoPedido={cambiarEstadoPedido} btnTicket={true} phat="cajero"/>
         </div>
     );
 };
