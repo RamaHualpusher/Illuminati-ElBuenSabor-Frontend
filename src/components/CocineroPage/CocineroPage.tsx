@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
 import ProductosTable from "../Stock/Producto/ProductosTable";
+import CocineroPedido from "./CocineroPedidos";
 
 export default function CocineroPage() {
 
@@ -43,6 +44,7 @@ export default function CocineroPage() {
             <div>
                 {selectedOption === 'Producto' && <ProductosTable />}
                 {selectedOption === 'Ingrediente' && <IngredientesTable />}
+                {selectedOption === 'Pedidos' && <CocineroPedido/>}
             </div>
         </Form>
     )
