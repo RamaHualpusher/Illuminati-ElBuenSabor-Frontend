@@ -28,6 +28,7 @@ const FacturaPedido=()=>{
     return(
         <div>
             <div>anda</div>
+            <div></div>
             <Link to={link}>Volver</Link>
         </div>
     )

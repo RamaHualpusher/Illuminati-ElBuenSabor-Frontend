@@ -5,7 +5,7 @@ interface EstadoPedidoProps {
     estado: string;
 }
 
-const EstadoPedido: React.FC<EstadoPedidoProps> = ({ estado }) => {
+const EstadoPedidoCard: React.FC<EstadoPedidoProps> = ({ estado }) => {
     const getBackgroundColor = () => {
         switch (estado) {
             case "Entregado":
@@ -37,4 +37,4 @@ const EstadoPedido: React.FC<EstadoPedidoProps> = ({ estado }) => {
     );
 };
 
-export default EstadoPedido;
+export default EstadoPedidoCard;
