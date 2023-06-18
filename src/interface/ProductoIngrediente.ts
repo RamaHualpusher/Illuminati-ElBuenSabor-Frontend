@@ -1,9 +1,9 @@
-import { Ingrediente } from './interfaces';
-import { ProductoManufacturado } from './ProductoManufacturado';
+import { Ingredientes } from './Ingredientes';
+import { Producto } from './Producto';
 
 export interface ProductoIngrediente{
     idProductoIngrediente: number;
     cantidad: number;
-    ProductoManufacturado: ProductoManufacturado[];
-    Ingrediente: Ingrediente[];
+    Producto: Producto;
+    Ingredientes: Ingredientes;
   }

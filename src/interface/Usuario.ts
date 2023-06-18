@@ -12,7 +12,6 @@ export interface Usuario {
   Rol: Rol;
 }
 
-
 export interface EditUsuarioFromAdmin {
   idUsuario: number;
   nombre: string;

@@ -4,7 +4,6 @@ import { Container, Row, Col} from 'react-bootstrap';
 import { TablaGeneric } from '../TableGeneric/TableGeneric';
 import Buscador from '../Buscador/Buscador';
 
-
 interface BillProps { }
 
 const Bill: React.FC<BillProps> = () => {
@@ -17,7 +16,8 @@ const Bill: React.FC<BillProps> = () => {
     { label: "Usuario", width: 150 },    
     { label: "Tipo de Entrega", width: 200 },    
     { label: "Tipo de Pago", width: 150 },
-    { label: "Tipo de envio", width: 150 },
+    { label: "Tipo de envio", width: 150 },    
+    { label: "Monto", width: 150 },
     { label: "PDF", width: 150 }
   ];
   
@@ -25,13 +25,11 @@ const Bill: React.FC<BillProps> = () => {
     item.fechaPedido?.toString(),
     item.numeroPedido.toString(),
     item.Usuario.nombre.toString(),
-    item.Usuario.apellido.toString(),
-    item.TipoEntregaPedido.descripcion.toString(),
-    item.TipoPago.descripcion.toString(),
+    item.esDelivery.toString(),
+    item.esEfectivo.toString(),
     item.tipoEnvio.toString(),
-    item.EstadoPedido.descripcion.toString(), 
-    ...item.DetallePedido.map((detalle) => detalle.subtotal.toString()),
-    ...item.DetallePedido.map((detalle) => detalle.cantidad.toString()),
+    // item.monto.toString(),
+    // item.pdfLink.toString()
   ]);
 
   useEffect(() => {
@@ -45,16 +43,16 @@ const Bill: React.FC<BillProps> = () => {
   }, []);
 
   const filter = (searchParam: string) => {
-    const searchResult = pedidoComplete.filter((productVal: Pedido) => {
+    const searchResult = pedidoComplete.filter((pedido: Pedido) => {
       if (
-        productVal.numeroPedido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.TipoEntregaPedido.descripcion.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.fechaPedido?.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.TipoPago.descripcion.toString().toLowerCase().includes(searchParam.toLowerCase())
+        pedido.numeroPedido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        pedido.esDelivery.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        pedido.fechaPedido?.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        pedido.esEfectivo.toString().toLowerCase().includes(searchParam.toLowerCase())
       ) {
-        return productVal;
+        return true;
       }
-      return null;
+      return false;
     });
     setPedido(searchResult);
   };
@@ -63,13 +61,14 @@ const Bill: React.FC<BillProps> = () => {
     filter(searchParam);
   };
 
-  const defaultAct= (data:any)=>{};
+  const defaultAct = (data: any) => {};
 
   return (
     <div>
       <Container fluid>
         <Row className='mt-3'>
-          <Col sm={10}><h1>Buscar Factura</h1>
+          <Col sm={10}>
+            <h1>Buscar Factura</h1>
             <Buscador onSearch={handleSearch} />
           </Col>
         </Row>

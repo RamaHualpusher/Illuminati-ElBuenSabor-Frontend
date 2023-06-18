@@ -1,9 +1,4 @@
-import { TipoEntregaPedido } from "./TipoEntregaPedido";
-import { EstadoPedido } from "./EstadoPedido";
-import { TipoPago } from "./TipoPago";
 import { Usuario } from "./Usuario";
-// import { Articulo } from "./Articulo";
-// import { ProductoManufacturado } from "./ProductoManufacturado";
 import { DetallePedido } from "./DetallePedido";
 
 export interface Pedido {
@@ -12,12 +7,10 @@ export interface Pedido {
   fechaPedido: Date;
   horaEstimadaFin: Date;
   tipoEnvio: string;
-  TipoEntregaPedido: TipoEntregaPedido;
-  EstadoPedido: EstadoPedido;
-  TipoPago: TipoPago;
+  esDelivery: boolean;
+  estadoPedido: string;
+  esEfectivo: boolean;
   Usuario: Usuario;
   DetallePedido: DetallePedido[];
+  totalPedido:number; //(esto no va en al base de datos ya que es persistente)
 }
-
-// Articulo: Articulo[];
-  // ProductoManufacturado: ProductoManufacturado[];

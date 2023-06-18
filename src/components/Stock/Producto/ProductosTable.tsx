@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import EditProductoModal from './EditProductoModal';
 import AddProductoModal from './AddProductoModal';
-import { ProductoManufacturado } from '../../../interface/ProductoManufacturado';
+import { Producto } from '../../../interface/Producto';
 import { TablaGeneric } from '../../TableGeneric/TableGeneric';
 import Buscador from '../../Buscador/Buscador';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
@@ -12,9 +12,9 @@ interface ProductosTableProps { }
 const ProductosTable: React.FC<ProductosTableProps> = () => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
-  const [selectedProducto, setSelectedProducto] = useState<ProductoManufacturado | null>(null);
-  const [produc, setProduc] = useState<ProductoManufacturado[]>([]);
-  const [producComplete, setProducComplete] = useState<ProductoManufacturado[]>([]);
+  const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
+  const [produc, setProduc] = useState<Producto[]>([]);
+  const [producComplete, setProducComplete] = useState<Producto[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,9 +30,9 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   }, []);
 
   const filter = (searchParam: string) => {
-    const searchResult = producComplete.filter((productVal: ProductoManufacturado) => {
+    const searchResult = producComplete.filter((productVal: Producto) => {
       if (
-        productVal.idProductoManufacturado.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        productVal.idProducto.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
         productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
         productVal.Rubro.nombre?.toString().toLowerCase().includes(searchParam.toLowerCase())
       ) {
@@ -51,7 +51,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     let i:number=0;
     let x:boolean=true;
     while(x){
-      if(producComplete[i].idProductoManufacturado===id){
+      if(producComplete[i].idProducto===id){
         return producComplete[i];
       }
       i=i+1;
@@ -79,12 +79,12 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     setAddModalShow(false);
   };
 
-  const handleProductoEdit = async (producto: ProductoManufacturado) => {
+  const handleProductoEdit = async (producto: Producto) => {
     try {
-      const updatedProducto = await handleRequest('PUT', `assets/data/productosLanding.json/${producto.idProductoManufacturado}`, producto);
+      const updatedProducto = await handleRequest('PUT', `assets/data/productosLanding.json/${producto.idProducto}`, producto);
 
       const newData = [...produc];
-      const index = newData.findIndex((item) => item.idProductoManufacturado === producto.idProductoManufacturado);
+      const index = newData.findIndex((item) => item.idProducto === producto.idProducto);
       newData[index] = updatedProducto;
 
       setProduc(newData);
@@ -93,7 +93,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     }
   };
 
-  const handleProductoAdd = async (producto: ProductoManufacturado) => {
+  const handleProductoAdd = async (producto: Producto) => {
     try {
       const newProducto = await handleRequest('POST', 'assets/data/productosLanding.json', producto);
 
@@ -111,7 +111,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         method: 'DELETE',
       });
 
-      setProduc(produc.filter((item) => item.idProductoManufacturado !== productoId));
+      setProduc(produc.filter((item) => item.idProducto !== productoId));
     } catch (error) {
       console.log(error);
     }
@@ -126,7 +126,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   ];
 
   const data = produc.map((item) => [
-    item.idProductoManufacturado.toString(),
+    item.idProducto.toString(),
     item.nombre.toString(),
     item.Rubro.nombre.toString(),
     item.tiempoEstimadoCocina.toString(),

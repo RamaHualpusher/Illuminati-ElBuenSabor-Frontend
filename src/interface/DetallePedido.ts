@@ -1,12 +1,9 @@
-import { Articulo } from './Articulo';
 import { Pedido } from './Pedido';
-import { ProductoManufacturado } from './ProductoManufacturado';
+import { Producto} from './Producto';
 
 export interface DetallePedido {
     idDetallePedido: number;
-    cantidad: number;
-    subtotal: number;
-    Articulo: Articulo[];
+    cantidad: number;    
     Pedido: Pedido;
-    ProductoManufacturado: ProductoManufacturado[];    
+    Producto: Producto;    
   }

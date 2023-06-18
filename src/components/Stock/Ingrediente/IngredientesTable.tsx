@@ -137,7 +137,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     Ingredientes.stockMinimo.toString(),
     Ingredientes.stockActual.toString(),
     Ingredientes.estado.toString(),// Esto es un boolean y no se que puede ser el string
-    Ingredientes.UnidadMedida.toString()
+    Ingredientes.unidadMedida.toString()
   ]);
 
   return (

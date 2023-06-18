@@ -6,7 +6,7 @@ import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import { CartContext } from '../CarritoCompras/CartProvider';
 import CartItem from '../CarritoCompras/CartItem';
-import { ProductoManufacturado } from "../../interface/ProductoManufacturado";
+import { Producto } from "../../interface/Producto";
 import { SearchContext } from '../Buscador/SearchContext';
 
 const Navbar: FC = () => {
@@ -15,8 +15,8 @@ const Navbar: FC = () => {
   const { cartItems, removeFromCart } = useContext(CartContext);
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [produc, setProduc] = useState<ProductoManufacturado[]>([]);
-  const [producComplete, setProducComplete] = useState<ProductoManufacturado[]>([]);
+  const [produc, setProduc] = useState<Producto[]>([]);
+  const [producComplete, setProducComplete] = useState<Producto[]>([]);
   const { setSearchParam } = useContext(SearchContext);
 
   const toggleNavbar = () => {
@@ -50,7 +50,7 @@ const Navbar: FC = () => {
   }, []);
 
   const filter = (searchParam: string) => {
-    const searchResult = producComplete.filter((productVal: ProductoManufacturado) => {
+    const searchResult = producComplete.filter((productVal: Producto) => {
       if (
         productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
         productVal.Rubro.toString().toLowerCase().includes(searchParam.toLowerCase())

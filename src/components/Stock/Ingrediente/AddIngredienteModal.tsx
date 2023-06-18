@@ -2,10 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Ingredientes } from '../../../interface/Ingredientes';
 import { Rubro } from '../../../interface/Rubro';
-import { UnidadMedida } from '../../../interface/UnidadMedida';
-
-
-
 
 interface AddIngredienteModalProps {
   show: boolean;
@@ -40,22 +36,19 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const rubroDefecto:Rubro={
+    const rubroDefecto: Rubro = {
       idRubro: 0,
       nombre: "",
-    };
-    const umDefecto:UnidadMedida={
-      idUnidadMedida: 0,
-      denominacion:"",
     };
     const newIngrediente: Ingredientes = {
       idIngredientes: 0,
       nombre,
-      Rubro: rubroDefecto,
-      stockMinimo:0,
+      estado: false,
+      stockMinimo: minStock,
       stockActual,
-      UnidadMedida:umDefecto,
-      estado:false,
+      Rubro: rubroDefecto,
+      unidadMedida: um,
+      ProductoIngrediente: [],
     };
     handleIngredienteAdd(newIngrediente);
     handleClose();

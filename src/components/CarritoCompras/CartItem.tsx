@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { CartContext } from './CartProvider';
-import { ProductoManufacturado } from '../../interface/ProductoManufacturado';
-import { ProductoManufacturadoVenta } from '../../interface/ProductoManufacturadoVenta';
+import { Producto } from '../../interface/Producto';
+
 
 interface CartItem {
   id: number;
@@ -10,8 +10,8 @@ interface CartItem {
   price: number;
   image: string;
   title: string;
-  productoManufacturado?: ProductoManufacturado;
-  productoManufacturadoVenta?: ProductoManufacturadoVenta;
+  Producto?: Producto;
+  
 }
 
 interface CartItemProps {

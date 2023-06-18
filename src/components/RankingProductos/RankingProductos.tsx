@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from 'react-bootstrap';
-import { ProductoManufacturado } from "../../interface/ProductoManufacturado";
+import { Producto } from "../../interface/Producto";
 import { TablaGeneric } from "../TableGeneric/TableGeneric";
 
 const RankingProductos = () => {
-    const [productos, setProductos] = useState<ProductoManufacturado[]>([]);
+    const [productos, setProductos] = useState<Producto[]>([]);
 
     useEffect(() => {
         const API_URL = ""; //Poner la url correspondiente
@@ -24,7 +24,7 @@ const RankingProductos = () => {
     ];
 
     const data = productos.map((producto) => [
-        producto.idProductoManufacturado.toString(),
+        producto.idProducto.toString(),
         producto.nombre,
         producto.denominacion,
         producto.nombre.toString(), //cambiar esto por cantidad vendido

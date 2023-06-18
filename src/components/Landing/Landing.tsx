@@ -3,14 +3,14 @@ import BotonesMenu from "./BotonesMenu";
 import ImagenMenu from "./ImagenMenu";
 import TarjetaComida from "./TarjetaComida";
 import ComoFunc from "./ComoFunc";
-import { ProductoManufacturado } from "../../interface/ProductoManufacturado";
+import { Producto } from "../../interface/Producto";
 import { CartContext } from "../CarritoCompras/CartProvider";
 import { SearchContext } from "../Buscador/SearchContext";
 
 export default function Landing() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
-  const [produc, setProduc] = useState<ProductoManufacturado[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductoManufacturado[]>([]);
+  const [produc, setProduc] = useState<Producto[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Producto[]>([]);
   const { addToCart, cartItems} = useContext(CartContext); 
   const { searchParam } = useContext(SearchContext);
   
@@ -76,14 +76,14 @@ export default function Landing() {
               key={index}
             >
               <TarjetaComida
-                id={producto.idProductoManufacturado}
+                id={producto.idProducto}
                 imageSrc={producto.imagen}
                 title={producto.nombre}
                 text={producto.preparacion}
                 buttonText={"Agregar al Carrito"}
                 onButtonClick={() =>
                   addToCart({
-                    id: producto.idProductoManufacturado,
+                    id: producto.idProducto,
                     name: producto.nombre,
                     quantity: 1,
                     price: 100 + Math.floor(Math.random() * 400), //aleatorio entre 100 y 500

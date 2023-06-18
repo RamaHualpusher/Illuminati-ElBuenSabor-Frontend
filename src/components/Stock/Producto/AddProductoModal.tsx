@@ -1,30 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { ProductoManufacturado } from "../../../interface/ProductoManufacturado";
 import axios from "axios";
+import { Producto } from "../../../interface/Producto";
 
 type AddProductoModalProps = {
   show: boolean;
   handleClose: () => void;
-  handleProductoAdd: (producto: ProductoManufacturado) => void;
+  handleProductoAdd: (producto: Producto) => void;
 };
 
 type Rubro = {
-  id: number;
+  idRubro: number;
   nombre: string;
 };
 
-const AddProductoModal = ({
+const AddProductoModal: React.FC<AddProductoModalProps> = ({
   show,
   handleClose,
   handleProductoAdd,
-}: AddProductoModalProps) => {
+}) => {
   const [nombre, setNombre] = useState("");
-  const [rubro, setRubro] = useState("");
+  const [rubroId, setRubroId] = useState<number | null>(null);
   const [tiempo, setTiempo] = useState(0);
   const [precio, setPrecio] = useState(0);
   const [rubros, setRubros] = useState<Rubro[]>([]);
-  const [rubroId, setRubroId] = useState<number | null>(null);
 
   useEffect(() => {
     axios
@@ -39,16 +38,20 @@ const AddProductoModal = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const newProducto: ProductoManufacturado = {
-      idProductoManufacturado: 0,
+    const newProducto: Producto = {
+      idProducto: 0,
       nombre,
-      Rubro:{idRubro:0,nombre:""},
-      tiempoEstimadoCocina:0,
-      denominacion:"",
-      imagen:"",
-      stockActual:0,
-      stockMinimo:0,
-      preparacion:"",
+      Rubro: { idRubro: rubroId || 0, nombre: "" },
+      tiempoEstimadoCocina: tiempo,
+      denominacion: "",
+      imagen: "",
+      stockActual: 0,
+      stockMinimo: 0,
+      preparacion: "",
+      precio,
+      esBebida: false,
+      DetallePedido: [],
+      ProductoIngrediente: [],
     };
     handleProductoAdd(newProducto);
     handleClose();
@@ -57,7 +60,7 @@ const AddProductoModal = ({
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar ProductoManufacturado</Modal.Title>
+        <Modal.Title>Agregar Producto</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
@@ -79,7 +82,7 @@ const AddProductoModal = ({
             >
               <option value="">Seleccione un rubro</option>
               {rubros.map((rubro) => (
-                <option key={rubro.id} value={rubro.id}>
+                <option key={rubro.idRubro} value={rubro.idRubro}>
                   {rubro.nombre}
                 </option>
               ))}

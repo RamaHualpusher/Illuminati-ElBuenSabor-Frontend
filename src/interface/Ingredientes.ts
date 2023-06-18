@@ -1,5 +1,5 @@
 import { Rubro } from "./Rubro";
-import { UnidadMedida } from "./UnidadMedida";
+import { ProductoIngrediente } from './ProductoIngrediente';
 
 export interface Ingredientes {
   idIngredientes: number;
@@ -8,5 +8,6 @@ export interface Ingredientes {
   stockMinimo: number;
   stockActual: number;
   Rubro: Rubro;
-  UnidadMedida: UnidadMedida;
+  unidadMedida: string;
+  ProductoIngrediente: ProductoIngrediente[];
 }
