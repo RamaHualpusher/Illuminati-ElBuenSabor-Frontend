@@ -1,9 +1,6 @@
-import React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pedido } from '../../interface/Pedido';
 import PedidoList from '../Pedidos/PedidoList';
-
-
-
 
 const CocineroPedido: React.FC = () => {
     const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -25,21 +22,19 @@ const CocineroPedido: React.FC = () => {
 
     const cambiarEstadoPedido = (nuevoEstado: string) => {
         if (pedidoSeleccionado) {
-            const { EstadoPedido, TipoEntregaPedido, TipoPago } = pedidoSeleccionado;
+            const { estadoPedido, esDelivery, esEfectivo } = pedidoSeleccionado;
 
-            if (
-                (EstadoPedido.descripcion === "En cocina" && nuevoEstado === "En delivery") 
-            ) {
-                setPedidoSeleccionado({ ...pedidoSeleccionado, EstadoPedido: { idEstadoPedido: 0, descripcion: nuevoEstado, tiempo: "0" } });
+            if (estadoPedido === "En cocina" && nuevoEstado === "En delivery") {
+                setPedidoSeleccionado({ ...pedidoSeleccionado, estadoPedido: nuevoEstado });
             }
         }
     };
 
-    const pedidosEnDelivery = pedidos.filter((pedido) => pedido.EstadoPedido.descripcion === "En cocina");
+    const pedidosEnDelivery = pedidos.filter((pedido) => pedido.estadoPedido === "En cocina");
 
     return (
         <div className="container mt-3">
-            <PedidoList pedidos={pedidosEnDelivery} cambiarEstadoPedido={cambiarEstadoPedido} btnTicket={false} phat="pedido"/>
+            <PedidoList pedidos={pedidosEnDelivery} cambiarEstadoPedido={cambiarEstadoPedido} btnTicket={false} phat="pedido" />
         </div>
     );
 };

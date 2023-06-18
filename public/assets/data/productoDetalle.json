@@ -53,17 +53,17 @@
       "Ingrediente": [
         {
           "ingredient": "Salsa de tomate",
-          "cuantity": "150 gr",
+          "cantidad": "150 gr",
           "uMedida": "ml"
         },
         {
           "ingredient": "Queso mozzarella",
-          "cuantity": "100 gr",
+          "cantidad": "100 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Pepperoni",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         }
       ],
@@ -79,7 +79,7 @@
     "cantidad": 1,
     "fecha": "2023-05-20T00:00:00.000Z",
     "ProductoManufacturado": {
-      "idProducto.Manufacturado": 3,
+      "idProductoManufacturado": 3,
       "nombre": "Coca-Cola 500ml",
       "tiempoEstimadoCocina": 0,
       "denominacion": "Bebidas",
@@ -100,7 +100,7 @@
     "cantidad": 1,
     "fecha": "2023-05-20T00:00:00.000Z",
     "ProductoManufacturado": {
-      "idProducto.Manufacturado": 4,
+      "idProductoManufacturado": 4,
       "nombre": "Pizza",
       "tiempoEstimadoCocina": 10,
       "denominacion": "Pizzas",
@@ -111,17 +111,17 @@
       "Ingrediente": [
         {
           "ingredient": "Salsa de tomate",
-          "cuantity": "150 gr",
+          "cantidad": "150 gr",
           "uMedida": "ml"
         },
         {
           "ingredient": "Queso mozzarella",
-          "cuantity": "100 gr",
+          "cantidad": "100 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Pepperoni",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         }
       ],
@@ -137,7 +137,7 @@
     "cantidad": 1,
     "fecha": "2023-05-20T00:00:00.000Z",
     "ProductoManufacturado": {
-      "idProducto.Manufacturado": 5,
+      "idProductoManufacturado": 5,
       "nombre": "Hamburguesa",
       "tiempoEstimadoCocina": 8,
       "denominacion": "Hamburguesas",
@@ -148,27 +148,27 @@
       "Ingrediente": [
         {
           "ingredient": "Pan de hamburguesa",
-          "cuantity": "1 unidad",
+          "cantidad": "1 unidad",
           "uMedida": "unidad"
         },
         {
           "ingredient": "Carne de res",
-          "cuantity": "150 gr",
+          "cantidad": "150 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Queso cheddar",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Lechuga",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Tomate",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         }
       ],
@@ -184,7 +184,7 @@
     "cantidad": 1,
     "fecha": "2023-05-20T00:00:00.000Z",
     "ProductoManufacturado": {
-      "idProducto.Manufacturado": 6,
+      "idProductoManufacturado": 6,
       "nombre": "Hamburguesa",
       "tiempoEstimadoCocina": 8,
       "denominacion": "Hamburguesas",
@@ -195,27 +195,27 @@
       "Ingrediente": [
         {
           "ingredient": "Pan de hamburguesa",
-          "cuantity": "1 unidad",
+          "cantidad": "1 unidad",
           "uMedida": "unidad"
         },
         {
           "ingredient": "Carne de res",
-          "cuantity": "150 gr",
+          "cantidad": "150 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Queso cheddar",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Lechuga",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Tomate",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         }
       ],
@@ -231,7 +231,7 @@
     "cantidad": 1,
     "fecha": "2023-05-20T00:00:00.000Z",
     "ProductoManufacturado": {
-      "idProducto.Manufacturado": 7,
+      "idProductoManufacturado": 7,
       "nombre": "Hamburguesa",
       "tiempoEstimadoCocina": 8,
       "denominacion": "Hamburguesas",
@@ -242,27 +242,27 @@
       "Ingrediente": [
         {
           "ingredient": "Pan de hamburguesa",
-          "cuantity": "1 unidad",
+          "cantidad": "1 unidad",
           "uMedida": "unidad"
         },
         {
           "ingredient": "Carne de res",
-          "cuantity": "150 gr",
+          "cantidad": "150 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Queso cheddar",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Lechuga",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         },
         {
           "ingredient": "Tomate",
-          "cuantity": "50 gr",
+          "cantidad": "50 gr",
           "uMedida": "gr"
         }
       ],
