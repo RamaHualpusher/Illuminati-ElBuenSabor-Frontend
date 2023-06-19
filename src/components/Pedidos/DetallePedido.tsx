@@ -21,7 +21,7 @@ const DetallePedido: React.FC = () => {
         return <div>Cargando...</div>;
     }
 
-    const { Usuario, tipoEnvio } = pedido;
+    const { Usuario } = pedido;
 
     return (
         <div className="container">

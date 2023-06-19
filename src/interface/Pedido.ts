@@ -6,7 +6,6 @@ export interface Pedido {
   numeroPedido: number;
   fechaPedido: Date;
   horaEstimadaFin: Date;
-  tipoEnvio: string;
   esDelivery: boolean;
   estadoPedido: string;
   esEfectivo: boolean;

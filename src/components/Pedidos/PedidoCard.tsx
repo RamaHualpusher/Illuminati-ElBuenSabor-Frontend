@@ -19,7 +19,7 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, bt
             <Card.Text>Pedido Número: {pedido.numeroPedido}</Card.Text>
             <Card.Text>
               <i className="bi bi-clock"></i>
-              {pedido.horaEstimadaFin ? new Date(pedido.horaEstimadaFin).toLocaleTimeString() : ''} - {pedido.tipoEnvio}
+              {pedido.horaEstimadaFin ? new Date(pedido.horaEstimadaFin).toLocaleTimeString() : ''} - {pedido.esDelivery ? 'Delivery' : 'Retiro Local'}
             </Card.Text>
             <Card.Text>{new Date(pedido.fechaPedido).toLocaleDateString()}</Card.Text>
           </Col>
@@ -40,7 +40,7 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, bt
                   <button
                     className="btn btn-primary me-2"
                     onClick={() => cambiarEstadoPedido('A cocina')}
-                    disabled={pedido.tipoEnvio === 'Retiro en local'}
+                    disabled={pedido.esDelivery === false}
                   >
                     A cocina
                   </button>
@@ -54,14 +54,14 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, bt
                   <button
                     className="btn btn-primary me-2"
                     onClick={() => cambiarEstadoPedido('En delivery')}
-                    disabled={pedido.tipoEnvio !== 'Envío a domicilio' || !pedido.esEfectivo}
+                    disabled={pedido.esDelivery === false || !pedido.esEfectivo}
                   >
                     En delivery
                   </button>
                   <button
                     className="btn btn-primary"
                     onClick={() => cambiarEstadoPedido('Entregado')}
-                    disabled={pedido.tipoEnvio !== 'Retiro en local' || !pedido.esEfectivo}
+                    disabled={pedido.esDelivery === false || !pedido.esEfectivo}
                   >
                     Entregado
                   </button>
@@ -75,7 +75,7 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, bt
                   <button
                     className="btn btn-primary"
                     onClick={() => cambiarEstadoPedido('Entregado')}
-                    disabled={pedido.tipoEnvio !== 'Retiro en local' || !pedido.esEfectivo}
+                    disabled={pedido.esDelivery === false || !pedido.esEfectivo}
                   >
                     Entregado
                   </button>

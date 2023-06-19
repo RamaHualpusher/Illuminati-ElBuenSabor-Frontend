@@ -81,12 +81,16 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
 
   const handleProductoEdit = async (producto: Producto) => {
     try {
-      const updatedProducto = await handleRequest('PUT', `assets/data/productosLanding.json/${producto.idProducto}`, producto);
-
+      const updatedProducto: Producto = await handleRequest(
+        'PUT',
+        `assets/data/productosLanding.json/${producto.idProducto}`,
+        producto
+      );
+  
       const newData = [...produc];
       const index = newData.findIndex((item) => item.idProducto === producto.idProducto);
       newData[index] = updatedProducto;
-
+  
       setProduc(newData);
     } catch (error) {
       console.log(error);
@@ -126,10 +130,10 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   ];
 
   const data = produc.map((item) => [
-    item.idProducto.toString(),
-    item.nombre.toString(),
-    item.Rubro.nombre.toString(),
-    item.tiempoEstimadoCocina.toString(),
+    item.idProducto?.toString(),
+    item.nombre?.toString(),
+    item.Rubro?.nombre?.toString(),
+    item.tiempoEstimadoCocina?.toString(),
     // item.precio.toString() //aca hay que poner el precio
   ]);
 

@@ -1,115 +1,183 @@
 [
-  
   {
-    
     "idPedido": 1,
     "numeroPedido": 123456,
-    "fechaPedido": "2023-03-14",
+    "fechaPedido": "2023-06-20",
     "horaEstimadaFin": null,
     "tipoEnvio": "Delivery",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 1,
-      "descripcion": "Delivery"
+    "esDelivery": true,
+    "estadoPedido": "A Confirmar",
+    "esEfectivo": true,
+    "Usuario": {
+      "idUsuario": 1,
+      "nombre": "John",
+      "apellido": "Doe",
+      "email": "johndoe@example.com",
+      "clave": "password123",
+      "telefono": "123456789",
+      "Domicilio": {
+        "idDomicilio": 1,
+        "calle": "Calle Principal",
+        "numero": 123,
+        "localidad": "Ciudad Ejemplo"
+      },
+      "Rol": {
+        "idRol": 1,
+        "nombreRol": "Cliente"
+      }
     },
-    "EstadoPedido": {
-      "idEstadoPedido": 1,
-      "descripcion": "A Confirmar",
-      "tiempo": ""
-    },
-    "TipoPago": {
-      "idTipoPago": 1,
-      "descripcion": "Efectivo",
-      "MercadoPagoDatos": null
-    },
-    "Usuario": null
+    "DetallePedido": [
+      {
+        "idDetallePedido": 1,
+        "cantidad": 2,
+        "Pedido": null,
+        "Producto": {
+          "idProducto": 1,
+          "nombre": "Hamburguesa",
+          "tiempoEstimadoCocina": 15,
+          "denominacion": "Hamburguesa clásica",
+          "imagen": "hamburguesa.jpg",
+          "stockActual": 50,
+          "stockMinimo": 10,
+          "preparacion": "Cocinar la carne, ensamblar los ingredientes",
+          "precio": 10.99,
+          "esBebida": false,
+          "Rubro": null,
+          "DetallePedido": [],
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idDetallePedido": 2,
+        "cantidad": 1,
+        "Pedido": null,
+        "Producto": {
+          "idProducto": 2,
+          "nombre": "Pizza",
+          "tiempoEstimadoCocina": 20,
+          "denominacion": "Pizza Margarita",
+          "imagen": "pizza.jpg",
+          "stockActual": 30,
+          "stockMinimo": 5,
+          "preparacion": "Preparar la masa, agregar salsa y toppings, hornear",
+          "precio": 12.99,
+          "esBebida": false,
+          "Rubro": null,
+          "DetallePedido": [],
+          "ProductoIngrediente": []
+        }
+      }
+    ],
+    "totalPedido": 34.97
   },
   {
     "idPedido": 2,
     "numeroPedido": 123457,
-    "fechaPedido": "2023-03-12",
+    "fechaPedido": "2023-06-21",
     "horaEstimadaFin": null,
     "tipoEnvio": "Take Away",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 2,
-      "descripcion": "Take Away"
+    "esDelivery": false,
+    "estadoPedido": "Confirmado",
+    "esEfectivo": false,
+    "Usuario": {
+      "idUsuario": 2,
+      "nombre": "Jane",
+      "apellido": "Smith",
+      "email": "janesmith@example.com",
+      "clave": "password456",
+      "telefono": "987654321",
+      "Domicilio": {
+        "idDomicilio": 2,
+        "calle": "Avenida Principal",
+        "numero": 456,
+        "localidad": "Otra Ciudad"
+      },
+      "Rol": {
+        "idRol": 2,
+        "nombreRol": "Cliente"
+      }
     },
-    "EstadoPedido": {
-      "idEstadoPedido": 2,
-      "descripcion": "Confirmado",
-      "tiempo": ""
-    },
-    "TipoPago": {
-      "idTipoPago": 2,
-      "descripcion": "Tarjeta",
-      "MercadoPagoDatos": null
-    },
-    "Usuario": null
+    "DetallePedido": [
+      {
+        "idDetallePedido": 3,
+        "cantidad": 3,
+        "Pedido": null,
+        "Producto": {
+          "idProducto": 3,
+          "nombre": "Ensalada",
+          "tiempoEstimadoCocina": 10,
+          "denominacion": "Ensalada César",
+          "imagen": "ensalada.jpg",
+          "stockActual": 20,
+          "stockMinimo": 5,
+          "preparacion": "Mezclar los ingredientes, agregar aderezo",
+          "precio": 8.99,
+          "esBebida": false,
+          "Rubro": null,
+          "DetallePedido": [],
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idDetallePedido": 4,
+        "cantidad": 2,
+        "Pedido": null,
+        "Producto": {
+          "idProducto": 4,
+          "nombre": "Bebida",
+          "tiempoEstimadoCocina": 0,
+          "denominacion": "Refresco",
+          "imagen": "refresco.jpg",
+          "stockActual": 100,
+          "stockMinimo": 20,
+          "preparacion": "Servir en vaso",
+          "precio": 1.99,
+          "esBebida": true,
+          "Rubro": null,
+          "DetallePedido": [],
+          "ProductoIngrediente": []
+        }
+      }
+    ],
+    "totalPedido": 29.95
   },
   {
     "idPedido": 3,
     "numeroPedido": 123458,
-    "fechaPedido": "2023-06-15",
+    "fechaPedido": "2023-06-22",
     "horaEstimadaFin": null,
     "tipoEnvio": "Delivery",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 1,
-      "descripcion": "Delivery"
-    },
-    "EstadoPedido": {
-      "idEstadoPedido": 1,
-      "descripcion": "A Confirmar",
-      "tiempo": ""
-    },
-    "TipoPago": {
-      "idTipoPago": 1,
-      "descripcion": "Efectivo",
-      "MercadoPagoDatos": null
-    },
-    "Usuario": null
+    "esDelivery": true,
+    "estadoPedido": "A Confirmar",
+    "esEfectivo": true,
+    "Usuario": null,
+    "DetallePedido": [],
+    "totalPedido": 0
   },
   {
     "idPedido": 4,
     "numeroPedido": 123459,
-    "fechaPedido": "2023-06-15",
+    "fechaPedido": "2023-06-23",
     "horaEstimadaFin": null,
     "tipoEnvio": "Delivery",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 1,
-      "descripcion": "Delivery"
-    },
-    "EstadoPedido": {
-      "idEstadoPedido": 1,
-      "descripcion": "A Confirmar",
-      "tiempo": ""
-    },
-    "TipoPago": {
-      "idTipoPago": 1,
-      "descripcion": "Efectivo",
-      "MercadoPagoDatos": null
-    },
-    "Usuario": null
+    "esDelivery": true,
+    "estadoPedido": "A Confirmar",
+    "esEfectivo": false,
+    "Usuario": null,
+    "DetallePedido": [],
+    "totalPedido": 0
   },
   {
     "idPedido": 5,
     "numeroPedido": 123460,
-    "fechaPedido": "2023-06-15",
+    "fechaPedido": "2023-06-24",
     "horaEstimadaFin": null,
     "tipoEnvio": "Take Away",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 2,
-      "descripcion": "Take Away"
-    },
-    "EstadoPedido": {
-      "idEstadoPedido": 2,
-      "descripcion": "Confirmado",
-      "tiempo": ""
-    },
-    "TipoPago": {
-      "idTipoPago": 2,
-      "descripcion": "Tarjeta",
-      "MercadoPagoDatos": null
-    },
-    "Usuario": null
+    "esDelivery": false,
+    "estadoPedido": "Confirmado",
+    "esEfectivo": false,
+    "Usuario": null,
+    "DetallePedido": [],
+    "totalPedido": 0
   }
 ]
-
