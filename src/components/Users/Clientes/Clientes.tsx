@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Usuario } from "../../../interface/Usuario";
 import { TablaGeneric } from "../../TableGeneric/TableGeneric";
-import { Container, Row, Col} from 'react-bootstrap';
+import { Container, Row, Col, Button} from 'react-bootstrap';
 import Buscador from "../../Buscador/Buscador";
 import EditClienteModal from "./EditClienteModal";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
@@ -132,7 +132,13 @@ const Clientes = () => {
                         <h1>Buscar Cliente</h1>
                         <Buscador onSearch={handleSearch} />
                     </Col>
-                    
+                    <Row className="mb-3">
+                        <Col className="d-flex justify-content-start">
+                            <Button variant="primary" onClick={handleAddModalOpen}>
+                                Agregar Cliente
+                            </Button>
+                        </Col>
+                    </Row>
                 </Row>
                 <Row className="mt-3">
                     <Col>

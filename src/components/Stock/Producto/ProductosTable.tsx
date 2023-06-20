@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import EditProductoModal from './EditProductoModal';
-import AddProductoModal from './AddProductoModal';
-import { Producto } from '../../../interface/Producto';
-import { TablaGeneric } from '../../TableGeneric/TableGeneric';
-import Buscador from '../../Buscador/Buscador';
-import { handleRequest } from '../../FuncionRequest/FuncionRequest';
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import { handleRequest } from "../../FuncionRequest/FuncionRequest";
+import { TablaGeneric } from "../../TableGeneric/TableGeneric";
+import Buscador from "../../Buscador/Buscador";
+import EditProductoModal from "./EditProductoModal";
+import AddProductoModal from "./AddProductoModal";
+import { Producto } from "../../../interface/Producto";
 
-interface ProductosTableProps { }
+interface ProductosTableProps {}
 
 const ProductosTable: React.FC<ProductosTableProps> = () => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
-  const [produc, setProduc] = useState<Producto[]>([]);
-  const [producComplete, setProducComplete] = useState<Producto[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [productosComplete, setProductosComplete] = useState<Producto[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await handleRequest('GET', 'assets/data/productosLanding.json');
-        setProduc(responseData);
-        setProducComplete(responseData);
+        const responseData = await handleRequest("GET", "assets/data/productosLanding.json");
+        setProductos(responseData);
+        setProductosComplete(responseData);
       } catch (error) {
         console.log(error);
       }
@@ -30,7 +30,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   }, []);
 
   const filter = (searchParam: string) => {
-    const searchResult = producComplete.filter((productVal: Producto) => {
+    const searchResult = productosComplete.filter((productVal: Producto) => {
       if (
         productVal.idProducto.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
         productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
@@ -40,27 +40,26 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
       }
       return null;
     });
-    setProduc(searchResult);
+    setProductos(searchResult);
   };
 
   const handleSearch = (searchParam: string) => {
     filter(searchParam);
   };
 
-  const getProducto =(id:number)=>{
-    let i:number=0;
-    let x:boolean=true;
-    while(x){
-      if(producComplete[i].idProducto===id){
-        return producComplete[i];
+  const getProducto = (id: number) => {
+    let i: number = 0;
+    let x: boolean = true;
+    while (x) {
+      if (productosComplete[i].idProducto === id) {
+        return productosComplete[i];
       }
-      i=i+1;
+      i = i + 1;
     }
-    return producComplete[0];
-  }
-  
+    return productosComplete[0];
+  };
 
-  const handleEditModalOpen = (rowData: string[],e:React.MouseEvent<HTMLButtonElement>) => {
+  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setSelectedProducto(getProducto(+rowData[0]));
     setEditModalShow(true);
@@ -82,16 +81,16 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   const handleProductoEdit = async (producto: Producto) => {
     try {
       const updatedProducto: Producto = await handleRequest(
-        'PUT',
+        "PUT",
         `assets/data/productosLanding.json/${producto.idProducto}`,
         producto
       );
-  
-      const newData = [...produc];
+
+      const newData = [...productos];
       const index = newData.findIndex((item) => item.idProducto === producto.idProducto);
       newData[index] = updatedProducto;
-  
-      setProduc(newData);
+
+      setProductos(newData);
     } catch (error) {
       console.log(error);
     }
@@ -99,9 +98,9 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
 
   const handleProductoAdd = async (producto: Producto) => {
     try {
-      const newProducto = await handleRequest('POST', 'assets/data/productosLanding.json', producto);
+      const newProducto = await handleRequest("POST", "assets/data/productosLanding.json", producto);
 
-      setProduc([...produc, newProducto]);
+      setProductos([...productos, newProducto]);
     } catch (error) {
       console.log(error);
     }
@@ -109,64 +108,81 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
 
   const handleProductoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const productoId:number=+rowData[0]
-    try {
-      await fetch(`${"assets/data/productosLanding.json"}/${productoId}`, {
-        method: 'DELETE',
-      });
+    const id: number = +rowData[0];
 
-      setProduc(produc.filter((item) => item.idProducto !== productoId));
+    try {
+      await handleRequest("DELETE", `assets/data/productosLanding.json/${id}`);
+
+      const updatedData = productos.filter((item) => item.idProducto !== id);
+
+      setProductos(updatedData);
     } catch (error) {
       console.log(error);
     }
   };
 
   const columns = [
-    { label: "Id", width: 10 },
-    { label: "Nombre", width: 150 },
-    { label: "Rubro", width: 100 },
-    { label: "Tiempo (min)", width: 60 },
-    //{ label: "Precio", width: 50 }
+    { label: "ID", width: 100 },
+    { label: "Nombre", width: 200 },
+    { label: "Rubro", width: 150 },
+    { label: "Precio", width: 150 },
+    { label: "Acciones", width: 150 },
   ];
 
-  const data = produc.map((item) => [
-    item.idProducto?.toString(),
-    item.nombre?.toString(),
-    item.Rubro?.nombre?.toString(),
-    item.tiempoEstimadoCocina?.toString(),
-    item.precio.toString() //aca hay que poner el precio
+  const data = productos.map((item) => [
+    item.idProducto.toString(),
+    item.nombre.toString(),
+    item.Rubro.nombre?.toString(),
+    item.precio.toString(),
+    // <>
+    //   <Button
+    //     variant="primary"
+    //     className="mr-2"
+    //     onClick={(e) => handleEditModalOpen(item, e)}
+    //   >
+    //     Editar
+    //   </Button>
+    //   <Button variant="danger" onClick={(e) => handleProductoDelete(item, e)}>
+    //     Eliminar
+    //   </Button>
+    // </>,
   ]);
 
   return (
-    <Container>
-      <Row className="justify-content-start align-items-center mb-3">
-        <Col sm={10}>
-          <h1>Buscar Productos</h1>
-          <Buscador onSearch={handleSearch} />
+    <Container fluid>
+      <Row className="mb-4">
+        <Col>
+          <h2>Tabla de Productos</h2>
         </Col>
       </Row>
-
       <Row className="mb-3">
         <Col>
-          <Button variant="success" onClick={handleAddModalOpen} className="float-start">
+          <Buscador onSearch={handleSearch} />
+        </Col>
+        <Col className="text-end">
+          <Button variant="primary" onClick={handleAddModalOpen}>
             Agregar Producto
           </Button>
         </Col>
       </Row>
       <Row>
-        <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalClose} buttonEdit={handleEditModalOpen} buttonDelete={handleProductoDelete} />
+        <Col>
+          <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalOpen}
+                            buttonEdit={handleEditModalOpen} buttonDelete={handleProductoDelete} />
+        </Col>
       </Row>
-      <EditProductoModal
-        show={editModalShow}
-        handleClose={handleEditModalClose}
-        handleProductoEdit={handleProductoEdit}
-        selectedProducto={selectedProducto}
-      /> 
-      {/* <AddProductoModal
+      <AddProductoModal
         show={addModalShow}
         handleClose={handleAddModalClose}
         handleProductoAdd={handleProductoAdd}
-      /> */}
+      />
+      <EditProductoModal
+        show={editModalShow}
+        handleClose={handleEditModalClose}        
+        handleProductoEdit={handleProductoEdit}
+        selectedProducto={selectedProducto}
+      />
+      
     </Container>
   );
 };
