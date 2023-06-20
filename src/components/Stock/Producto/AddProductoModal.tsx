@@ -2,16 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { Producto } from "../../../interface/Producto";
+import { Rubro } from "../../../interface/Rubro";
 
 type AddProductoModalProps = {
   show: boolean;
   handleClose: () => void;
   handleProductoAdd: (producto: Producto) => void;
-};
-
-type Rubro = {
-  idRubro: number;
-  nombre: string;
 };
 
 const AddProductoModal: React.FC<AddProductoModalProps> = ({
@@ -24,12 +20,22 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   const [tiempo, setTiempo] = useState(0);
   const [precio, setPrecio] = useState(0);
   const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
 
   useEffect(() => {
     axios
       .get<Rubro[]>("/assets/data/rubrosProductosEjemplo.json")
       .then((response) => {
         setRubros(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+      fetch("/assets/data/productosLanding.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setProductos(data);
       })
       .catch((error) => {
         console.log(error);

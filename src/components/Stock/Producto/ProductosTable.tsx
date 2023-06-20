@@ -16,6 +16,20 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [productosComplete, setProductosComplete] = useState<Producto[]>([]);
 
+  const columns = [
+    { label: "ID", width: 100 },
+    { label: "Nombre", width: 200 },
+    { label: "Rubro", width: 150 },
+    { label: "Precio", width: 150 },    
+  ];
+  
+  const data = productos.map((item) => [
+    item.idProducto?.toString() || "",
+    item.nombre?.toString() || "",
+    item.Rubro?.nombre?.toString() || "",
+    item.precio?.toString() || ""
+  ]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,35 +61,14 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     filter(searchParam);
   };
 
-  const getProducto = (id: number) => {
-    let i: number = 0;
-    let x: boolean = true;
-    while (x) {
-      if (productosComplete[i].idProducto === id) {
-        return productosComplete[i];
-      }
-      i = i + 1;
+  const handleProductoAdd = async (producto: Producto) => {
+    try {
+      const newProducto = await handleRequest("POST", "assets/data/productosLanding.json", producto);
+
+      setProductos([...productos, newProducto]);
+    } catch (error) {
+      console.log(error);
     }
-    return productosComplete[0];
-  };
-
-  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setSelectedProducto(getProducto(+rowData[0]));
-    setEditModalShow(true);
-  };
-
-  const handleEditModalClose = () => {
-    setSelectedProducto(null);
-    setEditModalShow(false);
-  };
-
-  const handleAddModalOpen = () => {
-    setAddModalShow(true);
-  };
-
-  const handleAddModalClose = () => {
-    setAddModalShow(false);
   };
 
   const handleProductoEdit = async (producto: Producto) => {
@@ -96,16 +89,6 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     }
   };
 
-  const handleProductoAdd = async (producto: Producto) => {
-    try {
-      const newProducto = await handleRequest("POST", "assets/data/productosLanding.json", producto);
-
-      setProductos([...productos, newProducto]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleProductoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const id: number = +rowData[0];
@@ -121,32 +104,80 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     }
   };
 
-  const columns = [
-    { label: "ID", width: 100 },
-    { label: "Nombre", width: 200 },
-    { label: "Rubro", width: 150 },
-    { label: "Precio", width: 150 },
-    { label: "Acciones", width: 150 },
-  ];
+  // const getProducto = (id: number) => {
+  //   let i: number = 0;
+  //   let x: boolean = true;
+  //   while (x) {
+  //     if (productosComplete[i].idProducto === id) {
+  //       return productosComplete[i];
+  //     }
+  //     i = i + 1;
+  //   }
+  //   return productosComplete[0];
+  // };
 
-  const data = productos.map((item) => [
-    item.idProducto.toString(),
-    item.nombre.toString(),
-    item.Rubro.nombre?.toString(),
-    item.precio.toString(),
-    // <>
-    //   <Button
-    //     variant="primary"
-    //     className="mr-2"
-    //     onClick={(e) => handleEditModalOpen(item, e)}
-    //   >
-    //     Editar
-    //   </Button>
-    //   <Button variant="danger" onClick={(e) => handleProductoDelete(item, e)}>
-    //     Eliminar
-    //   </Button>
-    // </>,
-  ]);
+  const productoRow = (id:number)=>{
+    let i:number=0;
+    let x:boolean=true;
+    while(x){
+        if(productosComplete[i].idProducto===id){
+            let productoRe:Producto={
+                idProducto:productosComplete[i].idProducto,
+                nombre:productosComplete[i].nombre,
+                tiempoEstimadoCocina:productosComplete[i].tiempoEstimadoCocina,
+                denominacion:productosComplete[i].denominacion,
+                imagen:productosComplete[i].imagen,
+                stockActual:productosComplete[i].stockActual,
+                stockMinimo:productosComplete[i].stockMinimo,
+                preparacion:productosComplete[i].preparacion,
+                precio:productosComplete[i].precio,
+                esBebida:productosComplete[i].esBebida,
+                Rubro:productosComplete[i].Rubro,
+                DetallePedido:productosComplete[i].DetallePedido,
+                ProductoIngrediente:productosComplete[i].ProductoIngrediente,
+            };
+            return productoRe;
+            x=false;
+        }
+        i=i+1;
+    }
+    let productoRe:Producto={
+      idProducto:productosComplete[0].idProducto,
+      nombre:productosComplete[0].nombre,
+      tiempoEstimadoCocina:productosComplete[0].tiempoEstimadoCocina,
+      denominacion:productosComplete[0].denominacion,
+      imagen:productosComplete[0].imagen,
+      stockActual:productosComplete[0].stockActual,
+      stockMinimo:productosComplete[0].stockMinimo,
+      preparacion:productosComplete[0].preparacion,
+      precio:productosComplete[0].precio,
+      esBebida:productosComplete[0].esBebida,
+      Rubro:productosComplete[0].Rubro,
+      DetallePedido:productosComplete[0].DetallePedido,
+      ProductoIngrediente:productosComplete[0].ProductoIngrediente,
+    };
+    return productoRe;
+}
+
+  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSelectedProducto(productoRow(+rowData[0]));
+    setEditModalShow(true);
+  };
+
+  const handleEditModalClose = () => {
+    setSelectedProducto(null);
+    setEditModalShow(false);
+  };
+
+  const handleAddModalOpen = () => {
+    setAddModalShow(true);
+  };
+
+  const handleAddModalClose = () => {
+    setAddModalShow(false);
+  };
+
 
   return (
     <Container fluid>

@@ -20,10 +20,13 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [email, setEmail] = useState("");
   const [clave, setClave] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [calle, setCalle] = useState("");
+  const [numero, setNumero] = useState("");
+  const [localidad, setLocalidad] = useState("");
   const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
   const [selectedDomicilio, setSelectedDomicilio] = useState<Domicilio | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
-  const [domicilios, setDomicilios] = useState<Domicilio[]>([]);
+  const [domicilios, setDomicilios] = useState<Domicilio>();
 
   useEffect(() => {
     fetch("/assets/data/idRolEjemplo.json")
@@ -55,7 +58,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       clave,
       telefono,
       Rol: selectedRol || { idRol: 0, nombreRol: "" },
-      Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: ""},
+      Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: "" },
     };
     handleEmpleadoAdd(newEmpleado);
     handleClose();
@@ -138,26 +141,36 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
             </Form.Control>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formDomicilio">
-            <Form.Label>Domicilio</Form.Label>
+            <Form.Label>Domicilio:</Form.Label>
+            <br />
+            <Form.Label>Calle</Form.Label>
             <Form.Control
-              as="select"
-              value={selectedDomicilio?.idDomicilio || ""}
-              onChange={(event) => {
-                const selectedIdDomicilio = parseInt(event.target.value);
-                const selectedDomicilio = domicilios.find(
-                  (domicilio) => domicilio.idDomicilio === selectedIdDomicilio
-                ) || null;
-                setSelectedDomicilio(selectedDomicilio);
-              }}
-              required
-            >
-              <option value="">Seleccione un domicilio</option>
-              {domicilios.map((domicilio) => (
-                <option key={domicilio.idDomicilio} value={domicilio.idDomicilio}>
-                  {domicilio.calle} {domicilio.numero} {domicilio.localidad}
-                </option>
-              ))}
+              type="text"
+              placeholder="Ingrese calle"
+              value={domicilios?.calle}
+              onChange={(event) => setCalle(event.target.value)}
+              required>
             </Form.Control>
+            <div>
+              <Form.Label>Número</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Ingrese número"
+                value={domicilios?.numero}
+                onChange={(event) => setNumero(event.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Form.Label>Localidad</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Ingrese localidad"
+                value={domicilios?.localidad}
+                onChange={(event) => setLocalidad(event.target.value)}
+                required
+              />
+            </div>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
