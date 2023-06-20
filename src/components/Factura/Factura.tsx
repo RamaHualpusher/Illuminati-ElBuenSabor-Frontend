@@ -1,48 +1,27 @@
-import { Pedido} from '../../interface/Pedido';
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-import { TablaGeneric } from '../TableGeneric/TableGeneric';
+import { Container, Row, Col, Button } from 'react-bootstrap';
+import { TablaGeneric, buttonAction } from '../TableGeneric/TableGeneric';
 import Buscador from '../Buscador/Buscador';
 import { handleRequest } from '../FuncionRequest/FuncionRequest';
-import { Producto } from '../../interface/Producto';
+import EditFacturaModal from './EditFacturaModal';
+import AddFacturaModal from './AddFacturaModal';
+import { Pedido } from '../../interface/Pedido';
 
-interface BillProps {}
+interface FacturasTableProps {}
 
-const Bill: React.FC<BillProps> = () => {
-  const [pedido, setPedido] = useState<Pedido[]>([]);
-  const [pedidoComplete, setPedidoComplete] = useState<Pedido[]>([]);
-
-  const columns = [
-    { label: "Fecha del Pedido", width: 150 },
-    { label: "Número Factura", width: 100 },
-    { label: "Detalle", width: 100 },
-    { label: "Usuario", width: 150 },
-    { label: "Tipo de Entrega", width: 200 },
-    { label: "Tipo de Pago", width: 150 },
-    { label: "Monto", width: 150 },
-    { label: "PDF", width: 150 }
-  ];
-
-  const data = pedido.map((item) => [
-    item.fechaPedido?.toString(),
-    item.numeroPedido.toString(),
-    item.DetallePedido.map((detalle) => detalle.Producto?.nombre).join(', '), // Mostrar los nombres de los productos separados por coma
-    item.Usuario?.nombre.toString(),
-    item.esDelivery ? 'Envio a domicilio' : 'Retiro Local', // Mostrar "Delivery" si es true, "Retiro Local" si es false
-    item.esEfectivo ? 'Efectivo' : 'Mercado Pago', // Mostrar "Efectivo" si es true, "Mercado Pago" si es false
-    item.totalPedido?.toString(),
-    // item.pdfLink?.toString()
-  ]);
-  
-
-  const API_URL = "/assets/data/dataTableFacturas.json";
+const FacturasTable: React.FC<FacturasTableProps> = () => {
+  const [editModalShow, setEditModalShow] = useState(false);
+  const [addModalShow, setAddModalShow] = useState(false);
+  const [selectedFactura, setSelectedFactura] = useState<Pedido | null>(null);
+  const [facturas, setFacturas] = useState<Pedido[]>([]);
+  const [facturasComplete, setFacturasComplete] = useState<Pedido[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await handleRequest('GET', API_URL);
-        setPedido(response);
-        setPedidoComplete(response);
+        const responseData = await handleRequest('GET', 'assets/data/pedidos.json');
+        setFacturas(responseData);
+        setFacturasComplete(responseData);
       } catch (error) {
         console.log(error);
       }
@@ -51,45 +30,146 @@ const Bill: React.FC<BillProps> = () => {
   }, []);
 
   const filter = (searchParam: string) => {
-    const searchResult = pedidoComplete.filter((pedido: Pedido) => {
+    const searchResult = facturasComplete.filter((factura: Pedido) => {
       if (
-        pedido.numeroPedido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        pedido.esDelivery.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        pedido.fechaPedido?.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        pedido.esEfectivo.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        pedido.DetallePedido.some((detalle) => detalle.Producto.nombre.toLowerCase().includes(searchParam.toLowerCase()))
+        factura.numeroPedido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        factura.Usuario.apellido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        factura.Usuario.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
+        factura.fechaPedido.toString().toLowerCase().includes(searchParam.toLowerCase())
       ) {
-        return true;
+        return factura;
       }
-      return false;
+      return null;
     });
-    setPedido(searchResult);
+    setFacturas(searchResult);
   };
 
   const handleSearch = (searchParam: string) => {
     filter(searchParam);
   };
 
-  const defaultAct = (data: any) => {};
+  const getFactura = (id: number) => {
+    let i: number = 0;
+    let x: boolean = true;
+    while (x) {
+      if (facturasComplete[i].idPedido === id) {
+        return facturasComplete[i];
+      }
+      i = i + 1;
+    }
+    return facturasComplete[0];
+  };
+
+  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSelectedFactura(getFactura(+rowData[0]));
+    setEditModalShow(true);
+  };
+
+  const handleEditModalClose = () => {
+    setSelectedFactura(null);
+    setEditModalShow(false);
+  };
+
+  const handleAddModalOpen = () => {
+    setAddModalShow(true);
+  };
+
+  const handleAddModalClose = () => {
+    setAddModalShow(false);
+  };
+
+  const handleFacturaEdit = async (factura: Pedido) => {
+    try {
+      const updatedFactura: Pedido = await handleRequest('PUT', `assets/data/pedidos.json/${factura.idPedido}`, factura);
+
+      const newData = [...facturas];
+      const index = newData.findIndex((item) => item.idPedido === factura.idPedido);
+      newData[index] = updatedFactura;
+
+      setFacturas(newData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFacturaAdd = async (factura: Pedido) => {
+    try {
+      const newFactura = await handleRequest('POST', 'assets/data/pedidos.json', factura);
+
+      setFacturas([...facturas, newFactura]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFacturaDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const facturaId: number = +rowData[0];
+    try {
+      await fetch(`assets/data/facturasLanding.json/${facturaId}`, {
+        method: 'DELETE',
+      });
+
+      setFacturas(facturas.filter((item) => item.idPedido !== facturaId));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const columns = [
+    { label: 'Numero Factura', width: 10 },
+    { label: 'Cliente', width: 150 },    
+    { label: 'Detalle', width: 150 },
+    { label: 'Total', width: 100 },
+  ];
+
+  const data = facturas.map((item) => [item.numeroPedido.toString(), item.Usuario.nombre.toString(), item.Usuario.apellido.toString(), item.totalPedido.toString()]);
+
+  const buttonAddAction: buttonAction = {
+    label: 'Generar',
+    onClick: handleAddModalOpen,
+  };
 
   return (
-    <div>
-      <Container fluid>
-        <Row className='mt-3'>
-          <Col sm={10}>
-            <h1>Buscar Factura</h1>
-            <Buscador onSearch={handleSearch} />
-          </Col>
-        </Row>
-        <Row className='mt-3'>
-          <Col>
-            <TablaGeneric columns={columns} data={data} showButton={false} buttonEdit={defaultAct} buttonDelete={defaultAct}/>
-          </Col>
-        </Row>
-      </Container>
-    </div>
+    <Container>
+      <Row className="justify-content-start align-items-center mb-3">
+        <Col sm={10}>
+          <h1>Buscar Facturas</h1>
+          <Buscador onSearch={handleSearch} />
+        </Col>
+      </Row>
+
+      {/* <Row className="mb-3">
+        <Col>
+          <Button variant="success" onClick={handleAddModalOpen} className="float-start">
+            Agregar Factura
+          </Button>
+        </Col>
+      </Row> */}
+      <Row>
+        <TablaGeneric
+          columns={columns}
+          data={data}
+          showButton={true}
+          buttonAdd={handleAddModalOpen}
+          buttonEdit={handleEditModalOpen}
+          buttonDelete={handleFacturaDelete}
+        />
+      </Row>
+      <EditFacturaModal
+        show={editModalShow}
+        handleClose={handleEditModalClose}
+        handleFacturaEdit={handleFacturaEdit}
+        selectedFactura={selectedFactura}
+      />
+      {/* <AddFacturaModal
+        show={addModalShow}
+        handleClose={handleAddModalClose}
+        handleFacturaAdd={handleFacturaAdd}
+      /> */}
+    </Container>
   );
 };
 
-export default Bill;
-
+export default FacturasTable;

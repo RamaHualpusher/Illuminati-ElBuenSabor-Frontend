@@ -11,7 +11,8 @@ const Clientes = () => {
     const [clientesComplete, setClientesComplete] = useState<Usuario[]>([]);
     const [editModalShow, setEditModalShow] = useState(false);
     const [selectedCliente, setSelectedCliente] = useState<Usuario | null>(null);
-
+    const [addModalShow, setAddModalShow] = useState(false);
+    
     const columns = [
         { label: "idCliente", width: 100 },
         { label: "Nombre", width: 200 },
@@ -63,6 +64,14 @@ const Clientes = () => {
 
     const handleSearch = (searchParam: string) => {
         filter(searchParam);
+    };
+
+    const handleAddModalOpen = () => {
+        setAddModalShow(true);
+    };
+
+    const handleAddModalClose = () => {
+        setAddModalShow(false);
     };
 
     const handleClienteEdit = async (cliente: Usuario) => {
@@ -127,7 +136,7 @@ const Clientes = () => {
                 </Row>
                 <Row className="mt-3">
                     <Col>
-                        <TablaGeneric columns={columns} data={data} showButton={true}
+                        <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalClose}
                             buttonEdit={handleEditModalOpen} buttonDelete={handleClienteDelete} />
                     </Col>
                 </Row>

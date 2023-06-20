@@ -5,7 +5,8 @@ import { TablaGeneric } from "../TableGeneric/TableGeneric";
 
 const RankingClientes = () => {
     const [clientes, setClientes] = useState<Usuario[]>([]);
-
+    const [addModalShow, setAddModalShow] = useState(false);
+    
     const columns = [
         { label: "ID", width: 100 },
         { label: "Nombre", width: 150 },
@@ -22,6 +23,14 @@ const RankingClientes = () => {
             })
             .catch((error) => console.log(error));
     }, []);
+    
+    const handleAddModalOpen = () => {
+        setAddModalShow(true);
+    };
+
+    const handleAddModalClose = () => {
+        setAddModalShow(false);
+    };
 
     const data = clientes.map((cliente) => [
         cliente.idUsuario.toString(),
@@ -40,7 +49,7 @@ const RankingClientes = () => {
                 </Row>
                 <Row className="mt-3">
                     <Col>
-                        <TablaGeneric columns={columns} data={data} showButton={false} buttonEdit={defaultAct} buttonDelete={defaultAct}/>
+                        <TablaGeneric columns={columns} data={data} showButton={false} buttonAdd={handleAddModalClose} buttonEdit={defaultAct} buttonDelete={defaultAct}/>
                     </Col>
                 </Row>
             </Container>

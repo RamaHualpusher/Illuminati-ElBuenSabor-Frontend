@@ -134,7 +134,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     item.nombre?.toString(),
     item.Rubro?.nombre?.toString(),
     item.tiempoEstimadoCocina?.toString(),
-    // item.precio.toString() //aca hay que poner el precio
+    item.precio.toString() //aca hay que poner el precio
   ]);
 
   return (
@@ -154,7 +154,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         </Col>
       </Row>
       <Row>
-        <TablaGeneric columns={columns} data={data} showButton={true} buttonEdit={handleEditModalOpen} buttonDelete={handleProductoDelete} />
+        <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalClose} buttonEdit={handleEditModalOpen} buttonDelete={handleProductoDelete} />
       </Row>
       <EditProductoModal
         show={editModalShow}

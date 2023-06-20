@@ -158,7 +158,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         </Row>
       </Container>
       <div>
-        <TablaGeneric columns={columns} data={data} showButton={true} buttonEdit={handleEditModalOpen} buttonDelete={handleIngredienteDelete} />
+        <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalClose} buttonEdit={handleEditModalOpen} buttonDelete={handleIngredienteDelete} />
       </div>
       <EditIngredienteModal
         show={editModalShow}

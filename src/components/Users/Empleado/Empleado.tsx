@@ -164,7 +164,7 @@ const Empleado = () => {
                 </Row>
                 <Row className="mt-3">
                     <Col>
-                        <TablaGeneric columns={columns} data={data} showButton={true}
+                        <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalClose}
                             buttonEdit={handleEditModalOpen} buttonDelete={handleEmpleadoDelete} />
                     </Col>
                 </Row>
