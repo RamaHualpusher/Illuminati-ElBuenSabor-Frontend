@@ -6,6 +6,7 @@ import { handleRequest } from '../FuncionRequest/FuncionRequest';
 import EditFacturaModal from './EditFacturaModal';
 import GenerarFacturaModal from './GenerarFacturaModal';
 import { Pedido } from '../../interface/Pedido';
+import { redirect } from 'react-router-dom';
 
 interface FacturasTableProps {}
 
@@ -163,6 +164,7 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
     e.preventDefault();
     setSelectedFactura(facturaRow(+rowData[0]));
     setGenerarModalShow(true);
+    redirect(`/factura/${rowData[0]}`)
   };
 
   const buttonAddAction: buttonAction = {
@@ -191,17 +193,17 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
           columns={columns}
           data={data}
           showButton={true}
-          buttonView={handleGenerarFactura}
+          link='factura'
           buttonAdd={handleAddModalOpen }
           buttonEdit={handleEditModalOpen}
           buttonDelete={handleFacturaDelete}
         />
       </Row>
-      <GenerarFacturaModal
+      {/* <GenerarFacturaModal
         show={addModalShow}
         handleClose={handleAddModalClose}
         handleFacturaAdd={handleFacturaAdd}
-      /> 
+      />  */}
       <EditFacturaModal
         show={editModalShow}
         handleClose={handleEditModalClose}
