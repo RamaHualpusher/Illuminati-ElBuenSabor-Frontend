@@ -14,7 +14,7 @@ import { handleRequest } from "../FuncionRequest/FuncionRequest";
 const GenerarFacturaModal :React.FC= () => {
   //const { show, handleClose, handleFacturaAdd, factura } = props;
   const {id} = useParams<string>();
-  const [pedido, setPedidoss] = useState<Pedido>();
+  const [pedido, setPedidos] = useState<Pedido>();
   const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
   const [usuario, setUsuario] = useState<Usuario>();
   const [domicilio, setDomicilio] = useState<Domicilio>();
@@ -25,7 +25,7 @@ const GenerarFacturaModal :React.FC= () => {
         if(id){
         const responseData = await handleRequest('GET', '/assets/data/dataTableFacturas.json');
         const pedidos:Pedido[]=responseData;
-        setPedidoss(pedidos.find((pedido:Pedido)=>pedido.idPedido===+id))
+        setPedidos(pedidos.find((pedido:Pedido)=>pedido.idPedido===+id))
         setUsuario(pedido?.Usuario);
         setDomicilio(usuario?.Domicilio);
         setDetallePedidos(pedido?.DetallePedido||[]);}
