@@ -7,15 +7,14 @@ import { DetallePedido } from "../../interface/DetallePedido";
 import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
 
-type AddFacturaModalProps = {
+type GenerarFacturaModalProps = {
   show: boolean;
   handleClose: () => void;
   handleFacturaAdd: (pedido: Pedido) => void;
 };
 
-const AddFacturaModal = (props: AddFacturaModalProps) => {
+const GenerarFacturaModal = (props: GenerarFacturaModalProps) => {
   const { show, handleClose, handleFacturaAdd } = props;
-  // const { Usuario, DetallePedido, totalPedido } = pedido;
   const [pedido, setPedidoss] = useState<Pedido>();
   const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
   const [usuario, setUsuario] = useState<Usuario>();
@@ -96,4 +95,4 @@ const AddFacturaModal = (props: AddFacturaModalProps) => {
   );
 };
 
-export default AddFacturaModal;
+export default GenerarFacturaModal;

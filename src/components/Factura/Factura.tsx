@@ -4,15 +4,15 @@ import { TablaGeneric, buttonAction } from '../TableGeneric/TableGeneric';
 import Buscador from '../Buscador/Buscador';
 import { handleRequest } from '../FuncionRequest/FuncionRequest';
 import EditFacturaModal from './EditFacturaModal';
-import AddFacturaModal from './AddFacturaModal';
+import GenerarFacturaModal from './GenerarFacturaModal';
 import { Pedido } from '../../interface/Pedido';
-import { Producto } from '../../interface/Producto';
 
 interface FacturasTableProps {}
 
 const FacturasTable: React.FC<FacturasTableProps> = () => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
+  const [generarModalShow, setGenerarModalShow] = useState(false);
   const [selectedFactura, setSelectedFactura] = useState<Pedido | null>(null);
   const [facturas, setFacturas] = useState<Pedido[]>([]);
   const [facturasComplete, setFacturasComplete] = useState<Pedido[]>([]);
@@ -102,18 +102,6 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
     }
   };
 
-  const getFactura = (id: number) => {
-    let i: number = 0;
-    let x: boolean = true;
-    while (x) {
-      if (facturasComplete[i].idPedido === id) {
-        return facturasComplete[i];
-      }
-      i = i + 1;
-    }
-    return facturasComplete[0];
-  };
-
   const facturaRow = (id:number)=>{
     let i:number=0;
     let x:boolean=true;
@@ -171,6 +159,12 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
     setAddModalShow(false);
   };
 
+  const handleGenerarFactura = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSelectedFactura(facturaRow(+rowData[0]));
+    setGenerarModalShow(true);
+  };
+
   const buttonAddAction: buttonAction = {
     label: 'Generar',
     onClick: handleAddModalOpen,
@@ -197,12 +191,13 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
           columns={columns}
           data={data}
           showButton={true}
-          buttonAdd={handleAddModalOpen}
+          buttonView={handleGenerarFactura}
+          buttonAdd={handleAddModalOpen }
           buttonEdit={handleEditModalOpen}
           buttonDelete={handleFacturaDelete}
         />
       </Row>
-      <AddFacturaModal
+      <GenerarFacturaModal
         show={addModalShow}
         handleClose={handleAddModalClose}
         handleFacturaAdd={handleFacturaAdd}

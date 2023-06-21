@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import { Pedido } from '../../interface/Pedido';
+import { format } from 'date-fns';
 
 interface EditFacturaModalProps {
   show: boolean;
@@ -16,18 +17,19 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
   selectedFactura,
 }) => {
   const [numeroPedido, setNumeroPedido] = useState(0);
-  const [fechaPedido, setFechaPedido] = useState(new Date());
-  const [horaEstimadaFin, setHoraEstimadaFin] = useState(new Date());
+  const [fechaPedido, setFechaPedido] = useState('');
+  const [horaEstimadaFin, setHoraEstimadaFin] = useState('');
   const [esDelivery, setEsDelivery] = useState(false);
   const [estadoPedido, setEstadoPedido] = useState('');
   const [esEfectivo, setEsEfectivo] = useState(false);
   const [totalPedido, setTotalPedido] = useState(0);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (selectedFactura) {
       setNumeroPedido(selectedFactura.numeroPedido);
-      setFechaPedido(selectedFactura.fechaPedido);
-      setHoraEstimadaFin(selectedFactura.horaEstimadaFin);
+      setFechaPedido(selectedFactura.fechaPedido.toDateString);
+      setHoraEstimadaFin(selectedFactura.horaEstimadaFin.toDateString);
       setEsDelivery(selectedFactura.esDelivery);
       setEstadoPedido(selectedFactura.estadoPedido);
       setEsEfectivo(selectedFactura.esEfectivo);
@@ -38,11 +40,17 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedFactura) {
+      // Validar los campos antes de guardar los cambios
+      if (!isValidForm()) {
+        setError('Por favor, complete todos los campos correctamente.');
+        return;
+      }
+
       const updatedFactura: Pedido = {
         ...selectedFactura,
         numeroPedido,
-        fechaPedido,
-        horaEstimadaFin,
+        fechaPedido: new Date(fechaPedido),
+        horaEstimadaFin: new Date(horaEstimadaFin),
         esDelivery,
         estadoPedido,
         esEfectivo,
@@ -53,6 +61,16 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
     handleClose();
   };
 
+  const isValidForm = () => {
+    return (
+      numeroPedido > 0 &&
+      fechaPedido !== '' &&
+      horaEstimadaFin !== '' &&
+      estadoPedido !== '' &&
+      totalPedido > 0
+    );
+  };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -60,6 +78,7 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
           <Form.Group className="mb-3" controlId="formNumeroPedido">
             <Form.Label>Número de Pedido</Form.Label>
             <Form.Control
@@ -74,8 +93,8 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
             <Form.Label>Fecha de Pedido</Form.Label>
             <Form.Control
               type="date"
-              value={fechaPedido.toISOString().substr(0, 10)}
-              onChange={(event) => setFechaPedido(new Date(event.target.value))}
+              value={fechaPedido}
+              onChange={(event) => setFechaPedido(event.target.value)}
               required
             />
           </Form.Group>
@@ -83,8 +102,8 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
             <Form.Label>Hora Estimada de Fin</Form.Label>
             <Form.Control
               type="time"
-              value={horaEstimadaFin.toISOString().substr(0, 5)}
-              onChange={(event) => setHoraEstimadaFin(new Date(`2000-01-01T${event.target.value}:00Z`))}
+              value={horaEstimadaFin}
+              onChange={(event) => setHoraEstimadaFin(event.target.value)}
               required
             />
           </Form.Group>
