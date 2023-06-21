@@ -6,20 +6,34 @@ import { Pedido } from '../../interface/Pedido';
 import { DetallePedido } from "../../interface/DetallePedido";
 import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
+import { useParams } from "react-router-dom";
+import { handleRequestSingle } from "../FuncionRequest/FuncionRequest";
 
-type GenerarFacturaModalProps = {
-  show: boolean;
-  handleClose: () => void;
-  handleFacturaAdd: (factura: Pedido) => void;
-  factura: Pedido | null;
-};
 
-const GenerarFacturaModal = (props: GenerarFacturaModalProps) => {
-  const { show, handleClose, handleFacturaAdd, factura } = props;
+
+const GenerarFacturaModal :React.FC= () => {
+  //const { show, handleClose, handleFacturaAdd, factura } = props;
+  const {id} = useParams();
   const [pedido, setPedidoss] = useState<Pedido>();
   const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
   const [usuario, setUsuario] = useState<Usuario>();
   const [domicilio, setDomicilio] = useState<Domicilio>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responseData = await handleRequestSingle('GET', '/assets/data/dataTableFacturas.json',id);
+        setPedidoss(responseData);
+        setUsuario(pedido?.Usuario);
+        setDomicilio(usuario?.Domicilio);
+        setDetallePedidos(pedido?.DetallePedido||[]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
+
 
   return (
     <div>

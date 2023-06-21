@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import { Pedido } from '../../interface/Pedido';
-import { format } from 'date-fns';
+//import { format } from 'date-fns';
 
 interface EditFacturaModalProps {
   show: boolean;

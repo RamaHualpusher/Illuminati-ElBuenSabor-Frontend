@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 interface Column {
   label: string;
@@ -11,7 +12,7 @@ interface Props {
   data: string[][];
   showButton?: boolean;
   buttonAdd: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
-  buttonView?: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
+  link?:string;
   buttonEdit: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
   buttonDelete: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
 }
@@ -25,7 +26,7 @@ export const TablaGeneric: React.FC<Props> = ({
   columns,
   data,
   buttonAdd,
-  buttonView,
+  link,
   buttonEdit,
   buttonDelete,
   showButton,
@@ -34,11 +35,7 @@ export const TablaGeneric: React.FC<Props> = ({
     buttonAdd(rowData, e);
   };
 
-  const handleView = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-    if (buttonView) {
-      buttonView(rowData, e);
-    }
-  };
+
 
   const handleEdit = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     buttonEdit(rowData, e);
@@ -59,7 +56,7 @@ export const TablaGeneric: React.FC<Props> = ({
               </th>
             ))}
             {showButton && <th style={{ width: 100 }}>Agregar</th>}
-            {showButton && <th style={{ width: 100 }}>Ver</th>}
+            {showButton && link && <th style={{ width: 100 }}>Ver</th>}
             {showButton && <th style={{ width: 100 }}>Editar</th>}
             {showButton && <th style={{ width: 100 }}>Eliminar</th>}
           </tr>
@@ -78,6 +75,11 @@ export const TablaGeneric: React.FC<Props> = ({
                       Agregar
                     </button>
                   </td>
+                  {link && (<td>
+                    <Link className="btn btn-primary"to={`/${link}/${row[0]}`}>
+                      Ver
+                    </Link>
+                  </td>)}
                 
                   <td>
                     <button className="btn btn-success" onClick={(e) => handleEdit(row, e)}>
