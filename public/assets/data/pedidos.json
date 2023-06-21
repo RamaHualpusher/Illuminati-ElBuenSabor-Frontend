@@ -32,7 +32,8 @@
         "Pedido": {},
         "Producto": {}
       }
-    ]
+    ],
+    "totalPedido": 2000
   },
   {
     "idPedido": 123457,
@@ -67,7 +68,8 @@
         "Pedido": {},
         "Producto": {}
       }
-    ]
+    ],
+    "totalPedido": 3000
   },
   {
     "idPedido": 123458,
@@ -102,7 +104,8 @@
         "Pedido": {},
         "Producto": {}
       }
-    ]
+    ],
+    "totalPedido": 5000
   },
   {
     "idPedido": 123459,
@@ -137,7 +140,8 @@
         "Pedido": {},
         "Producto": {}
       }
-    ]
+    ],
+    "totalPedido": 1500
   },
   {
     "idPedido": 123460,
@@ -172,7 +176,8 @@
         "Pedido": {},
         "Producto": {}
       }
-    ]
+    ],
+    "totalPedido": 4000
   },
   {
     "idPedido": 123461,
@@ -207,7 +212,8 @@
         "Pedido": {},
         "Producto": {}
       }
-    ]
+    ],
+    "totalPedido": 4000
   },
   {
     "idPedido": 123462,
@@ -216,7 +222,7 @@
     "horaEstimadaFin": "2023-03-20T13:50:00",
     "esDelivery": true,
     "estadoPedido": "En delivery",
-    "esEfectivo": false,
+    "esEfectivo": true,
     "Usuario": {
       "idUsuario": 7,
       "nombre": "Jorge",
@@ -242,6 +248,7 @@
         "Pedido": {},
         "Producto": {}
       }
-    ]
+    ],
+    "totalPedido": 8000
   }
 ]
