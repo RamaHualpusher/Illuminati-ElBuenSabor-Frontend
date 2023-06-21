@@ -197,11 +197,11 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
           buttonDelete={handleFacturaDelete}
         />
       </Row>
-      <GenerarFacturaModal
+      {/* <GenerarFacturaModal
         show={addModalShow}
         handleClose={handleAddModalClose}
         handleFacturaAdd={handleFacturaAdd}
-      /> 
+      />  */}
       <EditFacturaModal
         show={editModalShow}
         handleClose={handleEditModalClose}

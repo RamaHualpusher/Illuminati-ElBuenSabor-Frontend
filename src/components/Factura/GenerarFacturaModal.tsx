@@ -10,11 +10,12 @@ import { Domicilio } from "../../interface/Domicilio";
 type GenerarFacturaModalProps = {
   show: boolean;
   handleClose: () => void;
-  handleFacturaAdd: (pedido: Pedido) => void;
+  handleFacturaAdd: (factura: Pedido) => void;
+  factura: Pedido | null;
 };
 
 const GenerarFacturaModal = (props: GenerarFacturaModalProps) => {
-  const { show, handleClose, handleFacturaAdd } = props;
+  const { show, handleClose, handleFacturaAdd, factura } = props;
   const [pedido, setPedidoss] = useState<Pedido>();
   const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
   const [usuario, setUsuario] = useState<Usuario>();
@@ -23,7 +24,7 @@ const GenerarFacturaModal = (props: GenerarFacturaModalProps) => {
   return (
     <div>
       <div>
-        <img src="/assets/img/logo-grupo-illuminati.jpg" alt="Logo de la empresa" />
+        <img src="/assets/img/logo-grupo-illuminati.jpg" alt="Logo de la empresa" width={100}/>
         <div>
           El Buen Sabor
           <br />

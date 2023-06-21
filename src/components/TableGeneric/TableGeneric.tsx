@@ -72,20 +72,13 @@ export const TablaGeneric: React.FC<Props> = ({
               ))}
               {showButton && (
                 <>
-                  <td>
-                    {buttonView ? (
-                      <button className="btn btn-primary" onClick={(e) => handleView(row, e)}>
-                        Ver
-                      </button>
-                    ) : (
-                      <span>-</span>
-                    )}
-                  </td>
+                
                   <td>
                     <button className="btn btn-success" onClick={(e) => handleAdd(row, e)}>
                       Agregar
                     </button>
-                  </td>                
+                  </td>
+                
                   <td>
                     <button className="btn btn-success" onClick={(e) => handleEdit(row, e)}>
                       Editar
