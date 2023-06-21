@@ -10,7 +10,7 @@ import DetalleProducto from "../screens/DetalleProducto";
 import Cajero from "../screens/Cajero";
 // import DetallePage from "../components/Landing/DetallePage";
 import Delivery from "../screens/Delivery";
-import DetallePedido from "../components/Pedidos/DetallePedido";
+import DetallesPedido from "../components/Pedidos/DetallesPedido";
 //import FacturaPedido from "../components/Pedidos/FacturaPedido";
 import GenerarFacturaModal from "../components/Factura/GenerarFacturaModal";
 const IndexRouter = () => {
@@ -22,7 +22,7 @@ const IndexRouter = () => {
         <Route path="/cocinero" element={<Cocinero />} />
         <Route path="/cajero" element={<Cajero />} />
         <Route path="/delivery" element={<Delivery />} />
-        <Route path="/pedido/:id" element={<DetallePedido />} />
+        <Route path="/pedido/:id" element={<DetallesPedido />} />
         <Route path="/carrito" element={<CartItem/>} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import { Pedido } from '../../interface/Pedido';
 import { Link } from 'react-router-dom';
+import EstadoPedidoCard from './EstadoPedidoCard';
 
 interface PedidoCardProps {
   pedido: Pedido;
@@ -25,7 +26,7 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, bt
           </Col>
           <Col sm={8}>
             <div className="d-flex align-items-center justify-content-end">
-              {/* <EstadoPedido estado={pedido.estadoPedido} />  */}
+               <EstadoPedidoCard estado={pedido.estadoPedido} />  
             </div>
             <div className="d-flex justify-content-end mt-3">
               {btnTikect === true && (
