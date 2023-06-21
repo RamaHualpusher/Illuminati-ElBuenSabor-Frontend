@@ -10,25 +10,25 @@
     "Usuario": {
       "idUsuario": 1,
       "nombre": "Juan",
-      "apellido": "",
-      "email": "",
-      "clave": "",
-      "telefono": "",
+      "apellido": "Pérez",
+      "email": "juan.perez@example.com",
+      "clave": "123456",
+      "telefono": "123456789",
       "Domicilio": {
-        "idDomicilio": 0,
-        "calle": "",
-        "numero": 0,
-        "localidad": ""
+        "idDomicilio": 1,
+        "calle": "Calle Falsa",
+        "numero": 123,
+        "localidad": "Ciudad Ficticia"
       },
       "Rol": {
-        "idRol": 0,
-        "nombreRol": ""
+        "idRol": 1,
+        "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 0,
-        "cantidad": 0,
+        "idDetallePedido": 1,
+        "cantidad": 2,
         "Pedido": {},
         "Producto": {}
       }
@@ -45,25 +45,25 @@
     "Usuario": {
       "idUsuario": 2,
       "nombre": "María",
-      "apellido": "",
-      "email": "",
-      "clave": "",
-      "telefono": "",
+      "apellido": "López",
+      "email": "maria.lopez@example.com",
+      "clave": "abcdef",
+      "telefono": "987654321",
       "Domicilio": {
-        "idDomicilio": 0,
-        "calle": "",
-        "numero": 0,
-        "localidad": ""
+        "idDomicilio": 2,
+        "calle": "Avenida Principal",
+        "numero": 456,
+        "localidad": "Ciudad Imaginaria"
       },
       "Rol": {
-        "idRol": 0,
-        "nombreRol": ""
+        "idRol": 1,
+        "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 0,
-        "cantidad": 0,
+        "idDetallePedido": 2,
+        "cantidad": 3,
         "Pedido": {},
         "Producto": {}
       }
@@ -80,25 +80,25 @@
     "Usuario": {
       "idUsuario": 3,
       "nombre": "Pedro",
-      "apellido": "",
-      "email": "",
-      "clave": "",
-      "telefono": "",
+      "apellido": "González",
+      "email": "pedro.gonzalez@example.com",
+      "clave": "qwerty",
+      "telefono": "555555555",
       "Domicilio": {
-        "idDomicilio": 0,
-        "calle": "",
-        "numero": 0,
-        "localidad": ""
+        "idDomicilio": 3,
+        "calle": "Calle Principal",
+        "numero": 789,
+        "localidad": "Pueblo Ficticio"
       },
       "Rol": {
-        "idRol": 0,
-        "nombreRol": ""
+        "idRol": 1,
+        "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 0,
-        "cantidad": 0,
+        "idDetallePedido": 3,
+        "cantidad": 1,
         "Pedido": {},
         "Producto": {}
       }
@@ -115,25 +115,25 @@
     "Usuario": {
       "idUsuario": 4,
       "nombre": "Luis",
-      "apellido": "",
-      "email": "",
-      "clave": "",
-      "telefono": "",
+      "apellido": "Fernández",
+      "email": "luis.fernandez@example.com",
+      "clave": "p@ssw0rd",
+      "telefono": "111111111",
       "Domicilio": {
-        "idDomicilio": 0,
-        "calle": "",
-        "numero": 0,
-        "localidad": ""
+        "idDomicilio": 4,
+        "calle": "Avenida Secundaria",
+        "numero": 987,
+        "localidad": "Ciudad de Ensueño"
       },
       "Rol": {
-        "idRol": 0,
-        "nombreRol": ""
+        "idRol": 1,
+        "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 0,
-        "cantidad": 0,
+        "idDetallePedido": 4,
+        "cantidad": 2,
         "Pedido": {},
         "Producto": {}
       }
@@ -150,25 +150,25 @@
     "Usuario": {
       "idUsuario": 5,
       "nombre": "Ana",
-      "apellido": "",
-      "email": "",
-      "clave": "",
-      "telefono": "",
+      "apellido": "García",
+      "email": "ana.garcia@example.com",
+      "clave": "mypass",
+      "telefono": "222222222",
       "Domicilio": {
-        "idDomicilio": 0,
-        "calle": "",
-        "numero": 0,
-        "localidad": ""
+        "idDomicilio": 5,
+        "calle": "Calle Principal",
+        "numero": 654,
+        "localidad": "Villa Ficticia"
       },
       "Rol": {
-        "idRol": 0,
-        "nombreRol": ""
+        "idRol": 1,
+        "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 0,
-        "cantidad": 0,
+        "idDetallePedido": 5,
+        "cantidad": 3,
         "Pedido": {},
         "Producto": {}
       }
@@ -183,27 +183,62 @@
     "estadoPedido": "En delivery",
     "esEfectivo": false,
     "Usuario": {
-      "idUsuario": 5,
+      "idUsuario": 6,
       "nombre": "Anuel",
-      "apellido": "",
-      "email": "",
-      "clave": "",
-      "telefono": "",
+      "apellido": "Martínez",
+      "email": "anuel.martinez@example.com",
+      "clave": "abc123",
+      "telefono": "333333333",
       "Domicilio": {
-        "idDomicilio": 0,
-        "calle": "",
-        "numero": 0,
-        "localidad": ""
+        "idDomicilio": 6,
+        "calle": "Avenida Principal",
+        "numero": 321,
+        "localidad": "Pueblo Imaginario"
       },
       "Rol": {
-        "idRol": 0,
-        "nombreRol": ""
+        "idRol": 1,
+        "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 0,
-        "cantidad": 0,
+        "idDetallePedido": 6,
+        "cantidad": 2,
+        "Pedido": {},
+        "Producto": {}
+      }
+    ]
+  },
+  {
+    "idPedido": 123462,
+    "numeroPedido": 123462,
+    "fechaPedido": "2023-04-16",
+    "horaEstimadaFin": "2023-03-20T13:50:00",
+    "esDelivery": true,
+    "estadoPedido": "En delivery",
+    "esEfectivo": false,
+    "Usuario": {
+      "idUsuario": 7,
+      "nombre": "Jorge",
+      "apellido": "Hernández",
+      "email": "jorge.hernandez@example.com",
+      "clave": "password",
+      "telefono": "444444444",
+      "Domicilio": {
+        "idDomicilio": 7,
+        "calle": "Calle Secundaria",
+        "numero": 147,
+        "localidad": "Villa de Ensueño"
+      },
+      "Rol": {
+        "idRol": 1,
+        "nombreRol": "Cliente"
+      }
+    },
+    "DetallePedido": [
+      {
+        "idDetallePedido": 7,
+        "cantidad": 1,
         "Pedido": {},
         "Producto": {}
       }
