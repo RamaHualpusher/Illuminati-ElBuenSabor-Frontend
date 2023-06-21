@@ -6,6 +6,7 @@ import { handleRequest } from '../FuncionRequest/FuncionRequest';
 import EditFacturaModal from './EditFacturaModal';
 import AddFacturaModal from './AddFacturaModal';
 import { Pedido } from '../../interface/Pedido';
+import { Producto } from '../../interface/Producto';
 
 interface FacturasTableProps {}
 
@@ -15,6 +16,21 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
   const [selectedFactura, setSelectedFactura] = useState<Pedido | null>(null);
   const [facturas, setFacturas] = useState<Pedido[]>([]);
   const [facturasComplete, setFacturasComplete] = useState<Pedido[]>([]);
+
+  const columns = [
+    { label: 'Numero Factura', width: 10 },
+    { label: 'Cliente', width: 150 },    
+    { label: 'Detalle', width: 150 },
+    { label: 'Total', width: 100 },
+  ];
+
+  const data = facturas.map((item) => [
+    item.numeroPedido?.toString() || "",
+    item.Usuario?.nombre?.toString() || "",
+    item.Usuario?.apellido?.toString() || "",
+    ... (item.DetallePedido ? item.DetallePedido.map((detalle) => detalle.Producto.nombre) : []),
+    item.totalPedido?.toString() || ""
+  ]);  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,35 +64,14 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
     filter(searchParam);
   };
 
-  const getFactura = (id: number) => {
-    let i: number = 0;
-    let x: boolean = true;
-    while (x) {
-      if (facturasComplete[i].idPedido === id) {
-        return facturasComplete[i];
-      }
-      i = i + 1;
+  const handleFacturaAdd = async (factura: Pedido) => {
+    try {
+      const newFactura = await handleRequest('POST', 'assets/data/pedidos.json', factura);
+
+      setFacturas([...facturas, newFactura]);
+    } catch (error) {
+      console.log(error);
     }
-    return facturasComplete[0];
-  };
-
-  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setSelectedFactura(getFactura(+rowData[0]));
-    setEditModalShow(true);
-  };
-
-  const handleEditModalClose = () => {
-    setSelectedFactura(null);
-    setEditModalShow(false);
-  };
-
-  const handleAddModalOpen = () => {
-    setAddModalShow(true);
-  };
-
-  const handleAddModalClose = () => {
-    setAddModalShow(false);
   };
 
   const handleFacturaEdit = async (factura: Pedido) => {
@@ -88,16 +83,6 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
       newData[index] = updatedFactura;
 
       setFacturas(newData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleFacturaAdd = async (factura: Pedido) => {
-    try {
-      const newFactura = await handleRequest('POST', 'assets/data/pedidos.json', factura);
-
-      setFacturas([...facturas, newFactura]);
     } catch (error) {
       console.log(error);
     }
@@ -117,14 +102,74 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
     }
   };
 
-  const columns = [
-    { label: 'Numero Factura', width: 10 },
-    { label: 'Cliente', width: 150 },    
-    { label: 'Detalle', width: 150 },
-    { label: 'Total', width: 100 },
-  ];
+  const getFactura = (id: number) => {
+    let i: number = 0;
+    let x: boolean = true;
+    while (x) {
+      if (facturasComplete[i].idPedido === id) {
+        return facturasComplete[i];
+      }
+      i = i + 1;
+    }
+    return facturasComplete[0];
+  };
 
-  const data = facturas.map((item) => [item.numeroPedido.toString(), item.Usuario.nombre.toString(), item.Usuario.apellido.toString(), item.totalPedido.toString()]);
+  const facturaRow = (id:number)=>{
+    let i:number=0;
+    let x:boolean=true;
+    while(x){
+        if(facturasComplete[i].idPedido===id){
+            let facturaRe:Pedido={
+                idPedido:facturasComplete[i].idPedido,
+                numeroPedido:facturasComplete[i].numeroPedido,
+                fechaPedido:facturasComplete[i].fechaPedido,
+                horaEstimadaFin:facturasComplete[i].horaEstimadaFin,
+                esDelivery:facturasComplete[i].esDelivery,
+                estadoPedido:facturasComplete[i].estadoPedido,
+                esEfectivo:facturasComplete[i].esEfectivo,
+                Usuario:facturasComplete[i].Usuario,
+                DetallePedido:facturasComplete[i].DetallePedido,
+                // este no deberia ir ya que se obtiene con el back
+                totalPedido:facturasComplete[i].totalPedido,
+            };
+            return facturaRe;
+            x=false;
+        }
+        i=i+1;
+    }
+    let facturaRe:Pedido={
+      idPedido:facturasComplete[i].idPedido,
+                numeroPedido:facturasComplete[i].numeroPedido,
+                fechaPedido:facturasComplete[i].fechaPedido,
+                horaEstimadaFin:facturasComplete[i].horaEstimadaFin,
+                esDelivery:facturasComplete[i].esDelivery,
+                estadoPedido:facturasComplete[i].estadoPedido,
+                esEfectivo:facturasComplete[i].esEfectivo,
+                Usuario:facturasComplete[i].Usuario,
+                DetallePedido:facturasComplete[i].DetallePedido,
+                // este no deberia ir ya que se obtiene con el back
+                totalPedido:facturasComplete[i].totalPedido,
+    };
+    return facturaRe;
+}
+  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSelectedFactura(facturaRow(+rowData[0]));
+    setEditModalShow(true);
+  };
+
+  const handleEditModalClose = () => {
+    setSelectedFactura(null);
+    setEditModalShow(false);
+  };
+
+  const handleAddModalOpen = () => {
+    setAddModalShow(true);
+  };
+
+  const handleAddModalClose = () => {
+    setAddModalShow(false);
+  };
 
   const buttonAddAction: buttonAction = {
     label: 'Generar',
@@ -157,17 +202,18 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
           buttonDelete={handleFacturaDelete}
         />
       </Row>
+      <AddFacturaModal
+        show={addModalShow}
+        handleClose={handleAddModalClose}
+        handleFacturaAdd={handleFacturaAdd}
+      /> 
       <EditFacturaModal
         show={editModalShow}
         handleClose={handleEditModalClose}
         handleFacturaEdit={handleFacturaEdit}
         selectedFactura={selectedFactura}
       />
-      {/* <AddFacturaModal
-        show={addModalShow}
-        handleClose={handleAddModalClose}
-        handleFacturaAdd={handleFacturaAdd}
-      /> */}
+      
     </Container>
   );
 };

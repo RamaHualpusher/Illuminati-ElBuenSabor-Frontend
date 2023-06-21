@@ -4,33 +4,33 @@
     "numeroPedido": 123456,
     "fechaPedido": "2023-03-14",
     "horaEstimadaFin": "2023-03-14T10:30:00",
-    "tipoEnvio": "Envío a domicilio",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 1,
-      "descripcion": "Envío a domicilio"
-    },
-    "EstadoPedido": {
-      "idEstadoPedido": 1,
-      "descripcion": "A confirmar"
-    },
-    "TipoPago": {
-      "idTipoPago": 1,
-      "descripcion": "Efectivo"
-    },
+    "esDelivery": true,
+    "estadoPedido": "A confirmar",
+    "esEfectivo": true,
     "Usuario": {
       "idUsuario": 1,
-      "nombre": "Juan"
-    },
-    "Articulo": [
-      {
-        "idArticulo": 1,
-        "nombre": "Pizza"
+      "nombre": "Juan",
+      "apellido": "",
+      "email": "",
+      "clave": "",
+      "telefono": "",
+      "Domicilio": {
+        "idDomicilio": 0,
+        "calle": "",
+        "numero": 0,
+        "localidad": ""
+      },
+      "Rol": {
+        "idRol": 0,
+        "nombreRol": ""
       }
-    ],
-    "ProductoManufacturado": [
+    },
+    "DetallePedido": [
       {
-        "idProductoManufacturado": 1,
-        "nombre": "Hamburguesa"
+        "idDetallePedido": 0,
+        "cantidad": 0,
+        "Pedido": {},
+        "Producto": {}
       }
     ]
   },
@@ -39,37 +39,33 @@
     "numeroPedido": 123457,
     "fechaPedido": "2023-03-12",
     "horaEstimadaFin": "2023-03-12T11:45:00",
-    "tipoEnvio": "Retiro en local",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 2,
-      "descripcion": "Retiro en local"
-    },
-    "EstadoPedido": {
-      "idEstadoPedido": 2,
-      "descripcion": "En cocina"
-    },
-    "TipoPago": {
-      "idTipoPago": 2,
-      "descripcion": "Tarjeta"
-    },
+    "esDelivery": false,
+    "estadoPedido": "En cocina",
+    "esEfectivo": false,
     "Usuario": {
       "idUsuario": 2,
-      "nombre": "María"
-    },
-    "Articulo": [
-      {
-        "idArticulo": 2,
-        "nombre": "Ensalada"
+      "nombre": "María",
+      "apellido": "",
+      "email": "",
+      "clave": "",
+      "telefono": "",
+      "Domicilio": {
+        "idDomicilio": 0,
+        "calle": "",
+        "numero": 0,
+        "localidad": ""
       },
-      {
-        "idArticulo": 3,
-        "nombre": "Bebida"
+      "Rol": {
+        "idRol": 0,
+        "nombreRol": ""
       }
-    ],
-    "ProductoManufacturado": [
+    },
+    "DetallePedido": [
       {
-        "idProductoManufacturado": 2,
-        "nombre": "Sushi"
+        "idDetallePedido": 0,
+        "cantidad": 0,
+        "Pedido": {},
+        "Producto": {}
       }
     ]
   },
@@ -78,33 +74,33 @@
     "numeroPedido": 123458,
     "fechaPedido": "2023-03-16",
     "horaEstimadaFin": "2023-03-16T15:00:00",
-    "tipoEnvio": "Envío a domicilio",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 1,
-      "descripcion": "Envío a domicilio"
-    },
-    "EstadoPedido": {
-      "idEstadoPedido": 3,
-      "descripcion": "Listo"
-    },
-    "TipoPago": {
-      "idTipoPago": 1,
-      "descripcion": "Efectivo"
-    },
+    "esDelivery": true,
+    "estadoPedido": "Listo",
+    "esEfectivo": true,
     "Usuario": {
       "idUsuario": 3,
-      "nombre": "Pedro"
-    },
-    "Articulo": [
-      {
-        "idArticulo": 4,
-        "nombre": "Pasta"
+      "nombre": "Pedro",
+      "apellido": "",
+      "email": "",
+      "clave": "",
+      "telefono": "",
+      "Domicilio": {
+        "idDomicilio": 0,
+        "calle": "",
+        "numero": 0,
+        "localidad": ""
+      },
+      "Rol": {
+        "idRol": 0,
+        "nombreRol": ""
       }
-    ],
-    "ProductoManufacturado": [
+    },
+    "DetallePedido": [
       {
-        "idProductoManufacturado": 3,
-        "nombre": "Helado"
+        "idDetallePedido": 0,
+        "cantidad": 0,
+        "Pedido": {},
+        "Producto": {}
       }
     ]
   },
@@ -113,37 +109,33 @@
     "numeroPedido": 123459,
     "fechaPedido": "2023-03-18",
     "horaEstimadaFin": "2023-03-18T19:30:00",
-    "tipoEnvio": "Retiro en local",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 2,
-      "descripcion": "Retiro en local"
-    },
-    "EstadoPedido": {
-      "idEstadoPedido": 4,
-      "descripcion": "Entregado"
-    },
-    "TipoPago": {
-      "idTipoPago": 3,
-      "descripcion": "Transferencia bancaria"
-    },
+    "esDelivery": false,
+    "estadoPedido": "Entregado",
+    "esEfectivo": false,
     "Usuario": {
       "idUsuario": 4,
-      "nombre": "Luis"
-    },
-    "Articulo": [
-      {
-        "idArticulo": 5,
-        "nombre": "Tarta"
+      "nombre": "Luis",
+      "apellido": "",
+      "email": "",
+      "clave": "",
+      "telefono": "",
+      "Domicilio": {
+        "idDomicilio": 0,
+        "calle": "",
+        "numero": 0,
+        "localidad": ""
       },
-      {
-        "idArticulo": 6,
-        "nombre": "Café"
+      "Rol": {
+        "idRol": 0,
+        "nombreRol": ""
       }
-    ],
-    "ProductoManufacturado": [
+    },
+    "DetallePedido": [
       {
-        "idProductoManufacturado": 4,
-        "nombre": "Sopa"
+        "idDetallePedido": 0,
+        "cantidad": 0,
+        "Pedido": {},
+        "Producto": {}
       }
     ]
   },
@@ -152,37 +144,33 @@
     "numeroPedido": 123460,
     "fechaPedido": "2023-03-20",
     "horaEstimadaFin": "2023-03-20T13:15:00",
-    "tipoEnvio": "Envío a domicilio",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 1,
-      "descripcion": "Envío a domicilio"
-    },
-    "EstadoPedido": {
-      "idEstadoPedido": 5,
-      "descripcion": "Cancelado"
-    },
-    "TipoPago": {
-      "idTipoPago": 2,
-      "descripcion": "Tarjeta"
-    },
+    "esDelivery": true,
+    "estadoPedido": "Cancelado",
+    "esEfectivo": false,
     "Usuario": {
       "idUsuario": 5,
-      "nombre": "Ana"
-    },
-    "Articulo": [
-      {
-        "idArticulo": 7,
-        "nombre": "Hamburguesa"
+      "nombre": "Ana",
+      "apellido": "",
+      "email": "",
+      "clave": "",
+      "telefono": "",
+      "Domicilio": {
+        "idDomicilio": 0,
+        "calle": "",
+        "numero": 0,
+        "localidad": ""
       },
-      {
-        "idArticulo": 8,
-        "nombre": "Papas fritas"
+      "Rol": {
+        "idRol": 0,
+        "nombreRol": ""
       }
-    ],
-    "ProductoManufacturado": [
+    },
+    "DetallePedido": [
       {
-        "idProductoManufacturado": 5,
-        "nombre": "Sándwich"
+        "idDetallePedido": 0,
+        "cantidad": 0,
+        "Pedido": {},
+        "Producto": {}
       }
     ]
   },
@@ -191,37 +179,33 @@
     "numeroPedido": 123461,
     "fechaPedido": "2023-04-25",
     "horaEstimadaFin": "2023-03-20T13:15:00",
-    "tipoEnvio": "Envío a domicilio",
-    "TipoEntregaPedido": {
-      "idTipoEntregaPedido": 1,
-      "descripcion": "Retiro en local"
-    },
-    "EstadoPedido": {
-      "idEstadoPedido": 5,
-      "descripcion": "En delivery"
-    },
-    "TipoPago": {
-      "idTipoPago": 2,
-      "descripcion": "Pago realizado"
-    },
+    "esDelivery": true,
+    "estadoPedido": "En delivery",
+    "esEfectivo": false,
     "Usuario": {
       "idUsuario": 5,
-      "nombre": "Anuel"
-    },
-    "Articulo": [
-      {
-        "idArticulo": 7,
-        "nombre": "Hamburguesa Completa"
+      "nombre": "Anuel",
+      "apellido": "",
+      "email": "",
+      "clave": "",
+      "telefono": "",
+      "Domicilio": {
+        "idDomicilio": 0,
+        "calle": "",
+        "numero": 0,
+        "localidad": ""
       },
-      {
-        "idArticulo": 8,
-        "nombre": "Papas fritas"
+      "Rol": {
+        "idRol": 0,
+        "nombreRol": ""
       }
-    ],
-    "ProductoManufacturado": [
+    },
+    "DetallePedido": [
       {
-        "idProductoManufacturado": 5,
-        "nombre": "Sándwich"
+        "idDetallePedido": 0,
+        "cantidad": 0,
+        "Pedido": {},
+        "Producto": {}
       }
     ]
   }
