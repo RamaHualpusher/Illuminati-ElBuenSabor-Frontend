@@ -103,44 +103,46 @@ const Navbar: FC = () => {
               <i className="bi bi-search text-white" style={{ fontSize: '2rem', marginRight: '10px', cursor: 'pointer' }} onClick={toggleSearch}></i>
             </li>
             <li className="nav-item">
-              <DropdownButton
-                title={
-                  <>
-                    <i className="bi bi-cart text-white" style={{ fontSize: '2rem', marginRight: '10px' }} onClick={toggleCart}></i>
-                    {cartItems.length > 0 && <span className="badge bg-danger">{cartItems.length}</span>}
-                  </>
-                }
-                variant="link"
-                menuVariant="dark"
-                show={cartOpen}
-              >
-                <div className="container-fluid dropdown-menu-custom">
-                  <button
-                    className="btn-close close-btn"
-                    aria-label="Close"
-                    onClick={() => setCartOpen(false)}
-                  ></button>
-                  <h3 className='p-3'>Carrito de compras El Buen Sabor</h3>
-                  {cartOpen && (
-                    <>
-                      {cartItems.length > 0 ? (
-                        <ListGroup className='align-items-center w-100 p-2'>
-                          {cartItems.map((item) =>
-                            <CartItem key={item.id} item={item} />
-                          )}
-                        </ListGroup>
-                      ) : (
-                        <Dropdown.Item disabled>No hay items en el carrito</Dropdown.Item>
-                      )}
-                      <Dropdown.Item>
-                        
-                          <Link to={"/confirmacion-pedido"} className='btn btn-success text-decoration-none w-100 my-2'>Comprar</Link>
-                        
-                      </Dropdown.Item>
-                    </>
-                  )}
-                </div>
-              </DropdownButton>
+            <DropdownButton
+              title={
+                <>
+                  <i className="bi bi-cart text-white" style={{ fontSize: '2rem', marginRight: '10px' }} onClick={toggleCart}></i>
+                  {cartItems.length > 0 && <span className="badge bg-danger">{cartItems.length}</span>}
+                </>
+              }
+              variant="link"
+              menuVariant="dark"
+              show={cartOpen}
+            >
+              <div className="container-fluid dropdown-menu-custom overflow-auto" style={{maxHeight: '75vh'}}>
+                <button
+                  className="btn-close close-btn"
+                  aria-label="Close"
+                  onClick={() => setCartOpen(false)}
+                ></button>
+                <h3 className='p-3'>Carrito de compras El Buen Sabor</h3>
+                {cartOpen && (
+                  <div className="overflow-auto" style={{maxHeight: '50vh'}}>
+                    {cartItems.length > 0 ? (
+                      <ListGroup className='align-items-center w-100 p-2 '>
+                        {cartItems.map((item) =>
+                          <CartItem key={item.id} item={item} />
+                        )}
+                      </ListGroup>
+                    ) : (
+                      <Dropdown.Item disabled>No hay items en el carrito</Dropdown.Item>
+                    )}
+                    <Dropdown.Item>
+                      
+                        <Link to={"/confirmacion-pedido"} className='btn btn-success text-decoration-none w-100 my-2'>Comprar</Link>
+                      
+                    </Dropdown.Item>
+                  </div>
+                )}
+              </div>
+            </DropdownButton>
+
+
             </li>
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center">
