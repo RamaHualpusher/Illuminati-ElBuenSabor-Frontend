@@ -8,7 +8,7 @@ import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
 import { useParams } from "react-router-dom";
 import { handleRequest } from "../FuncionRequest/FuncionRequest";
-import BackButton from "../BackButtom/backButtom";
+import AdminBar from "../NavBar/AdminBar";
 
 const GenerarFacturaModal: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -40,9 +40,7 @@ const GenerarFacturaModal: React.FC = () => {
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-        <BackButton />
-      </div>
+      <AdminBar />
       <center>
         <div style={{ border: '1px solid black', borderRadius: '10px', padding: '10px', width: '400px' }}>
           <img src="/assets/img/logo-grupo-illuminati.jpg" alt="Logo de la empresa" width={100} />
