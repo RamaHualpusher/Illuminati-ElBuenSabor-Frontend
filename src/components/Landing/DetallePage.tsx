@@ -12,12 +12,10 @@ const DetallePage = () => {
 
   useEffect(() => {
     if (id) {
-      console.log(id);
       fetch('/assets/data/productosLanding.json')
         .then((response) => response.json())
         .then((data) => {
           const productoEncontrado = data.find((producto: Producto) => producto.idProducto === parseInt(id));
-          console.log('productoEncontrado:', productoEncontrado);
           setProducto(productoEncontrado);
           if (productoEncontrado && productoEncontrado.stockActual === 0) {
             setShowAlert(true);

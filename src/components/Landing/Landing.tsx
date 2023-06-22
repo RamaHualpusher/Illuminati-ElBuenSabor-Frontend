@@ -60,7 +60,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 overflow-hidden" style={{ background: 'linear-gradient(to top,#bfbdbd, #ffffff )' }}>
       <ImagenMenu />
       <BotonesMenu
         onCategoryChange={handleCategoryChange}
@@ -76,9 +76,9 @@ export default function Landing() {
               key={index}
             >
               <TarjetaComida
-              producto={producto}
-              buttonText={"Agregar al Carrito"}
-            />
+                producto={producto}
+                buttonText={"Agregar al Carrito"}
+              />
 
             </div>
           ))}

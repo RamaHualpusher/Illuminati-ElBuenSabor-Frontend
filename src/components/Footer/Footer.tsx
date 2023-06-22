@@ -25,8 +25,8 @@ const Footer: React.FC = () => {
               </li>
               <li className="mx-2">
                 <i className="bi bi-envelope text-white"></i>
-                <a href="mailto:elbuensaborutin@gmail.com" className="footer-link text-white px-1">
-                  elbuensaborutin@gmail.com
+                <a href="mailto:elbuensaborutn@gmail.com" className="footer-link text-white px-1">
+                  elbuensaborutn@gmail.com
                 </a>
               </li>
             </ul>
