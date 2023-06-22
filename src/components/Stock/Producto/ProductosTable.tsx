@@ -190,11 +190,7 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
         <Col>
           <Buscador onSearch={handleSearch} />
         </Col>
-        <Col className="text-end">
-          <Button variant="primary" onClick={handleAddModalOpen}>
-            Agregar Producto
-          </Button>
-        </Col>
+        
       </Row>
       <Row>
         <Col>

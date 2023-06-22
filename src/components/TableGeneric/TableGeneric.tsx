@@ -11,8 +11,8 @@ interface Props {
   columns: Column[];
   data: string[][];
   showButton?: boolean;
-  buttonAdd: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
   link?: string;
+  buttonAdd: () => void;
   buttonEdit: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
   buttonDelete: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
 }
@@ -31,8 +31,8 @@ export const TablaGeneric: React.FC<Props> = ({
   buttonDelete,
   showButton,
 }) => {
-  const handleAdd = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-    buttonAdd(rowData, e);
+  const handleAdd = () => {
+    buttonAdd();
   };
 
   const handleEdit = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
@@ -45,6 +45,11 @@ export const TablaGeneric: React.FC<Props> = ({
 
   return (
     <div>
+      <div className='d-flex flex-row'>
+        <button className="btn btn-success" onClick={(e) => handleAdd()}>
+          Agregar
+        </button>
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -53,7 +58,7 @@ export const TablaGeneric: React.FC<Props> = ({
                 {column.label}
               </th>
             ))}
-            {showButton && <th style={{ width: 100 }}>Agregar</th>}
+
             {showButton && link && <th style={{ width: 100 }}>Ver</th>}
             {showButton && <th style={{ width: 100 }}>Editar</th>}
             {showButton && <th style={{ width: 100 }}>Eliminar</th>}
@@ -67,11 +72,7 @@ export const TablaGeneric: React.FC<Props> = ({
               ))}
               {showButton && (
                 <>
-                  <td>
-                    <button className="btn btn-success" onClick={(e) => handleAdd(row, e)}>
-                      Agregar
-                    </button>
-                  </td>
+
                   {link && (<td>
                     <Link className="btn btn-primary" to={`/${link}/${row[0]}`}>
                       Ver

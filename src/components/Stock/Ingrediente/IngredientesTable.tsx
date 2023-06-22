@@ -149,13 +149,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
             <Buscador onSearch={handleSearch} />
           </Col>
         </Row>
-        <Row className="justify-content-start align-items-center mb-3">
-          <Col>
-            <Button variant="success" onClick={handleAddModalOpen} className="float-start">
-              Agregar Ingredientes
-            </Button>
-          </Col>
-        </Row>
+        
       </Container>
       <div>
         <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalClose} buttonEdit={handleEditModalOpen} buttonDelete={handleIngredienteDelete} />
