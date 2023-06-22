@@ -19,7 +19,6 @@ const Clientes = () => {
         { label: "Apellido", width: 200 },
         { label: "Email", width: 200 },
         { label: "Telefono", width: 200 },
-        { label: "Rol", width: 150 },
         { label: "Domicilio", width: 200 },
     ];
 
@@ -29,7 +28,6 @@ const Clientes = () => {
         item.apellido.toString(),
         item.email.toString(),
         item.telefono.toString(),
-        item.Rol.nombreRol.toString(),
         `${item.Domicilio.calle}, ${item.Domicilio.numero}, ${item.Domicilio.localidad}`,
     ]);
 

@@ -133,7 +133,7 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
   const data = ingred.map((Ingredientes) => [
     Ingredientes.idIngredientes.toString(),
     Ingredientes.nombre.toString(),
-    Ingredientes.Rubro.toString(),
+    Ingredientes.Rubro.nombre.toString(),
     Ingredientes.stockMinimo.toString(),
     Ingredientes.stockActual.toString(),
     Ingredientes.estado.toString(),// Esto es un boolean y no se que puede ser el string
