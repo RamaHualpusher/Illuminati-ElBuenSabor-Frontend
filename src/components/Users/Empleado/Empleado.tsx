@@ -154,13 +154,7 @@ const Empleado = () => {
                         <h1>Buscar Empleado</h1>
                         <Buscador onSearch={handleSearch} />
                     </Col>
-                    <Row className="mb-3">
-                        <Col className="d-flex justify-content-start">
-                            <Button variant="primary" onClick={handleAddModalOpen}>
-                                Agregar Empleado
-                            </Button>
-                        </Col>
-                    </Row>
+                    
                 </Row>
                 <Row className="mt-3">
                     <Col>
