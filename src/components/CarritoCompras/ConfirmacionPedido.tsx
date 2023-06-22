@@ -1,5 +1,6 @@
 import { CartItem } from "./CartProvider";
-
+import AdminBar
+ from "../NavBar/AdminBar";
 interface ConfirmacionPedidoProps {
     cartItems: CartItem[];
     metodoPago: string;
@@ -24,7 +25,8 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({ cartItems, meto
       }
       
   return (
-    <div>
+    <div style={{marginTop: "5rem"}}>
+      <AdminBar />
       <h2>Confirmación de Pedido</h2>
       <form>
           <div className="container">
