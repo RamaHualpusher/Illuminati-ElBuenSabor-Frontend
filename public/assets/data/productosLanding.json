@@ -1,14 +1,14 @@
 [
   {
     "idProducto": 1,
-    "nombre": "Pizza",
-    "tiempoEstimadoCocina": 10,
+    "nombre": "Pizza Muzza",
+    "tiempoEstimadoCocina": 15,
     "denominacion": "Pizzas",
-    "imagen": "assets/img/pizza_casera_31391_orig.jpg",
-    "stockActual": 0,
-    "stockMinimo": 0,
-    "preparacion": "Una deliciosa pizza con queso y pepperoni",
-    "precio": 0,
+    "imagen": "/assets/img/Pizza Mozza.avif",
+    "stockActual": 5,
+    "stockMinimo": 5,
+    "preparacion": "Una deliciosa pizza con el mejor queso Mozzarella y Pepperoni",
+    "precio": 2000,
     "esBebida": false,
     "Rubro": {
       "idRubro": 1,
@@ -65,14 +65,14 @@
   },
   {
     "idProducto": 2,
-    "nombre": "Pizza",
+    "nombre": "Pizza Especial",
     "tiempoEstimadoCocina": 10,
     "denominacion": "Pizzas",
-    "imagen": "assets/img/pizza_casera_31391_orig.jpg",
-    "stockActual": 0,
-    "stockMinimo": 0,
-    "preparacion": "Una deliciosa pizza con queso y pepperoni",
-    "precio": 0,
+    "imagen": "/assets/img/Pizza jamon.jpeg",
+    "stockActual": 10,
+    "stockMinimo": 5,
+    "preparacion": "Una deliciosa pizza Jamón y queso",
+    "precio": 2000,
     "esBebida": false,
     "Rubro": {
       "idRubro": 1,
@@ -101,7 +101,7 @@
         "Producto": null,
         "Ingredientes": {
           "idIngredientes": 2,
-          "nombre": "Queso mozzarella",
+          "nombre": "Queso",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
@@ -116,7 +116,7 @@
         "Producto": null,
         "Ingredientes": {
           "idIngredientes": 3,
-          "nombre": "Pepperoni",
+          "nombre": "Jamón",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
@@ -132,11 +132,11 @@
     "nombre": "Coca-Cola 500ml",
     "tiempoEstimadoCocina": 0,
     "denominacion": "Bebidas",
-    "imagen": "assets/img/Cocacola-Soda-500ml-Grande.jpg",
-    "stockActual": 0,
-    "stockMinimo": 0,
+    "imagen": "/assets/img/Cocacola-Soda-500ml-Grande.jpg",
+    "stockActual": 30,
+    "stockMinimo": 10,
     "preparacion": "Una refrescante lata de CocaCola",
-    "precio": 0,
+    "precio": 500,
     "esBebida": true,
     "Rubro": {
       "idRubro": 2,
@@ -147,14 +147,14 @@
   },
   {
     "idProducto": 4,
-    "nombre": "Pizza",
+    "nombre": "Pizza Vegetariana",
     "tiempoEstimadoCocina": 10,
     "denominacion": "Pizzas",
-    "imagen": "assets/img/pizza_casera_31391_orig.jpg",
-    "stockActual": 0,
-    "stockMinimo": 0,
-    "preparacion": "Una deliciosa pizza con queso y pepperoni",
-    "precio": 0,
+    "imagen": "/assets/img/pizza_casera_31391_orig.jpg",
+    "stockActual": 8,
+    "stockMinimo": 5,
+    "preparacion": "Una deliciosa pizza vegetariana con champiñones, pimientos, cebolla y aceitunas",
+    "precio": 1800,
     "esBebida": false,
     "Rubro": {
       "idRubro": 1,
@@ -163,7 +163,7 @@
     "DetallePedido": [],
     "ProductoIngrediente": [
       {
-        "idProductoIngrediente": 7,
+        "idProductoIngrediente": 9,
         "cantidad": 150,
         "Producto": null,
         "Ingredientes": {
@@ -178,76 +178,27 @@
         }
       },
       {
-        "idProductoIngrediente": 8,
+        "idProductoIngrediente": 10,
         "cantidad": 100,
         "Producto": null,
         "Ingredientes": {
-          "idIngredientes": 2,
-          "nombre": "Queso mozzarella",
+          "idIngredientes": 6,
+          "nombre": "Champiñones",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
           "Rubro": null,
           "unidadMedida": "gr",
-          "ProductoIngrediente": []
-        }
-      },
-      {
-        "idProductoIngrediente": 9,
-        "cantidad": 50,
-        "Producto": null,
-        "Ingredientes": {
-          "idIngredientes": 3,
-          "nombre": "Pepperoni",
-          "estado": false,
-          "stockMinimo": 0,
-          "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
-        }
-      }
-    ]
-  },
-  {
-    "idProducto": 5,
-    "nombre": "Hamburguesa",
-    "tiempoEstimadoCocina": 8,
-    "denominacion": "Hamburguesas",
-    "imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
-    "stockActual": 0,
-    "stockMinimo": 0,
-    "preparacion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
-    "precio": 0,
-    "esBebida": false,
-    "Rubro": {
-      "idRubro": 3,
-      "nombre": "Hamburguesas"
-    },
-    "DetallePedido": [],
-    "ProductoIngrediente": [
-      {
-        "idProductoIngrediente": 10,
-        "cantidad": 1,
-        "Producto": null,
-        "Ingredientes": {
-          "idIngredientes": 4,
-          "nombre": "Pan de hamburguesa",
-          "estado": false,
-          "stockMinimo": 0,
-          "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "unidad",
           "ProductoIngrediente": []
         }
       },
       {
         "idProductoIngrediente": 11,
-        "cantidad": 150,
+        "cantidad": 50,
         "Producto": null,
         "Ingredientes": {
-          "idIngredientes": 5,
-          "nombre": "Carne de res",
+          "idIngredientes": 7,
+          "nombre": "Pimientos",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
@@ -261,8 +212,8 @@
         "cantidad": 50,
         "Producto": null,
         "Ingredientes": {
-          "idIngredientes": 6,
-          "nombre": "Queso cheddar",
+          "idIngredientes": 8,
+          "nombre": "Cebolla",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
@@ -273,10 +224,74 @@
       },
       {
         "idProductoIngrediente": 13,
+        "cantidad": 25,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 9,
+          "nombre": "Aceitunas",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      }
+    ]
+  },
+  {
+    "idProducto": 5,
+    "nombre": "Hamburguesa Clásica",
+    "tiempoEstimadoCocina": 15,
+    "denominacion": "Hamburguesas",
+    "imagen": "/assets/img/Burguer Clasica.webp",
+    "stockActual": 10,
+    "stockMinimo": 5,
+    "preparacion": "Una jugosa hamburguesa con carne de res, queso, lechuga, tomate y cebolla",
+    "precio": 2000,
+    "esBebida": false,
+    "Rubro": {
+      "idRubro": 2,
+      "nombre": "Hamburguesas"
+    },
+    "DetallePedido": [],
+    "ProductoIngrediente": [
+      {
+        "idProductoIngrediente": 14,
+        "cantidad": 200,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 10,
+          "nombre": "Carne de res",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 15,
         "cantidad": 50,
         "Producto": null,
         "Ingredientes": {
-          "idIngredientes": 7,
+          "idIngredientes": 11,
+          "nombre": "Queso",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 16,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 12,
           "nombre": "Lechuga",
           "estado": false,
           "stockMinimo": 0,
@@ -287,12 +302,27 @@
         }
       },
       {
-        "idProductoIngrediente": 14,
+        "idProductoIngrediente": 17,
         "cantidad": 50,
         "Producto": null,
         "Ingredientes": {
-          "idIngredientes": 8,
+          "idIngredientes": 13,
           "nombre": "Tomate",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 18,
+        "cantidad": 25,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 8,
+          "nombre": "Cebolla",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
@@ -305,14 +335,14 @@
   },
   {
     "idProducto": 6,
-    "nombre": "Hamburguesa",
+    "nombre": "Hamburguesa Triple Barbacoa",
     "tiempoEstimadoCocina": 8,
     "denominacion": "Hamburguesas",
-    "imagen": "assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
-    "stockActual": 0,
-    "stockMinimo": 0,
-    "preparacion": "Una deliciosa hamburguesa con queso, lechuga y tomate",
-    "precio": 0,
+    "imagen": "/assets/img/la-hamburguesa-mucho-mas-que___0HXb0UR0v_2000x1500__1.webp",
+    "stockActual": 20,
+    "stockMinimo": 5,
+    "preparacion": "Una deliciosa hamburguesa con Barbacoa y chedar",
+    "precio": 1500,
     "esBebida": false,
     "Rubro": {
       "idRubro": 3,
@@ -371,22 +401,7 @@
         "Producto": null,
         "Ingredientes": {
           "idIngredientes": 7,
-          "nombre": "Lechuga",
-          "estado": false,
-          "stockMinimo": 0,
-          "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
-        }
-      },
-      {
-        "idProductoIngrediente": 19,
-        "cantidad": 50,
-        "Producto": null,
-        "Ingredientes": {
-          "idIngredientes": 8,
-          "nombre": "Tomate",
+          "nombre": "Barbacoa",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
@@ -396,5 +411,59 @@
         }
       }
     ]
+  },
+  {
+    "idProducto": 7,
+    "nombre": "Fanta 500ml",
+    "tiempoEstimadoCocina": 0,
+    "denominacion": "Bebidas",
+    "imagen": "/assets/img/Lata Fanta.jpg",
+    "stockActual": 30,
+    "stockMinimo": 10,
+    "preparacion": "Una refrescante lata de Fanta",
+    "precio": 500,
+    "esBebida": true,
+    "Rubro": {
+      "idRubro": 2,
+      "nombre": "Bebidas"
+    },
+    "DetallePedido": [],
+    "ProductoIngrediente": []
+  },
+  {
+    "idProducto": 8,
+    "nombre": "Sprite 500ml",
+    "tiempoEstimadoCocina": 0,
+    "denominacion": "Bebidas",
+    "imagen": "/assets/img/Lata Sprite.jpeg",
+    "stockActual": 30,
+    "stockMinimo": 10,
+    "preparacion": "Una refrescante lata de Sprite",
+    "precio": 500,
+    "esBebida": true,
+    "Rubro": {
+      "idRubro": 2,
+      "nombre": "Bebidas"
+    },
+    "DetallePedido": [],
+    "ProductoIngrediente": []
+  },
+  {
+    "idProducto": 9,
+    "nombre": "Cerveza Andes Origen",
+    "tiempoEstimadoCocina": 0,
+    "denominacion": "Bebidas",
+    "imagen": "/assets/img/Andes Origen.jpg",
+    "stockActual": 30,
+    "stockMinimo": 10,
+    "preparacion": "Una refrescante lata de CocaCola",
+    "precio": 500,
+    "esBebida": true,
+    "Rubro": {
+      "idRubro": 2,
+      "nombre": "Bebidas"
+    },
+    "DetallePedido": [],
+    "ProductoIngrediente": []
   }
 ]
