@@ -111,27 +111,13 @@ const Empleado = () => {
         let x:boolean=true;
         while(x){
             if(empleadosComplete[i].idUsuario===id){
-                let usuarioRe:EditUsuarioFromAdmin={
-                    idUsuario:empleadosComplete[i].idUsuario,
-                    nombre:empleadosComplete[i].nombre,
-                    apellido:empleadosComplete[i].apellido,
-                    email:empleadosComplete[i].email,
-                    telefono:empleadosComplete[i].telefono,
-                    Rol:empleadosComplete[i].Rol
-                };
+                let usuarioRe:EditUsuarioFromAdmin=empleadosComplete[i];
                 return usuarioRe;
                 x=false;
             }
             i=i+1;
         }
-        let usuarioRe:EditUsuarioFromAdmin={
-            idUsuario:empleadosComplete[0].idUsuario,
-            nombre:empleadosComplete[0].nombre,
-            apellido:empleadosComplete[0].apellido,
-            email:empleadosComplete[0].email,
-            telefono:empleadosComplete[0].telefono,
-            Rol:empleadosComplete[0].Rol
-        };
+        let usuarioRe:EditUsuarioFromAdmin=empleadosComplete[0];
         return usuarioRe;
     }
 

@@ -39,7 +39,7 @@ const GenerarFacturaModal: React.FC = () => {
 
 
   return (
-    <>
+    <div style={{marginTop: "5rem"}}> 
       <AdminBar />
       <center>
         <div style={{ border: '1px solid black', borderRadius: '10px', padding: '10px', width: '400px' }}>
@@ -112,7 +112,7 @@ const GenerarFacturaModal: React.FC = () => {
           </div>
         </div>
       </center>
-    </>
+    </div>
 
   );
 };

@@ -121,41 +121,13 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     let x:boolean=true;
     while(x){
         if(productosComplete[i].idProducto===id){
-            let productoRe:Producto={
-                idProducto:productosComplete[i].idProducto,
-                nombre:productosComplete[i].nombre,
-                tiempoEstimadoCocina:productosComplete[i].tiempoEstimadoCocina,
-                denominacion:productosComplete[i].denominacion,
-                imagen:productosComplete[i].imagen,
-                stockActual:productosComplete[i].stockActual,
-                stockMinimo:productosComplete[i].stockMinimo,
-                preparacion:productosComplete[i].preparacion,
-                precio:productosComplete[i].precio,
-                esBebida:productosComplete[i].esBebida,
-                Rubro:productosComplete[i].Rubro,
-                DetallePedido:productosComplete[i].DetallePedido,
-                ProductoIngrediente:productosComplete[i].ProductoIngrediente,
-            };
+            let productoRe:Producto=productosComplete[i];
             return productoRe;
             x=false;
         }
         i=i+1;
     }
-    let productoRe:Producto={
-      idProducto:productosComplete[0].idProducto,
-      nombre:productosComplete[0].nombre,
-      tiempoEstimadoCocina:productosComplete[0].tiempoEstimadoCocina,
-      denominacion:productosComplete[0].denominacion,
-      imagen:productosComplete[0].imagen,
-      stockActual:productosComplete[0].stockActual,
-      stockMinimo:productosComplete[0].stockMinimo,
-      preparacion:productosComplete[0].preparacion,
-      precio:productosComplete[0].precio,
-      esBebida:productosComplete[0].esBebida,
-      Rubro:productosComplete[0].Rubro,
-      DetallePedido:productosComplete[0].DetallePedido,
-      ProductoIngrediente:productosComplete[0].ProductoIngrediente,
-    };
+    let productoRe:Producto=productosComplete[0];
     return productoRe;
 }
 
