@@ -13,6 +13,7 @@ import Delivery from "../screens/Delivery";
 import DetallesPedido from "../components/Pedidos/DetallesPedido";
 //import FacturaPedido from "../components/Pedidos/FacturaPedido";
 import GenerarFacturaModal from "../components/Factura/GenerarFacturaModal";
+import CarritoConConfirmacion from "../components/CarritoCompras/CarritoConConfirmacion";
 const IndexRouter = () => {
   return (
     <BrowserRouter>
@@ -28,6 +29,7 @@ const IndexRouter = () => {
         <Route path="/cocina/productos" element={<ProductosTable />} />
         <Route path="/productos/:id" element={<DetalleProducto />} />
         <Route path="/factura/:id" element={<GenerarFacturaModal/>}></Route>
+        <Route path="/confirmacion-pedido" element={<CarritoConConfirmacion/>}></Route>
       </Routes>
     </BrowserRouter>
   );

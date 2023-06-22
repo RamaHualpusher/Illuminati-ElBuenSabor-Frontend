@@ -8,6 +8,7 @@ import { CartContext } from '../CarritoCompras/CartProvider';
 import CartItem from '../CarritoCompras/CartItem';
 import { Producto } from "../../interface/Producto";
 import { SearchContext } from '../Buscador/SearchContext';
+import { Link } from 'react-router-dom';
 
 const Navbar: FC = () => {
   const { isAuthenticated, user } = useAuth0();
@@ -132,7 +133,9 @@ const Navbar: FC = () => {
                         <Dropdown.Item disabled>No hay items en el carrito</Dropdown.Item>
                       )}
                       <Dropdown.Item>
-                        <button className='btn btn-success w-100 my-2'>Comprar</button>
+                        
+                          <Link to={"/confirmacion-pedido"} className='btn btn-success text-decoration-none w-100 my-2'>Comprar</Link>
+                        
                       </Dropdown.Item>
                     </>
                   )}

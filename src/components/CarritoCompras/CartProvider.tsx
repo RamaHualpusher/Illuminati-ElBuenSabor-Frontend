@@ -1,12 +1,14 @@
 import React, { createContext, useReducer, ReactNode } from 'react';
+import { DetallePedido } from '../../interface/DetallePedido';
 
-interface CartItem {
+export interface CartItem {
   id: number;
   name: string;
   quantity: number;
   price: number;
   image: string;
   title: string;
+  DetallePedido: DetallePedido;
 }
 
 type CartAction =

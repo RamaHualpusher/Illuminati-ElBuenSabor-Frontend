@@ -11,9 +11,9 @@ export default function Landing() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [produc, setProduc] = useState<Producto[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Producto[]>([]);
-  const { addToCart, cartItems} = useContext(CartContext); 
+  const { addToCart, cartItems } = useContext(CartContext);
   const { searchParam } = useContext(SearchContext);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,7 +57,7 @@ export default function Landing() {
     } else {
       return "col-md-3";
     }
-  };  
+  };
 
   return (
     <div className="mt-5">
@@ -65,7 +65,7 @@ export default function Landing() {
       <BotonesMenu
         onCategoryChange={handleCategoryChange}
         selectedCategory={selectedCategory}
-      />      
+      />
       <div className="d-flex justify-content-center mt-3">
         <div className="row">
           {filteredProductos.map((producto, index) => (
@@ -76,22 +76,10 @@ export default function Landing() {
               key={index}
             >
               <TarjetaComida
-                id={producto.idProducto}
-                imageSrc={producto.imagen}
-                title={producto.nombre}
-                text={producto.preparacion}
-                buttonText={"Agregar al Carrito"}
-                onButtonClick={() =>
-                  addToCart({
-                    id: producto.idProducto,
-                    name: producto.nombre,
-                    quantity: 1,
-                    price: 100 + Math.floor(Math.random() * 400), //aleatorio entre 100 y 500
-                    image: producto.imagen,
-                    title: producto.nombre,
-                  })
-                }
-              />
+              producto={producto}
+              buttonText={"Agregar al Carrito"}
+            />
+
             </div>
           ))}
         </div>
@@ -100,4 +88,3 @@ export default function Landing() {
     </div>
   );
 }
-

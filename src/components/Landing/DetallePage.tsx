@@ -30,16 +30,22 @@ const DetallePage = () => {
   const handleAddToCart = () => {
     if (producto && producto.stockActual > 0) {
       const item = {
-        id: primerProducto.idProducto,
-        name: primerProducto.nombre,
+        id: producto.idProducto,
+        name: producto.nombre,
         quantity: 1,
-        price: primerProducto.precio,
-        image: primerProducto.imagen,
-        title: primerProducto.nombre,
+        price: producto.precio,
+        image: producto.imagen,
+        title: producto.nombre,
+        DetallePedido: {
+          idDetallePedido: 0,
+          cantidad: 0,
+          Producto: producto,
+        },
       };
       addToCart(item);
     }
   };
+  
 
   if (!producto || producto === null) {
     return <Spinner />;
