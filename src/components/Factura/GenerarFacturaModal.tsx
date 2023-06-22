@@ -8,11 +8,9 @@ import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
 import { useParams } from "react-router-dom";
 import { handleRequest } from "../FuncionRequest/FuncionRequest";
-import { Navbar } from "react-bootstrap";
 import BackButton from "../BackButtom/backButtom";
 
 const GenerarFacturaModal: React.FC = () => {
-  //const { show, handleClose, handleFacturaAdd, factura } = props;
   const { id } = useParams<{ id: string }>();
   const [pedido, setPedidos] = useState<Pedido>();
   const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
@@ -25,7 +23,7 @@ const GenerarFacturaModal: React.FC = () => {
         if (id) {
           const responseData = await handleRequest('GET', 'assets/data/pedidos.json');
           const pedidos: Pedido[] = responseData;
-          setPedidos(pedidos?.find((pedido: Pedido) => pedido.idPedido === parseInt(id)))
+          setPedidos(pedidos.find((pedido: Pedido) => pedido.idPedido === parseInt(id)))
           if (pedido)
             setUsuario(pedido.Usuario);
           if (usuario)
