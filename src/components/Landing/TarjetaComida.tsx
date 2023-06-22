@@ -1,22 +1,30 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { CartContext } from '../CarritoCompras/CartProvider';
+import { CartContext, CartItem } from '../CarritoCompras/CartProvider';
+import { Producto } from '../../interface/Producto';
 
 interface CardProps {
-  id: number;
-  imageSrc: string;
-  title: string;
-  text: string;
+  producto: Producto;
   buttonText: string;
-  onButtonClick: () => void;
 }
 
-
-const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText, id }) => {
+const TarjetaComida: React.FC<CardProps> = ({ producto, buttonText }) => {
   const { addToCart } = useContext(CartContext);
 
   const handleCartClick = () => {
-    const item = { id, name: title, quantity: 1, price: 0, image: imageSrc, title };
+    const item: CartItem = {
+      id: producto.idProducto,
+      name: producto.nombre,
+      quantity: 1,
+      price: producto.precio,
+      image: producto.imagen,
+      title: producto.nombre,
+      DetallePedido: {
+        idDetallePedido: 0,
+        cantidad: 0,
+        Producto: producto,
+      },
+    };
     addToCart(item);
   };
 
@@ -24,7 +32,7 @@ const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText,
     <div className="card" style={{ width: '18rem', marginBottom: '20px', marginLeft: '16px' }}>
       <img
         className="card-img-top"
-        src={imageSrc}
+        src={producto.imagen}
         alt="Card image cap"
         style={{
           width: '100%',
@@ -35,13 +43,13 @@ const TarjetaComida: React.FC<CardProps> = ({ imageSrc, title, text, buttonText,
       />
 
       <div className="card-body">
-        <h5 className="card-title">{title}</h5>
-        <p className="card-text">{text}</p>
+        <h5 className="card-title">{producto.nombre}</h5>
+        <p className="card-text">{producto.denominacion}</p>
 
         <button onClick={handleCartClick} className="btn btn-primary mb-2">
           {buttonText}
         </button>
-        <Link to={`/productos/${id}`} className="btn btn-primary float-right">
+        <Link to={`/productos/${producto.idProducto}`} className="btn btn-primary float-right">
           Ver Detalles
         </Link>
       </div>
