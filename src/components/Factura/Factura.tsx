@@ -19,6 +19,7 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
   const [facturasComplete, setFacturasComplete] = useState<Pedido[]>([]);
 
   const columns = [
+    {label:'Id', width:5},
     { label: 'Numero Factura', width: 10 },
     { label: 'Cliente', width: 150 },    
     { label: 'Detalle', width: 150 },
@@ -26,6 +27,7 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
   ];
 
   const data = facturas.map((item) => [
+    item.idPedido.toString() || "",
     item.numeroPedido?.toString() || "",
     item.Usuario?.nombre?.toString() || "",
     item.Usuario?.apellido?.toString() || "",
