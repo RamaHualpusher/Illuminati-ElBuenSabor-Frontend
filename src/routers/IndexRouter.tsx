@@ -8,12 +8,12 @@ import Admin from "../screens/Admin";
 import Cocinero from "../screens/Cocinero";
 import DetalleProducto from "../screens/DetalleProducto";
 import Cajero from "../screens/Cajero";
-// import DetallePage from "../components/Landing/DetallePage";
 import Delivery from "../screens/Delivery";
 import DetallesPedido from "../components/Pedidos/DetallesPedido";
-//import FacturaPedido from "../components/Pedidos/FacturaPedido";
 import GenerarFacturaModal from "../components/Factura/GenerarFacturaModal";
 import CarritoConConfirmacion from "../components/CarritoCompras/CarritoConConfirmacion";
+import Page404 from "../components/Page404/Page404";
+
 const IndexRouter = () => {
   return (
     <BrowserRouter>
@@ -24,12 +24,13 @@ const IndexRouter = () => {
         <Route path="/cajero" element={<Cajero />} />
         <Route path="/delivery" element={<Delivery />} />
         <Route path="/pedido/:id" element={<DetallesPedido />} />
-        <Route path="/carrito" element={<CartItem/>} />
+        <Route path="/carrito" element={<CartItem />} />
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />
         <Route path="/productos/:id" element={<DetalleProducto />} />
-        <Route path="/factura/:id" element={<GenerarFacturaModal/>}></Route>
-        <Route path="/confirmacion-pedido" element={<CarritoConConfirmacion/>}></Route>
+        <Route path="/factura/:id" element={<GenerarFacturaModal />}></Route>
+        <Route path="/confirmacion-pedido" element={<CarritoConConfirmacion />}></Route>
+        <Route path="*" element={<Page404 />} />
       </Routes>
     </BrowserRouter>
   );
