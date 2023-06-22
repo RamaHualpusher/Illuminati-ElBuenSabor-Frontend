@@ -60,7 +60,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 overflow-hidden">
       <ImagenMenu />
       <BotonesMenu
         onCategoryChange={handleCategoryChange}
