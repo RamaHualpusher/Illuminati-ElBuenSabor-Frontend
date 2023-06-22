@@ -592,13 +592,13 @@
   },
   {
     "idProducto": 11,
-    "nombre": "Promo Pizza Especial con una Sprite",
+    "nombre": "Promo Pizza Especial con una Coca-Cola",
     "tiempoEstimadoCocina": 15,
     "denominacion": "Ofertas",
     "imagen": "/assets/img/Pizza promo.jpg",
     "stockActual": 5,
     "stockMinimo": 5,
-    "preparacion": "Una deliciosa pizza con una Sprite",
+    "preparacion": "Una deliciosa pizza con una Coca-Cola",
     "precio": 2000,
     "esBebida": false,
     "Rubro": {
