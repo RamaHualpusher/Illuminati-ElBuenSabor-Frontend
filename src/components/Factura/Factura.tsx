@@ -19,21 +19,21 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
   const [facturasComplete, setFacturasComplete] = useState<Pedido[]>([]);
 
   const columns = [
-    {label:'Id', width:5},
-    { label: 'Numero Factura', width: 10 },
-    { label: 'Cliente', width: 150 },    
-    { label: 'Detalle', width: 150 },
-    { label: 'Total', width: 100 },
-  ];
+  { label: 'Id', width: 5 },
+  { label: 'Numero Factura', width: 10 },
+  { label: 'Cliente', width: 150 },
+  { label: 'Detalle', width: 150 },
+  { label: 'Total', width: 100 },
+];
 
-  const data = facturas.map((item) => [
-    item.idPedido.toString() || "",
-    item.numeroPedido?.toString() || "",
-    item.Usuario?.nombre?.toString() || "",
-    item.Usuario?.apellido?.toString() || "",
-    ... (item.DetallePedido ? item.DetallePedido.map((detalle) => detalle.Producto.nombre) : []),
-    item.totalPedido?.toString() || ""
-  ]);  
+const data = facturas.map((item) => [
+  item.idPedido.toString() || '',
+  item.numeroPedido?.toString() || '',
+  `${item.Usuario?.nombre?.toString() || ''} ${item.Usuario?.apellido?.toString() || ''}`, 
+  ...(item.DetallePedido ? item.DetallePedido.map((detalle) => detalle.Producto?.nombre) : []),
+  item.totalPedido?.toString() || '',
+]);
+
 
   useEffect(() => {
     const fetchData = async () => {
