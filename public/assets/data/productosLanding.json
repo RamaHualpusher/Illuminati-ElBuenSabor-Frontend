@@ -594,7 +594,7 @@
     "idProducto": 11,
     "nombre": "Promo Pizza Especial con una Sprite",
     "tiempoEstimadoCocina": 15,
-    "denominacion": "Pizzas",
+    "denominacion": "Ofertas",
     "imagen": "/assets/img/Pizza promo.jpg",
     "stockActual": 5,
     "stockMinimo": 5,
@@ -603,7 +603,7 @@
     "esBebida": false,
     "Rubro": {
       "idRubro": 4,
-      "nombre": "Pizzas"
+      "nombre": "Ofertas"
     },
     "DetallePedido": [],
     "ProductoIngrediente": [
