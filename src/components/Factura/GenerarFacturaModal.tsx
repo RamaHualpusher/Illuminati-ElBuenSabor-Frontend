@@ -98,7 +98,7 @@ const GenerarFacturaModal: React.FC = () => {
         </div>
         <div style={{ border: '1px solid black', borderRadius: '10px', padding: '10px', textAlign: 'justify', marginBottom: '10px' }}>
           <p>
-            Muchas gracias {usuario?.nombre}, {usuario?.apellido} por comprar en
+            Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
             <br />
             El Buen Sabor
           </p>

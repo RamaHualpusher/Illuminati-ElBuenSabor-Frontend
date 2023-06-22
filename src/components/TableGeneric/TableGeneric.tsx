@@ -12,7 +12,7 @@ interface Props {
   data: string[][];
   showButton?: boolean;
   buttonAdd: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
-  link?:string;
+  link?: string;
   buttonEdit: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
   buttonDelete: (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => void;
 }
@@ -34,8 +34,6 @@ export const TablaGeneric: React.FC<Props> = ({
   const handleAdd = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     buttonAdd(rowData, e);
   };
-
-
 
   const handleEdit = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     buttonEdit(rowData, e);
@@ -69,18 +67,16 @@ export const TablaGeneric: React.FC<Props> = ({
               ))}
               {showButton && (
                 <>
-                
                   <td>
                     <button className="btn btn-success" onClick={(e) => handleAdd(row, e)}>
                       Agregar
                     </button>
                   </td>
                   {link && (<td>
-                    <Link className="btn btn-primary"to={`/${link}/${row[0]}`}>
+                    <Link className="btn btn-primary" to={`/${link}/${row[0]}`}>
                       Ver
                     </Link>
                   </td>)}
-                
                   <td>
                     <button className="btn btn-success" onClick={(e) => handleEdit(row, e)}>
                       Editar
