@@ -9,8 +9,6 @@ import { Domicilio } from "../../interface/Domicilio";
 import { useParams } from "react-router-dom";
 import { handleRequest } from "../FuncionRequest/FuncionRequest";
 
-
-
 const GenerarFacturaModal: React.FC = () => {
   //const { show, handleClose, handleFacturaAdd, factura } = props;
   const { id } = useParams<{ id: string }>();

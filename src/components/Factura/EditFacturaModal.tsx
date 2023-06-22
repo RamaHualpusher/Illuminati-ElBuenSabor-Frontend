@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import { Pedido } from '../../interface/Pedido';
-//import { format } from 'date-fns';
 
 interface EditFacturaModalProps {
   show: boolean;
@@ -28,8 +27,8 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
   useEffect(() => {
     if (selectedFactura) {
       setNumeroPedido(selectedFactura.numeroPedido);
-      setFechaPedido(selectedFactura.fechaPedido.toDateString);
-      setHoraEstimadaFin(selectedFactura.horaEstimadaFin.toDateString);
+      setFechaPedido(selectedFactura.fechaPedido instanceof Date ? selectedFactura.fechaPedido.toDateString() : '');
+      setHoraEstimadaFin(selectedFactura.horaEstimadaFin instanceof Date ? selectedFactura.horaEstimadaFin.toDateString() : '');
       setEsDelivery(selectedFactura.esDelivery);
       setEstadoPedido(selectedFactura.estadoPedido);
       setEsEfectivo(selectedFactura.esEfectivo);
@@ -158,3 +157,4 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
 };
 
 export default EditFacturaModal;
+
