@@ -110,37 +110,13 @@ const data = facturas.map((item) => [
     let x:boolean=true;
     while(x){
         if(facturasComplete[i].idPedido===id){
-            let facturaRe:Pedido={
-                idPedido:facturasComplete[i].idPedido,
-                numeroPedido:facturasComplete[i].numeroPedido,
-                fechaPedido:facturasComplete[i].fechaPedido,
-                horaEstimadaFin:facturasComplete[i].horaEstimadaFin,
-                esDelivery:facturasComplete[i].esDelivery,
-                estadoPedido:facturasComplete[i].estadoPedido,
-                esEfectivo:facturasComplete[i].esEfectivo,
-                Usuario:facturasComplete[i].Usuario,
-                DetallePedido:facturasComplete[i].DetallePedido,
-                // este no deberia ir ya que se obtiene con el back
-                totalPedido:facturasComplete[i].totalPedido,
-            };
+            let facturaRe:Pedido=facturasComplete[i];
             return facturaRe;
             x=false;
         }
         i=i+1;
     }
-    let facturaRe:Pedido={
-      idPedido:facturasComplete[i].idPedido,
-                numeroPedido:facturasComplete[i].numeroPedido,
-                fechaPedido:facturasComplete[i].fechaPedido,
-                horaEstimadaFin:facturasComplete[i].horaEstimadaFin,
-                esDelivery:facturasComplete[i].esDelivery,
-                estadoPedido:facturasComplete[i].estadoPedido,
-                esEfectivo:facturasComplete[i].esEfectivo,
-                Usuario:facturasComplete[i].Usuario,
-                DetallePedido:facturasComplete[i].DetallePedido,
-                // este no deberia ir ya que se obtiene con el back
-                totalPedido:facturasComplete[i].totalPedido,
-    };
+    let facturaRe:Pedido=facturasComplete[0];
     return facturaRe;
 }
   const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
