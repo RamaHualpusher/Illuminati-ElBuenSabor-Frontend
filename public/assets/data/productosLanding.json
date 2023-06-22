@@ -251,7 +251,7 @@
     "precio": 2000,
     "esBebida": false,
     "Rubro": {
-      "idRubro": 2,
+      "idRubro": 3,
       "nombre": "Hamburguesas"
     },
     "DetallePedido": [],
@@ -465,5 +465,238 @@
     },
     "DetallePedido": [],
     "ProductoIngrediente": []
+  },
+  {
+    "idProducto": 10,
+    "nombre": "Promo Hamburguesa con Coca-Cola",
+    "tiempoEstimadoCocina": 8,
+    "denominacion": "Ofertas",
+    "imagen": "/assets/img/Promo coca burger.jpg",
+    "stockActual": 20,
+    "stockMinimo": 5,
+    "preparacion": "Imperdible Promo una hamburguesa con una Coca-Cola 500ml.",
+    "precio": 1900,
+    "esBebida": false,
+    "Rubro": {
+      "idRubro": 4,
+      "nombre": "Ofertas"
+    },
+    "DetallePedido": [],
+    "ProductoIngrediente": [
+      {
+        "idProductoIngrediente": 19,
+        "cantidad": 1,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 4,
+          "nombre": "Pan de hamburguesa",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "unidad",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 20,
+        "cantidad": 150,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 5,
+          "nombre": "Carne de res",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 21,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 6,
+          "nombre": "Queso cheddar",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 22,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 7,
+          "nombre": "Panceta",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 23,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 7,
+          "nombre": "Cebolla",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 24,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 7,
+          "nombre": "Lechuga",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 25,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 7,
+          "nombre": "Pepino",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      }
+    ]
+  },
+  {
+    "idProducto": 11,
+    "nombre": "Promo Pizza Especial con una Sprite",
+    "tiempoEstimadoCocina": 15,
+    "denominacion": "Pizzas",
+    "imagen": "/assets/img/Pizza promo.jpg",
+    "stockActual": 5,
+    "stockMinimo": 5,
+    "preparacion": "Una deliciosa pizza con una Sprite",
+    "precio": 2000,
+    "esBebida": false,
+    "Rubro": {
+      "idRubro": 4,
+      "nombre": "Pizzas"
+    },
+    "DetallePedido": [],
+    "ProductoIngrediente": [
+      {
+        "idProductoIngrediente": 26,
+        "cantidad": 150,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 1,
+          "nombre": "Salsa de tomate",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "ml",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 27,
+        "cantidad": 100,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 2,
+          "nombre": "Queso mozzarella",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 28,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 3,
+          "nombre": "Tomate",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 29,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 3,
+          "nombre": "Morron",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 30,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 3,
+          "nombre": "Salame",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      },
+      {
+        "idProductoIngrediente": 31,
+        "cantidad": 50,
+        "Producto": null,
+        "Ingredientes": {
+          "idIngredientes": 3,
+          "nombre": "Anana",
+          "estado": false,
+          "stockMinimo": 0,
+          "stockActual": 0,
+          "Rubro": null,
+          "unidadMedida": "gr",
+          "ProductoIngrediente": []
+        }
+      }
+    ]
   }
 ]
