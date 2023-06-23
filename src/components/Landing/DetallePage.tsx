@@ -64,35 +64,37 @@ const DetallePage = () => {
   );
 
   return (
-    <div className="container mt-5">
+    <div className="detalle-page-container" style={{ backgroundImage: `url('/assets/img/FondoColorGris.jpg') `, minHeight: '100vh' }}>
       <Navbar />
-      <div className="row justify-content-center align-items-center vh-100">
-        <div className="col-12 col-md-8 text-center">
-          {primerProducto && <h1 className="display-4 mt-5">{primerProducto.nombre}</h1>}
-          <div className="card text-center mx-auto" style={{ width: '40rem' }}>
-            <img src={primerProducto.imagen} className="card-img-top img-fluid" alt={primerProducto.nombre} />
-            <div className="card-body">
-              <h4 className="card-text">Detalles: <br />{primerProducto.preparacion}</h4>
-              <p className="card-text">Precio de venta: ${producto.precio}</p>
-              <p className="card-text">Disponibles: {producto.stockActual}</p>
-              {showAlert && (
-                <div className="alert alert-danger" role="alert">
-                  No disponible para comprar
-                </div>
-              )}
-              <p className="card-text">Tiempo estimado: {primerProducto.tiempoEstimadoCocina} Min</p>
-              {ingredientesSection}
-              {producto.stockActual > 0 && (
-                <button onClick={handleAddToCart} className="btn btn-primary mb-2">
-                  Agregar al Carrito
-                </button>
-              )}
+      <div className="container mt-5">
+        <div className="row justify-content-center align-items-center">
+          <div className="col-12 col-md-8 text-center">
+            {primerProducto && <h1 className="display-4 mt-5 text-white">{primerProducto.nombre}</h1>}
+            <div className="card text-center mx-auto" style={{ width: '40rem' }}>
+              <img src={primerProducto.imagen} className="card-img-top img-fluid" alt={primerProducto.nombre} />
+              <div className="card-body">
+                <h4 className="card-text">Detalles: <br />{primerProducto.preparacion}</h4>
+                <p className="card-text">Precio de venta: ${producto.precio}</p>
+                <p className="card-text">Disponibles: {producto.stockActual}</p>
+                {showAlert && (
+                  <div className="alert alert-danger" role="alert">
+                    No disponible para comprar
+                  </div>
+                )}
+                <p className="card-text">Tiempo estimado: {primerProducto.tiempoEstimadoCocina} Min</p>
+                {ingredientesSection}
+                {producto.stockActual > 0 && (
+                  <button onClick={handleAddToCart} className="btn btn-primary mb-2">
+                    Agregar al Carrito
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
 
-          <Link to="/" className="btn btn-primary btn-lg mt-3">
-            Volver al Home
-          </Link>
+            <Link to="/" className="btn btn-primary btn-lg mt-3 mb-3">
+              Volver al Home
+            </Link>
+          </div>
         </div>
       </div>
     </div>
