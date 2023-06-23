@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Producto } from '../../interface/Producto';
 import Spinner from '../Spinner/Spinner';
 import { CartContext } from '../CarritoCompras/CartProvider';
+import Navbar from '../NavBar/Navbar';
 
 const DetallePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,7 +44,7 @@ const DetallePage = () => {
       addToCart(item);
     }
   };
-  
+
 
   if (!producto || producto === null) {
     return <Spinner />;
@@ -64,6 +65,7 @@ const DetallePage = () => {
 
   return (
     <div className="container mt-5">
+      <Navbar />
       <div className="row justify-content-center align-items-center vh-100">
         <div className="col-12 col-md-8 text-center">
           {primerProducto && <h1 className="display-4 mt-5">{primerProducto.nombre}</h1>}
