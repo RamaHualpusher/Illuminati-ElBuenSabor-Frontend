@@ -47,10 +47,10 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     filter(searchParam);
   };
 
-  const ingredienteGeneric= (id:number) =>{
-    let i:number=0;
-    let x:boolean=true;
-    while(x){
+  const ingredienteGeneric = (id: number) => {
+    let i: number = 0;
+    let x: boolean = true;
+    while (x) {
       if (i >= ingredComplete.length) {
         // No se encontró el ingrediente, salir del ciclo
         x = false;
@@ -58,12 +58,12 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         // Ingrediente encontrado
         return ingredComplete[i];
       }
-      i = i + 1; 
+      i = i + 1;
     }
     return ingredComplete[0];
   };
 
-  const handleEditModalOpen = (rowData: string[], e:React.MouseEvent<HTMLButtonElement>) => {
+  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setSelectedIngrediente(ingredienteGeneric(+rowData[0]));
     setEditModalShow(true);
@@ -105,21 +105,21 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       console.log(error);
     }
   };
-  
-    const handleIngredienteDelete = (rowData: string[],e:React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      const ingredienteId:number=+rowData[0];
-      fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingredienteId}`, {
-        method: 'DELETE',
+
+  const handleIngredienteDelete = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const ingredienteId: number = +rowData[0];
+    fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingredienteId}`, {
+      method: 'DELETE',
+    })
+      .then(response => {
+        setIngred(ingred.filter(item => item.idIngredientes !== ingredienteId));
       })
-        .then(response => {
-          setIngred(ingred.filter(item => item.idIngredientes !== ingredienteId));
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-  
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   const columns = [
     { label: "Id", width: 10 },
     { label: "Nombre", width: 200 },
@@ -146,11 +146,14 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         <Row className="justify-content-start align-items-center mb-3">
           <Col sm={10}>
             <h1>Buscar Ingredientes</h1>
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col>
             <Buscador onSearch={handleSearch} />
           </Col>
         </Row>
-        
-      </Container>
+     
       <div>
         <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalClose} buttonEdit={handleEditModalOpen} buttonDelete={handleIngredienteDelete} />
       </div>
@@ -165,7 +168,8 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
         handleClose={handleAddModalClose}
         handleIngredienteAdd={handleIngredienteAdd}
       />
-    </div>
+       </Container>
+    </div>    
   );
 };
 

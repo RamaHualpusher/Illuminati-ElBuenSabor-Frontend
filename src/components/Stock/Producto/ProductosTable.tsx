@@ -104,18 +104,6 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
     }
   };
 
-  // const getProducto = (id: number) => {
-  //   let i: number = 0;
-  //   let x: boolean = true;
-  //   while (x) {
-  //     if (productosComplete[i].idProducto === id) {
-  //       return productosComplete[i];
-  //     }
-  //     i = i + 1;
-  //   }
-  //   return productosComplete[0];
-  // };
-
   const productoRow = (id:number)=>{
     let i:number=0;
     let x:boolean=true;
@@ -152,38 +140,41 @@ const ProductosTable: React.FC<ProductosTableProps> = () => {
 
 
   return (
-    <Container fluid>
-      <Row className="mb-4">
-        <Col>
-          <h2>Tabla de Productos</h2>
-        </Col>
-      </Row>
-      <Row className="mb-3">
-        <Col>
-          <Buscador onSearch={handleSearch} />
-        </Col>
-        
-      </Row>
-      <Row>
-        <Col>
-          <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalOpen}
-                            buttonEdit={handleEditModalOpen} buttonDelete={handleProductoDelete} />
-        </Col>
-      </Row>
-      <AddProductoModal
-        show={addModalShow}
-        handleClose={handleAddModalClose}
-        handleProductoAdd={handleProductoAdd}
-      />
-      <EditProductoModal
-        show={editModalShow}
-        handleClose={handleEditModalClose}        
-        handleProductoEdit={handleProductoEdit}
-        selectedProducto={selectedProducto}
-      />
-      
-    </Container>
-  );
-};
+  <Container fluid>
+    <Row className="justify-content-start align-items-center mb-3">
+      <Col>
+        <h2>Tabla de Productos</h2>
+      </Col>
+    </Row>
+    <Row className="mb-3">
+      <Col>
+        <Buscador onSearch={handleSearch} />
+      </Col>
+    </Row>
+    <Row>
+      <div>
+        <TablaGeneric
+          columns={columns}
+          data={data}
+          showButton={true}
+          buttonAdd={handleAddModalOpen}
+          buttonEdit={handleEditModalOpen}
+          buttonDelete={handleProductoDelete}
+        />
+      </div>
+    </Row>
+    <AddProductoModal
+      show={addModalShow}
+      handleClose={handleAddModalClose}
+      handleProductoAdd={handleProductoAdd}
+    />
+    <EditProductoModal
+      show={editModalShow}
+      handleClose={handleEditModalClose}
+      handleProductoEdit={handleProductoEdit}
+      selectedProducto={selectedProducto}
+    />
+  </Container>
+);};
 
 export default ProductosTable;

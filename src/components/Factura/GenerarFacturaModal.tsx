@@ -9,6 +9,8 @@ import { Domicilio } from "../../interface/Domicilio";
 import { useParams } from "react-router-dom";
 import { handleRequest } from "../FuncionRequest/FuncionRequest";
 import AdminBar from "../NavBar/AdminBar";
+import FacturaPDF from "./FacturaPDF ";
+import { PDFViewer } from "@react-pdf/renderer";
 
 const GenerarFacturaModal: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,7 +41,7 @@ const GenerarFacturaModal: React.FC = () => {
 
 
   return (
-    <div style={{marginTop: "5rem"}}> 
+    <div style={{ marginTop: "5rem" }}>
       <AdminBar />
       <center>
         <div style={{ border: '1px solid black', borderRadius: '10px', padding: '10px', width: '400px' }}>
@@ -106,10 +108,13 @@ const GenerarFacturaModal: React.FC = () => {
             </p>
           </div>
           <div>
-            <button className="btn btn-primary">Descarga</button>
+            <PDFViewer>
+              <FacturaPDF pedido={pedido} detallePedidos={detallePedidos} usuario={usuario} />
+            </PDFViewer>
             <button className="btn btn-primary">Nota de Crédito</button>
             <button className="btn btn-primary">Compartir</button>
           </div>
+
         </div>
       </center>
     </div>
