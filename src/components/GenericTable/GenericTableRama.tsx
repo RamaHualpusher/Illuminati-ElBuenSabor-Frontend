@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { Button, Table, InputGroup, FormControl, Container, Row, Col } from 'react-bootstrap';
-import { TableProps } from './CamposTablaGenerica';
+import { TableProps } from '../../interface/CamposTablaGenerica';
 
 function GenericTableRama<T>({ data, columns, actions, onAdd, onUpdate, onDelete, onView, customSearch }: TableProps<T>) {
   const [searchText, setSearchText] = useState(""); // Estado para almacenar el texto de búsqueda
@@ -56,19 +56,19 @@ function GenericTableRama<T>({ data, columns, actions, onAdd, onUpdate, onDelete
   return (
     <Container fluid> {/* Cambiar a fluid para hacer que el contenedor sea responsivo */}
       <Row className="align-items-center">
-        <Col sm={6}>
+        <Col sm={1}>
           {actions.create && <Button variant="primary" onClick={onAdd}><i className="bi bi-plus-square"></i></Button>} {/* Botón para agregar un nuevo elemento */}
         </Col>
-        <Col sm={6}>
+        <Col sm={10}>
           <form onSubmit={handleSearchSubmit} className="d-flex">
             <FormControl
-              placeholder="Search"
+              placeholder="Buscar"
               aria-label="Search"
               aria-describedby="basic-addon2"
               onChange={handleSearchChange}
               value={searchText}
             />
-            <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2"><i className="bi bi-search-heart"></i></Button> {/* Botón de búsqueda */}
+            <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2"><i className="bi bi-search"></i></Button> {/* Botón de búsqueda */}
           </form>
         </Col>
       </Row>
