@@ -12,7 +12,6 @@ import DetallesPedido from "../components/Pedidos/DetallesPedido";
 import CarritoConConfirmacion from "../components/CarritoCompras/CarritoConConfirmacion";
 import Page404 from "../components/Page404/Page404";
 import DetallePage from "../components/Landing/DetallePage";
-import FacturasTable from "../components/Factura/Factura";
 import GenerarFacturaModal from "../components/Factura/GenerarFacturaModal";
 
 const IndexRouter = () => {
