@@ -102,9 +102,9 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = () => {
             </p>
           </div>
           <div>
-            {/* <PDFViewer>
+            <PDFViewer>
               <FacturaPDF pedido={pedidoObj} detallePedidos={detallePedidos} usuario={usuario} />
-            </PDFViewer> */}
+            </PDFViewer> 
             <button className="btn btn-primary">Nota de Crédito</button>
             <button className="btn btn-primary">Compartir</button>
           </div>
