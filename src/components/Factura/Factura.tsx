@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { handleRequest } from '../FuncionRequest/FuncionRequest';
 import { Pedido } from '../../interface/Pedido';
 import { useNavigate } from 'react-router-dom';
 import { Action, Column } from '../../interface/CamposTablaGenerica';
 import GenericTableRama from '../GenericTable/GenericTableRama';
+import { Col, Container, Row } from 'react-bootstrap';
+import Spinner from '../Spinner/Spinner';
 
-const FacturasTable: React.FC = () => {
+const Factura = () => {
   const [facturas, setFacturas] = useState<Pedido[]>([]);
   const navigate = useNavigate();
 
+  const API_URL = "assets/data/pedidos.json";
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responseData = await handleRequest('GET', 'assets/data/pedidos.json');
-        setFacturas(responseData);
-        console.log(responseData);
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error(error.message);
-        } else {
-          console.error(error);
-        }
-      }
-    };
-    fetchData();
+    fetch(API_URL)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setFacturas(data);
+      })
+      .catch((error) => console.log(error));
   }, []);
+
+  if (!facturas || facturas === null) return <Spinner />;
 
   // Define las columnas
   const columns: Column<Pedido>[] = [
@@ -59,21 +57,29 @@ const FacturasTable: React.FC = () => {
   const onView = (pedido: Pedido) => {
     navigate('/factura', { state: { pedido } });
   };
-  
-  return (
-    <div className='container-fluid'>
-      <div className="justify-content-start align-items-center mb-3">
-        <h1>Buscar Facturas</h1>
-      </div>
 
-      <GenericTableRama
-        data={facturas}
-        columns={columns}
-        actions={actions}
-        onView={onView}
-      />
+  return (
+    <div>
+      <Container fluid>
+        <Row className="mt-3">
+          <Col sm={10}>
+            <h1>Buscar Facturas</h1>
+          </Col>
+
+        </Row>
+        <Row className="mt-3">
+          <Col>
+            <GenericTableRama<Pedido>
+              data={facturas}
+              columns={columns}
+              actions={actions}
+              onView={onView}
+            />
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };
 
-export default FacturasTable;
+export default Factura;
