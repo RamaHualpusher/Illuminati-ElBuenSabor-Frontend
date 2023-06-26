@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Usuario } from "../../../interface/Usuario";
 import { EditUsuarioFromAdmin } from "../../../interface/Usuario";
-import { TablaGeneric } from "../../TableGeneric/TableGeneric";
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import Buscador from "../../Buscador/Buscador";
+import { Action, Column } from '../../../interface/CamposTablaGenerica';
+import GenericTableRama from "../../GenericTable/GenericTableRama";
+import { Container, Row, Col } from 'react-bootstrap';
 import EditEmpleadoModal from "./EditEmpleadoModal";
 import AddEmpleadoModal from "./AddEmpleadoModal";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
@@ -14,23 +14,22 @@ const Empleado = () => {
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
     const [selectedUsuario, setSelectedUsuario] = useState<EditUsuarioFromAdmin | null>(null);
+    const actions: Action = {
+        create: true,
+        update: true,
+        delete: true
+    };
 
-    const columns = [
-        { label: "idUsuario", width: 100 },
-        { label: "Nombre", width: 200 },
-        { label: "Apellido", width: 200 },
-        { label: "Email", width: 200 },
-        { label: "Rol", width: 150 },
+    const columns: Column<Usuario>[] = [
+        { title: 'ID Usuario', field: 'idUsuario' },
+        { title: 'Nombre', field: 'nombre' },
+        { title: 'Apellido', field: 'apellido' },
+        { title: 'Email', field: 'email' },
+        {
+            title: 'Rol', field: 'Rol', render: (usuario: Usuario) =>
+                <span>{`${usuario.Rol.nombreRol}`}</span>
+        },
     ];
-
-    const data = empleados.map((item) => [
-        item.idUsuario.toString(),
-        item.nombre.toString(),
-        item.apellido.toString(),
-        item.email.toString(),
-        item.Rol.nombreRol.toString(),
-    ]);
-
     const API_URL = "assets/data/empleadoTabla.json";
 
     useEffect(() => {
@@ -42,26 +41,6 @@ const Empleado = () => {
             })
             .catch((error) => console.log(error));
     }, []);
-
-    const filter = (searchParam: string) => {
-        const searchResult = empleadosComplete.filter((employeeVal: Usuario) => {
-            if (
-                employeeVal.idUsuario.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-                employeeVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-                employeeVal.apellido.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-                employeeVal.email.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-                employeeVal.Rol.nombreRol.toString().toLowerCase().includes(searchParam.toLowerCase())
-            ) {
-                return employeeVal;
-            }
-            return null;
-        });
-        setEmpleados(searchResult);
-    };
-
-    const handleSearch = (searchParam: string) => {
-        filter(searchParam);
-    };
 
 
     const handleEmpleadoAdd = async (empleado: Usuario) => {
@@ -85,17 +64,17 @@ const Empleado = () => {
         }
     };
 
-    const handleEmpleadoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        const usuarioId: number=+rowData[0];
+    const handleEmpleadoDelete = (item: Usuario) => {
+        const usuarioId: number = item.idUsuario;
 
         try {
-            await handleRequest('DELETE', `${API_URL}/${usuarioId}`);
+            handleRequest('DELETE', `${API_URL}/${usuarioId}`);
             setEmpleados(empleados.filter((item) => item.idUsuario !== usuarioId));
         } catch (error) {
             console.log(error);
         }
     };
+
 
     const handleAddModalOpen = () => {
         setAddModalShow(true);
@@ -106,26 +85,26 @@ const Empleado = () => {
     };
 
 
-    const usuarioRow = (id:number)=>{
-        let i:number=0;
-        let x:boolean=true;
-        while(x){
-            if(empleadosComplete[i].idUsuario===id){
-                let usuarioRe:EditUsuarioFromAdmin=empleadosComplete[i];
+    const usuarioRow = (id: number) => {
+        let i: number = 0;
+        let x: boolean = true;
+        while (x) {
+            if (empleadosComplete[i].idUsuario === id) {
+                let usuarioRe: EditUsuarioFromAdmin = empleadosComplete[i];
                 return usuarioRe;
-                x=false;
+                x = false;
             }
-            i=i+1;
+            i = i + 1;
         }
-        let usuarioRe:EditUsuarioFromAdmin=empleadosComplete[0];
+        let usuarioRe: EditUsuarioFromAdmin = empleadosComplete[0];
         return usuarioRe;
     }
 
-    const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        setSelectedUsuario(usuarioRow(+rowData[0]));
+    const handleEditModalOpen = (item: Usuario) => {
+        setSelectedUsuario(usuarioRow(item.idUsuario));
         setEditModalShow(true);
     };
+
 
     const handleEditModalClose = () => {
         setEditModalShow(false);
@@ -138,14 +117,19 @@ const Empleado = () => {
                 <Row className="mt-3">
                     <Col sm={10}>
                         <h1>Buscar Empleado</h1>
-                        <Buscador onSearch={handleSearch} />
                     </Col>
-                    
+
                 </Row>
                 <Row className="mt-3">
                     <Col>
-                        <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalOpen}
-                            buttonEdit={handleEditModalOpen} buttonDelete={handleEmpleadoDelete} />
+                        <GenericTableRama
+                            data={empleados}
+                            columns={columns}
+                            actions={actions}
+                            onAdd={handleAddModalOpen}
+                            onUpdate={handleEditModalOpen}
+                            onDelete={handleEmpleadoDelete}
+                        />
                     </Col>
                 </Row>
                 <AddEmpleadoModal

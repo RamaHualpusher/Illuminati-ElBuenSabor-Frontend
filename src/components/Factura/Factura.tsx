@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { handleRequest } from '../FuncionRequest/FuncionRequest';
 import { Pedido } from '../../interface/Pedido';
 import { useNavigate } from 'react-router-dom';
-import { Action, Column } from '../TableGeneric/CamposTablaGenerica';
-import GenericTableRama from '../TableGeneric/GenericTableRama';
+import { Action, Column } from '../../interface/CamposTablaGenerica';
+import GenericTableRama from '../GenericTable/GenericTableRama';
 
 interface FacturasTableProps {}
 
