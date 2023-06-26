@@ -11,5 +11,5 @@ export interface Pedido {
   esEfectivo: boolean;
   Usuario: Usuario;
   DetallePedido: DetallePedido[];
-  totalPedido:number; //(esto no va en al base de datos ya que es persistente)
+  totalPedido: number; //(esto no va en al base de datos ya que es persistente)
 }

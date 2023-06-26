@@ -34,8 +34,9 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
     {
       title: 'Usuario',
       field: 'Usuario',
-      render: (pedido: Pedido) =>
+      render: (pedido: Pedido) => (
         <span>{`${pedido.Usuario.apellido}, ${pedido.Usuario.nombre}`}</span>
+      )
     },
     {
       title: 'Productos',
@@ -50,7 +51,6 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
     },
     { title: 'Total', field: 'totalPedido' }
   ];
-
 
   // Define las acciones
   const actions: Action = {
