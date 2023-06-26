@@ -30,15 +30,6 @@ const Empleado = () => {
                 <span>{`${usuario.Rol.nombreRol}`}</span>
         },
     ];
-
-    const data = empleados.map((item) => [
-        item.idUsuario.toString(),
-        item.nombre.toString(),
-        item.apellido.toString(),
-        item.email.toString(),
-        item.Rol.nombreRol.toString(),
-    ]);
-
     const API_URL = "assets/data/empleadoTabla.json";
 
     useEffect(() => {
