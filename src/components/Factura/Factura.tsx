@@ -5,52 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { Action, Column } from '../TableGeneric/CamposTablaGenerica';
 import GenericTableRama from '../TableGeneric/GenericTableRama';
 
-interface Usuario {
-  idUsuario: number;
-  nombre: string;
-  apellido: string;
-  email: string;
-  clave: string;
-  telefono: string;
-  Domicilio: Domicilio;
-  Rol: Rol;
-}
-
-interface Domicilio {
-  idDomicilio: number;
-  calle: string;
-  numero: number;
-  localidad: string;
-}
-
-interface Rol {
-  idRol: number;
-  nombreRol: string;
-}
-
-interface DetallePedido {
-  idDetallePedido: number;
-  cantidad: number;
-  Pedido: object; // Deberías reemplazar 'object' por el tipo correcto
-  Producto: object; // Deberías reemplazar 'object' por el tipo correcto
-}
-interface PedidoFactura {
-  idPedido: number;
-  numeroPedido: number;
-  fechaPedido: string;
-  horaEstimadaFin: string;
-  esDelivery: boolean;
-  estadoPedido: string;
-  esEfectivo: boolean;
-  Usuario: Usuario;
-  DetallePedido: DetallePedido[];
-  totalPedido: number;
-}
-
 interface FacturasTableProps {}
 
 const FacturasTable: React.FC<FacturasTableProps> = () => {
-  const [facturas, setFacturas] = useState<PedidoFactura[]>([]);
+  const [facturas, setFacturas] = useState<Pedido[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,8 +29,25 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
   }, []);
 
     // Define las columnas
-    const columns: Column<PedidoFactura>[] = [
-      { title: 'Numero Factura', field: 'numeroPedido' },
+    const columns: Column<Pedido>[] = [
+      { title: 'Numero Factura', field: 'numeroPedido' },      
+      {
+        title: 'Usuario',
+        field: 'Usuario',
+        render: (pedido: Pedido) => 
+          <span>{`${pedido.Usuario.apellido}, ${pedido.Usuario.nombre}`}</span>
+      },
+      {
+        title: 'Productos',
+        field: 'DetallePedido',
+        render: (pedido: Pedido) => (
+          <ul>
+            {pedido.DetallePedido.map((detalle) => (
+              <li key={detalle.idDetallePedido}>{detalle.Producto.nombre}</li>
+            ))}
+          </ul>
+        )
+      },
       { title: 'Total', field: 'totalPedido' }
     ];
   
@@ -83,7 +58,7 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
   };
 
   // Función para manejar la acción de "ver"
-  const onView = (pedido: PedidoFactura) => {
+  const onView = (pedido: Pedido) => {
     navigate('/factura', { state: { pedido } });
   };
 
@@ -94,7 +69,7 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
           <h1>Buscar Facturas</h1>
       </div>
       
-      <GenericTableRama<PedidoFactura>
+      <GenericTableRama<Pedido>
           data={facturas}
           columns={columns}
           actions={actions}

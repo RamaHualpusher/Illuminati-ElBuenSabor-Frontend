@@ -9,10 +9,11 @@ import Cocinero from "../screens/Cocinero";
 import Cajero from "../screens/Cajero";
 import Delivery from "../screens/Delivery";
 import DetallesPedido from "../components/Pedidos/DetallesPedido";
-import GenerarFacturaModal from "../components/Factura/GenerarFacturaModal";
 import CarritoConConfirmacion from "../components/CarritoCompras/CarritoConConfirmacion";
 import Page404 from "../components/Page404/Page404";
 import DetallePage from "../components/Landing/DetallePage";
+import FacturasTable from "../components/Factura/Factura";
+import GenerarFacturaModal from "../components/Factura/GenerarFacturaModal";
 
 const IndexRouter = () => {
   return (
@@ -28,7 +29,7 @@ const IndexRouter = () => {
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />
         <Route path="/productos/:id" element={<DetallePage />} />
-        {/* <Route path="/factura" element={<GenerarFacturaModal/>}></Route> */}
+        <Route path="/factura/:pedido" element={<GenerarFacturaModal />} />
         <Route path="/confirmacion-pedido" element={<CarritoConConfirmacion />}></Route>
         <Route path="*" element={<Page404 />} />
       </Routes>

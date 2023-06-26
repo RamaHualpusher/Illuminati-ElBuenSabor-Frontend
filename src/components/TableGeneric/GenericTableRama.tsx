@@ -54,29 +54,25 @@ function GenericTableRama<T>({ data, columns, actions, onAdd, onUpdate, onDelete
     });
 
   return (
-    <Container>
+    <Container fluid> {/* Cambiar a fluid para hacer que el contenedor sea responsivo */}
       <Row className="align-items-center">
         <Col sm={6}>
           {actions.create && <Button variant="primary" onClick={onAdd}><i className="bi bi-plus-square"></i></Button>} {/* Botón para agregar un nuevo elemento */}
         </Col>
         <Col sm={6}>
-          <form onSubmit={handleSearchSubmit}>
-            <InputGroup className="mb-3">
-              <FormControl
-                placeholder="Search"
-                aria-label="Search"
-                aria-describedby="basic-addon2"
-                onChange={handleSearchChange}
-                value={searchText}
-              />
-              <InputGroup>
-                <Button variant="outline-secondary" type="submit" disabled={isLoading}><i className="bi bi-search-heart"></i></Button> {/* Botón de búsqueda */}
-              </InputGroup>
-            </InputGroup>
+          <form onSubmit={handleSearchSubmit} className="d-flex">
+            <FormControl
+              placeholder="Search"
+              aria-label="Search"
+              aria-describedby="basic-addon2"
+              onChange={handleSearchChange}
+              value={searchText}
+            />
+            <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2"><i className="bi bi-search-heart"></i></Button> {/* Botón de búsqueda */}
           </form>
         </Col>
       </Row>
-      <Table responsive>
+      <Table responsive> {/* Hacer la tabla responsiva */}
         <thead>
           <tr>
             {columns.map((column, index) => (

@@ -1,6 +1,3 @@
-// esta factura creoq ue tengo que ver la forma de 
-// que sea para visualizar nada mas como boton final en factura.tsx
-
 import React, { useEffect, useState } from "react";
 import { Pedido } from '../../interface/Pedido';
 import { DetallePedido } from "../../interface/DetallePedido";
@@ -9,24 +6,33 @@ import { Domicilio } from "../../interface/Domicilio";
 import AdminBar from "../NavBar/AdminBar";
 import FacturaPDF from "./FacturaPDF ";
 import { PDFViewer } from "@react-pdf/renderer";
+import { useParams } from "react-router-dom";
 
 interface GenerarFacturaModalProps {
-  pedido: Pedido;
+  pedido?: Pedido;
 }
 
-const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ pedido }) => {
+const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = () => {
+  const { pedido } = useParams<{ pedido?: string }>();
+  const pedidoObj = pedido ? JSON.parse(pedido) : null;
+  
   const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
   const [usuario, setUsuario] = useState<Usuario>();
   const [domicilio, setDomicilio] = useState<Domicilio>();
 
   useEffect(() => {
-    setDetallePedidos(pedido.DetallePedido || []);
-    setUsuario(pedido.Usuario);
-    if (usuario) {
-      setDomicilio(usuario.Domicilio);
+    if (pedidoObj) {
+      setDetallePedidos(pedidoObj.DetallePedido || []);
+      setUsuario(pedidoObj.Usuario);
+      if (pedidoObj.Usuario) {
+        setDomicilio(pedidoObj.Usuario.Domicilio);
+      }
     }
-  }, [pedido, usuario]);
+  }, [pedidoObj]);
 
+  if (!pedidoObj) {
+    return <div>Error: Pedido no encontrado</div>;
+  }
 
   return (
     <div style={{ marginTop: "5rem" }}>
@@ -43,9 +49,9 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ pedido }) => 
           </div>
           <div style={{ border: '1px solid black', borderRadius: '10px', padding: '10px', textAlign: 'left', marginBottom: '10px' }}>
             <h2>DETALLES DEL PEDIDO</h2>
-            <p>Número de Pedido: {pedido?.numeroPedido}</p>
-            <p>Fecha: {pedido?.fechaPedido.toString()}</p>
-            <p>Forma de Pago: {pedido?.esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
+            <p>Número de Pedido: {pedidoObj?.numeroPedido}</p>
+            <p>Fecha: {pedidoObj?.fechaPedido.toString()}</p>
+            <p>Forma de Pago: {pedidoObj?.esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
           </div>
           <div style={{ border: '1px solid black', borderRadius: '10px', padding: '10px', marginBottom: '10px' }}>
             <table>
@@ -67,19 +73,19 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ pedido }) => 
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan={3}>Total: {pedido?.totalPedido}</td>
+                  <td colSpan={3}>Total: {pedidoObj?.totalPedido}</td>
                 </tr>
               </tfoot>
             </table>
           </div>
           <div style={{ border: '1px solid black', borderRadius: '10px', padding: '10px', textAlign: 'right', marginBottom: '10px' }}>
-            Tipo de Pago: {pedido?.esEfectivo ? 'Efectivo' : 'Mercado Pago'}
+            Tipo de Pago: {pedidoObj?.esEfectivo ? 'Efectivo' : 'Mercado Pago'}
             <br />
             Descuento: {/* Agrega el descuento */}
             <br />
-            Envío: {pedido?.esDelivery ? 'Envío domicilio' : 'Retiro local'}
+            Envío: {pedidoObj?.esDelivery ? 'Envío domicilio' : 'Retiro local'}
             <br />
-            Total a pagar: {pedido?.totalPedido}
+            Total a pagar: {pedidoObj?.totalPedido}
           </div>
           <div style={{ textAlign: 'left', marginBottom: '10px' }}>
             <h2>Envío</h2>
@@ -96,9 +102,9 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ pedido }) => 
             </p>
           </div>
           <div>
-            <PDFViewer>
-              <FacturaPDF pedido={pedido} detallePedidos={detallePedidos} usuario={usuario} />
-            </PDFViewer>
+            {/* <PDFViewer>
+              <FacturaPDF pedido={pedidoObj} detallePedidos={detallePedidos} usuario={usuario} />
+            </PDFViewer> */}
             <button className="btn btn-primary">Nota de Crédito</button>
             <button className="btn btn-primary">Compartir</button>
           </div>
