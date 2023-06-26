@@ -2,7 +2,6 @@ import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { Button, Table, InputGroup, FormControl, Container, Row, Col } from 'react-bootstrap';
 import { TableProps } from './CamposTablaGenerica';
 
-
 function GenericTableRama<T>({ data, columns, actions, onAdd, onUpdate, onDelete, onView, customSearch }: TableProps<T>) {
   const [searchText, setSearchText] = useState(""); // Estado para almacenar el texto de búsqueda
   const [filteredData, setFilteredData] = useState<T[]>(data); // Estado para almacenar los datos filtrados

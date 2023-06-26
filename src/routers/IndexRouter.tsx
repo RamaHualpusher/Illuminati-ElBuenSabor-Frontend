@@ -28,7 +28,7 @@ const IndexRouter = () => {
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />
         <Route path="/productos/:id" element={<DetallePage />} />
-        <Route path="/factura/:id" element={<GenerarFacturaModal />}></Route>
+        {/* <Route path="/factura" element={<GenerarFacturaModal/>}></Route> */}
         <Route path="/confirmacion-pedido" element={<CarritoConConfirmacion />}></Route>
         <Route path="*" element={<Page404 />} />
       </Routes>

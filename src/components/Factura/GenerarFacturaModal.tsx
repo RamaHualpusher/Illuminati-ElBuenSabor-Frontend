@@ -1,43 +1,31 @@
 // esta factura creoq ue tengo que ver la forma de 
 // que sea para visualizar nada mas como boton final en factura.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Pedido } from '../../interface/Pedido';
 import { DetallePedido } from "../../interface/DetallePedido";
 import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
-import { useParams } from "react-router-dom";
-import { handleRequest } from "../FuncionRequest/FuncionRequest";
 import AdminBar from "../NavBar/AdminBar";
 import FacturaPDF from "./FacturaPDF ";
 import { PDFViewer } from "@react-pdf/renderer";
 
-const GenerarFacturaModal: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const [pedido, setPedidos] = useState<Pedido>();
+interface GenerarFacturaModalProps {
+  pedido: Pedido;
+}
+
+const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ pedido }) => {
   const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
   const [usuario, setUsuario] = useState<Usuario>();
   const [domicilio, setDomicilio] = useState<Domicilio>();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (id) {
-          const responseData = await handleRequest('GET', 'assets/data/pedidos.json');
-          const pedidos: Pedido[] = responseData;
-          setPedidos(pedidos.find((pedido: Pedido) => pedido.idPedido === parseInt(id)))
-          if (pedido)
-            setUsuario(pedido.Usuario);
-          if (usuario)
-            setDomicilio(usuario.Domicilio);
-          setDetallePedidos(pedido?.DetallePedido || []);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+    setDetallePedidos(pedido.DetallePedido || []);
+    setUsuario(pedido.Usuario);
+    if (usuario) {
+      setDomicilio(usuario.Domicilio);
+    }
+  }, [pedido, usuario]);
 
 
   return (
