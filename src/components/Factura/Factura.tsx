@@ -5,9 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Action, Column } from '../../interface/CamposTablaGenerica';
 import GenericTableRama from '../GenericTable/GenericTableRama';
 
-interface FacturasTableProps {}
-
-const FacturasTable: React.FC<FacturasTableProps> = () => {
+const FacturasTable: React.FC = () => {
   const [facturas, setFacturas] = useState<Pedido[]>([]);
   const navigate = useNavigate();
 
@@ -68,13 +66,12 @@ const FacturasTable: React.FC<FacturasTableProps> = () => {
         <h1>Buscar Facturas</h1>
       </div>
 
-      <GenericTableRama<Pedido>
+      <GenericTableRama
         data={facturas}
         columns={columns}
         actions={actions}
         onView={onView}
       />
-
     </div>
   );
 };
