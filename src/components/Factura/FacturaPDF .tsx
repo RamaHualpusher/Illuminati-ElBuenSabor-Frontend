@@ -47,7 +47,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido, detallePedidos, usuario
         <View>
           <Text style={styles.title}>DETALLES DEL PEDIDO</Text>
           <Text>Número de Pedido: {pedido?.numeroPedido}</Text>
-          <Text>Fecha: {pedido?.fechaPedido.toString()}</Text>
+          <Text>Fecha: {pedido?.fechaPedido?.toString()}</Text>
           <Text>Forma de Pago: {pedido?.esEfectivo ? 'Efectivo' : 'Mercado Pago'}</Text>
         </View>
         <View style={styles.table}>
@@ -59,8 +59,8 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido, detallePedidos, usuario
           {detallePedidos?.map((detalle) => (
             <View style={styles.tableRow} key={detalle?.idDetallePedido}>
               <Text style={styles.tableCell}>{detalle?.cantidad}</Text>
-              <Text style={styles.tableCell}>{detalle?.Producto.nombre}</Text>
-              <Text style={styles.tableCell}>{detalle?.Producto.precio}</Text>
+              <Text style={styles.tableCell}>{detalle?.Producto?.nombre}</Text>
+              <Text style={styles.tableCell}>{detalle?.Producto?.precio}</Text>
             </View>
           ))}
         </View>
@@ -73,7 +73,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido, detallePedidos, usuario
         <View>
           <Text style={styles.title}>Envío</Text>
           <Text>
-            Dirección: {usuario?.Domicilio.calle} {usuario?.Domicilio.numero}, {usuario?.Domicilio.localidad}
+            Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero}, {usuario?.Domicilio?.localidad}
           </Text>
         </View>
         <View>

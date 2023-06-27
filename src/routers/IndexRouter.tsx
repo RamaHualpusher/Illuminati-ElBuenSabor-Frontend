@@ -12,7 +12,6 @@ import DetallesPedido from "../components/Pedidos/DetallesPedido";
 import CarritoConConfirmacion from "../components/CarritoCompras/CarritoConConfirmacion";
 import Page404 from "../components/Page404/Page404";
 import DetallePage from "../components/Landing/DetallePage";
-import GenerarFacturaModal from "../components/Factura/GenerarFacturaModal";
 
 const IndexRouter = () => {
   return (
@@ -28,7 +27,6 @@ const IndexRouter = () => {
         <Route path="/cocina/ingredientes" element={<IngredientesTable />} />
         <Route path="/cocina/productos" element={<ProductosTable />} />
         <Route path="/productos/:id" element={<DetallePage />} />
-        <Route path="/factura/:pedido" element={<GenerarFacturaModal />} />
         <Route path="/confirmacion-pedido" element={<CarritoConConfirmacion />}></Route>
         <Route path="*" element={<Page404 />} />
       </Routes>
