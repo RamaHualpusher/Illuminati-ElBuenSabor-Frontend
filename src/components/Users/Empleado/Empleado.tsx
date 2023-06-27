@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Usuario } from "../../../interface/Usuario";
 import { EditUsuarioFromAdmin } from "../../../interface/Usuario";
 import { Action, Column } from '../../../interface/CamposTablaGenerica';
-import GenericTableRama from "../../GenericTable/GenericTableRama";
+import GenericTableRama from "../../GenericTable/GenericTable";
 import { Container, Row, Col } from 'react-bootstrap';
 import EditEmpleadoModal from "./EditEmpleadoModal";
 import AddEmpleadoModal from "./AddEmpleadoModal";

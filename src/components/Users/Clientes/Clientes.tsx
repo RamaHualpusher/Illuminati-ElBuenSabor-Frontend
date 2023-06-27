@@ -3,7 +3,7 @@ import { Usuario } from "../../../interface/Usuario";
 import { Container, Row, Col } from 'react-bootstrap';
 import EditClienteModal from "./EditClienteModal";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
-import GenericTableRama from "../../GenericTable/GenericTableRama";
+import GenericTableRama from "../../GenericTable/GenericTable";
 import { Action, Column } from '../../../interface/CamposTablaGenerica';
 
 const Clientes = () => {
