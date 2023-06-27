@@ -3,12 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { Rol } from "../../../interface/Rol";
 import { Usuario } from "../../../interface/Usuario";
 import { Domicilio } from "../../../interface/Domicilio";
-
-interface AddEmpleadoModalProps {
-  show: boolean;
-  handleClose: () => void;
-  handleEmpleadoAdd: (empleado: Usuario) => void;
-}
+import { AddEmpleadoModalProps } from "../../../interface/Usuario";
 
 const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   show,

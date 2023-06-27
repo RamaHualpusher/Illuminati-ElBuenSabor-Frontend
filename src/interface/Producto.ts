@@ -1,8 +1,8 @@
 import { Rubro } from "./Rubro";
-import { DetallePedido } from './DetallePedido';
-import { ProductoIngrediente } from './ProductoIngrediente';
+import { DetallePedido } from "./DetallePedido";
+import { ProductoIngrediente } from "./ProductoIngrediente";
 
-export interface Producto{
+export interface Producto {
   idProducto: number;
   nombre: string;
   tiempoEstimadoCocina: number;
@@ -10,10 +10,21 @@ export interface Producto{
   imagen: string;
   stockActual: number;
   stockMinimo: number;
-  preparacion: string;  
+  preparacion: string;
   precio: number;
   esBebida: boolean;
   Rubro: Rubro;
   DetallePedido: DetallePedido[];
   ProductoIngrediente: ProductoIngrediente[];
+}
+export interface EditProductoModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleProductoEdit: (producto: Producto) => void;
+  selectedProducto: Producto | null;
+}
+export interface AddProductoModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleProductoAdd: (producto: Producto) => void;
 }

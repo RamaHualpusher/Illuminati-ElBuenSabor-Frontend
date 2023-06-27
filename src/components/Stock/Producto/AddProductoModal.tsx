@@ -3,12 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { Producto } from "../../../interface/Producto";
 import { Rubro } from "../../../interface/Rubro";
-
-type AddProductoModalProps = {
-  show: boolean;
-  handleClose: () => void;
-  handleProductoAdd: (producto: Producto) => void;
-};
+import { AddProductoModalProps } from "../../../interface/Producto";
 
 const AddProductoModal: React.FC<AddProductoModalProps> = ({
   show,

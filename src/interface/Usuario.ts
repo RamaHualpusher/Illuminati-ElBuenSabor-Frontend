@@ -35,3 +35,16 @@ export interface UsuarioCompleto {
   idRol: number;
   nombreRol: string;
 }
+
+export interface AddEmpleadoModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleEmpleadoAdd: (empleado: Usuario) => void;
+}
+
+export interface EditEmpleadoModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleEmpleadoEdit: (empleado: EditUsuarioFromAdmin) => void;
+  selectedEmpleado: EditUsuarioFromAdmin | null;
+}

@@ -78,7 +78,7 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
             {columns.map((column, index) => (
               <th key={index} style={{ width: `${column.width ? column.width * 100 / 12 : ""}%` }}>{column.title}</th> // Encabezado de la tabla
             ))}
-            {(actions.update || actions.delete || actions.view) && <th>Actions</th>} {/* Encabezado de las acciones */}
+            {(actions.update || actions.delete || actions.view) && <th>Acciones</th>} {/* Encabezado de las acciones */}
           </tr>
         </thead>
         <tbody>

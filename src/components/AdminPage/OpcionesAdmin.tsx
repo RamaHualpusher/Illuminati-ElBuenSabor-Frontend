@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BsList, BsX } from "react-icons/bs"; // Importa los iconos de Bootstrap
 
 import Empleado from "../Users/Empleado/Empleado";
-import ProductosTable from "../Stock/Producto/ProductosTable";
+import ProductosTable from "../Stock/Producto/Productos";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
 import Factura from "../Factura/Factura";
 import Cliente from "../Users/Clientes/Clientes";

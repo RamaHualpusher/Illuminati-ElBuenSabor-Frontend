@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Pedido } from "../../interface/Pedido";
 import { useNavigate } from "react-router-dom";
 import { Action, Column } from "../../interface/CamposTablaGenerica";
-import GenericTableRama from "../GenericTable/GenericTable";
+import GenericTable from "../GenericTable/GenericTable";
 import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
 import GenerarFacturaModal from "./GenerarFacturaModal";
@@ -92,7 +92,7 @@ const Factura = () => {
         </Row>
         <Row className="mt-3">
           <Col>
-            <GenericTableRama<Pedido>
+            <GenericTable<Pedido>
               data={facturas}
               columns={columns}
               actions={actions}

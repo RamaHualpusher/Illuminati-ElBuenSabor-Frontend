@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Usuario } from "../../../interface/Usuario";
 import { EditUsuarioFromAdmin } from "../../../interface/Usuario";
 import { Action, Column } from '../../../interface/CamposTablaGenerica';
-import GenericTableRama from "../../GenericTable/GenericTable";
+import GenericTable from "../../GenericTable/GenericTable";
 import { Container, Row, Col } from 'react-bootstrap';
 import EditEmpleadoModal from "./EditEmpleadoModal";
 import AddEmpleadoModal from "./AddEmpleadoModal";
@@ -14,6 +14,7 @@ const Empleado = () => {
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
     const [selectedUsuario, setSelectedUsuario] = useState<EditUsuarioFromAdmin | null>(null);
+
     const actions: Action = {
         create: true,
         update: true,
@@ -122,7 +123,7 @@ const Empleado = () => {
                 </Row>
                 <Row className="mt-3">
                     <Col>
-                        <GenericTableRama
+                        <GenericTable
                             data={empleados}
                             columns={columns}
                             actions={actions}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
-import ProductosTable from "../Stock/Producto/ProductosTable";
+import ProductosTable from "../Stock/Producto/Productos";
 import CocineroPedido from "./CocineroPedidos";
 
 export default function CocineroPage() {
