@@ -35,7 +35,7 @@ export default function OpcionesAdmin() {
   ];
 
   return (
-    <div className="d-flex" style={{marginTop:"3.5rem"}}>
+    <div className="d-flex" >
       <button className="btn btn-primary my-2" onClick={handleSidebarToggle}><i className="bi bi-view-list"></i></button>
       {/* Agrega el botón para mostrar/ocultar la barra lateral */}
 
