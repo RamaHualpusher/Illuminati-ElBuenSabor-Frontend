@@ -10,8 +10,9 @@ import GenerarFacturaModal from "./GenerarFacturaModal";
 const Factura = () => {
   const [facturas, setFacturas] = useState<Pedido[]>([]);
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
-  const navigate = useNavigate();
-
+  const [searchText, setSearchText] = useState(""); // Estado para almacenar el texto de búsqueda
+  const [filteredFacturas, setFilteredFacturas] = useState<Pedido[]>(facturas); // Estado para almacenar las facturas filtradas
+  
   const API_URL = "assets/data/pedidos.json";
 
   useEffect(() => {
@@ -23,6 +24,21 @@ const Factura = () => {
       })
       .catch((error) => console.log(error));
   }, []);
+
+  useEffect(() => {
+    const filterFacturas = () => {
+      const filteredData = facturas.filter((factura) =>
+        factura.numeroPedido.toString().includes(searchText) ||
+        `${factura.Usuario.apellido}, ${factura.Usuario.nombre}`.toLowerCase().includes(searchText.toLowerCase()) ||
+        factura.fechaPedido.toString().includes(searchText) ||
+        factura.totalPedido.toString().includes(searchText)
+      );
+      setFilteredFacturas(filteredData);
+    };
+  
+    filterFacturas();
+  }, [searchText, facturas]);
+  
 
   if (!facturas || facturas === null) return <Spinner />;
 
@@ -84,7 +100,7 @@ const Factura = () => {
         <Row className="mt-3">
           <Col>
             <GenericTableRama<Pedido>
-              data={facturas}
+              data={filteredFacturas}
               columns={columns}
               actions={actions}
               onView={onView}
