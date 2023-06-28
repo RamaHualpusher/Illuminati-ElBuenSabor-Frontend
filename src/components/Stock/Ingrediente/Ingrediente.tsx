@@ -1,25 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Col, Row } from 'react-bootstrap';
+import { Container, Col, Row } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { Ingredientes } from '../../../interface/Ingredientes';
-import { TablaGeneric } from '../../TableGeneric/TableGeneric';
-import Buscador from '../../Buscador/Buscador';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
+import { Action, Column } from '../../../interface/CamposTablaGenerica';
+import GenericTable from "../../GenericTable/GenericTable";
 
-interface IngredientesTableProps { }
-
-const IngredientesTable: React.FC<IngredientesTableProps> = () => {
+const Ingrediente: React.FC = () => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedIngrediente, setSelectedIngrediente] = useState<Ingredientes | null>(null);
   const [ingred, setIngred] = useState<Ingredientes[]>([]);
   const [ingredComplete, setIngredComplete] = useState<Ingredientes[]>([]);
+  const API_URL = "/assets/data/ingredientesEjemplo.json";
+
+  const actions: Action = {
+    create: true,
+    update: true
+  };
+
+  const columns: Column<Ingredientes>[] = [
+    { title: 'ID', field: 'idIngredientes' },
+    { title: 'Nombre', field: 'nombre' },
+    {
+      title: 'Rubro', field: 'Rubro', render: (ingredientes: Ingredientes) =>
+        <span>{`${ingredientes.Rubro.nombre}`}</span>
+    },
+    { title: 'Precio', field: 'precioCosto' },
+    { title: 'Min Stock', field: 'stockMinimo' },
+    { title: 'Stock Actual', field: 'stockActual' },
+    { title: 'UM', field: 'unidadMedida' },
+    {
+      title: 'Estado', field: 'estado', render: (ingredientes: Ingredientes) =>
+        <span>{ingredientes.estado ? 'Alta' : 'Baja'}</span>
+    },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await handleRequest('GET', '/assets/data/ingredientesEjemplo.json');
+        const responseData = await handleRequest('GET', API_URL);
         setIngred(responseData);
         setIngredComplete(responseData);
       } catch (error) {
@@ -28,24 +49,6 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     };
     fetchData();
   }, []);
-
-  const filter = (searchParam: string) => {
-    const searchResult = ingredComplete.filter((productVal: Ingredientes) => {
-      if (
-        productVal.idIngredientes.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.Rubro?.toString().toLowerCase().includes(searchParam.toLowerCase())
-      ) {
-        return productVal;
-      }
-      return null;
-    });
-    setIngred(searchResult);
-  };
-
-  const handleSearch = (searchParam: string) => {
-    filter(searchParam);
-  };
 
   const ingredienteGeneric = (id: number) => {
     let i: number = 0;
@@ -63,9 +66,8 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
     return ingredComplete[0];
   };
 
-  const handleEditModalOpen = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setSelectedIngrediente(ingredienteGeneric(+rowData[0]));
+  const handleEditModalOpen = (item: Ingredientes) => {
+    setSelectedIngrediente(ingredienteGeneric(item.idIngredientes));
     setEditModalShow(true);
   };
 
@@ -120,26 +122,6 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
       });
   }
 
-  const columns = [
-    { label: "Id", width: 10 },
-    { label: "Nombre", width: 200 },
-    { label: "Rubro", width: 100 },
-    { label: "Min Stock", width: 100 },
-    { label: "Stock Actual", width: 120 },
-    { label: "Precio", width: 80 },
-    { label: "UM", width: 50 }
-  ];
-
-  const data = ingred.map((Ingredientes) => [
-    Ingredientes.idIngredientes.toString(),
-    Ingredientes.nombre.toString(),
-    Ingredientes.Rubro.nombre.toString(),
-    Ingredientes.stockMinimo.toString(),
-    Ingredientes.stockActual.toString(),
-    Ingredientes.estado.toString(),// Esto es un boolean y no se que puede ser el string
-    Ingredientes.unidadMedida.toString()
-  ]);
-
   return (
     <div>
       <Container fluid>
@@ -148,29 +130,29 @@ const IngredientesTable: React.FC<IngredientesTableProps> = () => {
             <h1>Buscar Ingredientes</h1>
           </Col>
         </Row>
-        <Row className="mb-3">
-          <Col>
-            <Buscador onSearch={handleSearch} />
-          </Col>
-        </Row>
-     
-      <div>
-        <TablaGeneric columns={columns} data={data} showButton={true} buttonAdd={handleAddModalClose} buttonEdit={handleEditModalOpen} buttonDelete={handleIngredienteDelete} />
-      </div>
-      <EditIngredienteModal
-        show={editModalShow}
-        handleClose={handleEditModalClose}
-        handleIngredientesEdit={handleIngredienteEdit}
-        selectedIngredientes={selectedIngrediente}
-      />
-      <AddIngredienteModal
-        show={addModalShow}
-        handleClose={handleAddModalClose}
-        handleIngredienteAdd={handleIngredienteAdd}
-      />
-       </Container>
-    </div>    
+        <div>
+          <GenericTable
+            data={ingred}
+            columns={columns}
+            actions={actions}
+            onAdd={handleAddModalOpen}
+            onUpdate={handleEditModalOpen}
+          />
+        </div>
+        <EditIngredienteModal
+          show={editModalShow}
+          handleClose={handleEditModalClose}
+          handleIngredientesEdit={handleIngredienteEdit}
+          selectedIngredientes={selectedIngrediente}
+        />
+        <AddIngredienteModal
+          show={addModalShow}
+          handleClose={handleAddModalClose}
+          handleIngredienteAdd={handleIngredienteAdd}
+        />
+      </Container>
+    </div>
   );
 };
 
-export default IngredientesTable;
+export default Ingrediente;

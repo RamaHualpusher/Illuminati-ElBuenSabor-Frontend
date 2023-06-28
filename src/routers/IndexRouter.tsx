@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserRouter from "./UserRouter";
-import IngredientesTable from "../components/Stock/Ingrediente/IngredientesTable";
+import IngredientesTable from "../components/Stock/Ingrediente/Ingrediente";
 import ProductosTable from "../components/Stock/Producto/Productos";
 import CartItem from "../components/CarritoCompras/CartItem";
 import Admin from "../screens/Admin";
