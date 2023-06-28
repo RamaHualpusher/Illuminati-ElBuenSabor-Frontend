@@ -2,13 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Ingredientes } from '../../../interface/Ingredientes';
 import { Rubro } from '../../../interface/Rubro';
-
-interface EditIngredientesModalProps {
-  show: boolean;
-  handleClose: () => void;
-  handleIngredientesEdit: (ingredientes: Ingredientes) => void;
-  selectedIngredientes: Ingredientes | null;
-}
+import { EditIngredientesModalProps } from '../../../interface/Ingredientes';
 
 const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
   show,
@@ -17,19 +11,22 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
   selectedIngredientes,
 }) => {
   const [nombre, setNombre] = useState(selectedIngredientes?.nombre || '');
-  const [rubroId, setRubroId] = useState<number | null>(selectedIngredientes?.Rubro.idRubro || null);
+  const [rubroId, setRubroId] = useState<number | null>(
+    selectedIngredientes?.Rubro.idRubro || null
+  );
   const [minStock, setMinStock] = useState(selectedIngredientes?.stockMinimo || 0);
   const [stockActual, setStockActual] = useState(selectedIngredientes?.stockActual || 0);
+  const [precioCosto, setPrecioCosto] = useState(selectedIngredientes?.precioCosto || 0);
   const [estado, setEstado] = useState(selectedIngredientes?.estado || false);
   const [rubros, setRubros] = useState<Rubro[]>([]);
 
   useEffect(() => {
     fetch('/assets/data/rubrosIngredientessEjemplo.json')
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setRubros(data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }, []);
@@ -45,7 +42,7 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedIngredientes) {
-      const selectedRubro = rubros.find(rubro => rubro.idRubro === rubroId);
+      const selectedRubro = rubros.find((rubro) => rubro.idRubro === rubroId);
 
       const updatedIngredientes: Ingredientes = {
         idIngredientes: selectedIngredientes.idIngredientes,
@@ -53,6 +50,7 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
         Rubro: selectedRubro || { idRubro: 0, nombre: '' },
         stockMinimo: minStock,
         stockActual,
+        precioCosto,
         estado,
         unidadMedida: selectedIngredientes.unidadMedida,
         ProductoIngrediente: selectedIngredientes.ProductoIngrediente || [],
@@ -115,6 +113,27 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
               onChange={(event) => setStockActual(parseInt(event.target.value))}
               required
             />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formPrecioCosto">
+            <Form.Label>PrecioCosto</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Ingrese precio Costo"
+              value={precioCosto}
+              onChange={(event) => setPrecioCosto(parseInt(event.target.value))}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formEstado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select
+              value={estado ? 'alta' : 'baja'}
+              onChange={(event) => setEstado(event.target.value === 'alta')}
+              required
+            >
+              <option value="alta">Alta</option>
+              <option value="baja">Baja</option>
+            </Form.Select>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

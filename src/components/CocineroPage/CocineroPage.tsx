@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
-import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
+import IngredientesTable from "../Stock/Ingrediente/Ingrediente";
 import ProductosTable from "../Stock/Producto/Productos";
 import CocineroPedido from "./CocineroPedidos";
 

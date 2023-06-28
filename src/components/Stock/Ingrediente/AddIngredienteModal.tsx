@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Ingredientes } from '../../../interface/Ingredientes';
 import { Rubro } from '../../../interface/Rubro';
-
-interface AddIngredienteModalProps {
-  show: boolean;
-  handleClose: () => void;
-  handleIngredienteAdd: (ingrediente: Ingredientes) => void;
-}
+import { AddIngredienteModalProps } from '../../../interface/Ingredientes';
 
 const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
   show,
@@ -15,13 +10,13 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
   handleIngredienteAdd,
 }) => {
   const [nombre, setNombre] = useState('');
-  const [rubro, setRubro] = useState<Rubro|null>(null);
+  const [rubroId, setRubroId] = useState<number | null>(null);
   const [minStock, setMinStock] = useState(0);
   const [stockActual, setStockActual] = useState(0);
-  const [precio, setPrecio] = useState(0);
+  const [precioCosto, setPrecioCosto] = useState(0);
   const [um, setUM] = useState('');
+  const [estado, setEstado] = useState(true); // Estado por defecto: Alta
   const [rubros, setRubros] = useState<Rubro[]>([]);
-  const [rubroId, setRubroId] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/assets/data/rubrosIngredientesEjemplo.json')
@@ -36,17 +31,34 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const rubroDefecto: Rubro = {
-      idRubro: 0,
-      nombre: "",
-    };
+    if (
+      !nombre ||
+      !rubroId ||
+      isNaN(rubroId) ||
+      !minStock ||
+      !stockActual ||
+      !precioCosto ||
+      !um
+    ) {
+      // Verificar que todos los campos requeridos estén completos
+      console.log(nombre, rubroId, minStock, stockActual, precioCosto);
+      return;
+    }
+
+    const selectedRubro = rubros.find((rubro) => rubro.idRubro === rubroId);
+    if (!selectedRubro) {
+      console.log('Rubro inválido');
+      return;
+    }
+
     const newIngrediente: Ingredientes = {
       idIngredientes: 0,
       nombre,
-      estado: false,
+      estado,
       stockMinimo: minStock,
       stockActual,
-      Rubro: rubroDefecto,
+      precioCosto,
+      Rubro: { idRubro: rubroId, nombre: selectedRubro.nombre },
       unidadMedida: um,
       ProductoIngrediente: [],
     };
@@ -105,13 +117,13 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formPrecio">
-            <Form.Label>Precio</Form.Label>
+          <Form.Group className="mb-3" controlId="formPrecioCosto">
+            <Form.Label>PrecioCosto</Form.Label>
             <Form.Control
               type="number"
-              placeholder="Ingrese precio"
-              value={precio}
-              onChange={(event) => setPrecio(parseFloat(event.target.value))}
+              placeholder="Ingrese precio Costo"
+              value={precioCosto}
+              onChange={(event) => setPrecioCosto(parseInt(event.target.value))}
               required
             />
           </Form.Group>
@@ -124,6 +136,19 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
               onChange={(event) => setUM(event.target.value)}
               required
             />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formEstado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select
+              value={estado ? 'alta' : 'baja'}
+              onChange={(event) =>
+                setEstado(event.target.value === 'alta' ? true : false)
+              }
+              required
+            >
+              <option value="alta">Alta</option>
+              <option value="baja">Baja</option>
+            </Form.Select>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
