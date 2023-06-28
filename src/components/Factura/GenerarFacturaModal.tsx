@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Pedido } from "../../interface/Pedido";
 import { DetallePedido } from "../../interface/DetallePedido";
 import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
 import AdminBar from "../NavBar/AdminBar";
 import { PDFViewer } from "@react-pdf/renderer";
 import FacturaPDF from "./FacturaPDF ";
+import { useLocation } from "react-router-dom";
+
 
 interface GenerarFacturaModalProps {
-  pedido: Pedido; // Modifica la prop para que sea obligatoria
+  // Modifica la prop para que sea obligatoria
   closeModal: () => void; // Agrega la función closeModal para cerrar el modal
 }
 
-const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
-  pedido,
+const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({  
   closeModal,
 }) => {
   const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
   const [usuario, setUsuario] = useState<Usuario>();
   const [domicilio, setDomicilio] = useState<Domicilio>();
+  const location = useLocation();
+  const pedidoParam = location.pathname.split("/factura/")[1];
+  const pedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : null;
 
   useEffect(() => {
     if (pedido) {
