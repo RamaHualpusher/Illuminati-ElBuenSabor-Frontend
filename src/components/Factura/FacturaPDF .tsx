@@ -86,7 +86,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
         <div className="right-section">
           <h2>Envío</h2>
           <p>
-            Dirección: {domicilio?.calle} {domicilio?.numero},{" "}
+            Dirección: {domicilio?.calle} {domicilio?.numero},<br/>
             {domicilio?.localidad}
           </p>
         </div>

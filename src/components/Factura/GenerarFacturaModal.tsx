@@ -5,8 +5,7 @@ import { Domicilio } from "../../interface/Domicilio";
 import AdminBar from "../NavBar/AdminBar";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useLocation } from "react-router-dom";
-
-import "./GenerarFacturaModal.css"; // Importa el archivo CSS para los estilos personalizados
+import "./GenerarFacturaModal.css"; 
 import FacturaPDF from "./FacturaPDF ";
 
 interface GenerarFacturaModalProps {
@@ -106,7 +105,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
             <div className="right-section">
               <h2>Envío</h2>
               <p>
-                Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero},{" "}
+                Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero},<br/>
                 {usuario?.Domicilio?.localidad}
               </p>
             </div>
