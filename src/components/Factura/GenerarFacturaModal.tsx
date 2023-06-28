@@ -86,7 +86,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
               <tfoot>
                 <tr>
                   <td colSpan={3} style={{ textAlign: "right" }}>
-                    Total: {pedido.totalPedido}
+                    Total: ${pedido.totalPedido}
                   </td>
                 </tr>
               </tfoot>
@@ -101,7 +101,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 <br />
                 Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
               </p>
-              <p>Total a pagar: {pedido.totalPedido}</p>
+              <p>Total a pagar: ${pedido.totalPedido}</p>
             </div>
             <div className="right-section">
               <h2>Envío</h2>

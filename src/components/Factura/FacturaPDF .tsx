@@ -66,7 +66,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
           <tfoot>
             <tr>
               <td style={{ textAlign: "right" }} colSpan={3}>
-                Total: {totalPedido}
+                Total: ${totalPedido}
               </td>
             </tr>
           </tfoot>
@@ -81,7 +81,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
             <br />
             Envío: {domicilio ? "Envío domicilio" : "Retiro local"}
           </p>
-          <p>Total a pagar: {totalPedido}</p>
+          <p>Total a pagar: ${totalPedido}</p>
         </div>
         <div className="right-section">
           <h2>Envío</h2>
