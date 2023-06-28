@@ -39,7 +39,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
 
   return (
     <div className="modal-overlay" onClick={closeModal}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-container border-black" onClick={(e) => e.stopPropagation()}>
         <AdminBar />
         <div className="modal-content">
           <div className="logo-container">
@@ -85,13 +85,15 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan={3}>Total: {pedido.totalPedido}</td>
+                  <td colSpan={3} style={{ textAlign: "right" }}>
+                    Total: {pedido.totalPedido}
+                  </td>
                 </tr>
               </tfoot>
             </table>
           </div>
           <div className="payment-container">
-            <div className="left-section">
+            <div className="left-section" style={{ textAlign: "left" }}>
               <p>
                 Tipo de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
                 <br />
@@ -107,14 +109,14 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero},{" "}
                 {usuario?.Domicilio?.localidad}
               </p>
-              <div className="thankyou-container">
-                <p>
-                  Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
-                  <br />
-                  El Buen Sabor
-                </p>
-              </div>
             </div>
+          </div>
+          <div className="thankyou-container" style={{ textAlign: "center" }}>
+            <p>
+              Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
+              <br />
+              El Buen Sabor
+            </p>
           </div>
           <div className="pdf-container">
             <div className="pdf-container">

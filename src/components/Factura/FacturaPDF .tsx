@@ -65,13 +65,15 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={3}>Total: {totalPedido}</td>
+              <td style={{ textAlign: "right" }} colSpan={3}>
+                Total: {totalPedido}
+              </td>
             </tr>
           </tfoot>
         </table>
       </div>
       <div className="payment-container">
-        <div className="left-section">
+        <div className="left-section" style={{ textAlign: "left" }}>
           <p>
             Tipo de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
             <br />
@@ -87,14 +89,14 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
             Dirección: {domicilio?.calle} {domicilio?.numero},{" "}
             {domicilio?.localidad}
           </p>
-          <div className="thankyou-container">
-            <p>
-              Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
-              <br />
-              El Buen Sabor
-            </p>
-          </div>
         </div>
+      </div>
+      <div className="thankyou-container" style={{ textAlign: "center" }}>
+        <p>
+          Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
+          <br />
+          El Buen Sabor
+        </p>
       </div>
     </div>
   );
