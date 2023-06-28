@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { BsList, BsX } from "react-icons/bs"; // Importa los iconos de Bootstrap
-
 import Empleado from "../Users/Empleado/Empleado";
 import ProductosTable from "../Stock/Producto/Productos";
 import IngredientesTable from "../Stock/Ingrediente/IngredientesTable";
@@ -10,7 +8,7 @@ import RankingClientes from "../RankingClientes/RankingClientes";
 import RankingProductos from "../RankingProductos/RankingProductos";
 
 export default function OpcionesAdmin() {
-  const [selectedOption, setSelectedOption] = useState("Null");
+  const [selectedOption, setSelectedOption] = useState("facturas");
   const [sidebarVisible, setSidebarVisible] = useState(true); // Agrega el estado para controlar la visibilidad de la barra lateral
 
   const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -35,54 +33,77 @@ export default function OpcionesAdmin() {
   ];
 
   return (
-    <div className="d-flex" >
-      <button className="btn btn-primary my-2" onClick={handleSidebarToggle}><i className="bi bi-view-list"></i></button>
-      {/* Agrega el botón para mostrar/ocultar la barra lateral */}
-
-      {/* Agrega la barra lateral */}
-      <div
-        className={`flex-grow-0 bg-secondary p-3 ${
-          sidebarVisible ? "d-none d-lg-block" : "d-none d-lg-none"
-        } position-fixed top-0`}
-        style={{ width: "10rem", height: "100vh", overflowY: "auto", marginTop: "4rem" }}
+    <div className="d-flex flex-wrap">
+  <div className="flex-shrink-0">
+    {!sidebarVisible ? (
+      <button
+        className="btn btn-dark position-fixed"
+        style={{
+          borderRadius: "0px",
+          height: "100vh",
+          width: "3rem", 
+        }}
+        onClick={handleSidebarToggle}
       >
-        <button className="btn btn-primary my-1 w-100" onClick={handleSidebarToggle}><i className="bi bi-x-square-fill"></i></button>
+        <i className="bi bi-view-list text-info h4"></i>
+      </button>
+    ) : (
+      <div
+        className="bg-dark p-3 position-fixed"
+        style={{
+          width: "10rem", 
+          height: "100vh",
+          overflowY: "auto",
+          marginTop: "4rem",
+        }}
+      >
+        <button
+          className="btn btn-outline-danger my-1 w-100 "
+          onClick={handleSidebarToggle}
+        >
+          <i className="bi bi-x-square-fill"></i>
+        </button>
 
         {options.map((option) => (
-          <div className="row justify-content-start my-3" key={option.value}>
+          <div
+            className="row justify-content-start my-3"
+            key={option.value}
+          >
             <div className="col">
               <button
                 value={option.value}
                 onClick={handleOptionChange}
-                className="btn btn-light btn-lg"
-                style={{
-                  color: "black",
-                  textDecoration: "none",
-                  width: "100%",
-                  border: "1px solid black",
-                }}
+                className={`btn btn-outline-info w-100 text-center ${
+                  selectedOption === option.value ? "active" : ""
+                }`}
               >
-                <div className="card-body p-1">
-                  <h6 className="card-title mb-0" style={{ color: "black" }}>
-                    {option.name}
-                  </h6>
-                </div>
+                {option.name}
               </button>
             </div>
           </div>
         ))}
       </div>
+    )}
+  </div>
 
-      <div className={`flex-grow-1 ms-4 ${sidebarVisible ? "d-lg-block" : ""}`}>
-        {selectedOption === "employee" && <Empleado />}
-        {selectedOption === "productos" && <ProductosTable />}
-        {selectedOption === "ingredientes" && <IngredientesTable />}
-        {selectedOption === "facturas" && <Factura />}
-        {selectedOption === "clientes" && <Cliente />}
-        {selectedOption === "rankingClientes" && <RankingClientes />}
-        {selectedOption === "rankingProductos" && <RankingProductos />}
-      </div>
-      
-    </div>
+  <div
+    className={`flex-grow-1`}
+    style={{ transition: "all 0.3s ease",
+    marginTop: "5rem",
+    overflowY: "auto",
+    marginLeft: sidebarVisible ? "10rem" : "3rem", }
+  }
+
+  >
+    {/* Contenido principal */}
+    {selectedOption === "employee" && <Empleado />}
+    {selectedOption === "productos" && <ProductosTable />}
+    {selectedOption === "ingredientes" && <IngredientesTable />}
+    {selectedOption === "facturas" && <Factura />}
+    {selectedOption === "clientes" && <Cliente />}
+    {selectedOption === "rankingClientes" && <RankingClientes />}
+    {selectedOption === "rankingProductos" && <RankingProductos />}
+  </div>
+</div>
   );
 }
