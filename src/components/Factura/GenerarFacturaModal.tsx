@@ -3,17 +3,17 @@ import { DetallePedido } from "../../interface/DetallePedido";
 import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
 import AdminBar from "../NavBar/AdminBar";
-import { PDFViewer } from "@react-pdf/renderer";
-import FacturaPDF from "./FacturaPDF ";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useLocation } from "react-router-dom";
 
+import "./GenerarFacturaModal.css"; // Importa el archivo CSS para los estilos personalizados
+import FacturaPDF from "./FacturaPDF ";
 
 interface GenerarFacturaModalProps {
-  // Modifica la prop para que sea obligatoria
-  closeModal: () => void; // Agrega la función closeModal para cerrar el modal
+  closeModal: () => void;
 }
 
-const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({  
+const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   closeModal,
 }) => {
   const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
@@ -39,10 +39,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
 
   return (
     <div className="modal-overlay" onClick={closeModal}>
-      <div
-        className="modal-container"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
         <AdminBar />
         <div className="modal-content">
           <div className="logo-container">
@@ -94,43 +91,52 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
             </table>
           </div>
           <div className="payment-container">
-            <p>
-              Tipo de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
-              <br />
-              Descuento: {/* Agrega el descuento */}
-              <br />
-              Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
-              <br />
-              Total a pagar: {pedido.totalPedido}
-            </p>
-          </div>
-          <div className="shipping-container">
-            <h2>Envío</h2>
-            <p>
-              Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero},{" "}
-              {usuario?.Domicilio?.localidad}
-            </p>
-          </div>
-          <div className="thankyou-container">
-            <p>
-              Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
-              <br />
-              El Buen Sabor
-            </p>
+            <div className="left-section">
+              <p>
+                Tipo de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
+                <br />
+                Descuento: {/* Agrega el descuento */}
+                <br />
+                Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
+              </p>
+              <p>Total a pagar: {pedido.totalPedido}</p>
+            </div>
+            <div className="right-section">
+              <h2>Envío</h2>
+              <p>
+                Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero},{" "}
+                {usuario?.Domicilio?.localidad}
+              </p>
+              <div className="thankyou-container">
+                <p>
+                  Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
+                  <br />
+                  El Buen Sabor
+                </p>
+              </div>
+            </div>
           </div>
           <div className="pdf-container">
-            <PDFViewer>
-              <FacturaPDF
-                pedido={pedido}
-                detallePedidos={detallePedidos}
-                usuario={usuario}
-              />
-            </PDFViewer>
-          </div>
-          <div className="buttons-container">
-            <button className="btn btn-primary" onClick={closeModal}>
-              Cerrar
-            </button>
+            <div className="pdf-container">
+              <PDFDownloadLink
+                document={
+                  <FacturaPDF
+                    detallePedidos={detallePedidos}
+                    usuario={usuario}
+                    domicilio={domicilio}
+                    pedidoNumero={pedido.numeroPedido}
+                    fechaPedido={pedido.fechaPedido}
+                    esEfectivo={pedido.esEfectivo}
+                    totalPedido={pedido.totalPedido}
+                  />
+                }
+                fileName="factura.pdf"
+              >
+                {({ blob, url, loading, error }) =>
+                  loading ? "Cargando..." : <button className="btn btn-primary">Descargar PDF</button>
+                }
+              </PDFDownloadLink>
+            </div>
           </div>
         </div>
       </div>

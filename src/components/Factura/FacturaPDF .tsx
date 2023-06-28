@@ -1,88 +1,102 @@
 import React from "react";
-import { PDFViewer, Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
-import { Pedido } from '../../interface/Pedido';
 import { DetallePedido } from "../../interface/DetallePedido";
 import { Usuario } from "../../interface/Usuario";
+import { Domicilio } from "../../interface/Domicilio";
 
 interface FacturaPDFProps {
-  pedido?: Pedido;
-  detallePedidos?: DetallePedido[];
-  usuario?: Usuario;
+  detallePedidos: DetallePedido[];
+  usuario: Usuario | undefined;
+  domicilio: Domicilio | undefined;
+  pedidoNumero: number;
+  fechaPedido: Date | undefined;
+  esEfectivo: boolean;
+  totalPedido: number;
 }
 
-const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido, detallePedidos, usuario }) => {
-  const styles = StyleSheet.create({
-    page: {
-      fontFamily: 'Helvetica',
-      fontSize: 12,
-      padding: 20,
-    },
-    title: {
-      fontSize: 16,
-      marginBottom: 10,
-    },
-    subtitle: {
-      fontSize: 14,
-      marginBottom: 5,
-    },
-    table: {
-      width: 'auto',
-      marginBottom: 10,
-    },
-    tableRow: {
-      flexDirection: 'row',
-    },
-    tableCell: {
-      padding: 5,
-    },
-    footer: {
-      marginTop: 10,
-      textAlign: 'right',
-    },
-  });
-
+const FacturaPDF: React.FC<FacturaPDFProps> = ({
+  detallePedidos,
+  usuario,
+  domicilio,
+  pedidoNumero,
+  fechaPedido,
+  esEfectivo,
+  totalPedido,
+}) => {
   return (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View>
-          <Text style={styles.title}>DETALLES DEL PEDIDO</Text>
-          <Text>Número de Pedido: {pedido?.numeroPedido}</Text>
-          <Text>Fecha: {pedido?.fechaPedido?.toString()}</Text>
-          <Text>Forma de Pago: {pedido?.esEfectivo ? 'Efectivo' : 'Mercado Pago'}</Text>
-        </View>
-        <View style={styles.table}>
-          <View style={styles.tableRow}>
-            <Text style={styles.tableCell}>Cantidad</Text>
-            <Text style={styles.tableCell}>Detalle Producto</Text>
-            <Text style={styles.tableCell}>Precio Unit.</Text>
-          </View>
-          {detallePedidos?.map((detalle) => (
-            <View style={styles.tableRow} key={detalle?.idDetallePedido}>
-              <Text style={styles.tableCell}>{detalle?.cantidad}</Text>
-              <Text style={styles.tableCell}>{detalle?.Producto?.nombre}</Text>
-              <Text style={styles.tableCell}>{detalle?.Producto?.precio}</Text>
-            </View>
-          ))}
-        </View>
-        <View style={styles.footer}>
-          <Text>Tipo de Pago: {pedido?.esEfectivo ? 'Efectivo' : 'Mercado Pago'}</Text>
-          {/* Agrega el código para el descuento */}
-          <Text>Envío: {pedido?.esDelivery ? 'Envío domicilio' : 'Retiro local'}</Text>
-          <Text>Total a pagar: {pedido?.totalPedido}</Text>
-        </View>
-        <View>
-          <Text style={styles.title}>Envío</Text>
-          <Text>
-            Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero}, {usuario?.Domicilio?.localidad}
-          </Text>
-        </View>
-        <View>
-          <Text>
-            Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en El Buen Sabor
-          </Text>
-        </View>
-      </Page>
-    </Document>
+    <div className="pdf-container">
+      <div className="logo-container">
+        <img
+          src="/assets/img/logo-grupo-illuminati.jpg"
+          alt="Logo de la empresa"
+          width={100}
+        />
+      </div>
+      <div className="info-container">
+        <h2>El Buen Sabor</h2>
+        <p>
+          Dirección: Aristides villanueva 356, Ciudad
+          <br />
+          CUIT: 12-5541252-8
+        </p>
+      </div>
+      <div className="details-container">
+        <h2>DETALLES DEL PEDIDO</h2>
+        <p>Número de Pedido: {pedidoNumero}</p>
+        <p>Fecha: {fechaPedido?.toLocaleString()}</p>
+        <p>Forma de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}</p>
+      </div>
+      <div className="table-container">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Cantidad</th>
+              <th>Detalle Producto</th>
+              <th>Precio Unit.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {detallePedidos?.map((detalle) => (
+              <tr key={detalle?.idDetallePedido}>
+                <td>{detalle?.cantidad}</td>
+                <td>{detalle?.Producto?.nombre}</td>
+                <td>{detalle?.Producto?.precio}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan={3}>Total: {totalPedido}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div className="payment-container">
+        <div className="left-section">
+          <p>
+            Tipo de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
+            <br />
+            Descuento: {/* Agrega el descuento */}
+            <br />
+            Envío: {domicilio ? "Envío domicilio" : "Retiro local"}
+          </p>
+          <p>Total a pagar: {totalPedido}</p>
+        </div>
+        <div className="right-section">
+          <h2>Envío</h2>
+          <p>
+            Dirección: {domicilio?.calle} {domicilio?.numero},{" "}
+            {domicilio?.localidad}
+          </p>
+          <div className="thankyou-container">
+            <p>
+              Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
+              <br />
+              El Buen Sabor
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
