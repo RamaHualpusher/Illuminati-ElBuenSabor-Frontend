@@ -52,7 +52,7 @@ export default function OpcionesAdmin() {
         className="bg-dark p-3 position-fixed"
         style={{
           width: "10rem", 
-          height: "100vh",
+          height: "90vh",
           overflowY: "auto",
           marginTop: "4rem",
         }}
