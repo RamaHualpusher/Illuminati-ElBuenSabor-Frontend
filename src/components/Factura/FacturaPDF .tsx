@@ -1,57 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import { DetallePedido } from "../../interface/DetallePedido";
 import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
+import "./GenerarFacturaModal.css";
+import { useLocation } from "react-router-dom";
 
 interface FacturaPDFProps {
   detallePedidos: DetallePedido[];
   usuario: Usuario | undefined;
   domicilio: Domicilio | undefined;
-  pedidoNumero: number;
+  numeroPedido: number;
   fechaPedido: Date | undefined;
   esEfectivo: boolean;
   totalPedido: number;
 }
 
 const FacturaPDF: React.FC<FacturaPDFProps> = ({
-  detallePedidos,
-  usuario,
-  domicilio,
-  pedidoNumero,
-  fechaPedido,
-  esEfectivo,
-  totalPedido,
 }) => {
+  const location = useLocation();
+  const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
+  const pedidoParam = location.pathname.split("/factura/")[1];
+  const pedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : null;
+  const [usuario, setUsuario] = useState<Usuario>();
+
   return (
-    <div className="pdf-container">
+    <div className="modal-content">
       <div className="logo-container">
-        <img
-          src="/assets/img/logo-grupo-illuminati.jpg"
-          alt="Logo de la empresa"
-          width={100}
-        />
+        <img src="/assets/img/logo-grupo-illuminati.jpg" alt="Logo" width={100} />
       </div>
       <div className="info-container">
-        <h2>El Buen Sabor</h2>
-        <p>
-          Dirección: Aristides villanueva 356, Ciudad
-          <br />
-          CUIT: 12-5541252-8
-        </p>
+        <div>El Buen Sabor</div>
+        <div>Dirección: Aristides villanueva 356, Ciudad</div>
+        <div>CUIT: 12-5541252-8</div>
       </div>
       <div className="details-container">
-        <h2>DETALLES DEL PEDIDO</h2>
-        <p>Número de Pedido: {pedidoNumero}</p>
-        <p>Fecha: {fechaPedido?.toLocaleString()}</p>
-        <p>Forma de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}</p>
+        <div>DETALLES DEL PEDIDO</div>
+        <div>Número de Pedido: {pedido.numeroPedido}</div>
+        <div>Fecha: {pedido.fechaPedido?.toLocaleString()}</div>
+        <div>Forma de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}</div>
       </div>
       <div className="table-container">
         <table className="table">
           <thead>
             <tr>
-              <th>Cantidad</th>
-              <th>Detalle Producto</th>
-              <th>Precio Unit.</th>
+              <div>Cantidad</div>
+              <div>Detalle Producto</div>
+              <div>Precio Unit.</div>
             </tr>
           </thead>
           <tbody>
@@ -65,8 +59,8 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
           </tbody>
           <tfoot>
             <tr>
-              <td style={{ textAlign: "right" }} colSpan={3}>
-                Total: ${totalPedido}
+              <td colSpan={3} style={{ textAlign: "right" }}>
+                Total: ${pedido.totalPedido}
               </td>
             </tr>
           </tfoot>
@@ -74,21 +68,24 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
       </div>
       <div className="payment-container">
         <div className="left-section" style={{ textAlign: "left" }}>
-          <p>
-            Tipo de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
+          <div>
+            Tipo de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
             <br />
             Descuento: {/* Agrega el descuento */}
             <br />
-            Envío: {domicilio ? "Envío domicilio" : "Retiro local"}
-          </p>
-          <p>Total a pagar: ${totalPedido}</p>
+            Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
+          </div>
+          <div>Total a pagar: ${pedido.totalPedido}</div>
         </div>
         <div className="right-section">
-          <h2>Envío</h2>
-          <p>
-            Dirección: {domicilio?.calle} {domicilio?.numero},<br/>
-            {domicilio?.localidad}
-          </p>
+          <div>Envío</div>
+          <div>
+            <p>
+              Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero},
+              <br />
+              {usuario?.Domicilio?.localidad}
+            </p>
+          </div>
         </div>
       </div>
       <div className="thankyou-container" style={{ textAlign: "center" }}>

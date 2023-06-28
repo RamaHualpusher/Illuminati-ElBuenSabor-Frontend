@@ -59,8 +59,8 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                         <p>Número de Pedido: {pedido.numeroPedido}</p>
                         <p>Fecha Factura: {pedido.fechaPedido?.toLocaleString()}</p>
                         {fechaAnulacion && (
-          <p>Fecha Anulación: {fechaAnulacion.toLocaleString()}</p>
-        )}
+                            <p>Fecha Anulación: {fechaAnulacion.toLocaleString()}</p>
+                        )}
                         {/* aca habria que hacer que disminuya el dinero en nuestra caja */}
                         <p>
                             Forma de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
@@ -102,7 +102,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                                 <br />
                                 Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
                             </p>
-                            <p>Total a pagar: ${pedido.totalPedido}</p>
+                            <p>Total a devolver: ${pedido.totalPedido}</p>
                         </div>
                         <div className="right-section">
                             <h2>Envío</h2>
@@ -114,9 +114,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                     </div>
                     <div className="thankyou-container" style={{ textAlign: "center" }}>
                         <p>
-                            Anulación de FACTURA Num: {pedido.numeroPedido} a nombre de {usuario?.nombre} {usuario?.apellido} por comprar en
-                            <br />
-                            El Buen Sabor
+                            Anulación de FACTURA Num: {pedido.numeroPedido} a nombre de {usuario?.nombre} {usuario?.apellido} 
                         </p>
                     </div>
                     <div className="pdf-container">
@@ -127,7 +125,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                                         detallePedidos={detallePedidos}
                                         usuario={usuario}
                                         domicilio={domicilio}
-                                        pedidoNumero={pedido.numeroPedido}
+                                        numeroPedido={pedido.numeroPedido}
                                         fechaPedido={pedido.fechaPedido}
                                         esEfectivo={pedido.esEfectivo}
                                         totalPedido={pedido.totalPedido}
