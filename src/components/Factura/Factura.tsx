@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Pedido } from "../../interface/Pedido";
-import { useNavigate, useParams, useLocation  } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Action, Column } from "../../interface/CamposTablaGenerica";
 import GenericTable from "../GenericTable/GenericTable";
 import { Col, Container, Row } from "react-bootstrap";
@@ -12,7 +12,7 @@ const Factura = () => {
   const navigate = useNavigate();
   const API_URL = "assets/data/pedidos.json";
   const params = useParams<{ pedido: string }>();
-  
+
   useEffect(() => {
     fetch(API_URL)
       .then((response) => response.json())
@@ -30,13 +30,13 @@ const Factura = () => {
   const columns: Column<Pedido>[] = [
     {
       title: "Numero Factura",
-    field: "numeroPedido",
-    render: (pedido: Pedido) => (
-      <span>
-        {pedido.numeroPedido.toString()}
-      </span>
-    ),
-  },
+      field: "numeroPedido",
+      render: (pedido: Pedido) => (
+        <span>
+          {pedido.numeroPedido.toString()}
+        </span>
+      ),
+    },
     {
       title: "Usuario",
       field: "Usuario",
@@ -72,7 +72,7 @@ const Factura = () => {
     window.open(`/factura/${encodedPedido}`, "_blank");
     window.postMessage(pedido, "*");
   };
-  
+
 
   // Función para cerrar el modal
   const closeModal = () => {
@@ -105,7 +105,7 @@ const Factura = () => {
               actions={actions}
               onView={onView} // Utilizar la función onView para abrir el modal en una nueva pestaña
               customSearch={customSearch}
-              // target="_blank"
+            // target="_blank"
             />
           </Col>
         </Row>

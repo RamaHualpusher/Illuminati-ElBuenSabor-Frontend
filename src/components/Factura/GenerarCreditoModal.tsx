@@ -128,6 +128,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                                         numeroPedido={pedido.numeroPedido}
                                         fechaPedido={pedido.fechaPedido}
                                         esEfectivo={pedido.esEfectivo}
+                                        esDelivery={pedido.esDelivery}
                                         totalPedido={pedido.totalPedido}
                                     />
                                 }

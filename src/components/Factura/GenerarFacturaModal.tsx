@@ -145,6 +145,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                         numeroPedido={pedido.numeroPedido}
                         fechaPedido={pedido.fechaPedido}
                         esEfectivo={pedido.esEfectivo}
+                        esDelivery={pedido.esDelivery}
                         totalPedido={pedido.totalPedido}
                       />
                     }
