@@ -21,21 +21,28 @@ const Catalogo: React.FC<CatalogoProps> = ({ filteredProductos }) => {
 
   return (
     <div className="d-flex justify-content-center mt-3">
-      <div className="row">
-        {filteredProductos.map((producto, index) => (
-          <div
-            className={`mx-auto text-center ${getTarjetaComidaContainerClass(
-              filteredProductos.length
-            )}`}
-            key={index}
-          >
-            <TarjetaComida
-              producto={producto}
-              buttonText={"Agregar al Carrito"}
-            />
-          </div>
-        ))}
-      </div>
+      {filteredProductos.length === 0 ? (
+        <h4 className="display-4 mb-4">El producto en búsqueda no se encuentra.
+          <br />
+          <i className="bi bi-hand-thumbs-down"></i>
+        </h4>
+      ) : (
+        <div className="row">
+          {filteredProductos.map((producto, index) => (
+            <div
+              className={`mx-auto text-center ${getTarjetaComidaContainerClass(
+                filteredProductos.length
+              )}`}
+              key={index}
+            >
+              <TarjetaComida
+                producto={producto}
+                buttonText={"Agregar al Carrito"}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
