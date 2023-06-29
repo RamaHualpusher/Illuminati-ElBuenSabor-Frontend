@@ -25,6 +25,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   const [showCreditoModal, setShowCreditoModal] = useState(false);
   const [showModal, setShowModal] = useState(true);
 
+  
   const openCreditoModal = () => {
     setShowCreditoModal(true);
     setShowModal(false);
@@ -46,13 +47,13 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
 
   return (
     <>
+    <AdminBar />
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div
             className="modal-container border-black"
             onClick={(e) => e.stopPropagation()}
-          >
-            <AdminBar />
+          >            
             <div className="modal-content">
               <div className="logo-container">
                 <img

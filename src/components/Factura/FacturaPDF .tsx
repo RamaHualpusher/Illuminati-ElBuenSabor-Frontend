@@ -79,7 +79,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
               <div>
                 Tipo de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
                 <br />
-                Descuento: {/* Agrega el descuento */}
+                Descuento: 
                 <br />
                  Envío: {esDelivery ? "Envío domicilio" : "Retiro local"} 
               </div>
