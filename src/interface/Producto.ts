@@ -13,6 +13,7 @@ export interface Producto {
   preparacion: string;
   precio: number;
   esBebida: boolean;
+  estado : boolean;
   Rubro: Rubro;
   DetallePedido: DetallePedido[];
   ProductoIngrediente: ProductoIngrediente[];

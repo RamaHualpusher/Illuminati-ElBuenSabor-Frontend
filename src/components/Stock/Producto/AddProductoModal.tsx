@@ -15,6 +15,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   const [tiempo, setTiempo] = useState(0);
   const [precio, setPrecio] = useState(0);
   const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [estado, setEstado] = useState(true); // Estado por defecto: Alta
   const [productos, setProductos] = useState<Producto[]>([]);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
         console.log(error);
       });
 
-      fetch("/assets/data/productosLanding.json")
+    fetch("/assets/data/productosLanding.json")
       .then((response) => response.json())
       .then((data) => {
         setProductos(data);
@@ -51,6 +52,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       preparacion: "",
       precio,
       esBebida: false,
+      estado,
       DetallePedido: [],
       ProductoIngrediente: [],
     };
@@ -108,6 +110,19 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
               onChange={(event) => setPrecio(parseFloat(event.target.value))}
               required
             />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formEstado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select
+              value={estado ? 'alta' : 'baja'}
+              onChange={(event) =>
+                setEstado(event.target.value === 'alta' ? true : false)
+              }
+              required
+            >
+              <option value="alta">Alta</option>
+              <option value="baja">Baja</option>
+            </Form.Select>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

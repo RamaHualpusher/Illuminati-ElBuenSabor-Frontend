@@ -16,7 +16,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   const [precio, setPrecio] = useState(0);
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [selectedRubro, setSelectedRubro] = useState<Rubro | null>(null);
-
+  const [estado, setEstado] = useState(selectedProducto?.estado || false);
 
   useEffect(() => {
     fetch("/assets/data/rubrosProductosEjemplo.json")
@@ -35,7 +35,8 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
       setRubroId(selectedProducto?.Rubro?.idRubro || null);
       setSelectedRubro(selectedProducto?.Rubro || null);
       setTiempo(selectedProducto?.tiempoEstimadoCocina || 0);
-      setPrecio(selectedProducto?.precio || 0)
+      setPrecio(selectedProducto?.precio || 0);
+      setEstado(selectedProducto?.estado || false);
     }
   }, [selectedProducto]);
 
@@ -47,6 +48,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
         nombre,
         tiempoEstimadoCocina: tiempo,
         precio: precio,
+        estado,
         Rubro: selectedRubro || selectedProducto.Rubro,
       };
       handleProductoEdit(updatedProducto);
@@ -110,6 +112,17 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
               onChange={(event) => setPrecio(parseInt(event.target.value))}
               required
             />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formEstado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select
+              value={estado ? 'alta' : 'baja'}
+              onChange={(event) => setEstado(event.target.value === 'alta')}
+              required
+            >
+              <option value="alta">Alta</option>
+              <option value="baja">Baja</option>
+            </Form.Select>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
