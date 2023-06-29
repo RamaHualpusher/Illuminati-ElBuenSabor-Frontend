@@ -4,7 +4,7 @@ import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 import EditProductoModal from "./EditProductoModal";
 import AddProductoModal from "./AddProductoModal";
 import { Producto } from "../../../interface/Producto";
-import { Action, Column } from '../../../interface/CamposTablaGenerica';
+import { Action, Column } from "../../../interface/CamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
 
 const Productos: React.FC = () => {
@@ -17,22 +17,28 @@ const Productos: React.FC = () => {
 
   const actions: Action = {
     create: true,
-    update: true
+    update: true,
   };
 
   const columns: Column<Producto>[] = [
-    { title: 'ID', field: 'idProducto' },
-    { title: 'Nombre', field: 'nombre' },
+    { title: "ID", field: "idProducto" },
+    { title: "Nombre", field: "nombre" },
     {
-      title: 'Rubro', field: 'Rubro', render: (producto: Producto) =>
-        <span>{`${producto.Rubro.nombre}`}</span>
+      title: "Rubro",
+      field: "Rubro",
+      render: (producto: Producto) => <span>{`${producto.Rubro.nombre}`}</span>,
     },
-    { title: 'Tiempo en Cocina', field: 'tiempoEstimadoCocina' },
-    { title: 'Precio', field: 'precio' },
+    { title: "Tiempo en Cocina", field: "tiempoEstimadoCocina" },
+    { title: "Precio", field: "precio" },
+    {
+      title: "Estado",
+      field: "estado",
+      render: (producto: Producto) => <span>{producto.estado ? "Alta" : "Baja"}</span>,
+    },
   ];
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchProductos = async () => {
       try {
         const responseData = await handleRequest("GET", API_URL);
         setProductos(responseData);
@@ -41,13 +47,12 @@ const Productos: React.FC = () => {
         console.log(error);
       }
     };
-    fetch();
+    fetchProductos();
   }, []);
 
   const handleProductoAdd = async (producto: Producto) => {
     try {
-      const newProducto = await handleRequest("POST", "assets/data/productosLanding.json", producto);
-
+      const newProducto = await handleRequest("POST", API_URL, producto);
       setProductos([...productos, newProducto]);
     } catch (error) {
       console.log(error);
@@ -58,39 +63,41 @@ const Productos: React.FC = () => {
     try {
       const updatedProducto: Producto = await handleRequest(
         "PUT",
-        `assets/data/productosLanding.json/${producto.idProducto}`,
+        `${API_URL}/${producto.idProducto}`,
         producto
       );
 
-      const newData = [...productos];
-      const index = newData.findIndex((item) => item.idProducto === producto.idProducto);
-      newData[index] = updatedProducto;
-
-      setProductos(newData);
+      const updatedProductos = productos.map((p) =>
+        p.idProducto === updatedProducto.idProducto ? updatedProducto : p
+      );
+      setProductos(updatedProductos);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const productoRow = (id: number) => {
-    let i: number = 0;
-    let x: boolean = true;
-    while (x) {
-      if (productosComplete[i].idProducto === id) {
-        let productoRe: Producto = productosComplete[i];
-        return productoRe; 
-        x = false;
-      }
-      i = i + 1;
+  const handleProductoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const productoId: number = +rowData[0];
+    try {
+      await handleRequest("DELETE", `${API_URL}/${productoId}`);
+      const updatedProductos = productos.filter((p) => p.idProducto !== productoId);
+      setProductos(updatedProductos);
+    } catch (error) {
+      console.log(error);
     }
-    let productoRe: Producto = productosComplete[0];
-    return productoRe;
-  }
+  };
 
+  const productoRow = (id: number): Producto | undefined => {
+    return productosComplete.find((producto) => producto.idProducto === id);
+  };
 
   const handleEditModalOpen = (item: Producto) => {
-    setSelectedProducto(productoRow(item.idProducto));
-    setEditModalShow(true);
+    const selected = productoRow(item.idProducto);
+    if (selected) {
+      setSelectedProducto(selected);
+      setEditModalShow(true);
+    }
   };
 
   const handleEditModalClose = () => {
@@ -105,7 +112,6 @@ const Productos: React.FC = () => {
   const handleAddModalClose = () => {
     setAddModalShow(false);
   };
-
 
   return (
     <Container fluid>

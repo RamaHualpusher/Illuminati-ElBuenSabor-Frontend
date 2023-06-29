@@ -10,6 +10,7 @@
     "preparacion": "Una deliciosa pizza con el mejor queso Mozzarella y Pepperoni",
     "precio": 2000,
     "esBebida": false,
+    "estado": true,
     "Rubro": {
       "idRubro": 1,
       "nombre": "Pizzas"
@@ -74,6 +75,7 @@
     "preparacion": "Una deliciosa pizza Jamón y queso",
     "precio": 2000,
     "esBebida": false,
+    "estado": true,
     "Rubro": {
       "idRubro": 1,
       "nombre": "Pizzas"
@@ -138,6 +140,7 @@
     "preparacion": "Una refrescante lata de CocaCola",
     "precio": 500,
     "esBebida": true,
+    "estado": true,
     "Rubro": {
       "idRubro": 2,
       "nombre": "Bebidas"
@@ -156,6 +159,7 @@
     "preparacion": "Una deliciosa pizza vegetariana con champiñones, pimientos, cebolla y aceitunas",
     "precio": 1800,
     "esBebida": false,
+    "estado": true,
     "Rubro": {
       "idRubro": 1,
       "nombre": "Pizzas"
@@ -250,6 +254,7 @@
     "preparacion": "Una jugosa hamburguesa con carne de res, queso, lechuga, tomate y cebolla",
     "precio": 2000,
     "esBebida": false,
+    "estado": true,
     "Rubro": {
       "idRubro": 3,
       "nombre": "Hamburguesas"
@@ -344,6 +349,7 @@
     "preparacion": "Una deliciosa hamburguesa con Barbacoa y chedar",
     "precio": 1500,
     "esBebida": false,
+    "estado": true,
     "Rubro": {
       "idRubro": 3,
       "nombre": "Hamburguesas"
@@ -423,6 +429,7 @@
     "preparacion": "Una refrescante lata de Fanta",
     "precio": 500,
     "esBebida": true,
+    "estado": true,
     "Rubro": {
       "idRubro": 2,
       "nombre": "Bebidas"
@@ -441,6 +448,7 @@
     "preparacion": "Una refrescante lata de Sprite",
     "precio": 500,
     "esBebida": true,
+    "estado": true,
     "Rubro": {
       "idRubro": 2,
       "nombre": "Bebidas"
@@ -459,6 +467,7 @@
     "preparacion": "Una refrescante lata de CocaCola",
     "precio": 500,
     "esBebida": true,
+    "estado": true,
     "Rubro": {
       "idRubro": 2,
       "nombre": "Bebidas"
@@ -477,6 +486,7 @@
     "preparacion": "Imperdible Promo una hamburguesa con una Coca-Cola 500ml.",
     "precio": 1900,
     "esBebida": false,
+    "estado": true,
     "Rubro": {
       "idRubro": 4,
       "nombre": "Ofertas"
@@ -601,6 +611,7 @@
     "preparacion": "Una deliciosa pizza con una Coca-Cola",
     "precio": 2000,
     "esBebida": false,
+    "estado": true,
     "Rubro": {
       "idRubro": 4,
       "nombre": "Ofertas"
