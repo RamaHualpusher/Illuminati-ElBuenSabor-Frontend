@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import BotonesMenu from "./BotonesMenu";
 import ImagenMenu from "./ImagenMenu";
-import TarjetaComida from "./TarjetaComida";
 import ComoFunc from "./ComoFunc";
 import { Producto } from "../../interface/Producto";
-import { CartContext } from "../CarritoCompras/CartProvider";
 import { SearchContext } from "../Buscador/SearchContext";
 import DondeEstamos from "../DondeEstamos/DondeEstamos";
 import Catalogo from "./Catalogo";
@@ -13,7 +11,6 @@ export default function Landing() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [produc, setProduc] = useState<Producto[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Producto[]>([]);
-  const { addToCart, cartItems } = useContext(CartContext);
   const { searchParam } = useContext(SearchContext);
   const [showScrollButton, setShowScrollButton] = useState(false);
 
