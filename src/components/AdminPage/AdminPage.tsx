@@ -3,7 +3,7 @@ import OpcionesAdmin from "./OpcionesAdmin";
 
 export default function AdminPage(){
     return(
-        <div >
+        <div>
             <OpcionesAdmin/>
         </div>
     )

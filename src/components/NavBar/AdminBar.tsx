@@ -17,7 +17,7 @@ const AdminBar: FC = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style={{height:"4rem"}}>
       <div className="container">
         <BackButton />
         <div className="d-flex align-items-center">

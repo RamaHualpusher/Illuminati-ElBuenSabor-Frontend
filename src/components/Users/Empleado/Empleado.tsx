@@ -48,6 +48,9 @@ const Empleado = () => {
         const newEmpleado = await handleRequest('POST', API_URL, empleado);
         if (newEmpleado) {
             setEmpleados([...empleados, newEmpleado]);
+            console.log("Empleado agregado");
+            console.log(newEmpleado);
+
         }
     };
 

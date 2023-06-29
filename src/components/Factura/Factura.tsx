@@ -32,7 +32,7 @@ const Factura = () => {
       title: "Numero Factura",
     field: "numeroPedido",
     render: (pedido: Pedido) => (
-      <span onClick={() => onView(pedido)}>
+      <span>
         {pedido.numeroPedido.toString()}
       </span>
     ),
@@ -41,7 +41,7 @@ const Factura = () => {
       title: "Usuario",
       field: "Usuario",
       render: (pedido: Pedido) => (
-        <span>{`${pedido.Usuario.apellido}, ${pedido.Usuario.nombre}`}</span>
+        <span>{`${pedido.Usuario.apellido.toString()} ${pedido.Usuario.nombre.toString()}`}</span>
       ),
     },
     {

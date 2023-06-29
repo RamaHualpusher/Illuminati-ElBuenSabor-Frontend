@@ -33,14 +33,14 @@ export default function OpcionesAdmin() {
   ];
 
   return (
-    <div className="d-flex flex-wrap">
+    <div className="d-flex flex-wrap" style={{height:"100vh"}}>
       <div className="flex-shrink-0">
         {!sidebarVisible ? (
           <button
             className="btn btn-dark position-fixed"
             style={{
               borderRadius: "0px",
-              height: "100vh",
+              height: "100%",
               width: "3rem",
             }}
             onClick={handleSidebarToggle}
@@ -52,7 +52,7 @@ export default function OpcionesAdmin() {
             className="bg-dark p-3 position-fixed"
             style={{
               width: "10rem",
-              height: "90vh",
+              height: "100vh",
               overflowY: "auto",
               marginTop: "4rem",
             }}
@@ -73,7 +73,7 @@ export default function OpcionesAdmin() {
                   <button
                     value={option.value}
                     onClick={handleOptionChange}
-                    className={`btn btn-outline-info w-100 text-center ${selectedOption === option.value ? "active" : ""
+                    className={`btn btn-outline-info w-100 text-center ${selectedOption === option.value ? "active p-3" : ""
                       }`}
                   >
                     {option.name}
@@ -81,6 +81,11 @@ export default function OpcionesAdmin() {
                 </div>
               </div>
             ))}
+            <div style={{
+              marginTop: "5rem",
+            }}>
+              <br />
+            </div> 
           </div>
         )}
       </div>
