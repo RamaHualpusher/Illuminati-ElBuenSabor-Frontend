@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import Empleado from "../Users/Empleado/Empleado";
-import ProductosTable from "../Stock/Producto/Productos";
+import Productos from "../Stock/Producto/Productos";
 import Ingredientes from "../Stock/Ingrediente/Ingrediente";
 import Factura from "../Factura/Factura";
 import Cliente from "../Users/Clientes/Clientes";
 import RankingClientes from "../RankingClientes/RankingClientes";
 import RankingProductos from "../RankingProductos/RankingProductos";
+import Stock from "../Stock/Stock";
 
 export default function OpcionesAdmin() {
   const [selectedOption, setSelectedOption] = useState("facturas");
@@ -32,6 +33,7 @@ export default function OpcionesAdmin() {
     { name: "Categorías", value: "categorias" },
     { name: "Usuarios", value: "usuarios" },
     { name: "Facturas", value: "facturas" },
+    { name: "Stock", value: "stock" },
   ];
 
   return (
@@ -105,12 +107,13 @@ export default function OpcionesAdmin() {
       >
         {/* Contenido principal */}
         {selectedOption === "employee" && <Empleado />}
-        {selectedOption === "productos" && <ProductosTable />}
+        {selectedOption === "productos" && <Productos />}
         {selectedOption === "ingredientes" && <Ingredientes />}
         {selectedOption === "facturas" && <Factura />}
         {selectedOption === "clientes" && <Cliente />}
         {selectedOption === "rankingClientes" && <RankingClientes />}
         {selectedOption === "rankingProductos" && <RankingProductos />}
+        {selectedOption === "stock" && <Stock />}
       </div>
     </div>
   );
