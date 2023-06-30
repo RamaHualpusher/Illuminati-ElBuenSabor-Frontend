@@ -1,11 +1,7 @@
 import React from 'react';
+import { ICartIconProps } from '../../interface/CarritoCompras';
 
-interface CartIconProps {
-  icon: string;
-  onClick: () => void;
-}
-
-const CartIcon: React.FC<CartIconProps> = ({ icon, onClick }) => {
+const CartIcon: React.FC<ICartIconProps> = ({ icon, onClick }) => {
   return (
     <button className="cart-icon" onClick={onClick}>
       <i className={icon}></i>

@@ -10,7 +10,7 @@ interface CartItem {
   price: number;
   image: string;
   title: string;
-  Producto?: Producto;  
+  Producto?: Producto;
 }
 
 interface CartItemProps {
@@ -23,31 +23,31 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   return (
     <div className="d-flex align-items-start w-100">
       <div>
-        <img src={item.image} alt={item.name} className="img-fluid rounded-circle me-2" style={{width: "50px", height: "50px"}}/>
+        <img src={item.image} alt={item.name} className="img-fluid rounded-circle me-2" style={{ width: "50px", height: "50px" }} />
       </div>
       <div className="flex-grow-1">
         <div className='d-flex justifi-content-between align-items-center'>
-        <h3 className="h5 flex-grow-1">{item.name}</h3>
-        <p>${item.price * item.quantity}</p>
+          <h3 className="h5 flex-grow-1">{item.name}</h3>
+          <p>${item.price * item.quantity}</p>
         </div>
         <div className="d-flex justify-content-between align-items-center">
           <div>
-          <button className="btn btn-sm btn-outline-secondary mx-1" onClick={() => decrementItem(item.id)}>
-            -
-          </button>
-          <button className="btn btn-sm btn-outline-secondary mx-1 px-3 p-2" disabled>
-            <span className="h6 text-light">{item.quantity}</span>
-          </button>
-          <button className="btn btn-sm btn-outline-secondary mx-1" onClick={() => incrementItem(item.id)}>
-            +
-          </button>
+            <button className="btn btn-sm btn-outline-secondary mx-1" onClick={() => decrementItem(item.id)}>
+              -
+            </button>
+            <button className="btn btn-sm btn-outline-secondary mx-1 px-3 p-2" disabled>
+              <span className="h6 text-light">{item.quantity}</span>
+            </button>
+            <button className="btn btn-sm btn-outline-secondary mx-1" onClick={() => incrementItem(item.id)}>
+              +
+            </button>
           </div>
           <button className="btn btn-sm btn-outline-danger" onClick={() => removeFromCart(item.id)}>
             <i className="bi bi-trash"></i>
           </button>
         </div>
       </div>
-      
+
     </div>
   );
 };

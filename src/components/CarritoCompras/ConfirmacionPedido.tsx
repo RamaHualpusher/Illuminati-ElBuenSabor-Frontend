@@ -1,138 +1,139 @@
+import React, { useEffect, useState } from "react";
 import { CartItem } from "./CartProvider";
+import CartTabla from "./CartTabla";
+import CartTarjeta from "./CartTarjeta";
+import { Domicilio } from "../../interface/Domicilio";
+
 interface ConfirmacionPedidoProps {
-    cartItems: CartItem[];
-    metodoPago: string;
-    tipoEnvio: string;
-    setMetodoPago: (metodo: string) => void;
-    setTipoEnvio: (tipo: string) => void;
-    modificarCantidad: (id: number, cantidad: number) => void;
-    eliminarDetallePedido: (id: number) => void;
-    onCancel: () => void;
-    onContinue: () => void;
+  cartItems: CartItem[];
+  metodoPago: string;
+  tipoEnvio: string;
+  setMetodoPago: (metodo: string) => void;
+  setTipoEnvio: (tipo: string) => void;
+  modificarCantidad: (id: number, cantidad: number) => void;
+  eliminarDetallePedido: (id: number) => void;
+  onCancel: () => void;
+  onContinue: () => void;
 }
 
+const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
+  cartItems,
+  metodoPago,
+  tipoEnvio,
+  setMetodoPago,
+  setTipoEnvio,
+  modificarCantidad,
+  eliminarDetallePedido,
+  onCancel,
+  onContinue
+}) => {
+  const [domicilio, setDomicilio] = useState<Domicilio | null>(null);
+  const [costoDelivery, setCostoDelivery] = useState(500);
+  const descuento = 0.1; // Descuento del 10% (0.1)
+  const [subTotal, setSubTotal] = useState(0);
 
-  
-const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({ cartItems, metodoPago, tipoEnvio, setMetodoPago, setTipoEnvio, modificarCantidad, eliminarDetallePedido, onCancel, onContinue }) => {
-    const handleMetodoPago = (metodo: string) => {
-        setMetodoPago(metodo);
+  useEffect(() => {
+    const fetchDomicilio = async () => {
+      try {
+        const response = await fetch("/assets/data/clienteTabla.json");
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setDomicilio(data[0].Domicilio);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    
-      const handleTipoEnvio = (tipo: string) => {
-        setTipoEnvio(tipo);
-      }
-      
+    };
+    fetchDomicilio();
+  }, []);
+
+  useEffect(() => {
+    const totalProducto = cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    setSubTotal(totalProducto);
+  }, [cartItems]);
+
+  const handleMetodoPago = (metodo: string) => {
+    setMetodoPago(metodo);
+  };
+
+  const handleTipoEnvio = (tipo: string) => {
+    setTipoEnvio(tipo);
+  };
+
+  const handleConfirmarPedido = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Objeto completo a imprimir en la consola
+    const pedidoCompleto = {
+      cartItems,
+      metodoPago,
+      tipoEnvio,
+      subTotal,
+      domicilio,
+      costoDelivery,
+      descuento
+    };
+    console.log("Pedido completo:", pedidoCompleto);
+  };
+
   return (
-    <div style={{marginTop: "5rem"}}>
-      
-      <h2>Confirmación de Pedido</h2>
-      <form>
-          <div className="container">
-              {cartItems.map((item) => (
-              <div className="d-flex align-items-start w-100" key={item.id}>
-                  <div>
-                  <img src={item.image} alt={item.name} className="img-fluid rounded-circle me-2" style={{width: "50px", height: "50px"}}/>
-                  </div>
-                  <div className="flex-grow-1">
-                  <div className='d-flex justify-content-between align-items-center'>
-                      <h3 className="h5 flex-grow-1">{item.name}</h3>
-                      <p>${item.price * item.quantity}</p>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                      <div>
-                      <button className="btn btn-sm btn-outline-secondary mx-1" onClick={(e) => {
-                        e.preventDefault(); 
-                        modificarCantidad(item.id, item.quantity - 1);
-                        }}>
-                            -
-                        </button>
-                      <button className="btn btn-sm btn-outline-secondary mx-1 px-3 p-2" disabled>
-                          <span className="h6 ">{item.quantity}</span>
-                      </button>
-                      <button className="btn btn-sm btn-outline-secondary mx-1" onClick={(e) => {
-                        e.preventDefault(); 
-                        modificarCantidad(item.id, item.quantity + 1);
-                        }}>
-                            +
-                        </button>
-                      </div>
-                      <button className="btn btn-sm btn-outline-danger" onClick={(e) =>{ 
-                        e.preventDefault();
-                        eliminarDetallePedido(item.id)}}>
-                      <i className="bi bi-trash"></i>
-                      </button>
-                  </div>
-                  </div>
-              </div>
-              ))}
-          </div>
-        <div className="container">
-        <h3>Metodo de Pago</h3>
-          <div className="mb-3">
-            <input 
-              type="radio" 
-              className="btn-check" 
-              id="efectivo-outlined" 
-              autoComplete="off" 
-              checked={metodoPago === "Efectivo"}
-              onChange={() => handleMetodoPago("Efectivo")}
-            />
-            <label className="btn btn-outline-primary" htmlFor="efectivo-outlined">Efectivo</label>
+    <div style={{ marginTop: "5rem", marginLeft: "1rem" }}>
+      <div className="row justify-content-center">
+        <h1 className="display-4 mb-0">Carrito de Compras</h1>
+      </div>
 
-            <input 
-              type="radio" 
-              className="btn-check" 
-              id="mercadoPago-outlined" 
-              autoComplete="off"
-              checked={metodoPago === "Mercado Pago"}
-              onChange={() => handleMetodoPago("Mercado Pago")}
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-6">
+            <h1 className="display-6 mb-3">
+              <small className="text-body-secondary">
+                ¿Desea agregar o eliminar algo?
+              </small>
+            </h1>
+            <CartTabla
+              cartItems={cartItems}
+              modificarCantidad={modificarCantidad}
+              eliminarDetallePedido={eliminarDetallePedido}
             />
-            <label className="btn btn-outline-primary" htmlFor="mercadoPago-outlined">Mercado Pago</label>
           </div>
 
-          <h3>Tipo de Envío</h3>
-          <div className="mb-3">
-            <input 
-              type="radio" 
-              className="btn-check" 
-              id="delivery-outlined" 
-              autoComplete="off" 
-              checked={tipoEnvio === "Delivery"}
-              onChange={() => handleTipoEnvio("Delivery")}
+          <div className="col-md-6">
+            <h1 className="display-6 mb-3">
+              <small className="text-body-secondary">
+                Seleccione el tipo de envío y pago
+              </small>
+            </h1>
+            <CartTarjeta
+              tipoEnvio={tipoEnvio}
+              metodoPago={metodoPago}
+              handleTipoEnvio={handleTipoEnvio}
+              handleMetodoPago={handleMetodoPago}
+              domicilio={domicilio}
+              costoDelivery={costoDelivery}
+              descuento={descuento}
+              subTotal={subTotal}
             />
-            <label className="btn btn-outline-success" htmlFor="delivery-outlined">Delivery</label>
-
-            <input 
-              type="radio" 
-              className="btn-check" 
-              id="retiroLocal-outlined" 
-              autoComplete="off"
-              checked={tipoEnvio === "Retiro en el Local"}
-              onChange={() => handleTipoEnvio("Retiro en el Local")}
-            />
-            <label className="btn btn-outline-success" htmlFor="retiroLocal-outlined">Retiro en el Local</label>
           </div>
+        </div>
+      </div>
 
-        <button 
-        type="submit"
-        className="btn btn-primary me-2"
-        >
+      <form onSubmit={handleConfirmarPedido}>
+        <div className="d-flex justify-content-center align-items-center mb-4">
+          <button type="submit" className="btn btn-primary me-2">
             Confirmar Pedido
-        </button>
-        <button 
-        type="button" 
-        className="btn btn-secondary me-2" 
-        onClick={onContinue}
-      >
-        Seguir Agregando Productos
-      </button>
-      <button 
-        type="button" 
-        className="btn btn-danger" 
-        onClick={onCancel}
-      >
-        Cancelar
-      </button>
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary me-2"
+            onClick={onContinue}
+          >
+            Seguir Agregando Productos
+          </button>
+          <button type="button" className="btn btn-danger" onClick={onCancel}>
+            Cancelar
+          </button>
         </div>
       </form>
     </div>

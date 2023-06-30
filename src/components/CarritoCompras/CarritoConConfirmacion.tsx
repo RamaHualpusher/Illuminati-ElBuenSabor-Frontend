@@ -3,9 +3,10 @@ import { CartContext } from './CartProvider';
 import ConfirmacionPedido from './ConfirmacionPedido';
 import { useNavigate } from 'react-router-dom';
 import AdminBar from '../NavBar/AdminBar';
+
 const CarritoConConfirmacion: React.FC = () => {
-    const { cartItems, removeFromCart, incrementItem, decrementItem, clearCart } = useContext(CartContext);
-    const navigate = useNavigate();
+  const { cartItems, removeFromCart, incrementItem, decrementItem, clearCart } = useContext(CartContext);
+  const navigate = useNavigate();
   const [metodoPago, setMetodoPago] = useState('Efectivo');
   const [tipoEnvio, setTipoEnvio] = useState('Delivery');
 
@@ -13,9 +14,9 @@ const CarritoConConfirmacion: React.FC = () => {
     const item = cartItems.find(item => item.id === id);
     if (item) {
       if (cantidad > item.quantity) {
-        incrementItem(id);  
+        incrementItem(id);
       } else if (cantidad < item.quantity) {
-        decrementItem(id);  
+        decrementItem(id);
       }
     }
   };
@@ -23,29 +24,29 @@ const CarritoConConfirmacion: React.FC = () => {
     clearCart();
     navigate("/");
   }
-  
+
   const onContinue = () => {
     navigate("/");
   }
 
   return (
     <>
-    <AdminBar />
-    <ConfirmacionPedido
-      cartItems={cartItems}
-      metodoPago={metodoPago}
-      tipoEnvio={tipoEnvio}
-      setMetodoPago={setMetodoPago}
-      setTipoEnvio={setTipoEnvio}
-      modificarCantidad={modificarCantidad}
-      eliminarDetallePedido={id => {
-        removeFromCart(id);
-      }}
-      onCancel={onCancel}
-      onContinue={onContinue}
-    />
+      <AdminBar />
+      <ConfirmacionPedido
+        cartItems={cartItems}
+        metodoPago={metodoPago}
+        tipoEnvio={tipoEnvio}
+        setMetodoPago={setMetodoPago}
+        setTipoEnvio={setTipoEnvio}
+        modificarCantidad={modificarCantidad}
+        eliminarDetallePedido={id => {
+          removeFromCart(id);
+        }}
+        onCancel={onCancel}
+        onContinue={onContinue}
+      />
     </>
-    
+
   );
 }
 
