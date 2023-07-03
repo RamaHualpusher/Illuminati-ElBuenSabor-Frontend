@@ -1,30 +1,21 @@
 import React from "react";
-import { DetallePedido } from "../../interface/DetallePedido";
-import { Usuario } from "../../interface/Usuario";
-import { Domicilio } from "../../interface/Domicilio";
 import "./GenerarFacturaModal.css";
+import { Pedido } from "../../interface/Pedido";
 
 interface FacturaPDFProps {
-  detallePedidos: DetallePedido[];
-  usuario: Usuario | undefined;
-  domicilio: Domicilio | undefined;
-  numeroPedido: number;
-  fechaPedido: Date | undefined;
-  esEfectivo: boolean;
-  esDelivery: boolean;
-  totalPedido: number;
+  pedido:Pedido;
 }
 
-const FacturaPDF: React.FC<FacturaPDFProps> = ({
-  detallePedidos,
-  usuario,
-  domicilio,
-  numeroPedido,
-  fechaPedido,
-  esEfectivo,
-  esDelivery,
-  totalPedido,
-}) => {
+const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
+  const {
+    numeroPedido,
+    fechaPedido,
+    esEfectivo,
+    esDelivery,
+    totalPedido,
+    Usuario,
+    DetallePedido,
+  } = pedido;
   return (
     <div className="modal-overlay">
       <div className="modal-container border-black">
@@ -57,7 +48,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {detallePedidos.map((detalle) => (
+                {DetallePedido.map((detalle) => (
                   <tr key={detalle?.idDetallePedido}>
                     <td>{detalle?.cantidad}</td>
                     <td>{detalle?.Producto?.nombre}</td>
@@ -89,9 +80,9 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
               <div>Envío</div>
               <div>
                 <p>
-                  Dirección: {domicilio?.calle} {domicilio?.numero},
+                Dirección: {Usuario?.Domicilio?.calle} {Usuario?.Domicilio?.numero},
                   <br />
-                  {domicilio?.localidad}
+                  {Usuario?.Domicilio?.localidad}
                 </p>
               </div>
             </div>
@@ -101,7 +92,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({
             style={{ textAlign: "center" }}
           >
             <p>
-              Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
+            Muchas gracias {Usuario?.nombre} {Usuario?.apellido} por comprar en
               <br />
               El Buen Sabor
             </p>
