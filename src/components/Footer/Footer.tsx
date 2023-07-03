@@ -6,11 +6,11 @@ const Footer: React.FC = () => {
     <footer className="bg-dark py-5">
       <Container>
         <Row className="align-items-center">
-          <Col md={4}>
+          <Col md={4} className="text-center text-md-start mb-3 mb-md-0">
             <p className="text-muted mb-0">© {new Date().getFullYear()} El Buen Sabor</p>
           </Col>
-          <Col md={8}>
-            <ul className="list-unstyled mb-0 d-flex justify-content-end ">
+          <Col md={8} className="text-center text-md-end">
+            <ul className="list-unstyled mb-0 d-flex justify-content-center justify-content-md-end">
               <li className="mx-2">
                 <i className="bi bi-whatsapp text-white"></i>
                 <a href={`https://wa.me/5492613695874`} target="_blank" rel="noreferrer" className="footer-link text-white px-1" >

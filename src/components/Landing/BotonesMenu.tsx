@@ -1,32 +1,12 @@
 import React, { FC } from "react";
-import { Form } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
+import { IBotonMenu, IBotonesMenuProps } from "../../interface/IBotonesMenu";
 
-interface Button {
-  value: string;
-  label: string;
-  icon: string;
-}
-
-interface BotonesMenuProps {
-  selectedCategory: string;
-  onCategoryChange: (category: string) => void;
-}
-
-const buttonStyle = {
-  marginRight: "70px",
-  border: "none",
-  outline: "none",
-};
-
-const iconStyle = {
-  fontSize: "260%",
-};
-
-const BotonesMenu: FC<BotonesMenuProps> = ({
+const BotonesMenu: FC<IBotonesMenuProps> = ({
   selectedCategory,
   onCategoryChange,
 }) => {
-  const buttons: Button[] = [
+  const buttons: IBotonMenu[] = [
     {
       value: "Todos",
       label: "Todos",
@@ -59,22 +39,19 @@ const BotonesMenu: FC<BotonesMenuProps> = ({
   };
 
   return (
-    <Form className="d-flex justify-content-center align-items-center">
+    <Form className="d-flex justify-content-center align-items-center flex-wrap">
       {buttons.map((button) => (
-        <button
+        <Button
           key={button.value}
-          type="button"
-          className={`btn ${
-            selectedCategory === button.value ? "btn-dark" : "btn-outline-secondary"
-          }`}
-          value={button.value}
+          variant={selectedCategory === button.value ? "dark" : "outline-secondary"}
           onClick={() => handleOptionChange(button.value)}
-          style={buttonStyle}
+          className="me-3 mb-3 border-0"
+          style={{ minWidth: "100px" }}
         >
           {button.label}
           <br />
-          <i className={button.icon} style={iconStyle} />
-        </button>
+          <i className={button.icon} style={{ fontSize: "260%" }} />
+        </Button>
       ))}
     </Form>
   );

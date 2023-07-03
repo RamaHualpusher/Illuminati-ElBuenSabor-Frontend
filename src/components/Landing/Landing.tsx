@@ -69,13 +69,15 @@ export default function Landing() {
         onCategoryChange={handleCategoryChange}
         selectedCategory={selectedCategory}
       />
-      <Catalogo filteredProductos={filteredProductos} />
-      <ComoFunc backgroundImage={"/assets/img/FondoComoFunc.jpg"} />
+      <div className="mt-3 d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+        <Catalogo filteredProductos={filteredProductos} />
+      </div>
+      <ComoFunc />
       <DondeEstamos />
       {showScrollButton && (
         <div className="position-fixed bottom-0 end-0 mb-3 me-3">
           <button className="btn btn-primary btn-lg" onClick={handleScrollToTop}>
-          <i className="bi bi-caret-up-square-fill"></i>
+            <i className="bi bi-caret-up-square-fill"></i>
           </button>
         </div>
       )}

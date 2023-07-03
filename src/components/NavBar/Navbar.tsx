@@ -19,6 +19,7 @@ const Navbar: FC = () => {
   const [produc, setProduc] = useState<Producto[]>([]);
   const [producComplete, setProducComplete] = useState<Producto[]>([]);
   const { setSearchParam } = useContext(SearchContext);
+  const cartVacio = cartItems.length === 0;
 
   const toggleNavbar = () => {
     setNavbarOpen(!navbarOpen);
@@ -64,7 +65,6 @@ const Navbar: FC = () => {
   };
 
   const handleSearch = (searchParam: string) => {
-    //filter(searchParam);
     setSearchParam(searchParam);
   };
 
@@ -82,7 +82,7 @@ const Navbar: FC = () => {
               height: '50px',
             }}
           />
-          <a className="navbar-brand" href="/">El Buen Sabor - Illuminati</a>
+          <Link className="navbar-brand" to="/">El Buen Sabor - Illuminati</Link>
         </div>
 
         <button className="navbar-toggler" type="button" onClick={toggleNavbar}>
@@ -91,7 +91,6 @@ const Navbar: FC = () => {
 
         <div className={`collapse navbar-collapse justify-content-end ${navbarOpen ? 'show' : ''}`}>
           <ul className="navbar-nav align-items-center">
-            {/* {searchOpen && <div className="search-bar-container"><SearchBar onSearch={handleSearch} /></div>} */}
             {searchOpen && (
               <div className="search-container">
 
@@ -103,44 +102,44 @@ const Navbar: FC = () => {
               <i className="bi bi-search text-white" style={{ fontSize: '2rem', marginRight: '10px', cursor: 'pointer' }} onClick={toggleSearch}></i>
             </li>
             <li className="nav-item">
-            <DropdownButton
-              title={
-                <>
-                  <i className="bi bi-cart text-white" style={{ fontSize: '2rem', marginRight: '10px' }} onClick={toggleCart}></i>
-                  {cartItems.length > 0 && <span className="badge bg-danger">{cartItems.length}</span>}
-                </>
-              }
-              variant="link"
-              menuVariant="dark"
-              show={cartOpen}
-            >
-              <div className="container-fluid dropdown-menu-custom overflow-auto" style={{maxHeight: '75vh'}}>
-                <button
-                  className="btn-close close-btn"
-                  aria-label="Close"
-                  onClick={() => setCartOpen(false)}
-                ></button>
-                <h3 className='p-3'>Carrito de compras El Buen Sabor</h3>
-                {cartOpen && (
-                  <div className="overflow-auto" style={{maxHeight: '50vh'}}>
-                    {cartItems.length > 0 ? (
-                      <ListGroup className='align-items-center w-100 p-2 '>
-                        {cartItems.map((item) =>
-                          <CartItem key={item.id} item={item} />
-                        )}
-                      </ListGroup>
-                    ) : (
-                      <Dropdown.Item disabled>No hay items en el carrito</Dropdown.Item>
-                    )}
-                    <Dropdown.Item>
-                      
-                        <Link to={"/confirmacion-pedido"} className='btn btn-success text-decoration-none w-100 my-2'>Comprar</Link>
-                      
-                    </Dropdown.Item>
-                  </div>
-                )}
-              </div>
-            </DropdownButton>
+              <DropdownButton
+                title={
+                  <>
+                    <i className="bi bi-cart text-white" style={{ fontSize: '2rem', marginRight: '10px' }} onClick={toggleCart}></i>
+                    {cartItems.length > 0 && <span className="badge bg-danger">{cartItems.length}</span>}
+                  </>
+                }
+                variant="link"
+                menuVariant="dark"
+                show={cartOpen}
+              >
+                <div className="container-fluid dropdown-menu-custom overflow-auto" style={{ maxHeight: '75vh' }}>
+                  <button
+                    className="btn-close close-btn"
+                    aria-label="Close"
+                    onClick={() => setCartOpen(false)}
+                  ></button>
+                  <h3 className='p-3'>Carrito de compras El Buen Sabor</h3>
+                  {cartOpen && (
+                    <div className="overflow-auto" style={{ maxHeight: '50vh' }}>
+                      {cartItems.length > 0 ? (
+                        <ListGroup className='align-items-center w-100 p-2 '>
+                          {cartItems.map((item) =>
+                            <CartItem key={item.id} item={item} />
+                          )}
+                        </ListGroup>
+                      ) : (
+                        <Dropdown.Item disabled>No hay items en el carrito</Dropdown.Item>
+                      )}
+                      {!cartVacio && (
+                        <Dropdown.Item>
+                          <Link to={"/confirmacion-pedido"} className='btn btn-success text-decoration-none w-100 my-2'>Comprar</Link>
+                        </Dropdown.Item>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </DropdownButton>
 
 
             </li>

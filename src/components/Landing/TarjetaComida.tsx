@@ -1,14 +1,9 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { CartContext, CartItem } from '../CarritoCompras/CartProvider';
-import { Producto } from '../../interface/Producto';
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { CartContext, CartItem } from "../CarritoCompras/CartProvider";
+import { ICardProps } from "../../interface/ICard";
 
-interface CardProps {
-  producto: Producto;
-  buttonText: string;
-}
-
-const TarjetaComida: React.FC<CardProps> = ({ producto, buttonText }) => {
+const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText }) => {
   const { addToCart } = useContext(CartContext);
 
   const handleCartClick = () => {
@@ -29,16 +24,19 @@ const TarjetaComida: React.FC<CardProps> = ({ producto, buttonText }) => {
   };
 
   return (
-    <div className="card" style={{ width: '18rem', marginBottom: '20px', marginLeft: '16px' }}>
+    <div
+      className="card"
+      style={{ width: "18rem", marginBottom: "20px", marginLeft: "16px" }}
+    >
       <img
         className="card-img-top"
         src={producto.imagen}
         alt="Card image cap"
         style={{
-          width: '100%',
-          height: '150px',
-          objectFit: 'cover',
-          borderRadius: '0%',
+          width: "100%",
+          height: "150px",
+          objectFit: "cover",
+          borderRadius: "0%",
         }}
       />
 
@@ -46,7 +44,10 @@ const TarjetaComida: React.FC<CardProps> = ({ producto, buttonText }) => {
         <h5 className="card-title">{producto.nombre}</h5>
         <p className="card-text">{producto.denominacion}</p>
 
-        <button onClick={handleCartClick} className="btn btn-primary mb-2">
+        <button
+          onClick={handleCartClick}
+          className="btn btn-primary mb-2"
+        >
           {buttonText}
         </button>
         <Link to={`/productos/${producto.idProducto}`} className="btn btn-primary float-right">

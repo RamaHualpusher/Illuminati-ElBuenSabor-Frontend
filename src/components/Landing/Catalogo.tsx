@@ -1,12 +1,8 @@
 import React from "react";
 import TarjetaComida from "./TarjetaComida";
-import { Producto } from "../../interface/Producto";
+import { ICatalogoProps } from "../../interface/ICatalogo";
 
-interface CatalogoProps {
-  filteredProductos: Producto[];
-}
-
-const Catalogo: React.FC<CatalogoProps> = ({ filteredProductos }) => {
+const Catalogo: React.FC<ICatalogoProps> = ({ filteredProductos }) => {
   const getTarjetaComidaContainerClass = (totalTarjetas: number) => {
     if (totalTarjetas <= 1) {
       return "col-md-12";
@@ -20,29 +16,33 @@ const Catalogo: React.FC<CatalogoProps> = ({ filteredProductos }) => {
   };
 
   return (
-    <div className="d-flex justify-content-center mt-3">
-      {filteredProductos.length === 0 ? (
-        <h4 className="display-4 mb-4">El producto en búsqueda no se encuentra.
-          <br />
-          <i className="bi bi-hand-thumbs-down"></i>
-        </h4>
-      ) : (
-        <div className="row">
-          {filteredProductos.map((producto, index) => (
-            <div
-              className={`mx-auto text-center ${getTarjetaComidaContainerClass(
-                filteredProductos.length
-              )}`}
-              key={index}
-            >
-              <TarjetaComida
-                producto={producto}
-                buttonText={"Agregar al Carrito"}
-              />
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="mt-3 d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+      <div>
+        {filteredProductos.length === 0 ? (
+          <h4 className="display-4 mb-4 text-center">
+            El producto en búsqueda no se encuentra.
+            <br />
+            <i className="bi bi-hand-thumbs-down"></i>
+          </h4>
+        ) : (
+          <div className="row justify-content-center">
+            {filteredProductos.map((producto, index) => (
+              <div
+                className={`text-center ${getTarjetaComidaContainerClass(
+                  filteredProductos.length
+                )}`}
+                key={index}
+                style={{ marginBottom: "20px" }}
+              >
+                <TarjetaComida
+                  producto={producto}
+                  buttonText={"Agregar al Carrito"}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

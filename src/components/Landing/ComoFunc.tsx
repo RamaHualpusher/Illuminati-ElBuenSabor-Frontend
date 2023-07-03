@@ -1,23 +1,19 @@
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
-interface Props {
-  backgroundImage: string;
-}
-
-const ComoFunc: React.FC<Props> = ({ backgroundImage }) => {
+const ComoFunc: React.FC = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: `url('/assets/img/FondoComoFunc.jpg')`,
         backgroundSize: "cover",
-        height: "100vh",
+        minHeight: "100vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center"
       }}
     >
-      <div className="d-flex align-items-center justify-content-center" style={{ height: "100vh" }}>
+      <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
         <Container>
           <h1 className="text-center">¿Cómo Funciona?</h1>
           <Row className="justify-content-center">
