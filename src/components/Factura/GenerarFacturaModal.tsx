@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DetallePedido } from "../../interface/DetallePedido";
-import { Usuario } from "../../interface/Usuario";
-import { Domicilio } from "../../interface/Domicilio";
+import { Pedido } from "../../interface/Pedido";
 import AdminBar from "../NavBar/AdminBar";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useLocation } from "react-router-dom";
@@ -16,15 +14,12 @@ interface GenerarFacturaModalProps {
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   closeModal,
 }) => {
-  const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
-  const [usuario, setUsuario] = useState<Usuario>();
-  const [domicilio, setDomicilio] = useState<Domicilio>();
+  const [pedido, setPedido] = useState<Pedido | null>(null); 
   const location = useLocation();
   const pedidoParam = location.pathname.split("/factura/")[1];
-  const pedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : null;
+  const parsedPedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : null;
   const [showCreditoModal, setShowCreditoModal] = useState(false);
   const [showModal, setShowModal] = useState(true);
-
   
   const openCreditoModal = () => {
     setShowCreditoModal(true);
@@ -32,14 +27,10 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   };
 
   useEffect(() => {
-    if (pedido) {
-      setDetallePedidos(pedido.DetallePedido || []);
-      setUsuario(pedido.Usuario);
-      if (pedido.Usuario) {
-        setDomicilio(pedido.Usuario.Domicilio);
-      }
+    if (parsedPedido) {
+      setPedido(parsedPedido);
     }
-  }, [pedido]);
+  }, [parsedPedido]);
 
   if (!pedido) {
     return <div>Error: Pedido no encontrado</div>;
@@ -72,10 +63,10 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
               </div>
               <div className="details-container">
                 <h2>DETALLES DEL PEDIDO</h2>
-                <p>Número de Pedido: {pedido.numeroPedido}</p>
-                <p>Fecha: {pedido.fechaPedido?.toLocaleString()}</p>
+                <p>Número de Pedido: {pedido?.numeroPedido}</p>
+                <p>Fecha: {pedido?.fechaPedido?.toLocaleString()}</p>
                 <p>
-                  Forma de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
+                  Forma de Pago: {pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}
                 </p>
               </div>
               <div className="table-container">
@@ -88,7 +79,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {detallePedidos?.map((detalle) => (
+                    {pedido?.DetallePedido?.map((detalle) => (
                       <tr key={detalle?.idDetallePedido}>
                         <td>{detalle?.cantidad}</td>
                         <td>{detalle?.Producto?.nombre}</td>
@@ -99,7 +90,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                   <tfoot>
                     <tr>
                       <td colSpan={3} style={{ textAlign: "right" }}>
-                        Total: ${pedido.totalPedido}
+                        Total: ${pedido?.totalPedido}
                       </td>
                     </tr>
                   </tfoot>
@@ -108,20 +99,20 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
               <div className="payment-container">
                 <div className="left-section" style={{ textAlign: "left" }}>
                   <p>
-                    Tipo de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
+                    Tipo de Pago: {pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}
                     <br />
                     Descuento: {/* Agrega el descuento */}
                     <br />
-                    Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
+                    Envío: {pedido?.esDelivery ? "Envío domicilio" : "Retiro local"}
                   </p>
-                  <p>Total a pagar: ${pedido.totalPedido}</p>
+                  <p>Total a pagar: ${pedido?.totalPedido}</p>
                 </div>
                 <div className="right-section">
                   <h2>Envío</h2>
                   <p>
-                    Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero},
+                    Dirección: {pedido?.Usuario?.Domicilio?.calle} {pedido?.Usuario?.Domicilio?.numero},
                     <br />
-                    {usuario?.Domicilio?.localidad}
+                    {pedido?.Usuario?.Domicilio?.localidad}
                   </p>
                 </div>
               </div>
@@ -130,7 +121,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 style={{ textAlign: "center" }}
               >
                 <p>
-                  Muchas gracias {usuario?.nombre} {usuario?.apellido} por comprar en
+                  Muchas gracias {pedido?.Usuario?.nombre} {pedido?.Usuario?.apellido} por comprar en
                   <br />
                   El Buen Sabor
                 </p>
@@ -140,14 +131,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                   <PDFDownloadLink
                     document={
                       <FacturaPDF
-                        detallePedidos={detallePedidos}
-                        usuario={usuario}
-                        domicilio={domicilio}
-                        numeroPedido={pedido.numeroPedido}
-                        fechaPedido={pedido.fechaPedido}
-                        esEfectivo={pedido.esEfectivo}
-                        esDelivery={pedido.esDelivery}
-                        totalPedido={pedido.totalPedido}
+                      pedido={pedido}
                       />
                     }
                     fileName="factura.pdf"

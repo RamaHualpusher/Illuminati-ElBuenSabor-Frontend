@@ -121,15 +121,8 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                         <div className="pdf-container">
                             <PDFDownloadLink
                                 document={
-                                    <FacturaPDF
-                                        detallePedidos={detallePedidos}
-                                        usuario={usuario}
-                                        domicilio={domicilio}
-                                        numeroPedido={pedido.numeroPedido}
-                                        fechaPedido={pedido.fechaPedido}
-                                        esEfectivo={pedido.esEfectivo}
-                                        esDelivery={pedido.esDelivery}
-                                        totalPedido={pedido.totalPedido}
+                                    <FacturaPDF                                      
+                                        pedido={pedido}
                                     />
                                 }
                                 fileName="factura.pdf"
