@@ -14,9 +14,9 @@ function App(): JSX.Element {
   return (
     <div className="App">
       <SearchProvider>
-      <CartProvider>
-        <IndexRouter />
-      </CartProvider>
+        <CartProvider>
+          <IndexRouter />
+        </CartProvider>
       </SearchProvider>
     </div>
   );

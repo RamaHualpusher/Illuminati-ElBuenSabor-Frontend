@@ -26,7 +26,7 @@ if (root) {
     </React.StrictMode>
   );
 
-  (ReactDOM as any).createRoot(root).render(app);
+  ReactDOM.render(app, root);
 }
 
 reportWebVitals();
