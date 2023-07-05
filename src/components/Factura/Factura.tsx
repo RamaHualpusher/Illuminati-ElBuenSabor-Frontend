@@ -103,9 +103,8 @@ const Factura = () => {
               data={facturas}
               columns={columns}
               actions={actions}
-              onView={onView} // Utilizar la función onView para abrir el modal en una nueva pestaña
-              customSearch={customSearch}
-            // target="_blank"
+              onView={onView} 
+              customSearch={customSearch}         
             />
           </Col>
         </Row>

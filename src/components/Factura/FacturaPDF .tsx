@@ -48,7 +48,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
                 </tr>
               </thead>
               <tbody>
-                {DetallePedido.map((detalle) => (
+                {DetallePedido?.map((detalle) => (
                   <tr key={detalle?.idDetallePedido}>
                     <td>{detalle?.cantidad}</td>
                     <td>{detalle?.Producto?.nombre}</td>
