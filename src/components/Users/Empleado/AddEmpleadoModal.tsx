@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { Rol } from "../../../interface/Rol";
 import { Usuario } from "../../../interface/Usuario";
 import { Domicilio } from "../../../interface/Domicilio";
@@ -58,6 +58,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
     handleEmpleadoAdd(newEmpleado);
     handleClose();
   };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -137,35 +138,38 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
           </Form.Group>
           <Form.Group className="mb-3" controlId="formDomicilio">
             <Form.Label>Domicilio:</Form.Label>
-            <br />
-            <Form.Label>Calle</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese calle"
-              value={domicilios?.calle}
-              onChange={(event) => setCalle(event.target.value)}
-              required>
-            </Form.Control>
-            <div>
-              <Form.Label>Número</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Ingrese número"
-                value={domicilios?.numero}
-                onChange={(event) => setNumero(event.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Form.Label>Localidad</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Ingrese localidad"
-                value={domicilios?.localidad}
-                onChange={(event) => setLocalidad(event.target.value)}
-                required
-              />
-            </div>
+            <Row>
+              <Col>
+                <Form.Label>Calle</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ingrese calle"
+                  value={calle}
+                  onChange={(event) => setCalle(event.target.value)}
+                  required
+                />
+              </Col>
+              <Col>
+                <Form.Label>Número</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese número"
+                  value={numero}
+                  onChange={(event) => setNumero(event.target.value)}
+                  required
+                />
+              </Col>
+              <Col>
+                <Form.Label>Localidad</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ingrese localidad"
+                  value={localidad}
+                  onChange={(event) => setLocalidad(event.target.value)}
+                  required
+                />
+              </Col>
+            </Row>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

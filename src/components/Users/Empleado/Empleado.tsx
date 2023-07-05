@@ -119,13 +119,14 @@ const Empleado = () => {
         <div>
             <Container fluid>
                 <Row className="mt-3">
-                    <Col sm={10}>
+                    <Col>
                         <h1>Buscar Empleado</h1>
                     </Col>
-
                 </Row>
                 <Row className="mt-3">
-                    <Col>
+                    <Col sm={12}>
+                        {/* Wrap the GenericTable inside a responsive Table */}
+                        {/* <Table responsive> */}
                         <GenericTable
                             data={empleados}
                             columns={columns}
@@ -134,20 +135,24 @@ const Empleado = () => {
                             onUpdate={handleEditModalOpen}
                             onDelete={handleEmpleadoDelete}
                         />
+                        {/* </Table> */}
                     </Col>
                 </Row>
                 <AddEmpleadoModal
                     show={addModalShow}
                     handleClose={handleAddModalClose}
-                    handleEmpleadoAdd={handleEmpleadoAdd} />
+                    handleEmpleadoAdd={handleEmpleadoAdd}
+                />
 
                 <EditEmpleadoModal
                     show={editModalShow}
                     handleClose={handleEditModalClose}
                     handleEmpleadoEdit={handleEmpleadoEdit}
-                    selectedEmpleado={selectedUsuario} />
+                    selectedEmpleado={selectedUsuario}
+                />
             </Container>
         </div>
+
     );
 };
 
