@@ -4,10 +4,6 @@ import { Pedido } from "../../interface/Pedido";
 import Buscador from "../Buscador/Buscador";
 import PedidoList from "../Pedidos/PedidoList";
 
-interface Usuario {
-  // Define las propiedades de la interfaz de Usuario aquí
-}
-
 const CajeroPage = () => {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [pedidosComplete, setPedidosComplete] = useState<Pedido[]>([]);

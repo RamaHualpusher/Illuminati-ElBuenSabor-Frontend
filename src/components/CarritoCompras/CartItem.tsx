@@ -36,7 +36,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
               -
             </button>
             <button className="btn btn-sm btn-outline-secondary mx-1 px-3 p-2" disabled>
-              <span className="h6 text-light">{item.quantity}</span>
+              <span className="h6">{item.quantity}</span>
             </button>
             <button className="btn btn-sm btn-outline-secondary mx-1" onClick={() => incrementItem(item.id)}>
               +
