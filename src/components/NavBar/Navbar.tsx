@@ -8,7 +8,6 @@ import CartItem from '../CarritoCompras/CartItem';
 import { Producto } from "../../interface/Producto";
 import { SearchContext } from '../Buscador/SearchContext';
 import { Link } from 'react-router-dom';
-import Buscador from '../Buscador/Buscador';
 
 const Navbar: FC = () => {
   const { isAuthenticated, user } = useAuth0();
@@ -91,11 +90,9 @@ const Navbar: FC = () => {
         <div className={`collapse navbar-collapse justify-content-end ${navbarOpen ? 'show' : ''}`}>
           <ul className="navbar-nav align-items-center">
             {searchOpen && (
-              <form className="d-flex mx-1">
-                <div className="col">
-                  <Buscador onSearch={handleSearch} />
-                </div>
-              </form>
+              <div className="col">
+                <input className="form-control me-1 w-100" type="text" style={{ maxWidth: '500px' }} onChange={(e) => handleSearch(e.target.value)} />
+              </div>
             )}
             <li className="nav-item">
               <Button variant="link" className="nav-link" onClick={toggleSearch}>
@@ -138,10 +135,7 @@ const Navbar: FC = () => {
               </Dropdown>
             </li>
             {isAuthenticated && (
-              <li className="nav-item d-flex align-items-center">
-                <p className="nav-link mb-0">
-                  {user?.name && getFirstName(user.name)}
-                </p>
+              <li className="nav-item d-flex align-items-center mx-2">
                 <img
                   src={user?.picture}
                   alt="imagen usuario"
@@ -151,6 +145,9 @@ const Navbar: FC = () => {
                     height: '50px',
                   }}
                 />
+                <p className="nav-link mb-0">
+                  {user?.name}
+                </p>
               </li>
             )}
             <li className="nav-item ">
