@@ -25,3 +25,18 @@ export interface EditIngredientesModalProps {
   handleIngredientesEdit: (ingredientes: Ingredientes) => void;
   selectedIngredientes: Ingredientes | null;
 }
+
+///Rubros
+export interface EditRubroIngredientesModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleRubroEdit: (rubro: Rubro) => void;
+  selectedRubro: Rubro | null;
+}
+
+export interface AddRubroIngredienteModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleRubroAdd: (rubro: Rubro) => void;
+  
+}

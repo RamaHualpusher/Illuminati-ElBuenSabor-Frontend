@@ -6,7 +6,7 @@ import Factura from "../Factura/Factura";
 import Cliente from "../Users/Clientes/Clientes";
 import RankingClientes from "../RankingClientes/RankingClientes";
 import RankingProductos from "../RankingProductos/RankingProductos";
-import Stock from "../Stock/Stock";
+import Rubro from "../Rubros/Rubros";
 
 export default function OpcionesAdmin() {
   const [selectedOption, setSelectedOption] = useState("facturas");
@@ -33,7 +33,7 @@ export default function OpcionesAdmin() {
     { name: "Categorías", value: "categorias" },
     { name: "Usuarios", value: "usuarios" },
     { name: "Facturas", value: "facturas" },
-    { name: "Stock", value: "stock" },
+    { name: "Rubro", value: "rubro" },
   ];
 
   return (
@@ -113,7 +113,7 @@ export default function OpcionesAdmin() {
         {selectedOption === "clientes" && <Cliente />}
         {selectedOption === "rankingClientes" && <RankingClientes />}
         {selectedOption === "rankingProductos" && <RankingProductos />}
-        {selectedOption === "stock" && <Stock />}
+        {selectedOption === "rubro" && <Rubro />}
       </div>
     </div>
   );

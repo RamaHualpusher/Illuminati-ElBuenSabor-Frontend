@@ -29,3 +29,19 @@ export interface AddProductoModalProps {
   handleClose: () => void;
   handleProductoAdd: (producto: Producto) => void;
 }
+
+
+///Rubros
+
+export interface EditRubroProductoModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleRubroEdit: (rubro: Rubro) => void;
+  selectedRubro: Rubro | null;
+}
+
+export interface AddRubroProductoModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleRubroAdd: (rubro: Rubro) => void;
+}
