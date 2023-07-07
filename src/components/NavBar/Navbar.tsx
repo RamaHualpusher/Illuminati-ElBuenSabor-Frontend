@@ -8,6 +8,7 @@ import CartItem from '../CarritoCompras/CartItem';
 import { Producto } from "../../interface/Producto";
 import { SearchContext } from '../Buscador/SearchContext';
 import { Link } from 'react-router-dom';
+import Buscador from '../Buscador/Buscador';
 
 const Navbar: FC = () => {
   const { isAuthenticated, user } = useAuth0();
@@ -92,7 +93,7 @@ const Navbar: FC = () => {
             {searchOpen && (
               <form className="d-flex mx-1">
                 <div className="col">
-                  <input className="form-control me-1 w-100" type="text" style={{ maxWidth: '500px' }} onChange={(e) => handleSearch(e.target.value)} />
+                  <Buscador onSearch={handleSearch} />
                 </div>
               </form>
             )}
@@ -152,7 +153,7 @@ const Navbar: FC = () => {
                 />
               </li>
             )}
-            <li className="nav-item">
+            <li className="nav-item ">
               {isAuthenticated ? <LogoutButton /> : <LoginButton />}
             </li>
           </ul>

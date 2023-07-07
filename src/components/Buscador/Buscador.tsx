@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 
-interface SearchBarProps {
+interface BuscadorProps {
     onSearch: (searchParam: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+const Buscador: React.FC<BuscadorProps> = ({ onSearch }) => {
     const [search, setSearch] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,4 +39,4 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     );
 };
 
-export default SearchBar;
+export default Buscador;
