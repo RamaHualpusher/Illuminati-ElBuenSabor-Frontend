@@ -69,7 +69,7 @@ export default function Landing() {
         onCategoryChange={handleCategoryChange}
         selectedCategory={selectedCategory}
       />
-      <div className="mt-3 d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+      <div className=" d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
         <Catalogo filteredProductos={filteredProductos} />
       </div>
       <ComoFunc />

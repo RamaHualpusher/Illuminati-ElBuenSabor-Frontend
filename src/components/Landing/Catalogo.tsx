@@ -16,7 +16,7 @@ const Catalogo: React.FC<ICatalogoProps> = ({ filteredProductos }) => {
   };
 
   return (
-    <div className="mt-3 d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+    <div className=" d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
       <div>
         {filteredProductos.length === 0 ? (
           <h4 className="display-4 mb-4 text-center">

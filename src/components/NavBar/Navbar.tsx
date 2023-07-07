@@ -1,7 +1,6 @@
 import React, { FC, useState, useContext, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Dropdown, DropdownButton, ListGroup } from 'react-bootstrap';
-import './Navbar.css';
+import { Dropdown, ListGroup, Button } from 'react-bootstrap';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import { CartContext } from '../CarritoCompras/CartProvider';
@@ -69,7 +68,6 @@ const Navbar: FC = () => {
   };
 
   return (
-    // fixed top sirve para dejar fijo el navBar
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div className="container">
         <div className="d-flex align-items-center">
@@ -92,38 +90,35 @@ const Navbar: FC = () => {
         <div className={`collapse navbar-collapse justify-content-end ${navbarOpen ? 'show' : ''}`}>
           <ul className="navbar-nav align-items-center">
             {searchOpen && (
-              <div className="search-container">
-
-                <input type="text" onChange={(e) => handleSearch(e.target.value)} />
-
-              </div>
+              <form className="d-flex mx-1">
+                <div className="col">
+                  <input className="form-control me-1 w-100" type="text" style={{ maxWidth: '500px' }} onChange={(e) => handleSearch(e.target.value)} />
+                </div>
+              </form>
             )}
             <li className="nav-item">
-              <i className="bi bi-search text-white" style={{ fontSize: '2rem', marginRight: '10px', cursor: 'pointer' }} onClick={toggleSearch}></i>
+              <Button variant="link" className="nav-link" onClick={toggleSearch}>
+                <i className="bi bi-search text-white" style={{ fontSize: '2rem', marginRight: '10px', cursor: 'pointer' }}></i>
+              </Button>
             </li>
             <li className="nav-item">
-              <DropdownButton
-                title={
-                  <>
-                    <i className="bi bi-cart text-white" style={{ fontSize: '2rem', marginRight: '10px' }} onClick={toggleCart}></i>
-                    {cartItems.length > 0 && <span className="badge bg-danger">{cartItems.length}</span>}
-                  </>
-                }
-                variant="link"
-                menuVariant="dark"
-                show={cartOpen}
-              >
-                <div className="container-fluid dropdown-menu-custom overflow-auto" style={{ maxHeight: '75vh' }}>
+              <Dropdown show={cartOpen} onToggle={toggleCart}>
+                <Dropdown.Toggle variant="link" id="dropdown-cart">
+                  <i className="bi bi-cart text-white" style={{ fontSize: '2rem', marginRight: '10px' }}></i>
+                  {cartItems.length > 0 && <span className="badge bg-danger">{cartItems.length}</span>}
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="dropdown-menu-custom bg-light" style={cartItems.length === 0 ?
+                  { maxHeight: '75vh', width: '250px' } : { maxHeight: '75vh', width: '390px' }}>
                   <button
-                    className="btn-close close-btn"
+                    className="btn-close close-btn mx-1"
                     aria-label="Close"
                     onClick={() => setCartOpen(false)}
                   ></button>
-                  <h3 className='p-3'>Carrito de compras El Buen Sabor</h3>
+                  <h3 className="dropdown-header p-3 ">Carrito de compras El Buen Sabor</h3>
                   {cartOpen && (
-                    <div className="overflow-auto" style={{ maxHeight: '50vh' }}>
+                    <div className="overflow-auto mx-2" style={{ maxHeight: '50vh' }}>
                       {cartItems.length > 0 ? (
-                        <ListGroup className='align-items-center w-100 p-2 '>
+                        <ListGroup className="list-group-flush">
                           {cartItems.map((item) =>
                             <CartItem key={item.id} item={item} />
                           )}
@@ -133,15 +128,13 @@ const Navbar: FC = () => {
                       )}
                       {!cartVacio && (
                         <Dropdown.Item>
-                          <Link to={"/confirmacion-pedido"} className='btn btn-success text-decoration-none w-100 my-2'>Comprar</Link>
+                          <Link to={"/confirmacion-pedido"} className="btn btn-success text-decoration-none w-100 my-2">Comprar</Link>
                         </Dropdown.Item>
                       )}
                     </div>
                   )}
-                </div>
-              </DropdownButton>
-
-
+                </Dropdown.Menu>
+              </Dropdown>
             </li>
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center">
@@ -165,11 +158,8 @@ const Navbar: FC = () => {
           </ul>
         </div>
       </div>
-
     </nav>
   );
 };
 
 export default Navbar;
-
-
