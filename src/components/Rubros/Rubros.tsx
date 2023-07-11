@@ -3,7 +3,7 @@ import RubroIngrediente from './RubroIngredientes/RubroIngrediente';
 import RubroProductos from './RubroProductos/RubroProductos';
 import { Rubro } from '../../interface/Rubro';
 
-const Stock: React.FC = () => {
+const Rubros: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<"rubroProductos" | "rubroIngredientes">("rubroProductos");
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [rubros, setRubros] = useState<Rubro[]>([]);
@@ -29,7 +29,7 @@ const Stock: React.FC = () => {
         <button
           className={`btn btn-primary rounded`}
           style={{
-            width: '48%', // Se ajusta el ancho del botón a 48% del contenedor
+            width: '30%', // Se ajusta el ancho del botón a 48% del contenedor
             height: '50px',
             backgroundColor: selectedOption === 'rubroProductos' ? 'rgba(0, 0, 255, 1)' : 'initial'
           }}
@@ -40,7 +40,7 @@ const Stock: React.FC = () => {
         <button
           className={`btn btn-primary rounded`}
           style={{
-            width: '48%', // Se ajusta el ancho del botón a 48% del contenedor
+            width: '30%', // Se ajusta el ancho del botón a 48% del contenedor
             height: '50px',
             backgroundColor: selectedOption === 'rubroIngredientes' ? 'rgba(0, 0, 255, 1)' : 'initial'
           }}
@@ -57,4 +57,4 @@ const Stock: React.FC = () => {
   );
 };
 
-export default Stock;
+export default Rubros;
