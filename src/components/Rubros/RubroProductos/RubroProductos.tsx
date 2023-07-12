@@ -23,6 +23,11 @@ const RubroProductos: React.FC = () => {
   const columns: Column<Rubro>[] = [
     // { title: 'ID', field: 'idRubro' },
     { title: 'Nombre', field: 'nombre' },
+    {
+      title: "Estado",
+      field: "activo",
+      render: (rubro: Rubro) => <span>{rubro.activo ? "Activo" : "Inactivo"}</span>,
+    },
   ];
 
   useEffect(() => {
@@ -47,6 +52,10 @@ const RubroProductos: React.FC = () => {
     }
   };
 
+  function updateJsonData(updatedRubros: Rubro[]) {
+    throw new Error('Function not implemented.');
+  }
+
   const handleRubroEdit = async (rubro: Rubro) => {
     try {
       const updatedRubro: Rubro = await handleRequest(
@@ -59,6 +68,8 @@ const RubroProductos: React.FC = () => {
         r.idRubro === updatedRubro.idRubro ? updatedRubro : r
       );
       setRubros(updatedRubros);
+
+      updateJsonData(updatedRubros); // Actualizar el JSON con los rubros modificados
     } catch (error) {
       console.log(error);
     }
@@ -139,3 +150,5 @@ const RubroProductos: React.FC = () => {
 };
 
 export default RubroProductos;
+
+

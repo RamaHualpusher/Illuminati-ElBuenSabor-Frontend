@@ -1,19 +1,22 @@
 [
-    {
-      "idRubro": 1,
-      "nombre": "Pizzas"
-    },
-    {
-      "idRubro": 2,
-      "nombre": "Hamburguesas"
-    },
-    {
-      "idRubro": 3,
-      "nombre": "Bebidas"
-    },
-    {
-      "idRubro": 4,
-      "nombre": "Ofertas"
-    }
-  ]
-  
+  {
+    "idRubro": 1,
+    "nombre": "Pizzas",
+    "activo": true
+  },
+  {
+    "idRubro": 2,
+    "nombre": "Hamburguesas",
+    "activo": true
+  },
+  {
+    "idRubro": 3,
+    "nombre": "Bebidas",
+    "activo": true
+  },
+  {
+    "idRubro": 4,
+    "nombre": "Ofertas",
+    "activo": true
+  }
+]

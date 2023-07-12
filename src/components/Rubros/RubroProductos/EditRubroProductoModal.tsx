@@ -3,16 +3,22 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { Rubro } from '../../../interface/Rubro';
 import { EditRubroProductoModalProps } from '../../../interface/Producto';
 
+interface EditRubroProductoModalState {
+  nombre: string;
+  activo: boolean;
+}
+
 const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
   show,
   handleClose,
   handleRubroEdit,
   selectedRubro,
 }) => {
-  const [nombre, setNombre] = useState('');
-  const [rubroId, setRubroId] = useState<number | null>(null);  
+  const [formState, setFormState] = useState<EditRubroProductoModalState>({
+    nombre: '',
+    activo: false,
+  });
   const [rubros, setRubros] = useState<Rubro[]>([]);
-  
 
   useEffect(() => {
     fetch('/assets/data/rubrosProductosEjemplo.json')
@@ -27,8 +33,11 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
 
   useEffect(() => {
     if (selectedRubro) {
-      setNombre(selectedRubro?.nombre || '');
-      setRubroId(selectedRubro?.idRubro || null);      
+      setFormState((prevState) => ({
+        ...prevState,
+        nombre: selectedRubro.nombre || '',
+        activo: selectedRubro.activo || false,
+      }));
     }
   }, [selectedRubro]);
 
@@ -37,13 +46,46 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
     if (selectedRubro) {
       const updatedRubro: Rubro = {
         ...selectedRubro,
-        nombre,        
-        idRubroPadre: selectedRubro.idRubroPadre,
+        nombre: formState.nombre,
+        activo: formState.activo,
       };
       handleRubroEdit(updatedRubro);
     }
     handleClose();
   };
+
+  const handleStatusChange = (isActivo: boolean) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      activo: isActivo,
+    }));
+  };
+
+  const updateJsonData = (rubrosData: Rubro[]) => {
+    fetch('/assets/data/rubrosProductosEjemplo.json', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(rubrosData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Data updated successfully:', data);
+      })
+      .catch((error) => {
+        console.log('Error updating data:', error);
+      });
+  };
+
+  useEffect(() => {
+    if (selectedRubro) {
+      setFormState({
+        nombre: selectedRubro.nombre || '',
+        activo: selectedRubro.activo || false,
+      });
+    }
+  }, [selectedRubro]);
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -57,31 +99,34 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
             <Form.Control
               type="text"
               placeholder="Ingrese nombre"
-              value={nombre}
-              onChange={(event) => setNombre(event.target.value)}
+              value={formState.nombre}
+              onChange={(event) =>
+                setFormState((prevState) => ({
+                  ...prevState,
+                  nombre: event.target.value,
+                }))
+              }
               required
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formRubro">
-            <Form.Label>Rubro</Form.Label>
-            <Form.Select
-              value={selectedRubro?.idRubro || ''}
-              onChange={(event) => {
-                const rubroId = parseInt(event.target.value);
-                const rubro = rubros.find((rubro) => rubro.idRubro === rubroId);
-                setRubroId(rubroId);                
-              }}
-              required
-            >
-              <option value="">Seleccione un rubro</option>
-              {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
-                  {rubro.nombre}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>        
-          
+            <Form.Label>Estado</Form.Label>
+            <div>
+              <Button
+                variant={formState.activo ? 'outline-primary' : 'primary'}
+                className="mr-2"
+                onClick={() => handleStatusChange(false)}
+              >
+                Activo
+              </Button>
+              <Button
+                variant={formState.activo ? 'primary' : 'outline-primary'}
+                onClick={() => handleStatusChange(true)}
+              >
+                Inactivo
+              </Button>
+            </div>
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -95,5 +140,6 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
     </Modal>
   );
 };
+
 
 export default EditRubroProductoModal;
