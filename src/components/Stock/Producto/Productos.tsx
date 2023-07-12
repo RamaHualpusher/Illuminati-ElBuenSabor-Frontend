@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 import EditProductoModal from "./EditProductoModal";
 import AddProductoModal from "./AddProductoModal";
 import { Producto } from "../../../interface/Producto";
 import { Action, Column } from "../../../interface/CamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
+import { Rubro } from "../../../interface/Rubro";
 
 const Productos: React.FC = () => {
   const [editModalShow, setEditModalShow] = useState(false);
@@ -13,7 +14,10 @@ const Productos: React.FC = () => {
   const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
   const [productos, setProductos] = useState<Producto[]>([]);
   const [productosComplete, setProductosComplete] = useState<Producto[]>([]);
+  const [rubros, setRubros] = useState<Rubro[]>([]); // Agregamos el estado para los rubros
+  const [selectedRubro, setSelectedRubro] = useState<number | null>(null); // Estado para el rubro seleccionado
   const API_URL = "assets/data/productosLanding.json";
+  const API_URL_Rubro = "assets/data/rubrosProductosEjemplo.json";
 
   const actions: Action = {
     create: true,
@@ -47,7 +51,18 @@ const Productos: React.FC = () => {
         console.log(error);
       }
     };
+
+    const fetchRubros = async () => {
+      try {
+        const responseData = await handleRequest("GET", API_URL_Rubro);
+        setRubros(responseData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     fetchProductos();
+    fetchRubros();
   }, []);
 
   const handleProductoAdd = async (producto: Producto) => {
@@ -76,7 +91,10 @@ const Productos: React.FC = () => {
     }
   };
 
-  const handleProductoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleProductoDelete = async (
+    rowData: string[],
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     const productoId: number = +rowData[0];
     try {
@@ -113,6 +131,17 @@ const Productos: React.FC = () => {
     setAddModalShow(false);
   };
 
+   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    console.log(value)
+    setSelectedRubro(prevRubro => prevRubro !== null ? parseInt(value) : null);
+  };
+
+  // Filtrar los productos según el rubro seleccionado
+  const filteredProductos = selectedRubro
+    ? productos.filter((producto) => producto.Rubro.idRubro === selectedRubro)
+    : productos;
+
   return (
     <Container fluid>
       <Row className="justify-content-start align-items-center mb-3">
@@ -122,12 +151,31 @@ const Productos: React.FC = () => {
       </Row>
       <Row>
         <div>
+          <Form.Group controlId="idrubro">
+            <Form.Label>Rubro</Form.Label>
+            <Form.Control
+              as="select"
+              name="idRubro"
+              value={selectedRubro ? selectedRubro.toString() : ""}
+              onChange={handleChange}
+              style={{ width: "250px", margin: "10px" }}
+            >
+              <option value="">Todos los rubros</option>
+              {rubros.map((rubro) => (
+                <option key={rubro.idRubro} value={rubro.idRubro}>
+                  {rubro.nombre}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+
           <GenericTable
-            data={productos}
+            data={filteredProductos}
             columns={columns}
             actions={actions}
             onAdd={handleAddModalOpen}
             onUpdate={handleEditModalOpen}
+          // onDelete={handleProductoDelete}
           />
         </div>
       </Row>
