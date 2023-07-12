@@ -1,18 +1,18 @@
 [
     {
-      "id": 1,
+      "idRubro": 1,
       "nombre": "Pizzas"
     },
     {
-      "id": 2,
+      "idRubro": 2,
       "nombre": "Hamburguesas"
     },
     {
-      "id": 3,
+      "idRubro": 3,
       "nombre": "Bebidas"
     },
     {
-      "id": 4,
+      "idRubro": 4,
       "nombre": "Ofertas"
     }
   ]
