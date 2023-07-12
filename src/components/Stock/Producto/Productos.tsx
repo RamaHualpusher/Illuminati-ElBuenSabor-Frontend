@@ -134,8 +134,7 @@ const Productos: React.FC = () => {
       setSelectedProducto(selected);
       setEditModalShow(true);
     }
-  };
-  
+  };  
 
   const handleEditModalClose = () => {
     setSelectedProducto(null);
@@ -150,23 +149,15 @@ const Productos: React.FC = () => {
     setAddModalShow(false);
   };
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("event", event);
-    const { value } = event.target;
-    console.log("value", value);
-    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
-    console.log("selectedOption", selectedOption);
-    const selectedRubroId = parseInt(value);
-    console.log("selectedRubroId", selectedRubroId);
-    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);
-    console.log("selectedRubro", selectedRubro);
-    
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {    
+    const { value } = event.target;    
+    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];    
+    const selectedRubroId = parseInt(value);    
+    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);    
     setSelectedRubro(selectedRubroId ? selectedRubroId : null);
     setSelectedRubroName(selectedOption.text);
   };
   
-  
-
   const noProductosMessage =
   selectedRubro && filteredProductos.length === 0 ? (
     <p>No hay productos disponibles con el rubro seleccionado.</p>
@@ -181,8 +172,7 @@ const Productos: React.FC = () => {
       </Row>
       <Row>
         <div>
-        <Form.Group controlId="idrubro">
-          <Form.Label>Rubro</Form.Label>
+        <Form.Group controlId="idrubro">          
           <select
               className="form-select"
               name="idRubro"

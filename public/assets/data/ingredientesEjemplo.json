@@ -1,45 +1,44 @@
 [
-    {
-      "idIngredientes": 1,
-      "nombre": "Harina de trigo",
-      "estado": true,
-      "stockMinimo": 10,
-      "stockActual": 20,
-      "Rubro": {
-        "idRubro": 1,
-        "nombre": "Harinas",
-        "idRubroPadre": null
-      },
-      "unidadMedida": "kg",
-      "ProductoIngrediente": []
+  {
+    "idIngredientes": 1,
+    "nombre": "Queso de algp",
+    "estado": true,
+    "stockMinimo": 10,
+    "stockActual": 20,
+    "Rubro": {
+      "idRubro": 1,
+      "nombre": "Quesos",
+      "idRubroPadre": null
     },
-    {
-      "idIngredientes": 2,
-      "nombre": "Azúcar",
-      "estado": true,
-      "stockMinimo": 5,
-      "stockActual": 8,
-      "Rubro": {
-        "idRubro": 2,
-        "nombre": "Endulzantes",
-        "idRubroPadre": null
-      },
-      "unidadMedida": "kg",
-      "ProductoIngrediente": []
+    "unidadMedida": "kg",
+    "ProductoIngrediente": []
+  },
+  {
+    "idIngredientes": 2,
+    "nombre": "Azúcar",
+    "estado": true,
+    "stockMinimo": 5,
+    "stockActual": 8,
+    "Rubro": {
+      "idRubro": 2,
+      "nombre": "Salsas",
+      "idRubroPadre": null
     },
-    {
-      "idIngredientes": 3,
-      "nombre": "Aceite de oliva",
-      "estado": true,
-      "stockMinimo": 3,
-      "stockActual": 4,
-      "Rubro": {
-        "idRubro": 3,
-        "nombre": "Aceites",
-        "idRubroPadre": null
-      },
-      "unidadMedida": "l",
-      "ProductoIngrediente": []
-    }
-  ]
-  
+    "unidadMedida": "kg",
+    "ProductoIngrediente": []
+  },
+  {
+    "idIngredientes": 3,
+    "nombre": "Aceite de oliva",
+    "estado": true,
+    "stockMinimo": 3,
+    "stockActual": 4,
+    "Rubro": {
+      "idRubro": 3,
+      "nombre": "Carnes",
+      "idRubroPadre": null
+    },
+    "unidadMedida": "l",
+    "ProductoIngrediente": []
+  }
+]

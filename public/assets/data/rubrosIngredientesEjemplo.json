@@ -1,26 +1,26 @@
 [
     {
-      "id": 1,
+      "idRubro": 1,
       "nombre": "Quesos"
     },
     {
-      "id": 2,
+      "idRubro": 2,
       "nombre": "Salsas"
     },
     {
-      "id": 3,
+      "idRubro": 3,
       "nombre": "Carnes"
     },
     {
-      "id": 4,
+      "idRubro": 4,
       "nombre": "Verduras"
     },
     {
-      "id": 5,
+      "idRubro": 5,
       "nombre": "Frutas"
     },
     {
-      "id": 6,
+      "idRubro": 6,
       "nombre": "Especias"
     }
   ]
