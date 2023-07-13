@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Rubro } from '../../../interface/Rubro';
 import { AddRubroProductoModalProps } from '../../../interface/Producto';
+import { Rubro } from '../../../interface/Rubro';
 
 const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
   show,
@@ -10,33 +10,25 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
 }) => {
   const [nombre, setNombre] = useState('');
   const [activo, setActivo] = useState(false);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
-
-  useEffect(() => {
-    fetch('/assets/data/rubrosProductosEjemplo.json')
-      .then((response) => response.json())
-      .then((data: Rubro[]) => {
-        setRubros(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!nombre.trim()) {
+    if (!nombre || !nombre.trim()) {
       console.log('El nombre es obligatorio');
       return;
     }
 
     const newRubro: Rubro = {
-      idRubro: 0,
-      nombre: nombre.trim(),
+      idRubro: 0, // Asigna el ID correspondiente, o déjalo en 0 si el backend se encargará de generarlo
+      nombre: nombre.trim(),      
       activo,
     };
     handleRubroAdd(newRubro);
     handleClose();
+
+    // Restablecer los valores del formulario
+    setNombre('');
+    setActivo(false);
   };
 
   const handleStatusChange = (isActivo: boolean) => {
@@ -46,7 +38,7 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar Producto</Modal.Title>
+        <Modal.Title>Agregar rubro de producto</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>

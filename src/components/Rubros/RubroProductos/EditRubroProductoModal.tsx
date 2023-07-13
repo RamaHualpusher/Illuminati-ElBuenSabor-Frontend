@@ -3,94 +3,71 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { Rubro } from '../../../interface/Rubro';
 import { EditRubroProductoModalProps } from '../../../interface/Producto';
 
-interface EditRubroProductoModalState {
-  nombre: string;
-  activo: boolean;
-}
-
 const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
   show,
   handleClose,
   handleRubroEdit,
   selectedRubro,
 }) => {
-  const [formState, setFormState] = useState<EditRubroProductoModalState>({
+  const [rubroData, setRubroData] = useState<Rubro>({
+    idRubro: 0,
     nombre: '',
+    idRubroPadre: undefined,
     activo: false,
   });
-  const [rubros, setRubros] = useState<Rubro[]>([]);
 
   useEffect(() => {
-    fetch('/assets/data/rubrosProductosEjemplo.json')
-      .then((response) => response.json())
-      .then((data: Rubro[]) => {
-        setRubros(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (selectedRubro) {
-      setFormState((prevState) => ({
-        ...prevState,
-        nombre: selectedRubro.nombre || '',
-        activo: selectedRubro.activo || false,
-      }));
+    if (selectedRubro !== null) {
+      setRubroData(selectedRubro);
     }
   }, [selectedRubro]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (selectedRubro) {
-      const updatedRubro: Rubro = {
-        ...selectedRubro,
-        nombre: formState.nombre,
-        activo: formState.activo,
-      };
-      handleRubroEdit(updatedRubro);
+    try {
+      // Guardar cambios en el JSON (ejemplo)
+      const response = await fetch('https://api.example.com/rubrosProductos', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(rubroData),
+      });
+      
+      if (response.ok) {
+        // Actualizar el rubro modificado en el componente padre
+        handleRubroEdit(rubroData);
+      } else {
+        // Manejar errores de la respuesta del servidor
+        console.error('Error al guardar los cambios del rubro');
+      }
+    } catch (error) {
+      // Manejar errores de la solicitud
+      console.error('Error al enviar la solicitud');
     }
+    
     handleClose();
   };
 
   const handleStatusChange = (isActivo: boolean) => {
-    setFormState((prevState) => ({
+    setRubroData((prevState) => ({
       ...prevState,
       activo: isActivo,
     }));
   };
 
-  const updateJsonData = (rubrosData: Rubro[]) => {
-    fetch('/assets/data/rubrosProductosEjemplo.json', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(rubrosData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Data updated successfully:', data);
-      })
-      .catch((error) => {
-        console.log('Error updating data:', error);
-      });
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setRubroData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
-
-  useEffect(() => {
-    if (selectedRubro) {
-      setFormState({
-        nombre: selectedRubro.nombre || '',
-        activo: selectedRubro.activo || false,
-      });
-    }
-  }, [selectedRubro]);
 
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Editar Rubro</Modal.Title>
+        <Modal.Title>Editar rubro de producto</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
@@ -99,13 +76,9 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
             <Form.Control
               type="text"
               placeholder="Ingrese nombre"
-              value={formState.nombre}
-              onChange={(event) =>
-                setFormState((prevState) => ({
-                  ...prevState,
-                  nombre: event.target.value,
-                }))
-              }
+              name="nombre"
+              value={rubroData.nombre}
+              onChange={handleInputChange}
               required
             />
           </Form.Group>
@@ -113,15 +86,15 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
             <Form.Label>Estado</Form.Label>
             <div>
               <Button
-                variant={formState.activo ? 'outline-primary' : 'primary'}
-                className="mr-2"
-                onClick={() => handleStatusChange(false)}
+                variant={rubroData.activo ? 'primary' : 'outline-primary'}
+                className={rubroData.activo ? 'mr-2' : ''}
+                onClick={() => handleStatusChange(true)}
               >
                 Activo
               </Button>
               <Button
-                variant={formState.activo ? 'primary' : 'outline-primary'}
-                onClick={() => handleStatusChange(true)}
+                variant={!rubroData.activo ? 'primary' : 'outline-primary'}
+                onClick={() => handleStatusChange(false)}
               >
                 Inactivo
               </Button>
@@ -140,6 +113,5 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
     </Modal>
   );
 };
-
 
 export default EditRubroProductoModal;

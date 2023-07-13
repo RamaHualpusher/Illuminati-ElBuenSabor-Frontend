@@ -12,7 +12,7 @@
   {
     "idRubro": 3,
     "nombre": "Bebidas",
-    "activo": true
+    "activo": false
   },
   {
     "idRubro": 4,

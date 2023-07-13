@@ -20,16 +20,6 @@ const RubroProductos: React.FC = () => {
     update: true,
   };
 
-  const columns: Column<Rubro>[] = [
-    // { title: 'ID', field: 'idRubro' },
-    { title: 'Nombre', field: 'nombre' },
-    {
-      title: "Estado",
-      field: "activo",
-      render: (rubro: Rubro) => <span>{rubro.activo ? "Activo" : "Inactivo"}</span>,
-    },
-  ];
-
   useEffect(() => {
     const fetchRubros = async () => {
       try {
@@ -42,6 +32,17 @@ const RubroProductos: React.FC = () => {
     };
     fetchRubros();
   }, []);
+
+  const columns: Column<Rubro>[] = [
+    // { title: 'ID', field: 'idRubro' },
+    { title: 'Nombre', field: 'nombre',
+    render: (rubro: Rubro) => <span>{rubro.nombre}</span>, },
+    {
+      title: "Estado",
+      field: "activo",
+      render: (rubro: Rubro) => <span>{rubro.activo ? "Activo" : "Inactivo"}</span>,
+    },
+  ]; 
 
   const handleRubroAdd = async (rubro: Rubro) => {
     try {
@@ -101,6 +102,7 @@ const RubroProductos: React.FC = () => {
       setEditModalShow(true);
     }
   };
+  
 
   const handleEditModalClose = () => {
     setSelectedRubroProducto(null);
@@ -150,5 +152,3 @@ const RubroProductos: React.FC = () => {
 };
 
 export default RubroProductos;
-
-
