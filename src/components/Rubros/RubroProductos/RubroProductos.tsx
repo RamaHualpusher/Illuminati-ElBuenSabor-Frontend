@@ -46,6 +46,7 @@ const RubroProductos: React.FC = () => {
 
   const handleRubroAdd = async (rubro: Rubro) => {
     try {
+      console.log(rubro)
       const newRubro = await handleRequest('POST', API_URL, rubro);
       setRubros([...rubros, newRubro]);
     } catch (error) {
@@ -101,8 +102,7 @@ const RubroProductos: React.FC = () => {
       setSelectedRubroProducto(selected);
       setEditModalShow(true);
     }
-  };
-  
+  };  
 
   const handleEditModalClose = () => {
     setSelectedRubroProducto(null);

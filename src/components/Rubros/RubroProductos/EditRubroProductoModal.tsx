@@ -10,9 +10,9 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
   selectedRubro,
 }) => {
   const [rubroData, setRubroData] = useState<Rubro>({
-    idRubro: 0,
-    nombre: '',
-    idRubroPadre: undefined,
+    idRubro: selectedRubro?.idRubro || 0,
+    nombre: selectedRubro?.nombre || '',
+    idRubroPadre: selectedRubro?.idRubroPadre || undefined,
     activo: false,
   });
 
@@ -71,7 +71,7 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          <Form.Group className="mb-3" controlId="formNombre">
+          <Form.Group className="mb-3" controlId="nombre">
             <Form.Label>Nombre</Form.Label>
             <Form.Control
               type="text"
@@ -82,7 +82,7 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formRubro">
+          <Form.Group className="mb-3" controlId="formActivo">
             <Form.Label>Estado</Form.Label>
             <div>
               <Button

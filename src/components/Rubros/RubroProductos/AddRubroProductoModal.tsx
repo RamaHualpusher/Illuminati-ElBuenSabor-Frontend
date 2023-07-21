@@ -7,30 +7,27 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
   show,
   handleClose,
   handleRubroAdd,
-}) => {
-  const [nombre, setNombre] = useState('');
+}) => {  
   const [activo, setActivo] = useState(false);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [rubroData, setRubroData] = useState<Rubro>({
+    idRubro: 0,
+    nombre: '',
+    idRubroPadre: undefined,
+  });
+  
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!nombre || !nombre.trim()) {
-      console.log('El nombre es obligatorio');
-      return;
-    }
-
-    const newRubro: Rubro = {
-      idRubro: 0, // Asigna el ID correspondiente, o déjalo en 0 si el backend se encargará de generarlo
-      nombre: nombre.trim(),      
-      activo,
-    };
-    handleRubroAdd(newRubro);
+    handleRubroAdd(rubroData);
     handleClose();
-
-    // Restablecer los valores del formulario
-    setNombre('');
-    setActivo(false);
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setRubroData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
   const handleStatusChange = (isActivo: boolean) => {
     setActivo(isActivo);
   };
@@ -47,8 +44,9 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
             <Form.Control
               type="text"
               placeholder="Ingrese nombre"
-              value={nombre}
-              onChange={(event) => setNombre(event.target.value)}
+              name="nombre"
+              value={rubroData.nombre}
+              onChange={handleInputChange}
               required
             />
           </Form.Group>
