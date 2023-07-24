@@ -4,14 +4,14 @@ import { Pedido } from '../../interface/Pedido';
 import { Link } from 'react-router-dom';
 import EstadoPedidoCard from './EstadoPedidoCard';
 
-interface PedidoCardProps {
+interface PedidoCardDeliveryProps {
   pedido: Pedido;
   cambiarEstadoPedido: (nuevoEstado: string) => void;
   btnTikect: boolean;
   phat: string;
 }
 
-const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, btnTikect, phat }) => {
+const PedidoCardDelivery: React.FC<PedidoCardDeliveryProps> = ({ pedido, cambiarEstadoPedido, btnTikect, phat }) => {
   return (
     <Card className="pedido-card mb-2">
       <Card.Body>
@@ -26,7 +26,7 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, bt
           </Col>
           <Col sm={8}>
             <div className="d-flex align-items-center justify-content-end">
-               <EstadoPedidoCard estado={pedido.estadoPedido} />  
+              <EstadoPedidoCard estado={pedido.estadoPedido} />
             </div>
             <div className="d-flex justify-content-end mt-3">
               {btnTikect === true && (
@@ -82,6 +82,20 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, bt
                   </button>
                 </>
               )}
+              {pedido.estadoPedido === 'Entregado' && (
+                <>
+                  <Link to={`/mis-pedido/${pedido.idPedido}`} className="btn btn-primary me-2">
+                    Ver detalles
+                  </Link>
+                </>
+              )}
+              {pedido.estadoPedido === 'Cancelado' && (
+                <>
+                  <Link to={`/mis-pedido/${pedido.idPedido}`} className="btn btn-primary me-2">
+                    Ver detalles
+                  </Link>
+                </>
+              )}
             </div>
           </Col>
         </Row>
@@ -90,4 +104,4 @@ const PedidoCard: React.FC<PedidoCardProps> = ({ pedido, cambiarEstadoPedido, bt
   );
 };
 
-export default PedidoCard;
+export default PedidoCardDelivery;

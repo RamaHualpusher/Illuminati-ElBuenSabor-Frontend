@@ -11,13 +11,14 @@ const EstadoPedidoCard: React.FC<EstadoPedidoProps> = ({ estado }) => {
             case "Entregado":
             case "Listo":
             case "Pagado":
-                return "green";
+                return "#03CA48";
             case "A confirmar":
-                return "red";
+                return "#E07700";
             case "En cocina":
-                return "yellow";
             case "En delivery":
                 return "yellow";
+            case "Cancelado":
+                return "#FF3131"; 
             default:
                 return "white";
         }

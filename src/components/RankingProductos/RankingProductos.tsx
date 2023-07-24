@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from 'react-bootstrap';
 import { Producto } from "../../interface/Producto";
-import { TablaGeneric } from "../TableGeneric/TableGeneric";
+
 
 const RankingProductos = () => {
     const [productos, setProductos] = useState<Producto[]>([]);
     const [addModalShow, setAddModalShow] = useState(false);
-    
+
     useEffect(() => {
         const API_URL = ""; //Poner la url correspondiente
         fetch(API_URL)
@@ -50,7 +50,7 @@ const RankingProductos = () => {
                 </Row>
                 <Row className="mt-3">
                     <Col>
-                        <TablaGeneric columns={columns} data={data} showButton={false} buttonAdd={handleAddModalClose} buttonEdit={defaultAct} buttonDelete={defaultAct} />
+                        {/* <TablaGeneric columns={columns} data={data} showButton={false} buttonAdd={handleAddModalClose} buttonEdit={defaultAct} buttonDelete={defaultAct} /> */}
                     </Col>
                 </Row>
             </Container>
