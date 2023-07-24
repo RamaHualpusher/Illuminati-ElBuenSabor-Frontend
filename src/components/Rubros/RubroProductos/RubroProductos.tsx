@@ -6,6 +6,7 @@ import AddRubroProductoModal from './AddRubroProductoModal';
 import { Rubro } from '../../../interface/Rubro';
 import { Action, Column } from '../../../interface/CamposTablaGenerica';
 import GenericTable from '../../GenericTable/GenericTable';
+import Axios from 'axios';
 
 const RubroProductos: React.FC = () => {
   const [editModalShow, setEditModalShow] = useState(false);
@@ -21,17 +22,27 @@ const RubroProductos: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchRubros = async () => {
+    const buscarRubros = async () => {
       try {
-        const responseData = await handleRequest('GET', API_URL);
-        setRubros(responseData);
-        setRubrosComplete(responseData);
+        const response = await Axios.get(API_URL); // Use Axios to make a GET request
+        setRubros(response.data); // Access the response data using response.data
+        setRubrosComplete(response.data);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchRubros();
+    buscarRubros();
   }, []);
+
+  const handleRubroAdd = async (rubro: Rubro) => {
+    try {
+      console.log(rubro);
+      const response = await Axios.post(API_URL, rubro); // Use Axios to make a POST request
+      setRubros([...rubros, response.data]); // Access the response data using response.data
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const columns: Column<Rubro>[] = [
     // { title: 'ID', field: 'idRubro' },
@@ -44,33 +55,19 @@ const RubroProductos: React.FC = () => {
     },
   ]; 
 
-  const handleRubroAdd = async (rubro: Rubro) => {
-    try {
-      console.log(rubro)
-      const newRubro = await handleRequest('POST', API_URL, rubro);
-      setRubros([...rubros, newRubro]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   function updateJsonData(updatedRubros: Rubro[]) {
     throw new Error('Function not implemented.');
   }
 
   const handleRubroEdit = async (rubro: Rubro) => {
     try {
-      const updatedRubro: Rubro = await handleRequest(
-        'PUT',
-        `${API_URL}/${rubro.idRubro}`,
-        rubro
-      );
-
+      const response = await Axios.put(`${API_URL}/${rubro.idRubro}`, rubro); // Use Axios to make a PUT request
+      const updatedRubro: Rubro = response.data; // Access the response data using response.data
       const updatedRubros = rubros.map((r) =>
         r.idRubro === updatedRubro.idRubro ? updatedRubro : r
       );
       setRubros(updatedRubros);
-
+      console.log(updatedRubros);
       updateJsonData(updatedRubros); // Actualizar el JSON con los rubros modificados
     } catch (error) {
       console.log(error);
@@ -138,14 +135,15 @@ const RubroProductos: React.FC = () => {
       </Row>
       <AddRubroProductoModal
         show={addModalShow}
-        handleClose={handleAddModalClose}
+        handleClose={() => setAddModalShow(false)} //modifique esto
         handleRubroAdd={handleRubroAdd}
       />
       <EditRubroProductoModal
         show={editModalShow}
-        handleClose={handleEditModalClose}
+        handleClose={() => setEditModalShow(false)} //tambien modifique esto
         handleRubroEdit={handleRubroEdit}
         selectedRubro={selectedRubroProducto}
+       
       />
     </Container>
   );

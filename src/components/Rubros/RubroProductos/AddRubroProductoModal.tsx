@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { AddRubroProductoModalProps } from '../../../interface/Producto';
 import { Rubro } from '../../../interface/Rubro';
+import Axios from 'axios';
 
 const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
   show,
@@ -13,13 +14,14 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
     idRubro: 0,
     nombre: '',
     idRubroPadre: undefined,
-  });
+    activo: false, 
+  });  
   
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     handleRubroAdd(rubroData);
     handleClose();
-  };
+  };  
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -28,8 +30,12 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
       [name]: value,
     }));
   };
+  
   const handleStatusChange = (isActivo: boolean) => {
-    setActivo(isActivo);
+    setRubroData((prevState) => ({
+      ...prevState,
+      activo: isActivo,
+    }));
   };
 
   return (

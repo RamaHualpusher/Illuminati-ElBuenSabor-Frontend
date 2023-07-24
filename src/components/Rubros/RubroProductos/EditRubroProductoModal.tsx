@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Rubro } from '../../../interface/Rubro';
 import { EditRubroProductoModalProps } from '../../../interface/Producto';
+import Axios from 'axios';
 
 const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
   show,
   handleClose,
   handleRubroEdit,
-  selectedRubro,
+  selectedRubro,  
 }) => {
   const [rubroData, setRubroData] = useState<Rubro>({
     idRubro: selectedRubro?.idRubro || 0,
@@ -22,30 +23,9 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
     }
   }, [selectedRubro]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      // Guardar cambios en el JSON (ejemplo)
-      const response = await fetch('https://api.example.com/rubrosProductos', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(rubroData),
-      });
-      
-      if (response.ok) {
-        // Actualizar el rubro modificado en el componente padre
-        handleRubroEdit(rubroData);
-      } else {
-        // Manejar errores de la respuesta del servidor
-        console.error('Error al guardar los cambios del rubro');
-      }
-    } catch (error) {
-      // Manejar errores de la solicitud
-      console.error('Error al enviar la solicitud');
-    }
-    
+    handleRubroEdit(rubroData);
     handleClose();
   };
 
