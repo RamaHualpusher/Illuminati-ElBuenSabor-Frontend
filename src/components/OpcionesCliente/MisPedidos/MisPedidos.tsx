@@ -11,11 +11,11 @@ const MisPedidos: FC = () => {
     };
 
     return (
-        <div style={{ marginTop: '90px', marginBottom: '20px', }}>
+        <div style={{ marginTop: '90px' }}>
             <Container>
-                <h1 className="text-center">Mis Pedidos</h1>
+                <h1 className="display-3">Mis Pedidos</h1>
 
-                <div className="d-grid gap-2 d-md-block text-center mt-4">
+                <div className="d-grid gap-2 d-md-block text-center mt-3">
                     <Row>
                         <Col xs={12} md={6} lg={5} className="mx-auto mb-2">
                             <Button
