@@ -12,6 +12,16 @@ export interface Usuario {
   Rol: Rol;
 }
 
+export interface EditUsuarioFromCliente {
+  idUsuario: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+  clave: string;
+  telefono: string;
+  Domicilio: Domicilio;
+}
+
 export interface EditUsuarioFromAdmin {
   idUsuario: number;
   nombre: string;

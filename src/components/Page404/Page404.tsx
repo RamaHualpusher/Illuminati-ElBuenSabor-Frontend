@@ -4,7 +4,7 @@ import { Outlet, Link } from "react-router-dom";
 const Page404 = () => {
     return (
         <div className="container mt-5">
-            <div className="text-center">
+            <div className="text-center" style={{ marginTop: "100px", marginBottom: "50px" }}>
                 <h1 className="display-4">Página no encontrada</h1>
                 <p className="lead">Lo sentimos, la página que estás buscando no existe.</p>
                 <h1 className="display-2">

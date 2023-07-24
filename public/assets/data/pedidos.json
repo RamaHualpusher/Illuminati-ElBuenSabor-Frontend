@@ -29,7 +29,9 @@
       {
         "idDetallePedido": 1,
         "cantidad": 2,
-        "Pedido": {},
+        "Pedido": {
+          
+        },
         "Producto": {}
       }
     ],
