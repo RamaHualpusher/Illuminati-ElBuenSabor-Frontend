@@ -11,7 +11,7 @@ const MisPedidos: FC = () => {
     };
 
     return (
-        <div style={{ marginTop: '90px', marginBottom: '20px' }}>
+        <div style={{ marginTop: '90px', marginBottom: '20px', }}>
             <Container>
                 <h1 className="text-center">Mis Pedidos</h1>
 

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 const Pasados: React.FC = () => {
     const [pedidosPasados, setPedidosPasados] = useState<Pedido[]>([]);
+    const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
 
     useEffect(() => {
         const fetchPedidosPasados = async () => {
@@ -23,15 +24,15 @@ const Pasados: React.FC = () => {
         fetchPedidosPasados();
     }, []);
 
+
     return (
         <>
             <div style={{ minHeight: 'calc(100vh - 90px)' }}>
                 {pedidosPasados.length > 0 ? (
                     pedidosPasados.map((pedido) => (
-                        <PedidoCardUsuario
-                            key={pedido.idPedido}
-                            pedido={pedido}
-                        />
+                        <div key={pedido.idPedido}>
+                            <PedidoCardUsuario pedido={pedido} />
+                        </div>
                     ))
                 ) : (
                     <>

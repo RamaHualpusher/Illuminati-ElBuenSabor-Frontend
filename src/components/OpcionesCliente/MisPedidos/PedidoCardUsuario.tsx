@@ -11,6 +11,13 @@ interface PedidoCardUsuarioProps {
 const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
     const urlDetallePedido = `/mis-pedido/${pedido.idPedido}`;
 
+    // Función para manejar la acción de "ver"
+    const onView = () => {
+        const encodedPedido = encodeURIComponent(JSON.stringify(pedido));
+        window.open(`/factura/${encodedPedido}`, "_blank");
+        window.postMessage(pedido, "*");
+    };
+
     return (
         <Card className="pedido-card mb-2">
             <Card.Body>
@@ -29,9 +36,14 @@ const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
                         </div>
                         <div className="d-flex justify-content-end mt-3">
                             {['Listo', 'Pagado', 'A confirmar', 'En cocina', 'En delivery', 'Entregado', 'Cancelado'].includes(pedido.estadoPedido) && (
-                                <Link to={urlDetallePedido} className="btn btn-primary me-2">
-                                    Ver detalles
-                                </Link>
+                                <>
+                                    <Link to={urlDetallePedido} className="btn btn-primary me-2">
+                                        <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
+                                    </Link>
+                                    <button className="btn btn-primary me-2" onClick={onView}>
+                                        <i className="bi bi-receipt me-1"></i> Factura
+                                    </button>
+                                </>
                             )}
                         </div>
                     </Col>
