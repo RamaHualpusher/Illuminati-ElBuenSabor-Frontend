@@ -63,7 +63,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="mt-5 overflow-hidden" style={{ background: 'linear-gradient(to top,#bfbdbd, #ffffff )' }}>
+    <div className="mt-5 overflow-hidden" style={{ background: 'linear-gradient(to top,#494747, #ffffff )' }}>
       <ImagenMenu />
       <BotonesMenu
         onCategoryChange={handleCategoryChange}

@@ -65,7 +65,6 @@ const DetallePage = () => {
 
   return (
     <div className="detalle-page-container" style={{ backgroundImage: `url('/assets/img/FondoColorGris.jpg') `, minHeight: '100vh' }}>
-      <Navbar />
       <div className="container mt-5">
         <div className="row justify-content-center align-items-center">
           <div className="col-12 col-md-8 text-center">

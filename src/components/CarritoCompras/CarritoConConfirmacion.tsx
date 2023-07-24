@@ -31,7 +31,6 @@ const CarritoConConfirmacion: React.FC = () => {
 
   return (
     <>
-      <AdminBar />
       <ConfirmacionPedido
         cartItems={cartItems}
         metodoPago={metodoPago}

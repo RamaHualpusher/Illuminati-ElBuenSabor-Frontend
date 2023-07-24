@@ -50,25 +50,12 @@ const Navbar: FC = () => {
     fetchData();
   }, []);
 
-  const filter = (searchParam: string) => {
-    const searchResult = producComplete.filter((productVal: Producto) => {
-      if (
-        productVal.nombre.toString().toLowerCase().includes(searchParam.toLowerCase()) ||
-        productVal.Rubro.toString().toLowerCase().includes(searchParam.toLowerCase())
-      ) {
-        return productVal;
-      }
-      return null;
-    });
-    setProduc(searchResult);
-  };
-
   const handleSearch = (searchParam: string) => {
     setSearchParam(searchParam);
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav className="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
       <div className="container">
         <div className="d-flex align-items-center">
           <img
@@ -136,21 +123,34 @@ const Navbar: FC = () => {
             </li>
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center mx-2">
-                <img
-                  src={user?.picture}
-                  alt="imagen usuario"
-                  className="img-fluid rounded-circle me-2"
-                  style={{
-                    width: '50px',
-                    height: '50px',
-                  }}
-                />
-                <p className="nav-link mb-0">
-                  {user?.name}
-                </p>
+                <Dropdown>
+                  <Dropdown.Toggle variant="link" id="dropdown-user" as={Button} className="nav-link">
+                    <img
+                      src={user?.picture}
+                      alt="imagen usuario"
+                      className="img-fluid rounded-circle me-2"
+                      style={{
+                        width: '50px',
+                        height: '50px',
+                      }}
+                    />
+                    {user?.name}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item as={Link} to="/mi-direccion">
+                      <i className="bi bi-geo-alt me-2"></i>Mi dirección
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/mis-pedidos">
+                      <i className="bi bi-journals me-2"></i>Mis pedidos
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/perfil">
+                      <i className="bi bi-person-square me-2"></i>Mi perfil
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </li>
             )}
-            <li className="nav-item ">
+            <li className="nav-item">
               {isAuthenticated ? <LogoutButton /> : <LoginButton />}
             </li>
           </ul>
