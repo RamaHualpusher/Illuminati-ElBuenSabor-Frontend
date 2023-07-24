@@ -20,11 +20,6 @@ const RubroProductos: React.FC = () => {
     update: true,
   };
 
-  const columns: Column<Rubro>[] = [
-    // { title: 'ID', field: 'idRubro' },
-    { title: 'Nombre', field: 'nombre' },
-  ];
-
   useEffect(() => {
     const fetchRubros = async () => {
       try {
@@ -38,14 +33,30 @@ const RubroProductos: React.FC = () => {
     fetchRubros();
   }, []);
 
+  const columns: Column<Rubro>[] = [
+    // { title: 'ID', field: 'idRubro' },
+    { title: 'Nombre', field: 'nombre',
+    render: (rubro: Rubro) => <span>{rubro.nombre}</span>, },
+    {
+      title: "Estado",
+      field: "activo",
+      render: (rubro: Rubro) => <span>{rubro.activo ? "Activo" : "Inactivo"}</span>,
+    },
+  ]; 
+
   const handleRubroAdd = async (rubro: Rubro) => {
     try {
+      console.log(rubro)
       const newRubro = await handleRequest('POST', API_URL, rubro);
       setRubros([...rubros, newRubro]);
     } catch (error) {
       console.log(error);
     }
   };
+
+  function updateJsonData(updatedRubros: Rubro[]) {
+    throw new Error('Function not implemented.');
+  }
 
   const handleRubroEdit = async (rubro: Rubro) => {
     try {
@@ -59,6 +70,8 @@ const RubroProductos: React.FC = () => {
         r.idRubro === updatedRubro.idRubro ? updatedRubro : r
       );
       setRubros(updatedRubros);
+
+      updateJsonData(updatedRubros); // Actualizar el JSON con los rubros modificados
     } catch (error) {
       console.log(error);
     }
@@ -89,7 +102,7 @@ const RubroProductos: React.FC = () => {
       setSelectedRubroProducto(selected);
       setEditModalShow(true);
     }
-  };
+  };  
 
   const handleEditModalClose = () => {
     setSelectedRubroProducto(null);

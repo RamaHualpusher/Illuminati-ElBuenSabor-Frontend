@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 import EditProductoModal from "./EditProductoModal";
 import AddProductoModal from "./AddProductoModal";
 import { Producto } from "../../../interface/Producto";
 import { Action, Column } from "../../../interface/CamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
+import { Rubro } from "../../../interface/Rubro";
 
 const Productos: React.FC = () => {
   const [editModalShow, setEditModalShow] = useState(false);
@@ -13,7 +14,12 @@ const Productos: React.FC = () => {
   const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
   const [productos, setProductos] = useState<Producto[]>([]);
   const [productosComplete, setProductosComplete] = useState<Producto[]>([]);
+  const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
+  const [selectedRubroName, setSelectedRubroName] = useState<string>("");
+  const [filteredProductos, setFilteredProductos] = useState<Producto[]>([]);
   const API_URL = "assets/data/productosLanding.json";
+  const API_URL_Rubro = "assets/data/rubrosProductosEjemplo.json";
 
   const actions: Action = {
     create: true,
@@ -38,6 +44,25 @@ const Productos: React.FC = () => {
   ];
 
   useEffect(() => {
+    const filterProductos = () => {
+      console.log("selectedRubro", selectedRubro);
+      if (selectedRubro) {
+        const filtered = productosComplete.filter(
+          (producto) => producto.Rubro.idRubro === selectedRubro
+        );
+        setFilteredProductos(filtered);
+      } else {
+        setFilteredProductos(productosComplete);
+      }
+    };
+  
+    if (productosComplete.length > 0) {
+      filterProductos();
+    }
+  }, [selectedRubro, productosComplete]);
+  
+  
+  useEffect(() => {
     const fetchProductos = async () => {
       try {
         const responseData = await handleRequest("GET", API_URL);
@@ -47,9 +72,20 @@ const Productos: React.FC = () => {
         console.log(error);
       }
     };
+  
+    const fetchRubros = async () => {
+      try {
+        const responseData = await handleRequest("GET", API_URL_Rubro);
+        setRubros(responseData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
     fetchProductos();
+    fetchRubros();
   }, []);
-
+  
   const handleProductoAdd = async (producto: Producto) => {
     try {
       const newProducto = await handleRequest("POST", API_URL, producto);
@@ -76,7 +112,10 @@ const Productos: React.FC = () => {
     }
   };
 
-  const handleProductoDelete = async (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleProductoDelete = async (
+    rowData: string[],
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     const productoId: number = +rowData[0];
     try {
@@ -88,17 +127,14 @@ const Productos: React.FC = () => {
     }
   };
 
-  const productoRow = (id: number): Producto | undefined => {
-    return productosComplete.find((producto) => producto.idProducto === id);
-  };
 
   const handleEditModalOpen = (item: Producto) => {
-    const selected = productoRow(item.idProducto);
+    const selected = productosComplete.find((producto) => producto.idProducto === item.idProducto);
     if (selected) {
       setSelectedProducto(selected);
       setEditModalShow(true);
     }
-  };
+  };  
 
   const handleEditModalClose = () => {
     setSelectedProducto(null);
@@ -113,6 +149,20 @@ const Productos: React.FC = () => {
     setAddModalShow(false);
   };
 
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {    
+    const { value } = event.target;    
+    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];    
+    const selectedRubroId = parseInt(value);    
+    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);    
+    setSelectedRubro(selectedRubroId ? selectedRubroId : null);
+    setSelectedRubroName(selectedOption.text);
+  };
+  
+  const noProductosMessage =
+  selectedRubro && filteredProductos.length === 0 ? (
+    <p>No hay productos disponibles con el rubro seleccionado.</p>
+  ) : null;
+
   return (
     <Container fluid>
       <Row className="justify-content-start align-items-center mb-3">
@@ -122,8 +172,27 @@ const Productos: React.FC = () => {
       </Row>
       <Row>
         <div>
+        <Form.Group controlId="idrubro">          
+          <select
+              className="form-select"
+              name="idRubro"
+              value={selectedRubro ? selectedRubro : ""}
+              onChange={handleSelectChange}
+              style={{ width: "250px", margin: "10px" }}
+            >
+            <option value="">Todos los rubros</option>
+            {rubros.map((rubro) => (
+              <option key={rubro.idRubro} value={rubro.idRubro}>
+                {rubro.nombre}
+              </option>
+            ))}
+          </select>
+        </Form.Group>
+
+          {noProductosMessage}
+
           <GenericTable
-            data={productos}
+            data={filteredProductos}
             columns={columns}
             actions={actions}
             onAdd={handleAddModalOpen}

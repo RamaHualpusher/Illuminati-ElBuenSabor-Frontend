@@ -4,12 +4,62 @@ import axios from "axios";
 import { Producto } from "../../../interface/Producto";
 import { Rubro } from "../../../interface/Rubro";
 import { AddProductoModalProps } from "../../../interface/Producto";
+import Ingrediente from "../Ingrediente/Ingrediente";
+import { Ingredientes } from "../../../interface/Ingredientes";
+import { ProductoIngrediente } from "../../../interface/ProductoIngrediente";
 
 const AddProductoModal: React.FC<AddProductoModalProps> = ({
   show,
   handleClose,
   handleProductoAdd,
 }) => {
+
+
+
+
+  const rubrod: Rubro = {
+    idRubro: 0,
+    nombre: "",
+  };
+
+
+  const defectoIngrediente: Ingredientes = {
+    estado: false,
+    idIngredientes: 0,
+    nombre: "none",
+    precioCosto: 0,
+    ProductoIngrediente: [],
+    Rubro: rubrod,
+    stockActual: 0,
+    stockMinimo: 0,
+    unidadMedida: ""
+  };
+
+  const defectoProducto: Producto = {
+    idProducto: 0,
+    nombre: "",
+    Rubro: rubrod,
+    tiempoEstimadoCocina: 0,
+    denominacion: "",
+    imagen: "",
+    stockActual: 0,
+    stockMinimo: 0,
+    preparacion: "",
+    precio: 0,
+    esBebida: false,
+    estado: false,
+    DetallePedido: [],
+    ProductoIngrediente: [],
+  }
+
+  const defectoProductoIngrediente: ProductoIngrediente = {
+    cantidad: 0,
+    idProductoIngrediente: 0,
+    Ingredientes: defectoIngrediente,
+    Producto: defectoProducto
+  }
+
+  const [selectedProducto,setSelectedProducto]= useState<Producto>(defectoProducto);
   const [nombre, setNombre] = useState("");
   const [rubroId, setRubroId] = useState<number | null>(null);
   const [tiempo, setTiempo] = useState(0);
@@ -17,12 +67,18 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [estado, setEstado] = useState(true); // Estado por defecto: Alta
   const [productos, setProductos] = useState<Producto[]>([]);
+  const [ingredientes, setIngredientes] = useState<ProductoIngrediente[] | null>(null);
+  const [ingrediente, setIngrediente] = useState<ProductoIngrediente>(defectoProductoIngrediente);
+  const [cantidad, setCantidad] = useState(0);
 
   useEffect(() => {
     axios
       .get<Rubro[]>("/assets/data/rubrosProductosEjemplo.json")
       .then((response) => {
         setRubros(response.data);
+        if (selectedProducto) {
+          setIngredientes(selectedProducto.ProductoIngrediente)
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -37,6 +93,74 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
         console.log(error);
       });
   }, []);
+
+
+
+
+
+
+  const selectIngrediente = (nombre: string) => {
+
+    if (ingrediente !== defectoProductoIngrediente) {
+      selectedProducto?.ProductoIngrediente.map((ingr) => {
+        if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
+          console.log("ingrediente previo guardado")
+          ingr = ingrediente;
+          ingr.cantidad = cantidad;
+
+        }
+      })
+    }
+    console.log("ingreso a funcion")
+    if (nombre !== "none") {
+      selectedProducto?.ProductoIngrediente.map((ingr) => {
+        if (nombre === ingr.Ingredientes.nombre) {
+          console.log("ingrediente encontrado" + ingr.Ingredientes.nombre)
+          setCantidad(ingr.cantidad);
+          setIngrediente(ingr);
+          return null;
+        }
+      })
+      return null;
+    }
+    else {
+      return null;
+    }
+  }
+
+  const handleCantidad = (cant: number) => {
+    setCantidad(cant);
+    if (ingrediente !== defectoProductoIngrediente) {
+      selectedProducto?.ProductoIngrediente.map((ingr) => {
+        if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
+          console.log("ingrediente previo guardado")
+          ingr = ingrediente;
+          ingr.cantidad = cantidad;
+
+        }
+      })
+    }
+  }
+
+  const handleDeletIngrediente = () => {
+    if (selectedProducto) {
+      console.log("ingreso a funcion")
+      const filtrar = selectedProducto?.ProductoIngrediente;
+      if (nombre !== "none") {
+        const filtrado = filtrar?.filter(filtrar => filtrar.Ingredientes.nombre !== ingrediente.Ingredientes.nombre);
+        selectedProducto.ProductoIngrediente = filtrado;
+        setIngrediente(defectoProductoIngrediente);
+        setCantidad(0);
+      }
+    }
+    else {
+      return null;
+    }
+  }
+
+
+
+
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,7 +178,8 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       esBebida: false,
       estado,
       DetallePedido: [],
-      ProductoIngrediente: [],
+
+      ProductoIngrediente: selectedProducto.ProductoIngrediente,
     };
     handleProductoAdd(newProducto);
     handleClose();
@@ -123,6 +248,29 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
               <option value="alta">Alta</option>
               <option value="baja">Baja</option>
             </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formEstado">
+            <Form.Label>Ingredientes</Form.Label>
+            <Form.Select
+              value={ingrediente?.Ingredientes.nombre}
+              onChange={(event) => selectIngrediente(event.target.value)}
+              required
+            >
+              <option value="none">Eliminar Ingrediente</option>
+              {selectedProducto?.ProductoIngrediente.map((Ingrediente) =>
+                <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre}</option>
+              )}
+            </Form.Select>
+            <Form.Control
+              type="number"
+              placeholder="Ingrese Cantidad"
+              value={cantidad}
+              onChange={(event) => handleCantidad(parseInt(event.target.value))}
+              required
+            >
+            </Form.Control>
+            <Button
+              variant="secondary" onClick={() => handleDeletIngrediente()}>Eliminar Ingrediente</Button>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

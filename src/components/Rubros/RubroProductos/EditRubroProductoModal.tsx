@@ -9,79 +9,97 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
   handleRubroEdit,
   selectedRubro,
 }) => {
-  const [nombre, setNombre] = useState('');
-  const [rubroId, setRubroId] = useState<number | null>(null);  
-  const [rubros, setRubros] = useState<Rubro[]>([]);
-  
+  const [rubroData, setRubroData] = useState<Rubro>({
+    idRubro: selectedRubro?.idRubro || 0,
+    nombre: selectedRubro?.nombre || '',
+    idRubroPadre: selectedRubro?.idRubroPadre || undefined,
+    activo: false,
+  });
 
   useEffect(() => {
-    fetch('/assets/data/rubrosProductosEjemplo.json')
-      .then((response) => response.json())
-      .then((data: Rubro[]) => {
-        setRubros(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (selectedRubro) {
-      setNombre(selectedRubro?.nombre || '');
-      setRubroId(selectedRubro?.idRubro || null);      
+    if (selectedRubro !== null) {
+      setRubroData(selectedRubro);
     }
   }, [selectedRubro]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (selectedRubro) {
-      const updatedRubro: Rubro = {
-        ...selectedRubro,
-        nombre,        
-        idRubroPadre: selectedRubro.idRubroPadre,
-      };
-      handleRubroEdit(updatedRubro);
+    try {
+      // Guardar cambios en el JSON (ejemplo)
+      const response = await fetch('https://api.example.com/rubrosProductos', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(rubroData),
+      });
+      
+      if (response.ok) {
+        // Actualizar el rubro modificado en el componente padre
+        handleRubroEdit(rubroData);
+      } else {
+        // Manejar errores de la respuesta del servidor
+        console.error('Error al guardar los cambios del rubro');
+      }
+    } catch (error) {
+      // Manejar errores de la solicitud
+      console.error('Error al enviar la solicitud');
     }
+    
     handleClose();
+  };
+
+  const handleStatusChange = (isActivo: boolean) => {
+    setRubroData((prevState) => ({
+      ...prevState,
+      activo: isActivo,
+    }));
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setRubroData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Editar Rubro</Modal.Title>
+        <Modal.Title>Editar rubro de producto</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          <Form.Group className="mb-3" controlId="formNombre">
+          <Form.Group className="mb-3" controlId="nombre">
             <Form.Label>Nombre</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ingrese nombre"
-              value={nombre}
-              onChange={(event) => setNombre(event.target.value)}
+              name="nombre"
+              value={rubroData.nombre}
+              onChange={handleInputChange}
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formRubro">
-            <Form.Label>Rubro</Form.Label>
-            <Form.Select
-              value={selectedRubro?.idRubro || ''}
-              onChange={(event) => {
-                const rubroId = parseInt(event.target.value);
-                const rubro = rubros.find((rubro) => rubro.idRubro === rubroId);
-                setRubroId(rubroId);                
-              }}
-              required
-            >
-              <option value="">Seleccione un rubro</option>
-              {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
-                  {rubro.nombre}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>        
-          
+          <Form.Group className="mb-3" controlId="formActivo">
+            <Form.Label>Estado</Form.Label>
+            <div>
+              <Button
+                variant={rubroData.activo ? 'primary' : 'outline-primary'}
+                className={rubroData.activo ? 'mr-2' : ''}
+                onClick={() => handleStatusChange(true)}
+              >
+                Activo
+              </Button>
+              <Button
+                variant={!rubroData.activo ? 'primary' : 'outline-primary'}
+                onClick={() => handleStatusChange(false)}
+              >
+                Inactivo
+              </Button>
+            </div>
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

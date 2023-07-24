@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Col, Row } from 'react-bootstrap';
+import { Container, Col, Row, Form } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { Ingredientes } from '../../../interface/Ingredientes';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
 import { Action, Column } from '../../../interface/CamposTablaGenerica';
 import GenericTable from "../../GenericTable/GenericTable";
+import { Rubro } from "../../../interface/Rubro";
 
 const Ingrediente: React.FC = () => {
   const [editModalShow, setEditModalShow] = useState(false);
@@ -13,7 +14,12 @@ const Ingrediente: React.FC = () => {
   const [selectedIngrediente, setSelectedIngrediente] = useState<Ingredientes | null>(null);
   const [ingred, setIngred] = useState<Ingredientes[]>([]);
   const [ingredComplete, setIngredComplete] = useState<Ingredientes[]>([]);
+  const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
+  const [selectedRubroName, setSelectedRubroName] = useState<string>("");
+  const [filteredIngredientes, setFilteredIngredientes] = useState<Ingredientes[]>([]);
   const API_URL = "/assets/data/ingredientesEjemplo.json";
+  const API_URL_Rubro = "assets/data/rubrosIngredientesEjemplo.json";
 
   const actions: Action = {
     create: true,
@@ -38,6 +44,24 @@ const Ingrediente: React.FC = () => {
   ];
 
   useEffect(() => {
+    const filterIngredientes = () => {
+      console.log("selectedRubro", selectedRubro);
+      if (selectedRubro) {
+        const filtered = ingredComplete.filter(
+          (ingrediente) => ingrediente.Rubro.idRubro === selectedRubro
+        );
+        setFilteredIngredientes(filtered);
+      } else {
+        setFilteredIngredientes(ingredComplete);
+      }
+    };
+  
+    if (ingredComplete.length > 0) {
+      filterIngredientes();
+    }
+  }, [selectedRubro, ingredComplete]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const responseData = await handleRequest('GET', API_URL);
@@ -47,8 +71,42 @@ const Ingrediente: React.FC = () => {
         console.log(error);
       }
     };
+
+    const fetchRubros = async () => {
+      try {
+        const responseData = await handleRequest("GET", API_URL_Rubro);
+        setRubros(responseData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchRubros();
     fetchData();
   }, []);
+
+  const handleIngredienteAdd = async (Ingredientes: Ingredientes) => {
+    try {
+      const newProducto = await handleRequest('POST', '/assets/data/ingredientesEjemplo.json', Ingredientes);
+
+      setIngred([...ingred, newProducto]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  const handleIngredienteEdit = async (producto: Ingredientes) => {
+    try {
+      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.idIngredientes}`, producto);
+
+      const newData = [...ingred];
+      const index = newData.findIndex((item) => item.idIngredientes === producto.idIngredientes);
+      newData[index] = updatedProducto;
+
+      setIngred(newData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const ingredienteGeneric = (id: number) => {
     let i: number = 0;
@@ -83,30 +141,7 @@ const Ingrediente: React.FC = () => {
   const handleAddModalClose = () => {
     setAddModalShow(false);
   };
-
-  const handleIngredienteEdit = async (producto: Ingredientes) => {
-    try {
-      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.idIngredientes}`, producto);
-
-      const newData = [...ingred];
-      const index = newData.findIndex((item) => item.idIngredientes === producto.idIngredientes);
-      newData[index] = updatedProducto;
-
-      setIngred(newData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleIngredienteAdd = async (Ingredientes: Ingredientes) => {
-    try {
-      const newProducto = await handleRequest('POST', '/assets/data/ingredientesEjemplo.json', Ingredientes);
-
-      setIngred([...ingred, newProducto]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ 
 
   const handleIngredienteDelete = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -122,17 +157,48 @@ const Ingrediente: React.FC = () => {
       });
   }
 
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {    
+    const { value } = event.target;    
+    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];    
+    const selectedRubroId = parseInt(value);    
+    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);    
+    setSelectedRubro(selectedRubroId ? selectedRubroId : null);
+    setSelectedRubroName(selectedOption.text);
+  };
+  
+  const noProductosMessage =
+  selectedRubro && filteredIngredientes.length === 0 ? (
+    <p>No hay ingredientes disponibles con el rubro seleccionado.</p>
+  ) : null;
+
   return (
     <div>
       <Container fluid>
         <Row className="justify-content-start align-items-center mb-3">
           <Col sm={10}>
-            <h1>Buscar Ingredientes</h1>
+            <h1>Tabla de Ingredientes</h1>
           </Col>
         </Row>
         <div>
+        <Form.Group controlId="idrubro">          
+          <select
+              className="form-select"
+              name="idRubro"
+              value={selectedRubro ? selectedRubro : ""}
+              onChange={handleSelectChange}
+              style={{ width: "250px", margin: "10px" }}
+            >
+            <option value="">Todos los rubros</option>
+            {rubros.map((rubro) => (
+              <option key={rubro.idRubro} value={rubro.idRubro}>
+                {rubro.nombre}
+              </option>
+            ))}
+          </select>
+        </Form.Group>
+        {noProductosMessage}
           <GenericTable
-            data={ingred}
+            data={filteredIngredientes}
             columns={columns}
             actions={actions}
             onAdd={handleAddModalOpen}
@@ -144,7 +210,7 @@ const Ingrediente: React.FC = () => {
           handleClose={handleEditModalClose}
           handleIngredientesEdit={handleIngredienteEdit}
           selectedIngredientes={selectedIngrediente}
-        />
+        />        
         <AddIngredienteModal
           show={addModalShow}
           handleClose={handleAddModalClose}
