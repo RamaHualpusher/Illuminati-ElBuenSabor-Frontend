@@ -10,37 +10,42 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
   handleRubroEdit,
   selectedRubro,
 }) => {
-  const [nombre, setNombre] = useState(selectedRubro?.nombre || '');
-  const [rubroId, setRubroId] = useState<number | null>(selectedRubro?.idRubro || null);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [nombre, setNombre] = useState('');
+  const [activo, setActivo] = useState(false);
+  const [idRubroPadre, setIdRubroPadre] = useState<Rubro | undefined>(undefined);
 
   useEffect(() => {
-    fetch('/assets/data/rubrosIngredientesEjemplo.json')
-      .then((response) => response.json())
-      .then((data) => {
-        setRubros(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    setNombre(selectedRubro?.nombre || '');
-    setRubroId(selectedRubro?.idRubro || null);
+    if (selectedRubro) {
+      setNombre(selectedRubro.nombre);
+      setActivo(selectedRubro.activo || false);
+      setIdRubroPadre(selectedRubro.idRubroPadre);
+    }
   }, [selectedRubro]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const trimmedNombre = nombre.trim();
+    if (!trimmedNombre || /^\d+$/.test(trimmedNombre)) {
+      alert('El nombre no puede estar vacío, contener solo números o ser nulo.');
+      return;
+    }
+
     if (selectedRubro) {
       const updatedRubro: Rubro = {
-        idRubro: selectedRubro.idRubro,
-        nombre,
-        idRubroPadre: selectedRubro.idRubroPadre,
+        ...selectedRubro,
+      idRubro: selectedRubro.idRubro || 0,
+      nombre,
+      activo,
+      idRubroPadre,
       };
       handleRubroEdit(updatedRubro);
     }
     handleClose();
+  };
+
+  const handleStatusChange = (isActive: boolean) => {
+    setActivo(isActive);
   };
 
   return (
@@ -60,22 +65,24 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formRubro">
-            <Form.Label>Rubro</Form.Label>
-            <Form.Select
-              value={rubroId || ''}
-              onChange={(event) => {
-                setRubroId(parseInt(event.target.value));
-              }}
-              required
-            >
-              <option value="">Seleccione un rubro</option>
-              {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
-                  {rubro.nombre}
-                </option>
-              ))}
-            </Form.Select>
+          <Form.Group className="mb-3" controlId="formActivo">
+            <Form.Label>Estado</Form.Label>
+            <div>
+            <Button
+                variant={activo ? 'primary' : 'outline-primary'}
+                className={activo ? 'mr-2 active' : 'mr-2'}
+                onClick={() => handleStatusChange(true)}
+              >
+                Activo
+              </Button>
+              <Button
+                variant={!activo ? 'primary' : 'outline-primary'}
+                className={!activo ? 'active' : ''}
+                onClick={() => handleStatusChange(false)}
+              >
+                Inactivo
+              </Button>
+            </div>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

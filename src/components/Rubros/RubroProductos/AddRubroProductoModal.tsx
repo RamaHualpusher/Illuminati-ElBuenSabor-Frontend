@@ -2,40 +2,39 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { AddRubroProductoModalProps } from '../../../interface/Producto';
 import { Rubro } from '../../../interface/Rubro';
-import Axios from 'axios';
 
 const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
   show,
   handleClose,
   handleRubroAdd,
 }) => {  
+  const [nombre, setNombre] = useState('');
   const [activo, setActivo] = useState(false);
-  const [rubroData, setRubroData] = useState<Rubro>({
-    idRubro: 0,
-    nombre: '',
-    idRubroPadre: undefined,
-    activo: false, 
-  });  
-  
-  const handleSubmit = (event: React.FormEvent) => {
+  const [idRubroPadre, setIdRubroPadre] = useState(null);
+  const [filteredRubros, setFilteredRubros] = useState<Rubro[] | null>(null); 
+  const [rubros, setRubros] = useState<Rubro[]>([]);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    handleRubroAdd(rubroData);
+
+    const trimmedNombre = nombre.trim();
+    if (!trimmedNombre || /^\d+$/.test(trimmedNombre)) {
+      alert('El nombre no puede estar vacío, contener solo números o ser nulo.');
+      return;
+    }
+
+    const newRubroProducto : Rubro ={
+      idRubro: 0,
+      nombre: '',
+      activo: false, 
+      idRubroPadre: undefined,
+    }
+    handleRubroAdd(newRubroProducto); // Se pasa el objeto rubroData directamente a handleRubroAdd
     handleClose();
   };  
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setRubroData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-  
-  const handleStatusChange = (isActivo: boolean) => {
-    setRubroData((prevState) => ({
-      ...prevState,
-      activo: isActivo,
-    }));
+  const handleStatusChange = (isActive: boolean) => {
+    setActivo(isActive);
   };
 
   return (
@@ -51,8 +50,8 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
               type="text"
               placeholder="Ingrese nombre"
               name="nombre"
-              value={rubroData.nombre}
-              onChange={handleInputChange}
+              value={nombre}
+              onChange={(event) => setNombre(event.target.value)}
               required
             />
           </Form.Group>

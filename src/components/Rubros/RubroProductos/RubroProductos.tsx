@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
 import EditRubroProductoModal from './EditRubroProductoModal';
@@ -8,13 +8,13 @@ import { Action, Column } from '../../../interface/CamposTablaGenerica';
 import GenericTable from '../../GenericTable/GenericTable';
 import Axios from 'axios';
 
-const RubroProductos: React.FC = () => {
+const RubroProductos: FC = () => {
+  const [rubros, setRubros] = useState<Rubro[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedRubroProducto, setSelectedRubroProducto] = useState<Rubro | null>(null);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
   const [rubrosComplete, setRubrosComplete] = useState<Rubro[]>([]);
-  const API_URL = 'assets/data/rubrosProductosEjemplo.json';
+  const API_URL = '/assets/data/rubrosProductosEjemplo.json';
 
   const actions: Action = {
     create: true,
@@ -26,7 +26,7 @@ const RubroProductos: React.FC = () => {
       try {
         const response = await Axios.get(API_URL); // Use Axios to make a GET request
         setRubros(response.data); // Access the response data using response.data
-        setRubrosComplete(response.data);
+        setRubrosComplete(response.data);  //para que se usa?
       } catch (error) {
         console.log(error);
       }
@@ -35,10 +35,10 @@ const RubroProductos: React.FC = () => {
   }, []);
 
   const handleRubroAdd = async (rubro: Rubro) => {
-    try {
-      console.log(rubro);
-      const response = await Axios.post(API_URL, rubro); // Use Axios to make a POST request
-      setRubros([...rubros, response.data]); // Access the response data using response.data
+    try {      
+      const newRubroProducto = await handleRequest('POST', API_URL, rubro); // Use Axios to make a POST request
+      setRubros(newRubroProducto); // Access the response data using response.data
+      setAddModalShow(false);
     } catch (error) {
       console.log(error);
     }
@@ -46,14 +46,16 @@ const RubroProductos: React.FC = () => {
 
   const columns: Column<Rubro>[] = [
     // { title: 'ID', field: 'idRubro' },
-    { title: 'Nombre', field: 'nombre',
-    render: (rubro: Rubro) => <span>{rubro.nombre}</span>, },
+    {
+      title: 'Nombre', field: 'nombre',
+      render: (rubro: Rubro) => <span>{rubro.nombre}</span>,
+    },
     {
       title: "Estado",
       field: "activo",
       render: (rubro: Rubro) => <span>{rubro.activo ? "Activo" : "Inactivo"}</span>,
     },
-  ]; 
+  ];
 
   function updateJsonData(updatedRubros: Rubro[]) {
     throw new Error('Function not implemented.');
@@ -74,20 +76,20 @@ const RubroProductos: React.FC = () => {
     }
   };
 
-  const handleRubroDelete = async (
-    rowData: string[],
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    e.preventDefault();
-    const rubroId: number = +rowData[0];
-    try {
-      await handleRequest('DELETE', `${API_URL}/${rubroId}`);
-      const updatedRubros = rubros.filter((r) => r.idRubro !== rubroId);
-      setRubros(updatedRubros);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleRubroDelete = async (
+  //   rowData: string[],
+  //   e: React.MouseEvent<HTMLButtonElement>
+  // ) => {
+  //   e.preventDefault();
+  //   const rubroId: number = +rowData[0];
+  //   try {
+  //     await handleRequest('DELETE', `${API_URL}/${rubroId}`);
+  //     const updatedRubros = rubros.filter((r) => r.idRubro !== rubroId);
+  //     setRubros(updatedRubros);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const rubroRow = (id: number): Rubro | undefined => {
     return rubrosComplete.find((rubro) => rubro.idRubro === id);
@@ -99,7 +101,7 @@ const RubroProductos: React.FC = () => {
       setSelectedRubroProducto(selected);
       setEditModalShow(true);
     }
-  };  
+  };
 
   const handleEditModalClose = () => {
     setSelectedRubroProducto(null);
@@ -118,7 +120,7 @@ const RubroProductos: React.FC = () => {
     <Container fluid>
       <Row className="justify-content-start align-items-center mb-3">
         <Col>
-          <h2>Tabla de Rubros</h2>
+          <h1>Tabla de Rubros</h1>
         </Col>
       </Row>
       <Row>
@@ -129,21 +131,20 @@ const RubroProductos: React.FC = () => {
             actions={actions}
             onAdd={handleAddModalOpen}
             onUpdate={handleEditModalOpen}
-            // onDelete={handleRubroDelete}
+          // onDelete={handleRubroDelete}
           />
         </div>
       </Row>
       <AddRubroProductoModal
         show={addModalShow}
-        handleClose={() => setAddModalShow(false)} //modifique esto
-        handleRubroAdd={handleRubroAdd}
+        handleClose={handleAddModalClose}
+        handleRubroAdd={handleRubroAdd}      
       />
       <EditRubroProductoModal
         show={editModalShow}
-        handleClose={() => setEditModalShow(false)} //tambien modifique esto
+        handleClose={handleEditModalClose}
         handleRubroEdit={handleRubroEdit}
         selectedRubro={selectedRubroProducto}
-       
       />
     </Container>
   );
