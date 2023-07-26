@@ -21,13 +21,13 @@ const EditDireccionModal: React.FC<EditDireccionModalProps> = ({
         }
     }, [selectedDireccion]);
 
-    useEffect(() => {
-        if (selectedDireccion) {
-            setCalle(selectedDireccion.calle);
-            setNumero(selectedDireccion.numero);
-            setLocalidad(selectedDireccion.localidad);
-        }
-    }, [selectedDireccion]);
+    // useEffect(() => {
+    //     if (selectedDireccion) {
+    //         setCalle(selectedDireccion.calle);
+    //         setNumero(selectedDireccion.numero);
+    //         setLocalidad(selectedDireccion.localidad);
+    //     }
+    // }, [selectedDireccion]);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

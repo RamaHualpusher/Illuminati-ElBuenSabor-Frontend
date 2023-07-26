@@ -8,28 +8,33 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
   handleClose,
   handleRubroAdd,
 }) => {  
+  const [nombre, setNombre] = useState('');
   const [activo, setActivo] = useState(false);
-  const [rubroData, setRubroData] = useState<Rubro>({
-    idRubro: 0,
-    nombre: '',
-    idRubroPadre: undefined,
-  });
-  
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    handleRubroAdd(rubroData);
-    handleClose();
-  };
+  const [idRubroPadre, setIdRubroPadre] = useState(null);
+  const [filteredRubros, setFilteredRubros] = useState<Rubro[] | null>(null); 
+  const [rubros, setRubros] = useState<Rubro[]>([]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setRubroData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-  const handleStatusChange = (isActivo: boolean) => {
-    setActivo(isActivo);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const trimmedNombre = nombre.trim();
+    if (!trimmedNombre || /^\d+$/.test(trimmedNombre)) {
+      alert('El nombre no puede estar vacío, contener solo números o ser nulo.');
+      return;
+    }
+
+    const newRubroProducto : Rubro ={
+      idRubro: 0,
+      nombre: '',
+      activo: false, 
+      idRubroPadre: undefined,
+    }
+    handleRubroAdd(newRubroProducto); // Se pasa el objeto rubroData directamente a handleRubroAdd
+    handleClose();
+  };  
+
+  const handleStatusChange = (isActive: boolean) => {
+    setActivo(isActive);
   };
 
   return (
@@ -45,8 +50,8 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
               type="text"
               placeholder="Ingrese nombre"
               name="nombre"
-              value={rubroData.nombre}
-              onChange={handleInputChange}
+              value={nombre}
+              onChange={(event) => setNombre(event.target.value)}
               required
             />
           </Form.Group>

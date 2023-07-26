@@ -9,7 +9,9 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
   handleRubroAdd,
 }) => {
   const [nombre, setNombre] = useState('');
-  const [rubroId, setRubroId] = useState<number | null>(null);
+  const [activo, setActivo] = useState(false);
+  const [idRubroPadre, setIdRubroPadre] = useState(null);
+  const [filteredRubros, setFilteredRubros] = useState<Rubro[] | null>(null); 
   const [rubros, setRubros] = useState<Rubro[]>([]);
 
   useEffect(() => {
@@ -25,30 +27,39 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!nombre || !rubroId || isNaN(rubroId)) {
-      console.log('Todos los campos son obligatorios');
+
+    const trimmedNombre = nombre.trim();
+    if (!trimmedNombre || /^\d+$/.test(trimmedNombre)) {
+      alert('El nombre no puede estar vacío, contener solo números o ser nulo.');
       return;
     }
 
-    const selectedRubro = rubros.find((rubro) => rubro.idRubro === rubroId);
-    if (!selectedRubro) {
-      console.log('Rubro inválido');
-      return;
-    }
-
-    const newRubro: Rubro = {
+    const newRubroIngrediente : Rubro ={
       idRubro: 0,
-      nombre,
-      idRubroPadre: selectedRubro.idRubroPadre,
-    };
-    handleRubroAdd(newRubro);
+      nombre: '',
+      activo: false, 
+      idRubroPadre: undefined,
+    }
+    handleRubroAdd(newRubroIngrediente); // Se pasa el objeto rubroData directamente a handleRubroAdd
     handleClose();
+  };
+
+  const handleStatusChange = (isActive: boolean) => {
+    setActivo(isActive);
+  };
+
+  const handleSearch = (searchTerm: string) => {
+    // Verificar si la lista de rubros existe antes de llamar a filter
+    const filteredRubros = rubros?.filter((rubro) =>
+      rubro.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredRubros(filteredRubros);
   };
 
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar Rubro</Modal.Title>
+        <Modal.Title>Agregar Rubro Ingrediente</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
@@ -63,18 +74,22 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formRubro">
-            <Form.Label>Rubro</Form.Label>
-            <Form.Select
-              onChange={(event) => setRubroId(parseInt(event.target.value))}
-              required
-            >
-              <option value="">Seleccione un rubro</option>
-              {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
-                  {rubro.nombre}
-                </option>
-              ))}
-            </Form.Select>
+          <Form.Label>Estado</Form.Label>
+            <div>
+              <Button
+                variant={activo ? 'outline-primary' : 'primary'}
+                className="mr-2"
+                onClick={() => handleStatusChange(false)}
+              >
+                Activo
+              </Button>
+              <Button
+                variant={activo ? 'primary' : 'outline-primary'}
+                onClick={() => handleStatusChange(true)}
+              >
+                Inactivo
+              </Button>
+              </div>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

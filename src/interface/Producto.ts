@@ -22,7 +22,7 @@ export interface EditProductoModalProps {
   show: boolean;
   handleClose: () => void;
   handleProductoEdit: (producto: Producto) => void;
-  selectedProducto: Producto | null;  
+  selectedProducto: Producto | null;    
 }
 export interface AddProductoModalProps {
   show: boolean;
@@ -38,6 +38,7 @@ export interface EditRubroProductoModalProps {
   handleClose: () => void;
   handleRubroEdit: (rubro: Rubro) => void;
   selectedRubro: Rubro | null;
+ 
 }
 
 export interface AddRubroProductoModalProps {
