@@ -31,7 +31,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                 setDomicilio(pedido.Usuario.Domicilio);
             }
         }
-    }, [pedido]);
+    }, []);
 
     return (
         <div className="modal-overlay" onClick={closeModal}>
