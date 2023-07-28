@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import Ingrediente from '../Ingrediente/Ingrediente';
 import Productos from '../Producto/Productos';
-import Rubros from '../../Rubros/Rubros';
+import Rubros from '../Rubros/Rubros';
 
 const Stock: FC = () => {
     const [selectedOption, setSelectedOption] = useState<"productos" | "ingredientes" | "rubros">("productos");
@@ -47,7 +47,7 @@ const Stock: FC = () => {
                 <div className="mt-4">
                     {selectedOption === 'productos' && <Productos />}
                     {selectedOption === 'ingredientes' && <Ingrediente />}
-                    {/* {selectedOption === 'rubros' && <RankingVentas />} */}
+                     {selectedOption === 'rubros' && <Rubros />} 
                 </div>
 
             </Container>

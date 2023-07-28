@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { AddRubroProductoModalProps } from '../../../interface/Producto';
-import { Rubro } from '../../../interface/Rubro';
+import { AddRubroProductoModalProps } from '../../../../interface/Producto';
+import { Rubro } from '../../../../interface/Rubro';
 
 const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
   show,

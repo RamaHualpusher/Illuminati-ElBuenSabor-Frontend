@@ -55,7 +55,7 @@ const Ingrediente: React.FC = () => {
         setFilteredIngredientes(ingredComplete);
       }
     };
-  
+
     if (ingredComplete.length > 0) {
       filterIngredientes();
     }
@@ -93,7 +93,7 @@ const Ingrediente: React.FC = () => {
       console.log(error);
     }
   };
-  
+
   const handleIngredienteEdit = async (producto: Ingredientes) => {
     try {
       const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.idIngredientes}`, producto);
@@ -141,7 +141,7 @@ const Ingrediente: React.FC = () => {
   const handleAddModalClose = () => {
     setAddModalShow(false);
   };
- 
+
 
   const handleIngredienteDelete = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -157,46 +157,41 @@ const Ingrediente: React.FC = () => {
       });
   }
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {    
-    const { value } = event.target;    
-    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];    
-    const selectedRubroId = parseInt(value);    
-    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);    
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
+    const selectedRubroId = parseInt(value);
+    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);
     setSelectedRubro(selectedRubroId ? selectedRubroId : null);
     setSelectedRubroName(selectedOption.text);
   };
-  
+
   const noProductosMessage =
-  selectedRubro && filteredIngredientes.length === 0 ? (
-    <p>No hay ingredientes disponibles con el rubro seleccionado.</p>
-  ) : null;
+    selectedRubro && filteredIngredientes.length === 0 ? (
+      <p>No hay ingredientes disponibles con el rubro seleccionado.</p>
+    ) : null;
 
   return (
     <div>
       <Container fluid>
-        <Row className="justify-content-start align-items-center mb-3">
-          <Col sm={10}>
-            <h1>Tabla de Ingredientes</h1>
-          </Col>
-        </Row>
         <div>
-        <Form.Group controlId="idrubro">          
-          <select
+          <Form.Group controlId="idrubro">
+            <select
               className="form-select"
               name="idRubro"
               value={selectedRubro ? selectedRubro : ""}
               onChange={handleSelectChange}
               style={{ width: "250px", margin: "10px" }}
             >
-            <option value="">Todos los rubros</option>
-            {rubros.map((rubro) => (
-              <option key={rubro.idRubro} value={rubro.idRubro}>
-                {rubro.nombre}
-              </option>
-            ))}
-          </select>
-        </Form.Group>
-        {noProductosMessage}
+              <option value="">Todos los rubros</option>
+              {rubros.map((rubro) => (
+                <option key={rubro.idRubro} value={rubro.idRubro}>
+                  {rubro.nombre}
+                </option>
+              ))}
+            </select>
+          </Form.Group>
+          {noProductosMessage}
           <GenericTable
             data={filteredIngredientes}
             columns={columns}
@@ -210,7 +205,7 @@ const Ingrediente: React.FC = () => {
           handleClose={handleEditModalClose}
           handleIngredientesEdit={handleIngredienteEdit}
           selectedIngredientes={selectedIngrediente}
-        />        
+        />
         <AddIngredienteModal
           show={addModalShow}
           handleClose={handleAddModalClose}

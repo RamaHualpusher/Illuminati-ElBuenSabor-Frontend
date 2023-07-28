@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Container, Col, Row } from 'react-bootstrap';
 import EditRubroIngredienteModal from './EditRubroIngredienteModal';
 import AddRubroIngredienteModal from './AddRubroIngredienteModal';
-import { Rubro } from '../../../interface/Rubro';
-import { handleRequest } from '../../FuncionRequest/FuncionRequest';
-import { Action, Column } from '../../../interface/CamposTablaGenerica';
-import GenericTable from "../../GenericTable/GenericTable";
+import { Rubro } from '../../../../interface/Rubro';
+import { handleRequest } from '../../../FuncionRequest/FuncionRequest';
+import { Action, Column } from '../../../../interface/CamposTablaGenerica';
+import GenericTable from "../../../GenericTable/GenericTable";
 import Axios from 'axios';
 
 const RubroIngrediente: React.FC = () => {
@@ -34,7 +34,7 @@ const RubroIngrediente: React.FC = () => {
     buscarRubros();
   }, []);
 
-   const handleRubroAdd = async (rubro: Rubro) => {
+  const handleRubroAdd = async (rubro: Rubro) => {
     try {
       const newRubroIngrediente = await handleRequest('POST', API_URL, rubro);
       setRubros(newRubroIngrediente);
@@ -115,11 +115,6 @@ const RubroIngrediente: React.FC = () => {
   return (
     <div>
       <Container fluid>
-        <Row className="justify-content-start align-items-center mb-3">
-          <Col>
-            <h1>Tabla de Ingredientes</h1>
-          </Col>
-        </Row>
         <div>
           <GenericTable
             data={rubros}

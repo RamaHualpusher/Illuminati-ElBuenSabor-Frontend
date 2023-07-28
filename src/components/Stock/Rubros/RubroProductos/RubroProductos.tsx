@@ -1,11 +1,11 @@
 import React, { FC, useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { handleRequest } from '../../FuncionRequest/FuncionRequest';
+import { handleRequest } from '../../../FuncionRequest/FuncionRequest';
 import EditRubroProductoModal from './EditRubroProductoModal';
 import AddRubroProductoModal from './AddRubroProductoModal';
-import { Rubro } from '../../../interface/Rubro';
-import { Action, Column } from '../../../interface/CamposTablaGenerica';
-import GenericTable from '../../GenericTable/GenericTable';
+import { Rubro } from '../../../../interface/Rubro';
+import { Action, Column } from '../../../../interface/CamposTablaGenerica';
+import GenericTable from '../../../GenericTable/GenericTable';
 import Axios from 'axios';
 
 const RubroProductos: FC = () => {
@@ -118,11 +118,6 @@ const RubroProductos: FC = () => {
 
   return (
     <Container fluid>
-      <Row className="justify-content-start align-items-center mb-3">
-        <Col>
-          <h1>Tabla de Rubros</h1>
-        </Col>
-      </Row>
       <Row>
         <div>
           <GenericTable

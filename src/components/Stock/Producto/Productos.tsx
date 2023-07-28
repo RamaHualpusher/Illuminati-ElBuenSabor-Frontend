@@ -55,13 +55,13 @@ const Productos: React.FC = () => {
         setFilteredProductos(productosComplete);
       }
     };
-  
+
     if (productosComplete.length > 0) {
       filterProductos();
     }
   }, [selectedRubro, productosComplete]);
-  
-  
+
+
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -72,7 +72,7 @@ const Productos: React.FC = () => {
         console.log(error);
       }
     };
-  
+
     const fetchRubros = async () => {
       try {
         const responseData = await handleRequest("GET", API_URL_Rubro);
@@ -81,11 +81,11 @@ const Productos: React.FC = () => {
         console.log(error);
       }
     };
-  
+
     fetchProductos();
     fetchRubros();
   }, []);
-  
+
   const handleProductoAdd = async (producto: Producto) => {
     try {
       const newProducto = await handleRequest("POST", API_URL, producto);
@@ -134,7 +134,7 @@ const Productos: React.FC = () => {
       setSelectedProducto(selected);
       setEditModalShow(true);
     }
-  };  
+  };
 
   const handleEditModalClose = () => {
     setSelectedProducto(null);
@@ -149,45 +149,40 @@ const Productos: React.FC = () => {
     setAddModalShow(false);
   };
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {    
-    const { value } = event.target;    
-    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];    
-    const selectedRubroId = parseInt(value);    
-    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);    
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
+    const selectedRubroId = parseInt(value);
+    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);
     setSelectedRubro(selectedRubroId ? selectedRubroId : null);
     setSelectedRubroName(selectedOption.text);
   };
-  
+
   const noProductosMessage =
-  selectedRubro && filteredProductos.length === 0 ? (
-    <p>No hay productos disponibles con el rubro seleccionado.</p>
-  ) : null;
+    selectedRubro && filteredProductos.length === 0 ? (
+      <p>No hay productos disponibles con el rubro seleccionado.</p>
+    ) : null;
 
   return (
     <Container fluid>
-      <Row className="justify-content-start align-items-center mb-3">
-        <Col>
-          <h2>Tabla de Productos</h2>
-        </Col>
-      </Row>
       <Row>
         <div>
-        <Form.Group controlId="idrubro">          
-          <select
+          <Form.Group controlId="idrubro">
+            <select
               className="form-select"
               name="idRubro"
               value={selectedRubro ? selectedRubro : ""}
               onChange={handleSelectChange}
               style={{ width: "250px", margin: "10px" }}
             >
-            <option value="">Todos los rubros</option>
-            {rubros.map((rubro) => (
-              <option key={rubro.idRubro} value={rubro.idRubro}>
-                {rubro.nombre}
-              </option>
-            ))}
-          </select>
-        </Form.Group>
+              <option value="">Todos los rubros</option>
+              {rubros.map((rubro) => (
+                <option key={rubro.idRubro} value={rubro.idRubro}>
+                  {rubro.nombre}
+                </option>
+              ))}
+            </select>
+          </Form.Group>
 
           {noProductosMessage}
 
