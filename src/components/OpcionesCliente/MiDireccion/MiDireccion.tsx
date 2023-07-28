@@ -66,7 +66,7 @@ const Direccion: FC = () => {
     };
 
     return (
-        <div className="detalle-page-container d-flex align-items-center" style={{ backgroundImage: `url('/assets/img/Fondo-UbicacionPerfil.jpg') `, minHeight: '100vh' }}>
+        <div className="d-flex align-items-center" style={{ backgroundImage: `url('/assets/img/Fondo-UbicacionPerfil.jpg') `, minHeight: '100vh' }}>
             <Container>
                 {domicilio ? (
                     <div>

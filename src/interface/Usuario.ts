@@ -19,7 +19,7 @@ export interface EditUsuarioFromCliente {
   email: string;
   clave: string;
   telefono: string;
-  Domicilio: Domicilio;
+  Domicilio?: Domicilio;
 }
 
 export interface EditUsuarioFromAdmin {

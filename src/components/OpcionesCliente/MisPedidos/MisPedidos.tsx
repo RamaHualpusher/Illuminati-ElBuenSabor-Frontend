@@ -12,7 +12,7 @@ const MisPedidos: FC = () => {
 
     return (
         <div style={{ marginTop: '90px' }}>
-            <Container>
+            <Container style={{ marginTop: '90px' }}>
                 <h1 className="display-3">Mis Pedidos</h1>
 
                 <div className="d-grid gap-2 d-md-block text-center mt-3">
