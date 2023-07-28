@@ -18,6 +18,9 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
   const [estado, setEstado] = useState(true); // Estado por defecto: Alta
   const [rubros, setRubros] = useState<Rubro[]>([]);
 
+
+  const unidades=["Kg","g","Mg","l","Ml"];
+
   useEffect(() => {
     fetch('/assets/data/rubrosIngredientesEjemplo.json')
       .then(response => response.json())
@@ -50,6 +53,8 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
       console.log('Rubro inválido');
       return;
     }
+
+    
 
     const newIngrediente: Ingredientes = {
       idIngredientes: 0,
@@ -129,13 +134,15 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
           </Form.Group>
           <Form.Group className="mb-3" controlId="formUM">
             <Form.Label>UM</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese unidad de medida"
+            <Form.Select
               value={um}
-              onChange={(event) => setUM(event.target.value)}
+              onChange={(event)=>setUM(event.target.value)}
               required
-            />
+            >
+              {unidades.map((unidades)=>
+              <option value={unidades}>{unidades}</option>
+              )}
+            </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>

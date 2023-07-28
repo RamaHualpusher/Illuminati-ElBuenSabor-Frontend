@@ -18,6 +18,7 @@ export interface Producto {
   DetallePedido: DetallePedido[];
   ProductoIngrediente: ProductoIngrediente[];
 }
+
 export interface EditProductoModalProps {
   show: boolean;
   handleClose: () => void;
@@ -37,8 +38,7 @@ export interface EditRubroProductoModalProps {
   show: boolean;
   handleClose: () => void;
   handleRubroEdit: (rubro: Rubro) => void;
-  selectedRubro: Rubro | null;
- 
+  selectedRubro: Rubro | null; 
 }
 
 export interface AddRubroProductoModalProps {

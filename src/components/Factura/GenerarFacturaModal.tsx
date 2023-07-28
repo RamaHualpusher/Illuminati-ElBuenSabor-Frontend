@@ -14,23 +14,23 @@ interface GenerarFacturaModalProps {
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   closeModal,
 }) => {
-  const [pedido, setPedido] = useState<Pedido | null>(null); 
+  const [pedido, setPedido] = useState<Pedido | null>(null);
   const location = useLocation();
   const pedidoParam = location.pathname.split("/factura/")[1];
   const parsedPedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : null;
   const [showCreditoModal, setShowCreditoModal] = useState(false);
   const [showModal, setShowModal] = useState(true);
-  
+
   const openCreditoModal = () => {
     setShowCreditoModal(true);
-    setShowModal(false);
+    setShowModal(true);
   };
 
   useEffect(() => {
     if (parsedPedido) {
       setPedido(parsedPedido);
     }
-  }, [parsedPedido]);
+  }, []);
 
   if (!pedido) {
     return <div>Error: Pedido no encontrado</div>;
@@ -38,13 +38,13 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
 
   return (
     <>
-    <AdminBar />
+      <AdminBar />
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div
             className="modal-container border-black"
             onClick={(e) => e.stopPropagation()}
-          >            
+          >
             <div className="modal-content">
               <div className="logo-container">
                 <img
@@ -129,11 +129,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
               <div className="pdf-container">
                 <div className="pdf-container">
                   <PDFDownloadLink
-                    document={
-                      <FacturaPDF
-                      pedido={pedido}
-                      />
-                    }
+                    document={<FacturaPDF pedido={pedido} />}
                     fileName="factura.pdf"
                   >
                     {({ blob, url, loading, error }) =>
