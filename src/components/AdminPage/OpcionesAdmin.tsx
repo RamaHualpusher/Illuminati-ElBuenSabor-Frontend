@@ -101,7 +101,6 @@ export default function OpcionesAdmin() {
         {selectedOption === "facturas" && <Factura />}
         {selectedOption === "clientes" && <Cliente />}
         {selectedOption === "rankings" && <Rankings />}
-        {selectedOption === "rubro" && <Rubro />}
       </div>
     </div>
   );
