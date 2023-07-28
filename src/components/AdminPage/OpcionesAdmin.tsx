@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Factura from "../Factura/Factura";
 import Cliente from "../Users/Clientes/Clientes";
-import Rubro from "../Stock/Rubros/Rubros";
 import Usuarios from "../Users/Usuarios/Usuarios";
 import Rankings from "../Rankings/Rankings";
 import Stock from "../Stock/Stock/Stock";
@@ -21,7 +20,6 @@ export default function OpcionesAdmin() {
   const options = [
     { name: "Usuarios", value: "usuarios" },
     { name: "Stock", value: "stock" },
-    { name: "Rubro", value: "rubro" },
     { name: "Facturas", value: "facturas" },
     { name: "Rankings", value: "rankings" },
   ];

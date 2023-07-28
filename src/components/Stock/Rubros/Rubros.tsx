@@ -30,7 +30,7 @@ const Rubros: React.FC = () => {
               className={`btn btn-primary rounded w-100 ${selectedOption === 'rubroProductos' ? 'btn-dark' : 'btn-secondary'}`}
               onClick={() => handleOptionChange('rubroProductos')}
             >
-              Productos
+              Rubros Productos
             </Button>
           </Col>
           <Col xs={12} md={6} lg={6} className="mx-auto mb-2">
@@ -38,7 +38,7 @@ const Rubros: React.FC = () => {
               className={`btn btn-primary rounded w-100 ${selectedOption === 'rubroIngredientes' ? 'btn-dark' : 'btn-secondary'}`}
               onClick={() => handleOptionChange('rubroIngredientes')}
             >
-              Ingredientes
+              Rubros Ingredientes
             </Button>
           </Col>
         </Row>

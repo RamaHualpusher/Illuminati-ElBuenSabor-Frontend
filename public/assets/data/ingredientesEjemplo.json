@@ -16,7 +16,7 @@
   {
     "idIngredientes": 2,
     "nombre": "Azúcar",
-    "estado": true,
+    "estado": false,
     "stockMinimo": 5,
     "stockActual": 8,
     "Rubro": {

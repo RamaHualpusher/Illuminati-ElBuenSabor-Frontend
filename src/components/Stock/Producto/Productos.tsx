@@ -39,7 +39,11 @@ const Productos: React.FC = () => {
     {
       title: "Estado",
       field: "estado",
-      render: (producto: Producto) => <span>{producto.estado ? "Alta" : "Baja"}</span>,
+      render: (producto: Producto) => (
+        <span className={`${producto.estado ? "text-success" : "text-danger"}`}>
+          {producto.estado ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
+        </span>
+      ),
     },
   ];
 

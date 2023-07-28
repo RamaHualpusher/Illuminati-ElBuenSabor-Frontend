@@ -38,8 +38,13 @@ const Ingrediente: React.FC = () => {
     { title: 'Stock Actual', field: 'stockActual' },
     { title: 'UM', field: 'unidadMedida' },
     {
-      title: 'Estado', field: 'estado', render: (ingredientes: Ingredientes) =>
-        <span>{ingredientes.estado ? 'Alta' : 'Baja'}</span>
+      title: "Estado",
+      field: "estado",
+      render: (ingredientes: Ingredientes) => (
+        <span className={`${ingredientes.estado ? "text-success" : "text-danger"}`}>
+          {ingredientes.estado ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
+        </span>
+      ),
     },
   ];
 
