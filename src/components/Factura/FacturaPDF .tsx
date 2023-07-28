@@ -8,9 +8,12 @@ interface FacturaPDFProps {
 
 const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
   const {
+    idPedido,
     numeroPedido,
     fechaPedido,
+    horaEstimadaFin,
     esEfectivo,
+    estadoPedido,
     esDelivery,
     totalPedido,
     Usuario,
@@ -69,9 +72,9 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
             <div className="left-section" style={{ textAlign: "left" }}>
               <div>
                 Tipo de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
-                <br />
+                <br/>
                 Descuento: 
-                <br />
+                <br/>
                  Envío: {esDelivery ? "Envío domicilio" : "Retiro local"} 
               </div>
               <div>Total a pagar: ${totalPedido}</div>

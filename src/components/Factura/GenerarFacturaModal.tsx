@@ -7,7 +7,7 @@ import "./GenerarFacturaModal.css";
 import FacturaPDF from "./FacturaPDF ";
 import GenerarCreditoModal from "./GenerarCreditoModal";
 
-interface GenerarFacturaModalProps {
+interface GenerarFacturaModalProps {  
   closeModal: () => void;
 }
 
@@ -63,10 +63,10 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
               </div>
               <div className="details-container">
                 <h2>DETALLES DEL PEDIDO</h2>
-                <p>Número de Pedido: {pedido?.numeroPedido}</p>
-                <p>Fecha: {pedido?.fechaPedido?.toLocaleString()}</p>
+                <p>Número de Pedido: {pedido.numeroPedido}</p>
+                <p>Fecha: {pedido.fechaPedido?.toLocaleString()}</p>
                 <p>
-                  Forma de Pago: {pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}
+                  Forma de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
                 </p>
               </div>
               <div className="table-container">
@@ -90,7 +90,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                   <tfoot>
                     <tr>
                       <td colSpan={3} style={{ textAlign: "right" }}>
-                        Total: ${pedido?.totalPedido}
+                        Total: ${pedido.totalPedido}
                       </td>
                     </tr>
                   </tfoot>
@@ -99,20 +99,20 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
               <div className="payment-container">
                 <div className="left-section" style={{ textAlign: "left" }}>
                   <p>
-                    Tipo de Pago: {pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}
+                    Tipo de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
                     <br />
                     Descuento: {/* Agrega el descuento */}
                     <br />
-                    Envío: {pedido?.esDelivery ? "Envío domicilio" : "Retiro local"}
+                    Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
                   </p>
-                  <p>Total a pagar: ${pedido?.totalPedido}</p>
+                  <p>Total a pagar: ${pedido.totalPedido}</p>
                 </div>
                 <div className="right-section">
                   <h2>Envío</h2>
                   <p>
-                    Dirección: {pedido?.Usuario?.Domicilio?.calle} {pedido?.Usuario?.Domicilio?.numero},
+                    Dirección: {pedido.Usuario?.Domicilio?.calle} {pedido.Usuario?.Domicilio?.numero},
                     <br />
-                    {pedido?.Usuario?.Domicilio?.localidad}
+                    {pedido.Usuario?.Domicilio?.localidad}
                   </p>
                 </div>
               </div>
@@ -121,7 +121,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 style={{ textAlign: "center" }}
               >
                 <p>
-                  Muchas gracias {pedido?.Usuario?.nombre} {pedido?.Usuario?.apellido} por comprar en
+                  Muchas gracias {pedido.Usuario?.nombre} {pedido.Usuario?.apellido} por comprar en
                   <br />
                   El Buen Sabor
                 </p>
