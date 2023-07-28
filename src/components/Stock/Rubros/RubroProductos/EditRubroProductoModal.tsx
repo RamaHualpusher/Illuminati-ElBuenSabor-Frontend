@@ -10,36 +10,36 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
   selectedRubro,
 }) => {
   const [nombre, setNombre] = useState('');
-  const [activo, setActivo] = useState(false);
+  const [estado, setEstado] = useState(false);
   const [idRubroPadre, setIdRubroPadre] = useState<Rubro | undefined>(undefined);
 
   useEffect(() => {
     if (selectedRubro) {
       setNombre(selectedRubro.nombre);
-      setActivo(selectedRubro.activo || false);
+      setEstado(selectedRubro.estado || false);
       setIdRubroPadre(selectedRubro.idRubroPadre);
     }
   }, [selectedRubro]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     const trimmedNombre = nombre.trim();
     if (!trimmedNombre || /^\d+$/.test(trimmedNombre)) {
       alert('El nombre no puede estar vacío, contener solo números o ser nulo.');
       return;
     }
 
-    if(selectedRubro){
-    const updatedRubro: Rubro = {
-      ...selectedRubro,
-      idRubro: selectedRubro.idRubro || 0,
-      nombre,
-      activo,
-      idRubroPadre,
-    };
-    handleRubroEdit(updatedRubro);
-  }
+    if (selectedRubro) {
+      const updatedRubro: Rubro = {
+        ...selectedRubro,
+        idRubro: selectedRubro.idRubro || 0,
+        nombre,
+        estado,
+        idRubroPadre,
+      };
+      handleRubroEdit(updatedRubro);
+    }
     handleClose();
   };
 
@@ -59,7 +59,7 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
   // };
 
   const handleStatusChange = (isActive: boolean) => {
-    setActivo(isActive);
+    setEstado(isActive);
   };
 
   return (
@@ -80,24 +80,18 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formActivo">
+          <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
-            <div>
-            <Button
-                variant={activo ? 'primary' : 'outline-primary'}
-                className={activo ? 'mr-2 active' : 'mr-2'}
-                onClick={() => handleStatusChange(true)}
-              >
-                Activo
-              </Button>
-              <Button
-                variant={!activo ? 'primary' : 'outline-primary'}
-                className={!activo ? 'active' : ''}
-                onClick={() => handleStatusChange(false)}
-              >
-                Inactivo
-              </Button>
-            </div>
+            <Form.Select
+              value={estado ? 'alta' : 'baja'}
+              onChange={(event) =>
+                setEstado(event.target.value === 'alta' ? true : false)
+              }
+              required
+            >
+              <option value="alta">Alta</option>
+              <option value="baja">Baja</option>
+            </Form.Select>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

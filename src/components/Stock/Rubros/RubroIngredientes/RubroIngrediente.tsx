@@ -52,8 +52,12 @@ const RubroIngrediente: React.FC = () => {
     },
     {
       title: "Estado",
-      field: "activo",
-      render: (rubro: Rubro) => <span>{rubro.activo ? "Activo" : "Inactivo"}</span>,
+      field: "estado",
+      render: (rubro: Rubro) => (
+        <span className={`${rubro.estado ? "text-success" : "text-danger"}`}>
+          {rubro.estado ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
+        </span>
+      ),
     },
   ];
 

@@ -2,21 +2,21 @@
   {
     "idRubro": 1,
     "nombre": "Pizzas",
-    "activo": true
+    "estado": true
   },
   {
     "idRubro": 2,
     "nombre": "Hamburguesas",
-    "activo": true
+    "estado": true
   },
   {
     "idRubro": 3,
     "nombre": "Bebidas",
-    "activo": false
+    "estado": false
   },
   {
     "idRubro": 4,
     "nombre": "Ofertas",
-    "activo": true
+    "estado": true
   }
 ]
