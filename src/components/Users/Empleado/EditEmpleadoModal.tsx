@@ -14,6 +14,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [estado, setEstado] = useState(true);
   const [rolId, setRolId] = useState<number | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
 
@@ -35,6 +36,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
       setEmail(selectedEmpleado.email);
       setTelefono(selectedEmpleado.telefono);
       setRolId(selectedEmpleado.Rol.idRol);
+      setEstado(selectedEmpleado.estado);
     }
   }, [selectedEmpleado]);
 
@@ -48,6 +50,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
         apellido,
         email,
         telefono,
+        estado,
         Rol: selectedRol !== undefined ? selectedRol : selectedEmpleado.Rol,
       };
       handleEmpleadoEdit(updatedEmpleado);
@@ -114,6 +117,19 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
               </Form.Group>
             </Col>
           </Row>
+          <Form.Group className="mb-3" controlId="formEstado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select
+              value={estado ? 'activo' : 'bloqueado'}
+              onChange={(event) =>
+                setEstado(event.target.value === 'activo' ? true : false)
+              }
+              required
+            >
+              <option value="activo">Activo</option>
+              <option value="bloqueado">Bloqueado</option>
+            </Form.Select>
+          </Form.Group>
           <Form.Group controlId="formRol">
             <Form.Label>Rol</Form.Label>
             <Form.Select

@@ -21,6 +21,7 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [estado, setEstado] = useState(true);
   const [rolId, setRolId] = useState<number | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
   const [domicilio, setDomicilio] = useState<Domicilio>({
@@ -49,6 +50,7 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
       setTelefono(selectedCliente.telefono);
       setRolId(selectedCliente.Rol.idRol);
       setDomicilio(selectedCliente.Domicilio);
+      setEstado(selectedCliente.estado);
     }
   }, [selectedCliente]);
 
@@ -62,6 +64,7 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
         apellido,
         email,
         telefono,
+        estado,
         Rol: selectedRol !== undefined ? selectedRol : selectedCliente.Rol,
         Domicilio: domicilio,
       };
@@ -116,6 +119,19 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
               onChange={(event) => setTelefono(event.target.value)}
               required
             />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formEstado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select
+              value={estado ? 'activo' : 'bloqueado'}
+              onChange={(event) =>
+                setEstado(event.target.value === 'activo' ? true : false)
+              }
+              required
+            >
+              <option value="activo">Activo</option>
+              <option value="bloqueado">Bloqueado</option>
+            </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formRol">
             <Form.Label>Rol</Form.Label>

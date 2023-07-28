@@ -1,58 +1,59 @@
-    [
-      {
-        "idUsuario": 1,
-        "nombre": "Juan",
-        "apellido": "Pérez",
-        "email": "juan@example.com",
-        "clave": "123456",
-        "telefono": "1234567890",
-        "Rol": {
-          "idRol": 4,
-          "nombreRol": "Cliente"
-        },
-        "Domicilio": {
-          "idDomicilio": 1,
-          "calle": "Calle 1",
-          "numero": 123,
-          "localidad": "Ciudad A"
-        }
-      },
-      {
-        "idUsuario": 2,
-        "nombre": "María",
-        "apellido": "Gómez",
-        "email": "maria@example.com",
-        "clave": "abcdef",
-        "telefono": "0987654321",
-        "Rol": {
-          "idRol": 4,
-          "nombreRol": "Cliente"
-        },
-        "Domicilio": {
-          "idDomicilio": 2,
-          "calle": "Calle 2",
-          "numero": 456,
-          "localidad": "Ciudad B"
-        }
-      },
-      {
-        "idUsuario": 3,
-        "nombre": "Carlos",
-        "apellido": "Rodríguez",
-        "email": "carlos@example.com",
-        "clave": "qwerty",
-        "telefono": "5555555555",
-        "Rol": {
-          "idRol": 4,
-          "nombreRol": "Cliente"
-        },
-        "Domicilio": {
-          "idDomicilio": 3,
-          "calle": "Calle 3",
-          "numero": 789,
-          "localidad": "Ciudad C"
-        }
-      }
-    ]
-  
-  
+[
+  {
+    "idUsuario": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan@example.com",
+    "clave": "123456",
+    "telefono": "1234567890",
+    "estado": true,
+    "Rol": {
+      "idRol": 4,
+      "nombreRol": "Cliente"
+    },
+    "Domicilio": {
+      "idDomicilio": 1,
+      "calle": "Calle 1",
+      "numero": 123,
+      "localidad": "Ciudad A"
+    }
+  },
+  {
+    "idUsuario": 2,
+    "nombre": "María",
+    "apellido": "Gómez",
+    "email": "maria@example.com",
+    "clave": "abcdef",
+    "telefono": "0987654321",
+    "estado": true,
+    "Rol": {
+      "idRol": 4,
+      "nombreRol": "Cliente"
+    },
+    "Domicilio": {
+      "idDomicilio": 2,
+      "calle": "Calle 2",
+      "numero": 456,
+      "localidad": "Ciudad B"
+    }
+  },
+  {
+    "idUsuario": 3,
+    "nombre": "Carlos",
+    "apellido": "Rodríguez",
+    "email": "carlos@example.com",
+    "clave": "qwerty",
+    "telefono": "5555555555",
+    "estado": false,
+    "Rol": {
+      "idRol": 4,
+      "nombreRol": "Cliente"
+    },
+    "Domicilio": {
+      "idDomicilio": 3,
+      "calle": "Calle 3",
+      "numero": 789,
+      "localidad": "Ciudad C"
+    }
+  }
+]

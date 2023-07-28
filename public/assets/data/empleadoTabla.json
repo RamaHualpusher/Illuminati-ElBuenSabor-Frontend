@@ -6,6 +6,7 @@
     "email": "johndoe@example.com",
     "clave": "password123",
     "telefono": "1234567890",
+    "estado": true,
     "Rol": {
       "idRol": 1,
       "nombreRol": "Admin"
@@ -24,6 +25,7 @@
     "email": "pepeRob@example.com",
     "clave": "password321",
     "telefono": "1234567890",
+    "estado": false,
     "Rol": {
       "idRol": 1,
       "nombreRol": "Cajero"
@@ -35,5 +37,4 @@
       "localidad": "City"
     }
   }
-  
 ]

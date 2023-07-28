@@ -8,6 +8,7 @@ export interface Usuario {
   email: string;
   clave: string;
   telefono: string;
+  estado: boolean;
   Domicilio: Domicilio;
   Rol: Rol;
 }
@@ -28,6 +29,7 @@ export interface EditUsuarioFromAdmin {
   apellido: string;
   email: string;
   telefono: string;
+  estado: boolean;
   Rol: Rol;
 }
 
@@ -38,6 +40,7 @@ export interface UsuarioCompleto {
   email: string;
   clave: string;
   telefono: string;
+  estado: boolean;
   idDomicilio: number;
   calle: string;
   numero: number;

@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import Empleado from "../Users/Empleado/Empleado";
-import Productos from "../Stock/Producto/Productos";
-import Ingredientes from "../Stock/Ingrediente/Ingrediente";
 import Factura from "../Factura/Factura";
 import Cliente from "../Users/Clientes/Clientes";
-import RankingClientes from "../RankingClientes/RankingClientes";
-import RankingProductos from "../RankingProductos/RankingProductos";
 import Rubro from "../Rubros/Rubros";
+import Usuarios from "../Users/Usuarios/Usuarios";
+import Rankings from "../Rankings/Rankings";
+import Stock from "../Stock/Stock/Stock";
 
 export default function OpcionesAdmin() {
-  const [selectedOption, setSelectedOption] = useState("facturas");
+  const [selectedOption, setSelectedOption] = useState("usuarios");
   const [sidebarVisible, setSidebarVisible] = useState(true); // Agrega el estado para controlar la visibilidad de la barra lateral
 
   const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -21,23 +19,17 @@ export default function OpcionesAdmin() {
   };
 
   const options = [
-    { name: "Empleados", value: "employee" },
-    { name: "Clientes", value: "clientes" },
-    { name: "Ranking Clientes", value: "rankingClientes" },
-    { name: "Ranking Productos", value: "rankingProductos" },
-    { name: "Ranking Ventas", value: "rankingVentas" },
+    { name: "Usuarios", value: "usuarios" },
+    { name: "Stock", value: "stock" },
     { name: "Productos", value: "productos" },
     { name: "Ingredientes", value: "ingredientes" },
-    // { name: "Rubros Ingredientes", value: "rubrosIngrediente" },
-    // { name: "Rubros Productos", value: "rubrosProducto" },
-    { name: "Categorías", value: "categorias" },
-    { name: "Usuarios", value: "usuarios" },
-    { name: "Facturas", value: "facturas" },
     { name: "Rubro", value: "rubro" },
+    { name: "Facturas", value: "facturas" },
+    { name: "Rankings", value: "rankings" },
   ];
 
   return (
-    <div className="d-flex flex-wrap" style={{height:"100vh"}}>
+    <div className="d-flex flex-wrap" style={{ height: "100vh" }}>
       <div className="flex-shrink-0">
         {!sidebarVisible ? (
           <button
@@ -89,7 +81,7 @@ export default function OpcionesAdmin() {
               marginTop: "5rem",
             }}>
               <br />
-            </div> 
+            </div>
           </div>
         )}
       </div>
@@ -106,13 +98,11 @@ export default function OpcionesAdmin() {
 
       >
         {/* Contenido principal */}
-        {selectedOption === "employee" && <Empleado />}
-        {selectedOption === "productos" && <Productos />}
-        {selectedOption === "ingredientes" && <Ingredientes />}
+        {selectedOption === "usuarios" && <Usuarios />}
+        {selectedOption === "stock" && <Stock />}
         {selectedOption === "facturas" && <Factura />}
         {selectedOption === "clientes" && <Cliente />}
-        {selectedOption === "rankingClientes" && <RankingClientes />}
-        {selectedOption === "rankingProductos" && <RankingProductos />}
+        {selectedOption === "rankings" && <Rankings />}
         {selectedOption === "rubro" && <Rubro />}
       </div>
     </div>

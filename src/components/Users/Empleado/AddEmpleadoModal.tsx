@@ -17,6 +17,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [telefono, setTelefono] = useState("");
   const [calle, setCalle] = useState("");
   const [numero, setNumero] = useState("");
+  const [estado, setEstado] = useState(true);
   const [localidad, setLocalidad] = useState("");
   const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
   const [selectedDomicilio, setSelectedDomicilio] = useState<Domicilio | null>(null);
@@ -52,6 +53,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       email,
       clave,
       telefono,
+      estado,
       Rol: selectedRol || { idRol: 0, nombreRol: "" },
       Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: "" },
     };
@@ -115,6 +117,19 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
               onChange={(event) => setTelefono(event.target.value)}
               required
             />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formEstado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select
+              value={estado ? 'activo' : 'bloqueado'}
+              onChange={(event) =>
+                setEstado(event.target.value === 'activo' ? true : false)
+              }
+              required
+            >
+              <option value="activo">Activo</option>
+              <option value="bloqueado">Bloqueado</option>
+            </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formRol">
             <Form.Label>Rol</Form.Label>

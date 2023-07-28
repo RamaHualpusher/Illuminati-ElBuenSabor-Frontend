@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from 'react-bootstrap';
-import { Usuario } from "../../interface/Usuario";
-import { Column } from "../../interface/CamposTablaGenerica";
-import GenericTable from "../GenericTable/GenericTable";
+import { Usuario } from "../../../interface/Usuario";
+import { Column } from "../../../interface/CamposTablaGenerica";
+import GenericTable from "../../GenericTable/GenericTable";
 
 const RankingClientes = () => {
   const [clientes, setClientes] = useState<Usuario[]>([]);
@@ -36,11 +36,6 @@ const RankingClientes = () => {
   return (
     <div>
       <Container fluid>
-        <Row className="mt-3">
-          <Col>
-            <h1>Ranking de Clientes</h1>
-          </Col>
-        </Row>
         <Row className="mt-3">
           <Col>
             <GenericTable<Usuario>

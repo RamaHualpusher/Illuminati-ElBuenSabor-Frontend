@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from 'react-bootstrap';
-import { Producto } from "../../interface/Producto";
+import { Producto } from "../../../interface/Producto";
 
 
 const RankingProductos = () => {
@@ -43,11 +43,6 @@ const RankingProductos = () => {
     return (
         <div>
             <Container fluid>
-                <Row className="mt-3">
-                    <Col>
-                        <h1>Ranking de Productos</h1>
-                    </Col>
-                </Row>
                 <Row className="mt-3">
                     <Col>
                         {/* <TablaGeneric columns={columns} data={data} showButton={false} buttonAdd={handleAddModalClose} buttonEdit={defaultAct} buttonDelete={defaultAct} /> */}

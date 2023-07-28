@@ -8,12 +8,13 @@ import EditEmpleadoModal from "./EditEmpleadoModal";
 import AddEmpleadoModal from "./AddEmpleadoModal";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 
-const Empleado = () => {
+const Empleados = () => {
     const [empleados, setEmpleados] = useState<Usuario[]>([]);
     const [empleadosComplete, setEmpleadosComplete] = useState<Usuario[]>([]);
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
     const [selectedUsuario, setSelectedUsuario] = useState<EditUsuarioFromAdmin | null>(null);
+    const API_URL = "assets/data/empleadoTabla.json";
 
     const actions: Action = {
         create: true,
@@ -30,8 +31,45 @@ const Empleado = () => {
             title: 'Rol', field: 'Rol', render: (usuario: Usuario) =>
                 <span>{`${usuario.Rol.nombreRol}`}</span>
         },
+        {
+            title: "Estado",
+            field: "estado",
+            render: (usuario: Usuario) => (
+                <span className={`${usuario.estado ? "text-success" : "text-danger"}`}>
+                    {usuario.estado ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
+                </span>
+            ),
+        },
+
     ];
-    const API_URL = "assets/data/empleadoTabla.json";
+
+    // Función para busqueda personalizada por ID y nombre
+    const customSearch = (searchText: string): Promise<Usuario[]> => {
+        return new Promise((resolve) => {
+            const normalizedSearchText = normalizeString(searchText);
+
+            const filteredData = empleados.filter((empleado) => {
+                const normalizedIdUsuario = normalizeString(empleado.idUsuario.toString());
+                const normalizedNombre = normalizeString(empleado.nombre.toString());
+                const normalizedApellido = normalizeString(empleado.apellido.toString());
+
+                return (
+                    normalizedIdUsuario.includes(normalizedSearchText) ||
+                    normalizedNombre.includes(normalizedSearchText) ||
+                    normalizedApellido.includes(normalizedSearchText)
+                );
+            });
+
+            resolve(filteredData);
+        });
+    };
+    //Normaliza el texto para que no importe las Mayus, Minus o Tildes
+    const normalizeString = (str: string): string => {
+        return str
+            .toLowerCase()
+            .normalize("NFD") // Eliminar tildes
+            .replace(/[\u0300-\u036f]/g, "");
+    };
 
     useEffect(() => {
         fetch(API_URL)
@@ -119,14 +157,8 @@ const Empleado = () => {
         <div>
             <Container fluid>
                 <Row className="mt-3">
-                    <Col>
-                        <h1>Buscar Empleado</h1>
-                    </Col>
-                </Row>
-                <Row className="mt-3">
                     <Col sm={12}>
-                        {/* Wrap the GenericTable inside a responsive Table */}
-                        {/* <Table responsive> */}
+
                         <GenericTable
                             data={empleados}
                             columns={columns}
@@ -134,8 +166,8 @@ const Empleado = () => {
                             onAdd={handleAddModalOpen}
                             onUpdate={handleEditModalOpen}
                             onDelete={handleEmpleadoDelete}
+                            customSearch={customSearch}
                         />
-                        {/* </Table> */}
                     </Col>
                 </Row>
                 <AddEmpleadoModal
@@ -156,4 +188,4 @@ const Empleado = () => {
     );
 };
 
-export default Empleado;
+export default Empleados;
