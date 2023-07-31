@@ -14,6 +14,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
   const [clave, setClave] = useState("");
+  const [claveConfirm, setClaveConfirm] = useState("");
   const [telefono, setTelefono] = useState("");
   const [calle, setCalle] = useState("");
   const [numero, setNumero] = useState("");
@@ -52,6 +53,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       apellido,
       email,
       clave,
+      claveConfirm,
       telefono,
       estado,
       Rol: selectedRol || { idRol: 0, nombreRol: "" },
@@ -99,12 +101,22 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formClave">
-            <Form.Label>Clave</Form.Label>
+            <Form.Label>Contraseaña Provisoria</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Ingrese clave"
+              placeholder="Ingrese contraseaña"
               value={clave}
               onChange={(event) => setClave(event.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formClave2">
+            <Form.Label>Confirmar Contraseaña Provisoria</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Confirmar contraseaña"
+              value={claveConfirm}
+              onChange={(event) => setClaveConfirm(event.target.value)}
               required
             />
           </Form.Group>
