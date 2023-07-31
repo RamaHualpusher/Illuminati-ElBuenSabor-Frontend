@@ -34,7 +34,7 @@ const CocineroPedido: React.FC = () => {
 
     return (
         <div className="container mt-3">
-            <PedidoList pedidos={pedidosEnDelivery} cambiarEstadoPedido={cambiarEstadoPedido} btnTicket={false} phat="pedido" />
+            <PedidoList pedidos={pedidosEnDelivery} cambiarEstadoPedido={cambiarEstadoPedido} />
         </div>
     );
 };

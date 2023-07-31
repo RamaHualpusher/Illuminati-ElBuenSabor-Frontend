@@ -224,7 +224,7 @@
     "horaEstimadaFin": "2023-03-20T13:50:00",
     "esDelivery": true,
     "estadoPedido": "En delivery",
-    "esEfectivo": true,
+    "esEfectivo": false,
     "Usuario": {
       "idUsuario": 7,
       "nombre": "Jorge",

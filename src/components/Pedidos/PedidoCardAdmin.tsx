@@ -7,11 +7,12 @@ import EstadoPedidoCard from './EstadoPedidoCard';
 interface PedidoCardDeliveryProps {
   pedido: Pedido;
   cambiarEstadoPedido: (nuevoEstado: string) => void;
-  btnTikect: boolean;
-  phat: string;
 }
 
-const PedidoCardDelivery: React.FC<PedidoCardDeliveryProps> = ({ pedido, cambiarEstadoPedido, btnTikect, phat }) => {
+const PedidoCardDelivery: React.FC<PedidoCardDeliveryProps> = ({ pedido, cambiarEstadoPedido }) => {
+
+  const urlDetallePedido = `/mis-pedido/${pedido.idPedido}`;
+
   return (
     <Card className="pedido-card mb-2">
       <Card.Body>
@@ -29,15 +30,11 @@ const PedidoCardDelivery: React.FC<PedidoCardDeliveryProps> = ({ pedido, cambiar
               <EstadoPedidoCard estado={pedido.estadoPedido} />
             </div>
             <div className="d-flex justify-content-end mt-3">
-              {btnTikect === true && (
-                <>
-                  <Link to={`/factura/${pedido.idPedido}/${phat}`} className="btn btn-primary me-2">
-                    Ticket
-                  </Link>
-                </>
-              )}
               {pedido.estadoPedido === 'A confirmar' && (
                 <>
+                  <Link to={urlDetallePedido} className="btn btn-primary me-2">
+                    <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
+                  </Link>
                   <button
                     className="btn btn-primary me-2"
                     onClick={() => cambiarEstadoPedido('A cocina')}
@@ -52,6 +49,9 @@ const PedidoCardDelivery: React.FC<PedidoCardDeliveryProps> = ({ pedido, cambiar
               )}
               {pedido.estadoPedido === 'Listo' && (
                 <>
+                  <Link to={urlDetallePedido} className="btn btn-primary me-2">
+                    <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
+                  </Link>
                   <button
                     className="btn btn-primary me-2"
                     onClick={() => cambiarEstadoPedido('En delivery')}
@@ -62,7 +62,7 @@ const PedidoCardDelivery: React.FC<PedidoCardDeliveryProps> = ({ pedido, cambiar
                   <button
                     className="btn btn-primary"
                     onClick={() => cambiarEstadoPedido('Entregado')}
-                    disabled={pedido.esDelivery === false || !pedido.esEfectivo}
+                    disabled={pedido.esDelivery === true || !pedido.esEfectivo}
                   >
                     Entregado
                   </button>

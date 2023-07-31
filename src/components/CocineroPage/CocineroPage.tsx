@@ -1,51 +1,52 @@
-import React, { useState } from "react";
-import { Form } from "react-bootstrap";
+import React, { useState, FC } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import IngredientesTable from "../Stock/Ingrediente/Ingrediente";
 import ProductosTable from "../Stock/Producto/Productos";
 import CocineroPedido from "./CocineroPedidos";
 
-export default function CocineroPage() {
+const CocineroPage: FC = () => {
 
     const [selectedOption, setSelectedOption] = useState("Null");
-    const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setSelectedOption(event.currentTarget.value);
+    const handleOptionChange = (option: "pedidos" | "productos" | "ingredientes") => {
+        setSelectedOption(option);
     };
 
     return (
-        <Form>
-            <Form.Group >
-                <Form.Label >
-                    <div  >
-                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Pedidos"}>
-                            <div className="card my-3" style={{ border: "1px solid black" }}>
-                                <div className="card-body">
-                                    <h5>Pedidos</h5>
-                                </div>
-                            </div>
-                        </button>
-                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Producto"}>
-                            <div className="card my-3" style={{ border: "1px solid black" }}>
-                                <div className="card-body">
-                                    <h5>Productos</h5>
-                                </div>
-                            </div>
-                        </button>
-                        <button type="button" className="btn btn-ligth" style={{ color: "black", textDecoration: "none" }} onClick={handleOptionChange} value={"Ingrediente"}>
-                            <div className="card my-3" style={{ border: "1px solid black" }}>
-                                <div className="card-body">
-                                    <h5>Ingredientes</h5>
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-
-                </Form.Label>
-            </Form.Group>
-            <div>
-                {selectedOption === 'Producto' && <ProductosTable />}
-                {selectedOption === 'Ingrediente' && <IngredientesTable />}
-                {selectedOption === 'Pedidos' && <CocineroPedido/>}
-            </div>
-        </Form>
-    )
-}
+        <div>
+            <Container>
+                <Row className="d-flex justify-content-center mt-4">
+                    <Col xs={12} md={6} lg={4} className="mb-2">
+                        <Button
+                            className={`btn btn-primary rounded w-100 ${selectedOption === 'pedidos' ? 'btn-dark' : 'btn-secondary'}`}
+                            onClick={() => handleOptionChange('pedidos')}
+                        >
+                            Pedidos
+                        </Button>
+                    </Col>
+                    <Col xs={12} md={6} lg={4} className="mb-2">
+                        <Button
+                            className={`btn btn-primary rounded w-100 ${selectedOption === 'productos' ? 'btn-dark' : 'btn-secondary'}`}
+                            onClick={() => handleOptionChange('productos')}
+                        >
+                            Productos
+                        </Button>
+                    </Col>
+                    <Col xs={12} md={6} lg={4} className="mb-2">
+                        <Button
+                            className={`btn btn-primary rounded w-100 ${selectedOption === 'ingredientes' ? 'btn-dark' : 'btn-secondary'}`}
+                            onClick={() => handleOptionChange('ingredientes')}
+                        >
+                            Ingredientes
+                        </Button>
+                    </Col>
+                </Row>
+                <div className="mt-4">
+                    {selectedOption === 'productos' && <ProductosTable />}
+                    {selectedOption === 'ingredientes' && <IngredientesTable />}
+                    {selectedOption === 'pedidos' && <CocineroPedido />}
+                </div>
+            </Container >
+        </div >
+    );
+};
+export default CocineroPage;
