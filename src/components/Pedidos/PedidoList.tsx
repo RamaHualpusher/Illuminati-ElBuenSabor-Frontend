@@ -1,6 +1,6 @@
 import React from "react";
 import { Pedido } from "../../interface/Pedido";
-import PedidoCard from "./PedidoCardAdmin";
+import PedidoCardAdmin from "./PedidoCardAdmin";
 
 interface PedidoListProps {
     pedidos: Pedido[];
@@ -11,7 +11,7 @@ const PedidoList: React.FC<PedidoListProps> = ({ pedidos, cambiarEstadoPedido })
     return (
         <div className="card-container container-sm">
             {pedidos.map((pedido) => (
-                <PedidoCard key={pedido.idPedido} pedido={pedido} cambiarEstadoPedido={cambiarEstadoPedido} />
+                <PedidoCardAdmin key={pedido.idPedido} pedido={pedido} cambiarEstadoPedido={cambiarEstadoPedido} />
             ))}
         </div>
     );
