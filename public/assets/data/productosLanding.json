@@ -481,7 +481,7 @@
     "tiempoEstimadoCocina": 8,
     "denominacion": "Ofertas",
     "imagen": "/assets/img/Promo coca burger.jpg",
-    "stockActual": 20,
+    "stockActual": 0,
     "stockMinimo": 5,
     "preparacion": "Imperdible Promo una hamburguesa con una Coca-Cola 500ml.",
     "precio": 1900,

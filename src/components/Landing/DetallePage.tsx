@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import { Producto } from '../../interface/Producto';
 import Spinner from '../Spinner/Spinner';
 import { CartContext } from '../CarritoCompras/CartProvider';
-import Navbar from '../NavBar/Navbar';
 
 const DetallePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -12,18 +11,23 @@ const DetallePage = () => {
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
-    if (id) {
-      fetch('/assets/data/productosLanding.json')
-        .then((response) => response.json())
-        .then((data) => {
+    const fetchProducto = async () => {
+      if (id) {
+        try {
+          const response = await fetch('/assets/data/productosLanding.json');
+          const data = await response.json();
           const productoEncontrado = data.find((producto: Producto) => producto.idProducto === parseInt(id));
           setProducto(productoEncontrado);
           if (productoEncontrado && productoEncontrado.stockActual === 0) {
             setShowAlert(true);
           }
-        })
-        .catch((error) => console.error(error));
-    }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    fetchProducto();
   }, [id]);
 
   const handleAddToCart = () => {
@@ -45,21 +49,18 @@ const DetallePage = () => {
     }
   };
 
-
-  if (!producto || producto === null) {
+  if (!producto) {
     return <Spinner />;
   }
 
-  const primerProducto: Producto = producto;
-
-  const ingredientesList = primerProducto.ProductoIngrediente.map((productoIngrediente, index) => (
+  const ingredientesList = producto.ProductoIngrediente.map((productoIngrediente, index) => (
     <span key={productoIngrediente.idProductoIngrediente}>
       {productoIngrediente.Ingredientes.nombre}
-      {index !== primerProducto.ProductoIngrediente.length - 1 ? ', ' : '.'}
+      {index !== producto.ProductoIngrediente.length - 1 ? ', ' : '.'}
     </span>
   ));
 
-  const ingredientesSection = primerProducto.ProductoIngrediente.length > 0 && (
+  const ingredientesSection = producto.ProductoIngrediente.length > 0 && (
     <p className="card-text">Ingredientes: {ingredientesList}</p>
   );
 
@@ -68,24 +69,24 @@ const DetallePage = () => {
       <div className="container mt-5">
         <div className="row justify-content-center align-items-center">
           <div className="col-12 col-md-8 text-center">
-            {primerProducto && <h1 className="display-4 mt-5 text-white">{primerProducto.nombre}</h1>}
+            <h1 className="display-4 mt-5 text-white">{producto.nombre}</h1>
             <div className="card text-center mx-auto" style={{ width: '40rem' }}>
-              <img src={primerProducto.imagen} className="card-img-top img-fluid" alt={primerProducto.nombre} />
+              <img src={producto.imagen} className="card-img-top img-fluid" alt={producto.nombre} />
               <div className="card-body">
-                <h4 className="card-text">Detalles: <br />{primerProducto.preparacion}</h4>
+                <h4 className="card-text">Detalles: <br />{producto.preparacion}</h4>
                 <p className="card-text">Precio de venta: ${producto.precio}</p>
                 <p className="card-text">Disponibles: {producto.stockActual}</p>
-                {showAlert && (
-                  <div className="alert alert-danger" role="alert">
-                    No disponible para comprar
-                  </div>
-                )}
-                <p className="card-text">Tiempo estimado: {primerProducto.tiempoEstimadoCocina} Min</p>
+
+                <p className="card-text">Tiempo estimado: {producto.tiempoEstimadoCocina} Min</p>
                 {ingredientesSection}
-                {producto.stockActual > 0 && (
+                {producto.stockActual > 0 ? (
                   <button onClick={handleAddToCart} className="btn btn-primary mb-2">
                     Agregar al Carrito
                   </button>
+                ) : (
+                  <div className="alert alert-danger p-2" role="alert">
+                    Sin Stock
+                  </div>
                 )}
               </div>
             </div>

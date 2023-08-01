@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { CartContext, CartItem } from "../CarritoCompras/CartProvider";
 import { ICardProps } from "../../interface/ICard";
 
-const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText }) => {
+const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText, showButton }) => {
   const { addToCart } = useContext(CartContext);
 
   const handleCartClick = () => {
@@ -23,33 +23,36 @@ const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText }) => {
     addToCart(item);
   };
 
+  const renderButton = () => {
+    if (showButton) {
+      return (
+        <button onClick={handleCartClick} className="btn btn-primary mb-2">
+          {buttonText}
+        </button>
+      );
+    } else {
+      return (
+        <div className="alert alert-danger p-2" role="alert">
+          Sin Stock
+        </div>
+      );
+    }
+  };
+
   return (
-    <div
-      className="card"
-      style={{ width: "18rem", marginBottom: "20px", marginLeft: "16px" }}
-    >
+    <div className="card" style={{ width: "18rem", marginBottom: "20px", marginLeft: "16px" }}>
       <img
         className="card-img-top"
         src={producto.imagen}
-        alt="Card image cap"
-        style={{
-          width: "100%",
-          height: "150px",
-          objectFit: "cover",
-          borderRadius: "0%",
-        }}
+        alt={`Imagen de ${producto.nombre}`}
+        style={{ width: "100%", height: "150px", objectFit: "cover", borderRadius: "0%" }}
       />
-
       <div className="card-body">
         <h5 className="card-title">{producto.nombre}</h5>
         <p className="card-text">{producto.denominacion}</p>
 
-        <button
-          onClick={handleCartClick}
-          className="btn btn-primary mb-2"
-        >
-          {buttonText}
-        </button>
+        {renderButton()}
+
         <Link to={`/productos/${producto.idProducto}`} className="btn btn-primary float-right">
           Ver Detalles
         </Link>

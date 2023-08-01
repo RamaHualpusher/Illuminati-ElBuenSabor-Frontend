@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import TarjetaComida from "./TarjetaComida";
 import { ICatalogoProps } from "../../interface/ICatalogo";
 
 const Catalogo: React.FC<ICatalogoProps> = ({ filteredProductos }) => {
+  const [showButton, setShowButton] = useState(false);
+
   const getTarjetaComidaContainerClass = (totalTarjetas: number) => {
     if (totalTarjetas <= 1) {
       return "col-md-12";
@@ -27,6 +29,7 @@ const Catalogo: React.FC<ICatalogoProps> = ({ filteredProductos }) => {
         ) : (
           <div className="row justify-content-center">
             {filteredProductos.map((producto, index) => (
+
               <div
                 className={`text-center ${getTarjetaComidaContainerClass(
                   filteredProductos.length
@@ -34,10 +37,13 @@ const Catalogo: React.FC<ICatalogoProps> = ({ filteredProductos }) => {
                 key={index}
                 style={{ marginBottom: "20px" }}
               >
+
                 <TarjetaComida
                   producto={producto}
                   buttonText={"Agregar al Carrito"}
+                  showButton={producto.stockActual > 0 ? true : false}
                 />
+
               </div>
             ))}
           </div>

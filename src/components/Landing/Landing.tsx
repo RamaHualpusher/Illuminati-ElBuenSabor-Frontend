@@ -13,6 +13,7 @@ export default function Landing() {
   const [filteredProducts, setFilteredProducts] = useState<Producto[]>([]);
   const { searchParam } = useContext(SearchContext);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +22,7 @@ export default function Landing() {
         const data = await response.json();
         setProduc(data);
         setFilteredProducts(data);
+        
       } catch (error) {
         console.log(error);
       }
