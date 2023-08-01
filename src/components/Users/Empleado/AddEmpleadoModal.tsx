@@ -24,6 +24,8 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [selectedDomicilio, setSelectedDomicilio] = useState<Domicilio | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
   const [domicilios, setDomicilios] = useState<Domicilio>();
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
 
   useEffect(() => {
     fetch("/assets/data/idRolEjemplo.json")
@@ -34,19 +36,26 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       .catch((error) => {
         console.log(error);
       });
-
-    fetch("/assets/data/productosEjemplo.json")
-      .then((response) => response.json())
-      .then((data) => {
-        setDomicilios(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (clave !== claveConfirm) {
+      setPasswordsMatch(false);
+      return;
+    } else {
+      setPasswordsMatch(true);
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(clave)) {
+      setPasswordValid(false);
+      return;
+    } else {
+      setPasswordValid(true);
+    }
+
     const newEmpleado: Usuario = {
       idUsuario: 0,
       nombre,
@@ -101,24 +110,29 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formClave">
-            <Form.Label>Contraseaña Provisoria</Form.Label>
+            <Form.Label>Contraseña Provisional</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Ingrese contraseaña"
+              placeholder="Ingrese contraseña"
               value={clave}
               onChange={(event) => setClave(event.target.value)}
               required
+              isInvalid={!passwordsMatch || !passwordValid}
             />
+            {!passwordsMatch && <Form.Control.Feedback type="invalid">Las contraseñas no coinciden.</Form.Control.Feedback>}
+            {!passwordValid && <Form.Control.Feedback type="invalid">La contraseña debe tener un mínimo de 8 caracteres, al menos una letra mayúscula, una letra minúscula y un símbolo.</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="formClave2">
-            <Form.Label>Confirmar Contraseaña Provisoria</Form.Label>
+            <Form.Label>Confirmar Contraseña Provisional</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Confirmar contraseaña"
+              placeholder="Confirmar contraseña"
               value={claveConfirm}
               onChange={(event) => setClaveConfirm(event.target.value)}
               required
+              isInvalid={!passwordsMatch}
             />
+            {!passwordsMatch && <Form.Control.Feedback type="invalid">Las contraseñas no coinciden.</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="formTelefono">
             <Form.Label>Teléfono</Form.Label>

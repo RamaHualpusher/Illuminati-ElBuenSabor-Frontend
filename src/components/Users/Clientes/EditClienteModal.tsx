@@ -133,21 +133,6 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
               <option value="bloqueado">Bloqueado</option>
             </Form.Select>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formRol">
-            <Form.Label>Rol</Form.Label>
-            <Form.Select
-              value={rolId || ""}
-              onChange={(event) => setRolId(parseInt(event.target.value))}
-              required
-            >
-              <option value="">Seleccione un rol</option>
-              {roles.map((rol) => (
-                <option key={rol.idRol} value={rol.idRol}>
-                  {rol.nombreRol}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
           <Form.Group className="mb-3" controlId="formCalle">
             <Form.Label>Calle</Form.Label>
             <Form.Control
