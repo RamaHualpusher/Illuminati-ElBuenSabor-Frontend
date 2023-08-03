@@ -29,8 +29,23 @@
       {
         "idDetallePedido": 1,
         "cantidad": 2,
-        "Pedido": {},
-        "Producto": {}
+        "Productos": {
+          "idProducto": 1,
+          "nombre": "Pizza Muzza",
+          "tiempoEstimadoCocina": 15,
+          "denominacion": "Pizzas",
+          "imagen": "/assets/img/Pizza Mozza.avif",
+          "stockActual": 5,
+          "stockMinimo": 5,
+          "preparacion": "Una deliciosa pizza con el mejor queso Mozzarella y Pepperoni",
+          "precio": 2000,
+          "esBebida": false,
+          "estado": true,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Pizzas"
+          }
+        }
       }
     ],
     "totalPedido": 2000
@@ -66,7 +81,7 @@
         "idDetallePedido": 2,
         "cantidad": 3,
         "Pedido": {},
-        "Producto": [
+        "Productos": [
           {
             "idProducto": 1,
             "nombre": "Pizza Muzza",
@@ -154,7 +169,7 @@
         "idDetallePedido": 3,
         "cantidad": 1,
         "Pedido": {},
-        "Producto": {}
+        "Productos": {}
       }
     ],
     "totalPedido": 5000
@@ -190,7 +205,7 @@
         "idDetallePedido": 4,
         "cantidad": 2,
         "Pedido": {},
-        "Producto": {}
+        "Productos": {}
       }
     ],
     "totalPedido": 1500
@@ -226,7 +241,7 @@
         "idDetallePedido": 5,
         "cantidad": 3,
         "Pedido": {},
-        "Producto": {}
+        "Productos": {}
       }
     ],
     "totalPedido": 4000
@@ -262,7 +277,7 @@
         "idDetallePedido": 6,
         "cantidad": 2,
         "Pedido": {},
-        "Producto": {}
+        "Productos": {}
       }
     ],
     "totalPedido": 4000
@@ -298,7 +313,7 @@
         "idDetallePedido": 7,
         "cantidad": 1,
         "Pedido": {},
-        "Producto": {}
+        "Productos": {}
       }
     ],
     "totalPedido": 8000

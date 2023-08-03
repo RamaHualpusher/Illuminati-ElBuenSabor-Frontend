@@ -54,15 +54,20 @@ const DetallesPedidoUsuario: React.FC = () => {
                                 <h5 className="card-title">Número de Pedido: {pedido.numeroPedido}</h5>
                                 <p className="card-text">Nombre y Apellido del Cliente: {pedido.Usuario.nombre} {pedido.Usuario.apellido}</p>
                                 <p className="card-text">Teléfono: {pedido.Usuario.telefono}</p>
-                                {!pedido.esDelivery && (
+                                {!pedido.esDelivery ? (
                                     <p className="card-text">Dirección de Entrega: {pedido.Usuario.Domicilio.calle}, {pedido.Usuario.Domicilio.localidad}, {pedido.Usuario.Domicilio.numero}</p>
-                                )}
+                                ) :
+                                    (
+                                        <p className="card-text">Dirección de Entrega: {pedido.Usuario.Domicilio.calle}, {pedido.Usuario.Domicilio.localidad}, {pedido.Usuario.Domicilio.numero}</p>
+                                    )}
                                 <p className="card-text">Fecha: {new Date(pedido.fechaPedido).toLocaleDateString()}</p>
                                 <p className="card-text">Método de Pago: {pedido.esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
-                                {!pedido.esDelivery && (
-                                    <p className="card-text">Método de Entrega: Delivery</p>
+                                {!pedido.esDelivery ? (
+                                    <p className="card-text">Método de Entrega: Retiro en Local</p>
+                                ):
+                                (
+                                <p className="card-text">Método de Entrega: Delivery</p>
                                 )}
-                                <p className="card-text">Total: {pedido.totalPedido}</p>
 
                                 <h5 className="card-title">Detalle de Ítems Pedidos</h5>
                                 <ul>

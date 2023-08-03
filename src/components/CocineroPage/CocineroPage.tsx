@@ -1,12 +1,12 @@
 import React, { useState, FC } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import IngredientesTable from "../Stock/Ingrediente/Ingrediente";
 import ProductosTable from "../Stock/Producto/Productos";
 import CocineroPedido from "./CocineroPedidos";
 
 const CocineroPage: FC = () => {
 
-    const [selectedOption, setSelectedOption] = useState("Null");
+    const [selectedOption, setSelectedOption] = useState("pedidos");
     const handleOptionChange = (option: "pedidos" | "productos" | "ingredientes") => {
         setSelectedOption(option);
     };
