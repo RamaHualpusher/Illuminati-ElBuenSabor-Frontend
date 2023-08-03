@@ -1,12 +1,17 @@
 import React from "react";
-import "./GenerarFacturaModal.css";
 import { Pedido } from "../../interface/Pedido";
+import { Container, Table } from "react-bootstrap";
 
 interface FacturaPDFProps {
-  pedido:Pedido;
+  pedido: Pedido | null;
 }
 
 const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
+  
+  if (!pedido) {
+    return <div>Error: Pedido no encontrado</div>; // Agrega una verificación si pedido es null o undefined
+  }
+
   const {
     idPedido,
     numeroPedido,
@@ -19,8 +24,15 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
     Usuario,
     DetallePedido,
   } = pedido;
+
+  // Función para verificar si un valor está presente o proporcionar un valor predeterminado
+  const getOrDefault = (value: any, defaultValue: any) => {
+    return value !== null && value !== undefined ? value : defaultValue;
+  };
+
   return (
     <div className="modal-overlay">
+      <Container fluid>
       <div className="modal-container border-black">
         <div className="modal-content">
           <div className="logo-container">
@@ -37,12 +49,12 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
           </div>
           <div className="details-container">
             <div>DETALLES DEL PEDIDO</div>
-            <div>Número de Pedido: {numeroPedido}</div>
-            <div>Fecha: {fechaPedido?.toLocaleString()}</div>
+            <div>Número de Pedido: {getOrDefault(numeroPedido,"")}</div>
+            <div>Fecha: {getOrDefault(fechaPedido?.toLocaleString(),"")}</div>
             <div>Forma de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}</div>
           </div>
           <div className="table-container">
-            <table className="table">
+            <Table className="table">
               <thead>
                 <tr>
                   <th>Cantidad</th>
@@ -53,39 +65,39 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
               <tbody>
                 {DetallePedido?.map((detalle) => (
                   <tr key={detalle?.idDetallePedido}>
-                    <td>{detalle?.cantidad}</td>
-                    <td>{detalle?.Producto?.nombre}</td>
-                    <td>{detalle?.Producto?.precio}</td>
+                    <td>{getOrDefault(detalle?.cantidad, "")}</td>
+                    <td>{getOrDefault(detalle?.Producto?.nombre,"")}</td>
+                    <td>{getOrDefault(detalle?.Producto?.precio,"")}</td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
                 <tr>
                   <td colSpan={3} style={{ textAlign: "right" }}>
-                    Total: ${totalPedido}
+                    Total: ${getOrDefault(totalPedido, "No disponible")}
                   </td>
                 </tr>
               </tfoot>
-            </table>
+            </Table>
           </div>
           <div className="payment-container">
             <div className="left-section" style={{ textAlign: "left" }}>
               <div>
                 Tipo de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
-                <br/>
-                Descuento: 
-                <br/>
-                 Envío: {esDelivery ? "Envío domicilio" : "Retiro local"} 
+                <br />
+                Descuento:
+                <br />
+                Envío: {esDelivery ? "Envío domicilio" : "Retiro local"}
               </div>
-              <div>Total a pagar: ${totalPedido}</div>
+              <div>Total a pagar: ${getOrDefault(totalPedido,"")}</div>
             </div>
             <div className="right-section">
               <div>Envío</div>
               <div>
                 <p>
-                Dirección: {Usuario?.Domicilio?.calle} {Usuario?.Domicilio?.numero},
+                  Dirección: {getOrDefault(Usuario?.Domicilio?.calle,"")} {getOrDefault(Usuario?.Domicilio?.numero,"")},
                   <br />
-                  {Usuario?.Domicilio?.localidad}
+                  {getOrDefault(Usuario?.Domicilio?.localidad,"")}
                 </p>
               </div>
             </div>
@@ -95,13 +107,14 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
             style={{ textAlign: "center" }}
           >
             <p>
-            Muchas gracias {Usuario?.nombre} {Usuario?.apellido} por comprar en
+              Muchas gracias {getOrDefault(Usuario?.nombre,"")} {getOrDefault(Usuario?.apellido,"")} por comprar en
               <br />
               El Buen Sabor
             </p>
           </div>
         </div>
       </div>
+      </Container>
     </div>
   );
 };

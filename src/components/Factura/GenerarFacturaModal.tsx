@@ -3,13 +3,18 @@ import { Pedido } from "../../interface/Pedido";
 import AdminBar from "../NavBar/AdminBar";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useLocation } from "react-router-dom";
-import "./GenerarFacturaModal.css";
+import { Button, Container, Table } from "react-bootstrap";
 import FacturaPDF from "./FacturaPDF ";
 import GenerarCreditoModal from "./GenerarCreditoModal";
 
-interface GenerarFacturaModalProps {  
+interface GenerarFacturaModalProps {
   closeModal: () => void;
 }
+
+// Función para verificar si un valor está presente o proporcionar un valor predeterminado
+const getOrDefault = (value: any, defaultValue: any) => {
+  return value !== null && value !== undefined ? value : defaultValue;
+};
 
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   closeModal,
@@ -23,7 +28,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
 
   const openCreditoModal = () => {
     setShowCreditoModal(true);
-    setShowModal(true);
+    setShowModal(false);
   };
 
   useEffect(() => {
@@ -36,6 +41,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
     return <div>Error: Pedido no encontrado</div>;
   }
 
+
   return (
     <>
       <AdminBar />
@@ -45,6 +51,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
             className="modal-container border-black"
             onClick={(e) => e.stopPropagation()}
           >
+            <Container fluid>
             <div className="modal-content">
               <div className="logo-container">
                 <img
@@ -63,14 +70,14 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
               </div>
               <div className="details-container">
                 <h2>DETALLES DEL PEDIDO</h2>
-                <p>Número de Pedido: {pedido.numeroPedido}</p>
-                <p>Fecha: {pedido.fechaPedido?.toLocaleString()}</p>
+                <p>Número de Pedido: {getOrDefault(pedido.numeroPedido,"")}</p>
+                <p>Fecha: {getOrDefault(pedido.fechaPedido?.toLocaleString(),"")}</p>
                 <p>
                   Forma de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
                 </p>
               </div>
               <div className="table-container">
-                <table className="table">
+                <Table className="table">
                   <thead>
                     <tr>
                       <th>Cantidad</th>
@@ -81,44 +88,43 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                   <tbody>
                     {pedido?.DetallePedido?.map((detalle) => (
                       <tr key={detalle?.idDetallePedido}>
-                        <td>{detalle?.cantidad}</td>
-                        <td>{detalle?.Producto?.nombre}</td>
-                        <td>{detalle?.Producto?.precio}</td>
+                        <td>{getOrDefault(detalle?.cantidad, "")}</td>
+                        <td>{getOrDefault(detalle?.Producto?.nombre, "")}</td>
+                        <td>{getOrDefault(detalle?.Producto?.precio, "")}</td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
                     <tr>
                       <td colSpan={3} style={{ textAlign: "right" }}>
-                        Total: ${pedido.totalPedido}
+                        Total: ${getOrDefault(pedido.totalPedido, 0)}
                       </td>
                     </tr>
                   </tfoot>
-                </table>
+                </Table>
               </div>
               <div className="payment-container">
                 <div className="left-section" style={{ textAlign: "left" }}>
                   <p>
-                    Tipo de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
+                    Tipo de Pago: {getOrDefault(pedido.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
                     <br />
-                    Descuento: {/* Agrega el descuento */}
+                    Descuento:
                     <br />
-                    Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
+                    Envío: {getOrDefault(pedido.esDelivery ? "Domicilio" : "Retiro local", "")}
                   </p>
-                  <p>Total a pagar: ${pedido.totalPedido}</p>
+                  <p>Total a pagar: ${getOrDefault(pedido.totalPedido, 0)}</p>
                 </div>
                 <div className="right-section">
                   <h2>Envío</h2>
                   <p>
-                    Dirección: {pedido.Usuario?.Domicilio?.calle} {pedido.Usuario?.Domicilio?.numero},
+                    Dirección: {getOrDefault(pedido?.Usuario?.Domicilio?.calle, "")} {getOrDefault(pedido?.Usuario?.Domicilio?.numero, "")},
                     <br />
-                    {pedido.Usuario?.Domicilio?.localidad}
+                    {getOrDefault(pedido?.Usuario?.Domicilio?.localidad, "")}
                   </p>
                 </div>
               </div>
               <div
-                className="thankyou-container"
-                style={{ textAlign: "center" }}
+                className="thankyou-container text-center"                
               >
                 <p>
                   Muchas gracias {pedido.Usuario?.nombre} {pedido.Usuario?.apellido} por comprar en
@@ -128,27 +134,25 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
               </div>
               <div className="pdf-container">
                 <div className="pdf-container">
-                  <PDFDownloadLink
-                    document={<FacturaPDF pedido={pedido} />}
+                <PDFDownloadLink
+                    document={ <FacturaPDF pedido={pedido} />}
                     fileName="factura.pdf"
                   >
                     {({ blob, url, loading, error }) =>
                       loading ? (
                         "Cargando..."
                       ) : (
-                        <button className="btn btn-primary">Descargar PDF</button>
+                        <Button variant="primary">Descargar PDF</Button>
                       )
                     }
                   </PDFDownloadLink>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={openCreditoModal}
-                  >
+                  <Button variant="secondary" onClick={openCreditoModal}>
                     Nota de Crédito
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
+            </Container>
           </div>
         </div>
       )}
