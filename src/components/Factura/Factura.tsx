@@ -7,7 +7,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
 
 const Factura = () => {
-  const [facturas, setFacturas] = useState<Pedido[]>([]);
+  const [facturas, setFacturas] = useState<Pedido[]| null>(null);
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
   const navigate = useNavigate();
   const API_URL = "assets/data/pedidos.json";
@@ -21,7 +21,10 @@ const Factura = () => {
         const selectedPedido = data.find((pedido: Pedido) => pedido.numeroPedido.toString() === params.pedido); // Buscar el pedido correspondiente
         setSelectedPedido(selectedPedido || null);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setFacturas([]); // Si ocurre un error, establece el estado en un array vacío en lugar de null
+      });
   }, [params.pedido]);
 
   if (!facturas || facturas === null) return <Spinner />;
@@ -70,7 +73,7 @@ const Factura = () => {
     setSelectedPedido(pedido);
     const encodedPedido = encodeURIComponent(JSON.stringify(pedido));
     window.open(`/factura/${encodedPedido}`, "_blank");
-    window.postMessage(pedido, "*");
+    // window.postMessage(pedido, "*");
   };
 
 
@@ -82,7 +85,7 @@ const Factura = () => {
   // Función para busqueda personalizada por ID
   const customSearch = (searchText: string): Promise<Pedido[]> => {
     return new Promise((resolve) => {
-      const filteredData = facturas.filter((factura) =>
+      const filteredData = facturas?.filter((factura) =>
         factura.numeroPedido.toString().includes(searchText)
       );
       resolve(filteredData);

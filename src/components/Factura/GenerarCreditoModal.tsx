@@ -4,8 +4,9 @@ import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
 import AdminBar from "../NavBar/AdminBar";
 import { PDFDownloadLink } from "@react-pdf/renderer";
+import { Table, Container } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
-import "./GenerarFacturaModal.css";
+
 import FacturaPDF from "./FacturaPDF ";
 
 interface GenerarCreditoModalProps {
@@ -67,7 +68,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                         </p>
                     </div>
                     <div className="table-container">
-                        <table className="table">
+                        <Table className="table">
                             <thead>
                                 <tr>
                                     <th>Cantidad</th>
@@ -91,7 +92,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                                     </td>
                                 </tr>
                             </tfoot>
-                        </table>
+                        </Table>
                     </div>
                     <div className="payment-container">
                         <div className="left-section" style={{ textAlign: "left" }}>
@@ -100,7 +101,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                                 <br />
                                 Descuento: {/* Agrega el descuento */}
                                 <br />
-                                Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
+                                Envío: {pedido.esDelivery ? "Domicilio" : "Retiro local"}
                             </p>
                             <p>Total a devolver: ${pedido.totalPedido}</p>
                         </div>
