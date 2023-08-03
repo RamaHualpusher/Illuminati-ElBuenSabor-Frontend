@@ -52,106 +52,122 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <Container fluid>
-            <div className="modal-content">
-              <div className="logo-container">
-                <img
-                  src="/assets/img/logo-grupo-illuminati.jpg"
-                  alt="Logo de la empresa"
-                  width={100}
-                />
-              </div>
-              <div className="info-container">
-                <h2>El Buen Sabor</h2>
-                <p>
-                  Dirección: Aristides villanueva 356, Ciudad
-                  <br />
-                  CUIT: 12-5541252-8
-                </p>
-              </div>
-              <div className="details-container">
-                <h2>DETALLES DEL PEDIDO</h2>
-                <p>Número de Pedido: {getOrDefault(pedido.numeroPedido,"")}</p>
-                <p>Fecha: {getOrDefault(pedido.fechaPedido?.toLocaleString(),"")}</p>
-                <p>
-                  Forma de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
-                </p>
-              </div>
-              <div className="table-container">
-                <Table className="table">
-                  <thead>
-                    <tr>
-                      <th>Cantidad</th>
-                      <th>Detalle Producto</th>
-                      <th>Precio Unit.</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pedido?.DetallePedido?.map((detalle) => (
-                      <tr key={detalle?.idDetallePedido}>
-                        <td>{getOrDefault(detalle?.cantidad, "")}</td>
-                        <td>{getOrDefault(detalle?.Producto?.nombre, "")}</td>
-                        <td>{getOrDefault(detalle?.Producto?.precio, "")}</td>
+              <div className="modal-content">
+                <div className="logo-container">
+                  <img
+                    src="/assets/img/logo-grupo-illuminati.jpg"
+                    alt="Logo de la empresa"
+                    width={100}
+                  />
+                </div>
+                <div className="info-container">
+                  <h2>El Buen Sabor</h2>
+                  <p>
+                    Dirección: Aristides villanueva 356, Ciudad
+                    <br />
+                    CUIT: 12-5541252-8
+                  </p>
+                </div>
+                <div className="details-container">
+                  <h2>DETALLES DEL PEDIDO</h2>
+                  <p>Número de Pedido: {getOrDefault(pedido.numeroPedido, "")}</p>
+                  <p>Fecha: {getOrDefault(pedido.fechaPedido?.toLocaleString(), "")}</p>
+                  <p>
+                    Forma de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
+                  </p>
+                </div>
+                <div className="table-container">
+                  <Table className="table">
+                    <thead>
+                      <tr>
+                        <th>Cantidad</th>
+                        <th>Detalle Producto</th>
+                        <th>Precio Unit.</th>
                       </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colSpan={3} style={{ textAlign: "right" }}>
-                        Total: ${getOrDefault(pedido.totalPedido, 0)}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </Table>
-              </div>
-              <div className="payment-container">
-                <div className="left-section" style={{ textAlign: "left" }}>
-                  <p>
-                    Tipo de Pago: {getOrDefault(pedido.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
-                    <br />
-                    Descuento:
-                    <br />
-                    Envío: {getOrDefault(pedido.esDelivery ? "Domicilio" : "Retiro local", "")}
-                  </p>
-                  <p>Total a pagar: ${getOrDefault(pedido.totalPedido, 0)}</p>
+                    </thead>
+                    <tbody>
+                      {pedido?.DetallePedido?.map((detalle) => (
+                        <tr key={detalle?.idDetallePedido}>
+                          <td>{getOrDefault(detalle?.cantidad, "")}</td>
+                          <td>
+                            <ul>
+                              {detalle?.Productos.map((producto) => (
+                                <li key={producto.idProducto}>
+                                  {producto.nombre}
+                                </li>
+                              ))}
+                            </ul>
+                          </td>
+                          <td>
+                            <ul>
+                              {detalle?.Productos.map((producto) => (
+                                <li key={producto.idProducto}>
+                                  {producto.precio}
+                                </li>
+                              ))}
+                            </ul>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan={3} style={{ textAlign: "right" }}>
+                          Total: ${getOrDefault(pedido.totalPedido, 0)}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </Table>
                 </div>
-                <div className="right-section">
-                  <h2>Envío</h2>
+                <div className="payment-container">
+                  <div className="left-section" style={{ textAlign: "left" }}>
+                    <p>
+                      Tipo de Pago: {getOrDefault(pedido.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
+                      <br />
+                      Descuento:
+                      <br />
+                      Envío: {getOrDefault(pedido.esDelivery ? "Domicilio" : "Retiro local", "")}
+                    </p>
+                    <p>Total a pagar: ${getOrDefault(pedido.totalPedido, 0)}</p>
+                  </div>
+                  <div className="right-section">
+                    <h2>Envío</h2>
+                    <p>
+                      Dirección: {getOrDefault(pedido?.Usuario?.Domicilio?.calle, "")} {getOrDefault(pedido?.Usuario?.Domicilio?.numero, "")},
+                      <br />
+                      {getOrDefault(pedido?.Usuario?.Domicilio?.localidad, "")}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="thankyou-container text-center"
+                >
                   <p>
-                    Dirección: {getOrDefault(pedido?.Usuario?.Domicilio?.calle, "")} {getOrDefault(pedido?.Usuario?.Domicilio?.numero, "")},
+                    Muchas gracias {pedido.Usuario?.nombre} {pedido.Usuario?.apellido} por comprar en
                     <br />
-                    {getOrDefault(pedido?.Usuario?.Domicilio?.localidad, "")}
+                    El Buen Sabor
                   </p>
                 </div>
-              </div>
-              <div
-                className="thankyou-container text-center"                
-              >
-                <p>
-                  Muchas gracias {pedido.Usuario?.nombre} {pedido.Usuario?.apellido} por comprar en
-                  <br />
-                  El Buen Sabor
-                </p>
-              </div>
-              <div className="pdf-container">
                 <div className="pdf-container">
-                <PDFDownloadLink
-                    document={ <FacturaPDF pedido={pedido} />}
-                    fileName="factura.pdf"
-                  >
-                    {({ blob, url, loading, error }) =>
-                      loading ? (
-                        "Cargando..."
-                      ) : (
-                        <Button variant="primary">Descargar PDF</Button>
-                      )
-                    }
-                  </PDFDownloadLink>
-                  <Button variant="secondary" onClick={openCreditoModal}>
-                    Nota de Crédito
-                  </Button>
+                  <div className="pdf-container">
+                    <PDFDownloadLink
+                      document={<FacturaPDF pedido={pedido} />}
+                      fileName="factura.pdf"
+                    >
+                      {({ blob, url, loading, error }) =>
+                        loading ? (
+                          "Cargando..."
+                        ) : (
+                          <Button variant="primary">Descargar PDF</Button>
+                        )
+                      }
+                    </PDFDownloadLink>
+                    <Button variant="secondary" onClick={openCreditoModal}>
+                      Nota de Crédito
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
             </Container>
           </div>
         </div>

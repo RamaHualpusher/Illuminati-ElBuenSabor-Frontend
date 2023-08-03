@@ -14,7 +14,7 @@ interface CartItem {
 }
 
 interface CartItemProps {
-  item: CartItem & { DetallePedido: DetallePedido };
+  item: CartItem & { DetallePedido: DetallePedido }; // Cambia el tipo a DetallePedido
 }
 
 export const CartItem: React.FC<CartItemProps> = ({ item }) => {

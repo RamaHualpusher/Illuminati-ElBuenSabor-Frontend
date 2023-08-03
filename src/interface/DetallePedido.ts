@@ -5,5 +5,5 @@ export interface DetallePedido {
   idDetallePedido: number;
   cantidad: number;
   Pedido?: Pedido;
-  Producto: Producto;
+  Productos: Producto[];
 }

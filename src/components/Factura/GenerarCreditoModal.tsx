@@ -80,8 +80,24 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                                 {detallePedidos?.map((detalle) => (
                                     <tr key={detalle?.idDetallePedido}>
                                         <td>{detalle?.cantidad}</td>
-                                        <td>{detalle?.Producto?.nombre}</td>
-                                        <td>{detalle?.Producto?.precio}</td>
+                                        <td>
+                                            <ul>
+                                                {detalle?.Productos.map((producto) => (
+                                                    <li key={producto.idProducto}>
+                                                        {producto.nombre}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <ul>
+                                                {detalle?.Productos.map((producto) => (
+                                                    <li key={producto.idProducto}>
+                                                        {producto.precio}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -115,14 +131,14 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                     </div>
                     <div className="thankyou-container" style={{ textAlign: "center" }}>
                         <p>
-                            Anulación de FACTURA Num: {pedido.numeroPedido} a nombre de {usuario?.nombre} {usuario?.apellido} 
+                            Anulación de FACTURA Num: {pedido.numeroPedido} a nombre de {usuario?.nombre} {usuario?.apellido}
                         </p>
                     </div>
                     <div className="pdf-container">
                         <div className="pdf-container">
                             <PDFDownloadLink
                                 document={
-                                    <FacturaPDF                                      
+                                    <FacturaPDF
                                         pedido={pedido}
                                     />
                                 }

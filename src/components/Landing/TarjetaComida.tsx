@@ -2,29 +2,34 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { CartContext, CartItem } from "../CarritoCompras/CartProvider";
 import { ICardProps } from "../../interface/ICard";
+import { DetallePedido } from "../../interface/DetallePedido";
 
 const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText, showButton }) => {
   const { addToCart } = useContext(CartContext);
 
   const handleCartClick = () => {
-    const item: CartItem = {
-      id: producto.idProducto,
-      name: producto.nombre,
-      quantity: 1,
-      price: producto.precio,
-      image: producto.imagen,
-      title: producto.nombre,
-      DetallePedido: {
+    if (producto.stockActual > 0) {
+      const detallePedido: DetallePedido = {
         idDetallePedido: 0,
-        cantidad: 0,
-        Producto: producto,
-      },
-    };
-    addToCart(item);
+        cantidad: 1,
+        Productos: [producto],
+      };
+
+      const item: CartItem = {
+        id: producto.idProducto,
+        name: producto.nombre,
+        quantity: 1,
+        price: producto.precio,
+        image: producto.imagen,
+        title: producto.nombre,
+        DetallePedido: detallePedido,
+      };
+      addToCart(item);
+    }
   };
 
   const renderButton = () => {
-    if (showButton) {
+    if (showButton && producto.stockActual > 0) {
       return (
         <button onClick={handleCartClick} className="btn btn-primary mb-2">
           {buttonText}

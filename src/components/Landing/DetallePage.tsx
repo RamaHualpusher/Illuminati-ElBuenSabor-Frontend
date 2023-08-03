@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Producto } from '../../interface/Producto';
 import Spinner from '../Spinner/Spinner';
-import { CartContext } from '../CarritoCompras/CartProvider';
+import { CartContext, CartItem } from '../CarritoCompras/CartProvider';
+import { DetallePedido } from '../../interface/DetallePedido';
 
 const DetallePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,22 +33,28 @@ const DetallePage = () => {
 
   const handleAddToCart = () => {
     if (producto && producto.stockActual > 0) {
-      const item = {
+      const detallePedido: DetallePedido = {
+        idDetallePedido: 0,
+        cantidad: 0,
+        Productos: [producto],
+      };
+
+      const item: CartItem = {
         id: producto.idProducto,
         name: producto.nombre,
         quantity: 1,
         price: producto.precio,
         image: producto.imagen,
         title: producto.nombre,
-        DetallePedido: {
-          idDetallePedido: 0,
-          cantidad: 0,
-          Producto: producto,
-        },
+        DetallePedido: detallePedido, // Cambia aquí para asignar directamente el objeto DetallePedido
       };
+
       addToCart(item);
     }
   };
+
+
+
 
   if (!producto) {
     return <Spinner />;
