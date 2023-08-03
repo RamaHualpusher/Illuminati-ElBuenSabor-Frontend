@@ -12,9 +12,9 @@ const PanelAdmin: React.FC<NavbarAdminProps> = ({ title }) => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark" style={{ marginTop: "65px" }}>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark" style={{ marginTop: "60px" }}>
       <div className="container" style={{ display: "flex", justifyContent: "center" }}>
-        <h1 className="Title_admin h1 text-white">{title}</h1>
+        <h1 className="display-4 text-white">{title}</h1>
       </div>
     </nav>
   );

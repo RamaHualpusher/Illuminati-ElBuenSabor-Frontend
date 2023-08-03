@@ -1,27 +1,33 @@
 [
     {
       "idRubro": 1,
-      "nombre": "Quesos"
+      "nombre": "Quesos",
+      "estado": true
     },
     {
       "idRubro": 2,
-      "nombre": "Salsas"
+      "nombre": "Salsas",
+      "estado": true
     },
     {
       "idRubro": 3,
-      "nombre": "Carnes"
+      "nombre": "Carnes",
+      "estado": false
     },
     {
       "idRubro": 4,
-      "nombre": "Verduras"
+      "nombre": "Verduras",
+      "estado": true
     },
     {
       "idRubro": 5,
-      "nombre": "Frutas"
+      "nombre": "Frutas",
+      "estado": false
     },
     {
       "idRubro": 6,
-      "nombre": "Especias"
+      "nombre": "Especias",
+      "estado": true
     }
   ]
   

@@ -75,7 +75,7 @@ const Navbar: FC = () => {
         </button>
 
         <div className={`collapse navbar-collapse justify-content-end ${navbarOpen ? 'show' : ''}`}>
-          <ul className="navbar-nav align-items-center">
+          <ul className="navbar-nav align-items-center ms-auto">
             {searchOpen && (
               <div className="col">
                 <input className="form-control me-1 w-100" type="text" style={{ maxWidth: '500px' }} onChange={(e) => handleSearch(e.target.value)} />

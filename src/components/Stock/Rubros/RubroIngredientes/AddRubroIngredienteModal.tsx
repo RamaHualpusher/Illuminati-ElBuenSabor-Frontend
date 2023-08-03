@@ -9,9 +9,9 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
   handleRubroAdd,
 }) => {
   const [nombre, setNombre] = useState('');
-  const [activo, setActivo] = useState(false);
+  const [estado, setEstado] = useState(false);
   const [idRubroPadre, setIdRubroPadre] = useState(null);
-  const [filteredRubros, setFilteredRubros] = useState<Rubro[] | null>(null); 
+  const [filteredRubros, setFilteredRubros] = useState<Rubro[] | null>(null);
   const [rubros, setRubros] = useState<Rubro[]>([]);
 
   useEffect(() => {
@@ -34,10 +34,10 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
       return;
     }
 
-    const newRubroIngrediente : Rubro ={
+    const newRubroIngrediente: Rubro = {
       idRubro: 0,
       nombre: trimmedNombre,
-      activo: false, 
+      estado: false,
       idRubroPadre: undefined,
     }
     handleRubroAdd(newRubroIngrediente); // Se pasa el objeto rubroData directamente a handleRubroAdd
@@ -45,7 +45,7 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
   };
 
   const handleStatusChange = (isActive: boolean) => {
-    setActivo(isActive);
+    setEstado(isActive);
   };
 
   const handleSearch = (searchTerm: string) => {
@@ -73,23 +73,18 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formRubro">
-          <Form.Label>Estado</Form.Label>
-            <div>
-              <Button
-                variant={activo ? 'outline-primary' : 'primary'}
-                className="mr-2"
-                onClick={() => handleStatusChange(false)}
-              >
-                Activo
-              </Button>
-              <Button
-                variant={activo ? 'primary' : 'outline-primary'}
-                onClick={() => handleStatusChange(true)}
-              >
-                Inactivo
-              </Button>
-              </div>
+          <Form.Group className="mb-3" controlId="formEstado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select
+              value={estado ? 'alta' : 'baja'}
+              onChange={(event) =>
+                setEstado(event.target.value === 'alta' ? true : false)
+              }
+              required
+            >
+              <option value="alta">Alta</option>
+              <option value="baja">Baja</option>
+            </Form.Select>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

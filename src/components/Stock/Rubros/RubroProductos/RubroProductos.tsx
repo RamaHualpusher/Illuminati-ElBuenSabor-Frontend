@@ -35,7 +35,7 @@ const RubroProductos: FC = () => {
   }, []);
 
   const handleRubroAdd = async (rubro: Rubro) => {
-    try {      
+    try {
       const newRubroProducto = await handleRequest('POST', API_URL, rubro); // Use Axios to make a POST request
       setRubros(newRubroProducto); // Access the response data using response.data
       setAddModalShow(false);
@@ -52,8 +52,12 @@ const RubroProductos: FC = () => {
     },
     {
       title: "Estado",
-      field: "activo",
-      render: (rubro: Rubro) => <span>{rubro.activo ? "Activo" : "Inactivo"}</span>,
+      field: "estado",
+      render: (rubro: Rubro) => (
+        <span className={`${rubro.estado ? "text-success" : "text-danger"}`}>
+          {rubro.estado ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
+        </span>
+      ),
     },
   ];
 
@@ -133,7 +137,7 @@ const RubroProductos: FC = () => {
       <AddRubroProductoModal
         show={addModalShow}
         handleClose={handleAddModalClose}
-        handleRubroAdd={handleRubroAdd}      
+        handleRubroAdd={handleRubroAdd}
       />
       <EditRubroProductoModal
         show={editModalShow}

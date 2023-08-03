@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Pedido } from '../../interface/Pedido';
 import Spinner from '../Spinner/Spinner';
-import BackButton from '../BackButtom/backButtom';
+import BackButton from '../BackButtom/BackButtom';
 
 const DetallesPedidoDelivery: React.FC = () => {
     const { id } = useParams<{ id: string }>();

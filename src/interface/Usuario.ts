@@ -7,6 +7,7 @@ export interface Usuario {
   apellido: string;
   email: string;
   clave: string;
+  claveConfirm: string;
   telefono: string;
   estado: boolean;
   Domicilio: Domicilio;

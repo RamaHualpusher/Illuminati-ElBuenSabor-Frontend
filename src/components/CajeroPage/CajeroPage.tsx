@@ -70,10 +70,8 @@ const CajeroPage = () => {
   return (
     <div className="container mt-3">
       <div className="header-container container-sm text-center">
+        <h1 className="mx-auto display-4">Pedidos Pendientes</h1> {/* Agregar la clase mx-auto */}
         <Row className="align-items-center">
-          <Col>
-            <h1>Pedidos Pendientes</h1>
-          </Col>
           <Col xs="auto">
             <Form.Select value={filtroEstado} onChange={handleEstadoFiltroChange}>
               <option value="">Todos los estados</option>
@@ -89,8 +87,9 @@ const CajeroPage = () => {
           <Buscador onSearch={handleSearch} />
         </div>
       </div>
-      <PedidoList pedidos={filteredPedidos} cambiarEstadoPedido={cambiarEstadoPedido} btnTicket={true} phat="cajero" />
+      <PedidoList pedidos={filteredPedidos} cambiarEstadoPedido={cambiarEstadoPedido} />
     </div>
+
   );
 };
 
