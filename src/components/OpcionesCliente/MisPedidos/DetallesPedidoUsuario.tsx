@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Pedido } from '../../../interface/Pedido';
 import Spinner from '../../Spinner/Spinner';
 import { DetallePedido } from '../../../interface/DetallePedido';
@@ -9,15 +9,20 @@ const DetallesPedidoUsuario: React.FC = () => {
     const [pedido, setPedido] = useState<Pedido>();
 
     useEffect(() => {
-        if (id) {
-            fetch('/assets/data/pedidos.json')
-                .then((response) => response.json())
-                .then((data) => {
+        const fetchPedido = async () => {
+            try {
+                if (id) {
+                    const response = await fetch('/assets/data/pedidos.json');
+                    const data = await response.json();
                     const pedidoEncontrado = data.find((pedido: Pedido) => pedido.idPedido === parseInt(id));
-                    setPedido(pedidoEncontrado);
-                })
-                .catch((error) => console.error(error));
-        }
+                    setPedido(pedidoEncontrado || null);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchPedido();
     }, [id]);
 
     if (!pedido) {
@@ -62,7 +67,12 @@ const DetallesPedidoUsuario: React.FC = () => {
                                 <h5 className="card-title">Detalle de Ítems Pedidos</h5>
                                 <ul>
                                     {pedido.DetallePedido.map((detalle: DetallePedido) => (
-                                        <li key={detalle.idDetallePedido}>{detalle.Producto.nombre} - Cantidad: {detalle.cantidad}</li>
+                                        <li key={detalle.idDetallePedido}>
+                                            {detalle.Producto.nombre} - Cantidad: {detalle.cantidad}
+                                            {/* Aquí puedes mostrar más atributos del producto si lo deseas */}
+                                            Precio Unitario: {detalle.Producto.precio}
+                                            Tiempo de Cocina Estimado: {detalle.Producto.tiempoEstimadoCocina}
+                                        </li>
                                     ))}
                                 </ul>
 
