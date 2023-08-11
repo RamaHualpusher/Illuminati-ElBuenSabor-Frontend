@@ -20,7 +20,7 @@ const CocineroPage: FC = () => {
                             className={`btn btn-primary rounded w-100 ${selectedOption === 'pedidos' ? 'btn-dark' : 'btn-secondary'}`}
                             onClick={() => handleOptionChange('pedidos')}
                         >
-                            Pedidos
+                            Pedidos a preparar
                         </Button>
                     </Col>
                     <Col xs={12} md={6} lg={4} className="mb-2">

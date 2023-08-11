@@ -54,6 +54,7 @@ const CajeroPage = () => {
       if (
         (estadoPedido === "A confirmar" && nuevoEstado === "A cocina") ||
         (estadoPedido === "A confirmar" && nuevoEstado === "Listo") ||
+        (estadoPedido === "En cocina" && nuevoEstado === "Listo") ||
         (estadoPedido === "Listo" && nuevoEstado === "En delivery" && esDelivery) ||
         (estadoPedido === "Listo" && nuevoEstado === "Entregado" && esDelivery && esEfectivo)
       ) {

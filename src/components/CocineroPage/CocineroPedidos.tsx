@@ -24,17 +24,18 @@ const CocineroPedido: React.FC = () => {
         if (pedidoSeleccionado) {
             const { estadoPedido, esDelivery, esEfectivo } = pedidoSeleccionado;
 
-            if (estadoPedido === "En cocina" && nuevoEstado === "En delivery") {
+            if (estadoPedido === "En cocina" && nuevoEstado === "Listo") {
+                // Aquí debes modificar el estado del pedido a "Listo"
                 setPedidoSeleccionado({ ...pedidoSeleccionado, estadoPedido: nuevoEstado });
             }
         }
     };
 
-    const pedidosEnDelivery = pedidos.filter((pedido) => pedido.estadoPedido === "En cocina");
+    const pedidosEnCocina = pedidos.filter((pedido) => pedido.estadoPedido === "En cocina");
 
     return (
         <div className="container mt-3">
-            <PedidoList pedidos={pedidosEnDelivery} cambiarEstadoPedido={cambiarEstadoPedido} />
+            <PedidoList pedidos={pedidosEnCocina} cambiarEstadoPedido={cambiarEstadoPedido} />
         </div>
     );
 };
