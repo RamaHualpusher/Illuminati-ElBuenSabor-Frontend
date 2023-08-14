@@ -22,7 +22,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   const [pedido, setPedido] = useState<Pedido | null>(null);
   const location = useLocation();
   const pedidoParam = location.pathname.split("/factura/")[1];
-  const parsedPedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : null;
+  const parsedPedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : "";
   const [showCreditoModal, setShowCreditoModal] = useState(false);
   const [showModal, setShowModal] = useState(true);
 
@@ -41,10 +41,10 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
     return <div>Error: Pedido no encontrado</div>;
   }
 
-
   return (
     <>
       <AdminBar />
+      <div style={{marginTop: "50px"}}></div>
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div
@@ -52,7 +52,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <Container fluid>
-              <div className="modal-content">
+              <div className="border p-4 bg-white">
                 <div className="logo-container">
                   <img
                     src="/assets/img/logo-grupo-illuminati.jpg"
@@ -70,10 +70,10 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 </div>
                 <div className="details-container">
                   <h2>DETALLES DEL PEDIDO</h2>
-                  <p>Número de Pedido: {getOrDefault(pedido.numeroPedido, "")}</p>
-                  <p>Fecha: {getOrDefault(pedido.fechaPedido?.toLocaleString(), "")}</p>
+                  <p>Número de Pedido: {getOrDefault(pedido?.numeroPedido, "")}</p>
+                  <p>Fecha: {getOrDefault(pedido?.fechaPedido?.toLocaleString(), "")}</p>
                   <p>
-                    Forma de Pago: {pedido.esEfectivo ? "Efectivo" : "Mercado Pago"}
+                    Forma de Pago: {pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}
                   </p>
                 </div>
                 <div className="table-container">
@@ -91,18 +91,18 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                           <td>{getOrDefault(detalle?.cantidad, "")}</td>
                           <td>
                             <ul>
-                              {detalle?.Productos.map((producto) => (
-                                <li key={producto.idProducto}>
-                                  {producto.nombre}
+                              {Array.isArray(detalle?.Productos) && detalle.Productos.map((producto) => (
+                                <li key={producto?.idProducto}>
+                                  {getOrDefault(producto?.nombre, "Nombre Desconocido")}
                                 </li>
                               ))}
                             </ul>
                           </td>
                           <td>
                             <ul>
-                              {detalle?.Productos.map((producto) => (
-                                <li key={producto.idProducto}>
-                                  {producto.precio}
+                              {Array.isArray(detalle?.Productos) && detalle?.Productos.map((producto) => (
+                                <li key={producto?.idProducto}>
+                                  {producto?.precio}
                                 </li>
                               ))}
                             </ul>
@@ -113,7 +113,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     <tfoot>
                       <tr>
                         <td colSpan={3} style={{ textAlign: "right" }}>
-                          Total: ${getOrDefault(pedido.totalPedido, 0)}
+                          Total: ${getOrDefault(pedido?.totalPedido, 0)}
                         </td>
                       </tr>
                     </tfoot>
@@ -122,13 +122,13 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 <div className="payment-container">
                   <div className="left-section" style={{ textAlign: "left" }}>
                     <p>
-                      Tipo de Pago: {getOrDefault(pedido.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
+                      Tipo de Pago: {getOrDefault(pedido?.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
                       <br />
                       Descuento:
                       <br />
-                      Envío: {getOrDefault(pedido.esDelivery ? "Domicilio" : "Retiro local", "")}
+                      Envío: {getOrDefault(pedido?.esDelivery ? "Domicilio" : "Retiro local", "")}
                     </p>
-                    <p>Total a pagar: ${getOrDefault(pedido.totalPedido, 0)}</p>
+                    <p>Total a pagar: ${getOrDefault(pedido?.totalPedido, 0)}</p>
                   </div>
                   <div className="right-section">
                     <h2>Envío</h2>
@@ -143,7 +143,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                   className="thankyou-container text-center"
                 >
                   <p>
-                    Muchas gracias {pedido.Usuario?.nombre} {pedido.Usuario?.apellido} por comprar en
+                    Muchas gracias {pedido?.Usuario?.nombre} {pedido?.Usuario?.apellido} por comprar en
                     <br />
                     El Buen Sabor
                   </p>
@@ -153,14 +153,17 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     <PDFDownloadLink
                       document={<FacturaPDF pedido={pedido} />}
                       fileName="factura.pdf"
-                    >
-                      {({ blob, url, loading, error }) =>
-                        loading ? (
+                    >                      
+                      {({ blob, url, loading, error }) =>{
+                        console.log("Loading:", loading);
+                        console.log("Error:", error);
+                        console.log("pedido:", pedido);
+                        return loading ? (
                           "Cargando..."
                         ) : (
                           <Button variant="primary">Descargar PDF</Button>
                         )
-                      }
+                      }}
                     </PDFDownloadLink>
                     <Button variant="secondary" onClick={openCreditoModal}>
                       Nota de Crédito

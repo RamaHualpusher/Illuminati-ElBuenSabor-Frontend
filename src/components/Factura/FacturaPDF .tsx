@@ -8,6 +8,8 @@ interface FacturaPDFProps {
 
 const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
 
+  console.log("DetallePedido:", pedido?.DetallePedido); 
+
   if (!pedido) {
     return <div>Error: Pedido no encontrado</div>; // Agrega una verificación si pedido es null o undefined
   }
@@ -31,108 +33,112 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="mt-5">
       <Container fluid>
-        <div className="modal-container border-black">
-          <div className="modal-content">
-            <div className="logo-container">
+        <div className="border p-4 bg-white">
+          <div className="row">
+            <div className="col-md-3">
               <img
                 src="/assets/img/logo-grupo-illuminati.jpg"
                 alt="Logo"
-                width={100}
+                className="img-fluid"
               />
             </div>
-            <div className="info-container">
-              <div>El Buen Sabor</div>
-              <div>Dirección: Aristides villanueva 356, Ciudad</div>
-              <div>CUIT: 12-5541252-8</div>
+            <div className="col-md-6 text-center">
+              <h3 className="mb-0">El Buen Sabor</h3>
+              <p className="mb-0">Dirección: Aristides villanueva 356, Ciudad</p>
+              <p className="mb-0">CUIT: 12-5541252-8</p>
             </div>
-            <div className="details-container">
-              <div>DETALLES DEL PEDIDO</div>
-              <div>Número de Pedido: {getOrDefault(numeroPedido, "")}</div>
-              <div>Fecha: {getOrDefault(fechaPedido?.toLocaleString(), "")}</div>
-              <div>Forma de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}</div>
-            </div>
-            <div className="table-container">
-              <Table className="table">
-                <thead>
-                  <tr>
-                    <th>Cantidad</th>
-                    <th>Detalle Producto</th>
-                    <th>Precio Unit.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {DetallePedido && DetallePedido.length > 0 && DetallePedido.map((detalle) => (
-                    <tr key={detalle?.idDetallePedido}>
-                      <td>{getOrDefault(detalle?.cantidad, "")}</td>
-                      <td>
-                        <ul>
-                          {detalle?.Productos && detalle.Productos.map((producto) => (
-                            <li key={producto.idProducto}>
-                              {producto.nombre}
-                            </li>
-                          ))}
-                        </ul>
-                      </td>
-                      <td>
-                        <ul>
-                          {detalle?.Productos && detalle.Productos.map((producto) => (
-                            <li key={producto.idProducto}>
-                              {producto.precio}
-                            </li>
-                          ))}
-                        </ul>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-
-                <tfoot>
-                  <tr>
-                    <td colSpan={3} style={{ textAlign: "right" }}>
-                      Total: ${getOrDefault(totalPedido, "No disponible")}
-                    </td>
-                  </tr>
-                </tfoot>
-              </Table>
-            </div>
-            <div className="payment-container">
-              <div className="left-section" style={{ textAlign: "left" }}>
-                <div>
-                  Tipo de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
-                  <br />
-                  Descuento:
-                  <br />
-                  Envío: {esDelivery ? "Envío domicilio" : "Retiro local"}
-                </div>
-                <div>Total a pagar: ${getOrDefault(totalPedido, "")}</div>
+            <div className="col-md-3">
+              <div className="text-end">
+                <h5 className="mb-0">DETALLES DEL PEDIDO</h5>
+                <p className="mb-0">Número de Pedido: {getOrDefault(numeroPedido, "")}</p>
+                <p className="mb-0">Fecha: {getOrDefault(fechaPedido?.toLocaleString(), "")}</p>
+                <p className="mb-0">
+                  Forma de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
+                </p>
               </div>
-              <div className="right-section">
-                <div>Envío</div>
-                <div>
-                  <p>
-                    Dirección: {getOrDefault(Usuario?.Domicilio?.calle, "")} {getOrDefault(Usuario?.Domicilio?.numero, "")},
-                    <br />
-                    {getOrDefault(Usuario?.Domicilio?.localidad, "")}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div
-              className="thankyou-container"
-              style={{ textAlign: "center" }}
-            >
-              <p>
-                Muchas gracias {getOrDefault(Usuario?.nombre, "")} {getOrDefault(Usuario?.apellido, "")} por comprar en
-                <br />
-                El Buen Sabor
-              </p>
             </div>
           </div>
+          <div className="table-container">
+            <div className="table">
+              <thead>
+                <tr>
+                  <th>Cantidad</th>
+                  <th>Detalle Producto</th>
+                  <th>Precio Unit.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {DetallePedido && DetallePedido.length > 0 && DetallePedido.map((detalle) => (
+                  <tr key={detalle?.idDetallePedido}>
+                    <td>{getOrDefault(detalle?.cantidad, "")}</td>
+                    <td>
+                      <ul>
+                        {Array.isArray(detalle?.Productos) ? detalle?.Productos?.map((producto) => (
+                          <li key={producto?.idProducto}>
+                            {getOrDefault(producto?.nombre,"")}
+                          </li>
+                        )) : ""}
+                      </ul>
+                    </td>
+                    <td>
+                      <ul>
+                        {Array.isArray(detalle?.Productos) ? detalle?.Productos.map((producto) => (
+                          <li key={producto?.idProducto}>
+                            {getOrDefault(producto?.precio,"")}
+                          </li>
+                        )) : ""}
+                      </ul>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan={3} style={{ textAlign: "right" }}>
+                    Total: ${getOrDefault(totalPedido, "No disponible")}
+                  </td>
+                </tr>
+              </tfoot>
+          </div>
+          <div className="payment-container">
+            <div className="left-section" style={{ textAlign: "left" }}>
+              <div>
+                Tipo de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
+                <br />
+                Descuento:
+                <br />
+                Envío: {esDelivery ? "Envío domicilio" : "Retiro local"}
+              </div>
+              <div>Total a pagar: ${getOrDefault(totalPedido, "")}</div>
+            </div>
+            <div className="right-section">
+              <div>Envío</div>
+              <div>
+                <p>
+                  Dirección: {getOrDefault(Usuario?.Domicilio?.calle, "")} {getOrDefault(Usuario?.Domicilio?.numero, "")},
+                  <br />
+                  {getOrDefault(Usuario?.Domicilio?.localidad, "")}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            className="thankyou-container"
+            style={{ textAlign: "center" }}
+          >
+            <p>
+              Muchas gracias {getOrDefault(Usuario?.nombre, "")} {getOrDefault(Usuario?.apellido, "")} por comprar en
+              <br />
+              El Buen Sabor
+            </p>
+          </div>
+        </div>
         </div>
       </Container>
     </div>
+
   );
 };
 
