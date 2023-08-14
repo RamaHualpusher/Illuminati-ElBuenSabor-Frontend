@@ -79,7 +79,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   };
 
   return (
-    <div style={{ marginTop: "5rem", marginLeft: "1rem" }}>
+    <div style={{ marginTop: "90px" }}>
       <div className="row justify-content-center">
         <h1 className="display-4 mb-0">Carrito de Compras</h1>
       </div>
