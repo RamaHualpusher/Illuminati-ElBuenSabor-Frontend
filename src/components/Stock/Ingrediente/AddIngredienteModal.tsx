@@ -19,7 +19,7 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
   const [rubros, setRubros] = useState<Rubro[]>([]);
 
 
-  const unidades=["Kg","g","Mg","l","Ml"];
+  const unidades = ["Kg", "g", "Mg", "l", "Ml"];
 
   useEffect(() => {
     fetch('/assets/data/rubrosIngredientesEjemplo.json')
@@ -54,7 +54,7 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
       return;
     }
 
-    
+
 
     const newIngrediente: Ingredientes = {
       idIngredientes: 0,
@@ -96,7 +96,10 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
             >
               <option value="">Seleccione un rubro</option>
               {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
+                <option
+                  key={rubro.idRubro}
+                  value={rubro.idRubro}
+                  disabled={!rubro.estado}>
                   {rubro.nombre}
                 </option>
               ))}
@@ -136,11 +139,11 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
             <Form.Label>UM</Form.Label>
             <Form.Select
               value={um}
-              onChange={(event)=>setUM(event.target.value)}
+              onChange={(event) => setUM(event.target.value)}
               required
             >
-              {unidades.map((unidades)=>
-              <option value={unidades}>{unidades}</option>
+              {unidades.map((unidades) =>
+                <option value={unidades}>{unidades}</option>
               )}
             </Form.Select>
           </Form.Group>

@@ -19,15 +19,15 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
   const [precioCosto, setPrecioCosto] = useState(selectedIngredientes?.precioCosto || 0);
   const [estado, setEstado] = useState(selectedIngredientes?.estado || false);
   const [rubros, setRubros] = useState<Rubro[]>([]);
-  const [um,setUm]=useState(selectedIngredientes?.unidadMedida||"Kg");
+  const [um, setUm] = useState(selectedIngredientes?.unidadMedida || "Kg");
 
   useEffect(() => {
-    fetch('/assets/data/rubrosIngredientessEjemplo.json')
-      .then((response) => response.json())
-      .then((data) => {
+    fetch('/assets/data/rubrosIngredientesEjemplo.json')
+      .then(response => response.json())
+      .then(data => {
         setRubros(data);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }, []);
@@ -38,7 +38,7 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
     setMinStock(selectedIngredientes?.stockMinimo || 0);
     setStockActual(selectedIngredientes?.stockActual || 0);
     setEstado(selectedIngredientes?.estado || false);
-    setUm(selectedIngredientes?.unidadMedida||"Kg");
+    setUm(selectedIngredientes?.unidadMedida || "Kg");
   }, [selectedIngredientes]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -51,7 +51,7 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
         nombre,
         Rubro: selectedRubro || { idRubro: 0, nombre: '' },
         stockMinimo: minStock,
-        stockActual:stockActual,
+        stockActual: stockActual,
         precioCosto,
         estado,
         unidadMedida: um,
@@ -62,39 +62,39 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
     handleClose();
   };
 
-  const unidades=[["Kg",2],["g",1],["Mg",0],["l",1],["Ml",0]];
+  const unidades = [["Kg", 2], ["g", 1], ["Mg", 0], ["l", 1], ["Ml", 0]];
 
-  const handleUM=(unidad:string)=>{
+  const handleUM = (unidad: string) => {
     setUm(unidad);
-    let mult=2;
-    let limit=2;
-    unidades.map((un)=>{
-      if(um===un[0]){
-        mult=+un[1];
-        console.log(un[1]+"mult")
-      }else if(unidad===un[0]){
-        limit=+un[1];
-        console.log(un[1]+"limit")
+    let mult = 2;
+    let limit = 2;
+    unidades.map((un) => {
+      if (um === un[0]) {
+        mult = +un[1];
+        console.log(un[1] + "mult")
+      } else if (unidad === un[0]) {
+        limit = +un[1];
+        console.log(un[1] + "limit")
       }
     })
-    let stockA=stockActual;
-    let stockM=minStock;
-    console.log(stockA+" "+stockM);
-    while(mult<limit){
-      console.log(stockA+" "+stockM);
-      stockA=stockA/10;
-      stockM=stockM/10;
-      mult+=1;
+    let stockA = stockActual;
+    let stockM = minStock;
+    console.log(stockA + " " + stockM);
+    while (mult < limit) {
+      console.log(stockA + " " + stockM);
+      stockA = stockA / 10;
+      stockM = stockM / 10;
+      mult += 1;
       console.log(mult)
     }
-    while(mult>limit){
-      console.log(stockA+" "+stockM);
-      stockA=stockA*10;
-      stockM=stockM*10;
-      mult+=-1;
+    while (mult > limit) {
+      console.log(stockA + " " + stockM);
+      stockA = stockA * 10;
+      stockM = stockM * 10;
+      mult += -1;
       console.log(mult)
     }
-    console.log(stockA+" "+stockM);
+    console.log(stockA + " " + stockM);
     setStockActual(stockA);
     setMinStock(stockM);
   }
@@ -127,7 +127,10 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
             >
               <option value="">Seleccione un rubro</option>
               {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
+                <option
+                  key={rubro.idRubro}
+                  value={rubro.idRubro}
+                  disabled={!rubro.estado}>
                   {rubro.nombre}
                 </option>
               ))}
@@ -167,11 +170,11 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
             <Form.Label>UM</Form.Label>
             <Form.Select
               value={um}
-              onChange={(event)=>handleUM(event.target.value)}
+              onChange={(event) => handleUM(event.target.value)}
               required
             >
-              {unidades.map((unidades)=>
-              <option value={unidades[0]}>{unidades[0]}</option>
+              {unidades.map((unidades) =>
+                <option value={unidades[0]}>{unidades[0]}</option>
               )}
             </Form.Select>
           </Form.Group>
