@@ -6,7 +6,7 @@ import EstadoPedidoCard from '../../Pedidos/EstadoPedidoCard';
 
 interface PedidoCardUsuarioProps {
     pedido: Pedido;
-}
+} 
 
 const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
     const urlDetallePedido = `/mis-pedido/${pedido.idPedido}`;

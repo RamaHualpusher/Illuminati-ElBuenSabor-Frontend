@@ -29,23 +29,59 @@
       {
         "idDetallePedido": 1,
         "cantidad": 2,
-        "Productos": {
-          "idProducto": 1,
-          "nombre": "Pizza Muzza",
-          "tiempoEstimadoCocina": 15,
-          "denominacion": "Pizzas",
-          "imagen": "/assets/img/Pizza Mozza.avif",
-          "stockActual": 5,
-          "stockMinimo": 5,
-          "preparacion": "Una deliciosa pizza con el mejor queso Mozzarella y Pepperoni",
-          "precio": 2000,
-          "esBebida": false,
-          "estado": true,
-          "Rubro": {
-            "idRubro": 1,
-            "nombre": "Pizzas"
+        "Productos": [
+          {
+            "idProducto": 1,
+            "nombre": "Pizza Muzza",
+            "tiempoEstimadoCocina": 15,
+            "denominacion": "Pizzas",
+            "imagen": "/assets/img/Pizza Mozza.avif",
+            "stockActual": 5,
+            "stockMinimo": 5,
+            "preparacion": "Una deliciosa pizza con el mejor queso Mozzarella y Pepperoni",
+            "precio": 2000,
+            "esBebida": false,
+            "estado": true,
+            "Rubro": {
+              "idRubro": 1,
+              "nombre": "Pizzas"
+            }
+          },
+          {
+            "idProducto": 5,
+            "nombre": "Hamburguesa Clásica",
+            "tiempoEstimadoCocina": 15,
+            "denominacion": "Hamburguesas",
+            "imagen": "/assets/img/Burguer Clasica.webp",
+            "stockActual": 10,
+            "stockMinimo": 5,
+            "preparacion": "Una jugosa hamburguesa con carne de res, queso, lechuga, tomate y cebolla",
+            "precio": 2000,
+            "esBebida": false,
+            "estado": true,
+            "Rubro": {
+              "idRubro": 3,
+              "nombre": "Hamburguesas"
+            }
+          },
+          {
+            "idProducto": 7,
+            "nombre": "Fanta 500ml",
+            "tiempoEstimadoCocina": 0,
+            "denominacion": "Bebidas",
+            "imagen": "/assets/img/Lata Fanta.jpg",
+            "stockActual": 30,
+            "stockMinimo": 10,
+            "preparacion": "Una refrescante lata de Fanta",
+            "precio": 500,
+            "esBebida": true,
+            "estado": true,
+            "Rubro": {
+              "idRubro": 2,
+              "nombre": "Bebidas"
+            }
           }
-        }
+        ]
       }
     ],
     "totalPedido": 4500
@@ -313,7 +349,59 @@
         "idDetallePedido": 7,
         "cantidad": 1,
         "Pedido": {},
-        "Productos": {}
+        "Productos": [
+          {
+            "idProducto": 1,
+            "nombre": "Pizza Muzza",
+            "tiempoEstimadoCocina": 15,
+            "denominacion": "Pizzas",
+            "imagen": "/assets/img/Pizza Mozza.avif",
+            "stockActual": 5,
+            "stockMinimo": 5,
+            "preparacion": "Una deliciosa pizza con el mejor queso Mozzarella y Pepperoni",
+            "precio": 2000,
+            "esBebida": false,
+            "estado": true,
+            "Rubro": {
+              "idRubro": 1,
+              "nombre": "Pizzas"
+            }
+          },
+          {
+            "idProducto": 5,
+            "nombre": "Hamburguesa Clásica",
+            "tiempoEstimadoCocina": 15,
+            "denominacion": "Hamburguesas",
+            "imagen": "/assets/img/Burguer Clasica.webp",
+            "stockActual": 10,
+            "stockMinimo": 5,
+            "preparacion": "Una jugosa hamburguesa con carne de res, queso, lechuga, tomate y cebolla",
+            "precio": 2000,
+            "esBebida": false,
+            "estado": true,
+            "Rubro": {
+              "idRubro": 3,
+              "nombre": "Hamburguesas"
+            }
+          },
+          {
+            "idProducto": 7,
+            "nombre": "Fanta 500ml",
+            "tiempoEstimadoCocina": 0,
+            "denominacion": "Bebidas",
+            "imagen": "/assets/img/Lata Fanta.jpg",
+            "stockActual": 30,
+            "stockMinimo": 10,
+            "preparacion": "Una refrescante lata de Fanta",
+            "precio": 500,
+            "esBebida": true,
+            "estado": true,
+            "Rubro": {
+              "idRubro": 2,
+              "nombre": "Bebidas"
+            }
+          }
+        ]
       }
     ],
     "totalPedido": 8000

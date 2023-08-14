@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { CartContext } from './CartProvider';
 import ConfirmacionPedido from './ConfirmacionPedido';
 import { useNavigate } from 'react-router-dom';
-import AdminBar from '../NavBar/AdminBar';
 
 const CarritoConConfirmacion: React.FC = () => {
   const { cartItems, removeFromCart, incrementItem, decrementItem, clearCart } = useContext(CartContext);

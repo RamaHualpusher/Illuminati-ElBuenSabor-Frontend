@@ -27,16 +27,6 @@ const UserRouter = () => {
         <Route path="/perfil" element={<MiPerfil />} />
         <Route path="*" element={<Page404 />} />
       </Routes>
-
-      {/* <div className="d-flex justify-content-center mb-3">
-        <div className="btn-group">
-          <Link to="/Admin" className="btn btn-success my-3">Admin</Link>
-          <Link to="/Cocinero" className="btn btn-success my-3">Cocinero</Link>
-          <Link to="/Cajero" className="btn btn-success my-3">Cajero</Link>
-          <Link to="/Delivery" className="btn btn-success my-3">Delivery</Link>
-          <Link to="/mercadopago" className="btn btn-success my-3">Mercado Prueba</Link>
-        </div>
-      </div> */}
       <Footer />
     </div>
   );

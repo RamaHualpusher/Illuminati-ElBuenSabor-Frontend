@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Pedido } from '../../../interface/Pedido';
-import Spinner from '../../Spinner/Spinner';
-import { DetallePedido } from '../../../interface/DetallePedido';
-import { Producto } from '../../../interface/Producto';
+import { Pedido } from '../../interface/Pedido';
+import Spinner from '../Spinner/Spinner';
+import { DetallePedido } from '../../interface/DetallePedido';
+import { Producto } from '../../interface/Producto';
 
 // Función para calcular el tiempo estimado de finalización
 const calcularTiempoEstimadoFinalizacion = (detallePedido: DetallePedido[], esDelivery: boolean) => {
@@ -38,7 +38,7 @@ const obtenerSubtotal = (detallePedido: DetallePedido[]) => {
     return subtotal;
 };
 
-const DetallesPedidoUsuario: React.FC = () => {
+const DetallesPedidoCajero: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [pedido, setPedido] = useState<Pedido | null>(null);
 
@@ -79,7 +79,6 @@ const DetallesPedidoUsuario: React.FC = () => {
                 {detalle.Productos.map((producto: Producto) => (
                     <li key={producto.idProducto}>
                         <strong>{producto.nombre}</strong>: ${producto.precio} - <i className="bi bi-clock-fill"></i> {producto.tiempoEstimadoCocina}Min
-                        {!producto.esBebida && producto.preparacion && <p> <strong>Preparación:</strong> <br /> {producto.preparacion}</p>}
                     </li>
                 ))}
             </ul>
@@ -115,8 +114,12 @@ const DetallesPedidoUsuario: React.FC = () => {
                                 {!esDelivery ? (
                                     <p className="card-text"><strong>Método de Entrega:</strong> Retiro en Local</p>
                                 ) : (
-                                    <p className="card-text"><strong>Método de Entrega:</strong> Delivery</p>
+                                    <>
+                                        <p className="card-text"><strong>Método de Entrega:</strong> Delivery</p>
+                                        <p className="card-text"><strong>Costo Delivery:</strong> $500</p>
+                                    </>
                                 )}
+
 
                                 <h5 className="card-title">Detalle de Ítems Pedidos</h5>
 
@@ -128,8 +131,9 @@ const DetallesPedidoUsuario: React.FC = () => {
 
                                 <p className="card-text"><strong>Subtotal:</strong> ${subtotalPedido}</p>
                                 {!esDelivery && <p className="card-text"><strong>Descuento (10%):</strong> ${subtotalPedido * 0.1}</p>}
-                                <p className="card-text"><strong>Total:</strong> ${totalPedido}</p>
                                 <p className="card-text"><strong>Tiempo Estimado:</strong> {tiempoEstimadoFinalizacion}Min</p>
+                                <h4 className="card-text"><strong>Total:</strong> ${totalPedido}</h4>
+
                             </div>
                             <div className="card-footer d-flex justify-content-center">
                                 <button className="btn btn-primary" onClick={goBack}>
@@ -144,4 +148,4 @@ const DetallesPedidoUsuario: React.FC = () => {
     );
 };
 
-export default DetallesPedidoUsuario;
+export default DetallesPedidoCajero;

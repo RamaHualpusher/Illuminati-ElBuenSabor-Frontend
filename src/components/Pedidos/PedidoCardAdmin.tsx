@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import { Pedido } from '../../interface/Pedido';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import EstadoPedidoCard from './EstadoPedidoCard';
 import axios from 'axios';
 
@@ -11,27 +11,58 @@ interface PedidoCardAdminProps {
 }
 
 const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstadoPedido }) => {
-  const urlDetallePedido = `/mis-pedido/${pedido.idPedido}`;
+  const [urlDetallePedido, setUrlDetallePedido] = useState(``);
+  const location = useLocation();
+
+
+  useEffect(() => {
+    if (location.pathname === `/cocinero`) {
+      setUrlDetallePedido(`/cocinero/pedido/${pedido.idPedido}`);
+    } else if (location.pathname === `/delivery`) {
+      setUrlDetallePedido(`/pedido/${pedido.idPedido}`);
+    } else if (location.pathname === `/cajero`) {
+      setUrlDetallePedido(`/cajero/pedido/${pedido.idPedido}`);
+    }
+  }, [location.pathname, pedido.idPedido]);
 
   const handleEstadoPedidoChange = async (nuevoEstado: string) => {
     if (pedido.esDelivery) {
-      const validChanges =
-        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'A cocina') ||
-        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'Listo' && pedido.esEfectivo) ||
-        (pedido.estadoPedido === 'Listo' && nuevoEstado === 'En delivery' && pedido.esEfectivo) ||
-        (pedido.estadoPedido === 'Listo' && nuevoEstado === 'Entregado' && pedido.esEfectivo);
+      console.log("validando..");
 
+      const validChanges =
+        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'En cocina') ||
+        (pedido.estadoPedido === 'En cocina' && nuevoEstado === 'Listo') ||
+        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'Listo') ||
+        (pedido.estadoPedido === 'Listo' && nuevoEstado === 'En delivery' && !pedido.esEfectivo) ||
+        (pedido.estadoPedido === 'En delivery' && nuevoEstado === 'Entregado' && !pedido.esEfectivo);
+      console.log("no valido");
       if (validChanges) {
         try {
           const response = await axios.put(`/api/pedidos/${pedido.idPedido}`, { estadoPedido: nuevoEstado });
           cambiarEstadoPedido(response.data.estadoPedido);
-          console.log('envio al back'); //prueba de envio
+          console.log('envio put al back'); //prueba de envio
         } catch (error) {
           console.error(error);
         }
       }
     } else {
-      cambiarEstadoPedido(nuevoEstado);
+      console.log("validando..")
+      console.log(location.pathname);
+      const validChanges =
+        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'En cocina') ||
+        (pedido.estadoPedido === 'En cocina' && nuevoEstado === 'Listo') ||
+        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'Listo') ||
+        (pedido.estadoPedido === 'Listo' && nuevoEstado === 'Entregado');
+      console.log("no valido 2");
+      if (validChanges) {
+        try {
+          const response = await axios.put(`/api/pedidos/${pedido.idPedido}`, { estadoPedido: nuevoEstado });
+          cambiarEstadoPedido(response.data.estadoPedido);
+          console.log('envio put al back 2'); //prueba de envio
+        } catch (error) {
+          console.error(error);
+        }
+      }
     }
   };
 
@@ -57,10 +88,10 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Link to={urlDetallePedido} className="btn btn-primary me-2">
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Link>
-            <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En delivery')} disabled={!pedido.esDelivery || !pedido.esEfectivo}>
+            <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En delivery')} disabled={!pedido.esDelivery || pedido.esEfectivo}>
               En delivery
             </button>
-            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Entregado')} disabled={pedido.esDelivery || !pedido.esEfectivo}>
+            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Entregado')} disabled={pedido.esDelivery || pedido.esEfectivo}>
               Entregado
             </button>
           </>
@@ -71,7 +102,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Link to={urlDetallePedido} className="btn btn-primary me-2">
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Link>
-            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Entregado')} disabled={!pedido.esEfectivo}>
+            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Entregado')} disabled={pedido.esEfectivo}>
               Entregado
             </button>
           </>
@@ -82,6 +113,18 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Link to={urlDetallePedido} className="btn btn-primary me-2">
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Link>
+          </>
+        );
+
+      case 'En cocina':
+        return (
+          <>
+            <Link to={urlDetallePedido} className="btn btn-primary me-2">
+              <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
+            </Link>
+            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
+              Listo
+            </button>
           </>
         );
       default:

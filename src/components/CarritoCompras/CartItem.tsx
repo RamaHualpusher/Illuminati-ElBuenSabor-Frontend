@@ -20,6 +20,15 @@ interface CartItemProps {
 export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const { removeFromCart, incrementItem, decrementItem } = useContext(CartContext);
 
+  const unitPrice = item.price;
+  const subtotal = item.price * item.quantity;
+
+  const handleDecrement = () => {
+    if (item.quantity > 1) {
+      decrementItem(item.id);
+    }
+  };
+
   return (
     <div className="d-flex align-items-start w-100">
       <div>
@@ -28,11 +37,14 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
       <div className="flex-grow-1">
         <div className='d-flex justifi-content-between align-items-center'>
           <h3 className="h5 flex-grow-1">{item.name}</h3>
-          <p>${item.price * item.quantity}</p>
+          <p>Unitario: ${unitPrice}</p>
+        </div>
+        <div className='d-flex justifi-content-between align-items-center'>
+          <p>Subtotal: ${subtotal}</p>
         </div>
         <div className="d-flex justify-content-between align-items-center">
           <div>
-            <button className="btn btn-sm btn-outline-secondary mx-1" onClick={() => decrementItem(item.id)}>
+            <button className="btn btn-sm btn-outline-secondary mx-1" onClick={handleDecrement}>
               -
             </button>
             <button className="btn btn-sm btn-outline-secondary mx-1 px-3 p-2" disabled>
@@ -47,7 +59,6 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
           </button>
         </div>
       </div>
-
     </div>
   );
 };
