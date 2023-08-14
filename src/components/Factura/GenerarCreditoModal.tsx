@@ -34,6 +34,10 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
         }
     }, []);
 
+    function getOrDefault(nombre: string, arg1: string): React.ReactNode {
+        throw new Error("Function not implemented.");
+    }
+
     return (
         <div className="modal-overlay" onClick={closeModal}>
             <div className="modal-container border-black" onClick={(e) => e.stopPropagation()}>
@@ -82,7 +86,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                                         <td>{detalle?.cantidad}</td>
                                         <td>
                                             <ul>
-                                                {detalle?.Productos.map((producto) => (
+                                                {detalle?.Productos?.map((producto) => (
                                                     <li key={producto.idProducto}>
                                                         {producto.nombre}
                                                     </li>
@@ -91,7 +95,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                                         </td>
                                         <td>
                                             <ul>
-                                                {detalle?.Productos.map((producto) => (
+                                                {detalle?.Productos?.map((producto) => (
                                                     <li key={producto.idProducto}>
                                                         {producto.precio}
                                                     </li>
