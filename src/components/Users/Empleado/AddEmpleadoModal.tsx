@@ -4,6 +4,7 @@ import { Rol } from "../../../interface/Rol";
 import { Usuario } from "../../../interface/Usuario";
 import { Domicilio } from "../../../interface/Domicilio";
 import { AddEmpleadoModalProps } from "../../../interface/Usuario";
+import axios from "axios";
 
 const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   show,
@@ -24,8 +25,12 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [selectedDomicilio, setSelectedDomicilio] = useState<Domicilio | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
   const [domicilios, setDomicilios] = useState<Domicilio>();
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const [passwordValid, setPasswordValid] = useState(true);
+  const [claveCoincide, setClaveCoincide] = useState(true);
+  const [claveValida, setClaveValida] = useState(true);
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const [emailValido, setEmailValido] = useState(true);
+  const [emailEnUso, setEmailEnUso] = useState(false);
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
   useEffect(() => {
     fetch("/assets/data/idRolEjemplo.json")
@@ -38,22 +43,50 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       });
   }, []);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (clave !== claveConfirm) {
-      setPasswordsMatch(false);
+    // Verificar si el email ya está en uso
+    try {
+      const response = await axios.get(`assets/data/empleadoTabla.json`);
+      const empleados = response.data; // Supongo que el objeto contiene una lista de empleados
+
+      // Verificar si el email ya está en uso
+      const emailExists = empleados.some((empleado: any) => empleado.email === email);
+
+      if (emailExists) {
+        setEmailEnUso(true);
+        return;
+      } else {
+        setEmailEnUso(false);
+      }
+    } catch (error) {
+      console.error("Error al verificar el email:", error);
       return;
-    } else {
-      setPasswordsMatch(true);
     }
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (!passwordRegex.test(clave)) {
-      setPasswordValid(false);
+    // Verificar dirección de correo electrónico
+    if (!emailRegex.test(email)) {
+      setEmailValido(false);
       return;
     } else {
-      setPasswordValid(true);
+      setEmailValido(true);
+    }
+
+
+    if (clave !== claveConfirm) {
+      setClaveCoincide(false);
+      return;
+    } else {
+      setClaveCoincide(true);
+    }
+
+
+    if (!passwordRegex.test(clave)) {
+      setClaveValida(false);
+      return;
+    } else {
+      setClaveValida(true);
     }
 
     const newEmpleado: Usuario = {
@@ -107,7 +140,10 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
+              isInvalid={!emailValido || emailEnUso}
             />
+            {!emailValido && <Form.Control.Feedback type="invalid">Email no válido.</Form.Control.Feedback>}
+            {emailEnUso && <Form.Control.Feedback type="invalid">Este email ya está en uso.</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="formClave">
             <Form.Label>Contraseña Provisional</Form.Label>
@@ -117,10 +153,10 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
               value={clave}
               onChange={(event) => setClave(event.target.value)}
               required
-              isInvalid={!passwordsMatch || !passwordValid}
+              isInvalid={!claveCoincide || !claveValida}
             />
-            {!passwordsMatch && <Form.Control.Feedback type="invalid">Las contraseñas no coinciden.</Form.Control.Feedback>}
-            {!passwordValid && <Form.Control.Feedback type="invalid">La contraseña debe tener un mínimo de 8 caracteres, al menos una letra mayúscula, una letra minúscula y un símbolo.</Form.Control.Feedback>}
+            {!claveCoincide && <Form.Control.Feedback type="invalid">Las contraseñas no coinciden.</Form.Control.Feedback>}
+            {!claveValida && <Form.Control.Feedback type="invalid">La contraseña debe tener un mínimo de 8 caracteres, al menos una letra mayúscula, una letra minúscula y un símbolo.</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="formClave2">
             <Form.Label>Confirmar Contraseña Provisional</Form.Label>
@@ -130,9 +166,9 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
               value={claveConfirm}
               onChange={(event) => setClaveConfirm(event.target.value)}
               required
-              isInvalid={!passwordsMatch}
+              isInvalid={!claveCoincide}
             />
-            {!passwordsMatch && <Form.Control.Feedback type="invalid">Las contraseñas no coinciden.</Form.Control.Feedback>}
+            {!claveCoincide && <Form.Control.Feedback type="invalid">Las contraseñas no coinciden.</Form.Control.Feedback>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="formTelefono">
             <Form.Label>Teléfono</Form.Label>
