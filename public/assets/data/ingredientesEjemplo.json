@@ -1,10 +1,13 @@
 [
   {
     "idIngredientes": 1,
-    "nombre": "Queso de algp",
+    "nombre": "Queso Azul",
     "estado": true,
-    "stockMinimo": 10,
-    "stockActual": 20,
+    "stockMinimo": 15,
+    "stockActual": 10,
+    "diferencia": 0,
+    "cantidad": 0,
+    "precioCosto": 600,
     "Rubro": {
       "idRubro": 1,
       "nombre": "Quesos",
@@ -17,11 +20,14 @@
     "idIngredientes": 2,
     "nombre": "Azúcar",
     "estado": false,
-    "stockMinimo": 5,
-    "stockActual": 8,
+    "stockMinimo": 20,
+    "stockActual": 22,
+    "diferencia": 0,
+    "cantidad": 0,
+    "precioCosto": 500,
     "Rubro": {
-      "idRubro": 2,
-      "nombre": "Salsas",
+      "idRubro": 4,
+      "nombre": "Endulzantes",
       "idRubroPadre": null
     },
     "unidadMedida": "kg",
@@ -33,9 +39,12 @@
     "estado": true,
     "stockMinimo": 3,
     "stockActual": 4,
+    "diferencia": 0,
+    "cantidad": 0,
+    "precioCosto": 800,
     "Rubro": {
-      "idRubro": 3,
-      "nombre": "Carnes",
+      "idRubro": 5,
+      "nombre": "Aceites",
       "idRubroPadre": null
     },
     "unidadMedida": "l",

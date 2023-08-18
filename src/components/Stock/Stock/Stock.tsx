@@ -3,11 +3,12 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import Ingrediente from '../Ingrediente/Ingrediente';
 import Productos from '../Producto/Productos';
 import Rubros from '../Rubros/Rubros';
+import CompraIngrediente from '../CompraIngrediente/CompraIngrediente';
 
 const Stock: FC = () => {
-    const [selectedOption, setSelectedOption] = useState<"productos" | "ingredientes" | "rubros">("productos");
+    const [selectedOption, setSelectedOption] = useState<"productos" | "ingredientes" | "compra" | "rubros">("productos");
 
-    const handleOptionChange = (option: "productos" | "ingredientes" | "rubros") => {
+    const handleOptionChange = (option: "productos" | "ingredientes" | "compra" | "rubros") => {
         setSelectedOption(option);
     };
 
@@ -35,6 +36,14 @@ const Stock: FC = () => {
                         </Col>
                         <Col xs={12} md={6} lg={4} className="mx-auto mb-2">
                             <Button
+                                className={`btn btn-primary rounded w-100 ${selectedOption === 'compra' ? 'btn-dark' : 'btn-secondary'}`}
+                                onClick={() => handleOptionChange('compra')}
+                            >
+                                Compra Ingredientes
+                            </Button>
+                        </Col>
+                        <Col xs={12} md={6} lg={4} className="mx-auto mb-2">
+                            <Button
                                 className={`btn btn-primary rounded w-100 ${selectedOption === 'rubros' ? 'btn-dark' : 'btn-secondary'}`}
                                 onClick={() => handleOptionChange('rubros')}
                             >
@@ -47,7 +56,8 @@ const Stock: FC = () => {
                 <div className="mt-4">
                     {selectedOption === 'productos' && <Productos />}
                     {selectedOption === 'ingredientes' && <Ingrediente />}
-                     {selectedOption === 'rubros' && <Rubros />} 
+                    {selectedOption === 'compra' && <CompraIngrediente />}
+                    {selectedOption === 'rubros' && <Rubros />}
                 </div>
 
             </Container>

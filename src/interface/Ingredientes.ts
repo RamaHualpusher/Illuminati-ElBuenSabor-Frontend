@@ -38,5 +38,11 @@ export interface AddRubroIngredienteModalProps {
   show: boolean;
   handleClose: () => void;
   handleRubroAdd: (rubro: Rubro) => void;
-  
+}
+
+export interface EditCompraIngredientesModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleIngredientesEdit: (ingredientes: Ingredientes) => void;
+  selectedIngredientes: Ingredientes | null;
 }

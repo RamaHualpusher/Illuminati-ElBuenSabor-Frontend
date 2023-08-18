@@ -1,14 +1,15 @@
-import React, { useState, FC } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
-import IngredientesTable from "../Stock/Ingrediente/Ingrediente";
-import ProductosTable from "../Stock/Producto/Productos";
-import CocineroPedido from "./CocineroPedidos";
-import Rubros from "../Stock/Rubros/Rubros";
+import React, { useState, FC } from "react"; // Importar React y useState desde React, y FC (Functional Component) desde "react"
+import { Button, Col, Container, Row } from "react-bootstrap"; // Importar componentes Button, Col, Container y Row desde react-bootstrap
+import CocineroPedido from "./CocineroPedidos"; // Importar el componente CocineroPedido desde el archivo "./CocineroPedidos"
+import Stock from "../Stock/Stock/Stock"; // Importar el componente Stock desde el archivo "../Stock/Stock/Stock"
 
 const CocineroPage: FC = () => {
 
+    // Definir un estado llamado selectedOption para controlar la opción seleccionada (pedidos o stock)
     const [selectedOption, setSelectedOption] = useState("pedidos");
-    const handleOptionChange = (option: "pedidos" | "productos" | "ingredientes" | "rubros") => {
+
+    // Función para cambiar la opción seleccionada
+    const handleOptionChange = (option: "pedidos" | "stock") => {
         setSelectedOption(option);
     };
 
@@ -17,6 +18,7 @@ const CocineroPage: FC = () => {
             <Container>
                 <Row className="d-flex justify-content-center mt-4">
                     <Col xs={12} md={6} lg={4} className="mb-2">
+                        {/* Botón para seleccionar la opción "pedidos" */}
                         <Button
                             className={`btn btn-primary rounded w-100 ${selectedOption === 'pedidos' ? 'btn-dark' : 'btn-secondary'}`}
                             onClick={() => handleOptionChange('pedidos')}
@@ -25,38 +27,24 @@ const CocineroPage: FC = () => {
                         </Button>
                     </Col>
                     <Col xs={12} md={6} lg={4} className="mb-2">
+                        {/* Botón para seleccionar la opción "stock" */}
                         <Button
-                            className={`btn btn-primary rounded w-100 ${selectedOption === 'productos' ? 'btn-dark' : 'btn-secondary'}`}
-                            onClick={() => handleOptionChange('productos')}
+                            className={`btn btn-primary rounded w-100 ${selectedOption === 'stock' ? 'btn-dark' : 'btn-secondary'}`}
+                            onClick={() => handleOptionChange('stock')}
                         >
-                            Productos
-                        </Button>
-                    </Col>
-                    <Col xs={12} md={6} lg={4} className="mb-2">
-                        <Button
-                            className={`btn btn-primary rounded w-100 ${selectedOption === 'ingredientes' ? 'btn-dark' : 'btn-secondary'}`}
-                            onClick={() => handleOptionChange('ingredientes')}
-                        >
-                            Ingredientes
-                        </Button>
-                    </Col>
-                    <Col xs={12} md={6} lg={4} className="mb-2">
-                        <Button
-                            className={`btn btn-primary rounded w-100 ${selectedOption === 'rubros' ? 'btn-dark' : 'btn-secondary'}`}
-                            onClick={() => handleOptionChange('rubros')}
-                        >
-                            Rubros
+                            Stock
                         </Button>
                     </Col>
                 </Row>
                 <div className="mt-4">
-                    {selectedOption === 'productos' && <ProductosTable />}
-                    {selectedOption === 'ingredientes' && <IngredientesTable />}
+                    {/* Renderizar el componente CocineroPedido si la opción seleccionada es "pedidos" */}
                     {selectedOption === 'pedidos' && <CocineroPedido />}
-                    {selectedOption === 'rubros' && <Rubros />}
+                    {/* Renderizar el componente Stock si la opción seleccionada es "stock" */}
+                    {selectedOption === 'stock' && <Stock />}
                 </div>
-            </Container >
-        </div >
+            </Container>
+        </div>
     );
 };
-export default CocineroPage;
+
+export default CocineroPage; // Exportar el componente CocineroPage
