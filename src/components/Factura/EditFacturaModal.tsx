@@ -27,8 +27,8 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
   useEffect(() => {
     if (selectedFactura) {
       setNumeroPedido(selectedFactura.numeroPedido);
-      setFechaPedido(selectedFactura.fechaPedido instanceof Date ? selectedFactura.fechaPedido.toDateString() : '');
-      setHoraEstimadaFin(selectedFactura.horaEstimadaFin instanceof Date ? selectedFactura.horaEstimadaFin.toDateString() : '');
+      setFechaPedido(selectedFactura.fechaPedido instanceof Date ? selectedFactura.fechaPedido.toISOString().split('T')[0] : '');
+      setHoraEstimadaFin(selectedFactura.horaEstimadaFin instanceof Date ? selectedFactura.horaEstimadaFin.toISOString().split('T')[1].substring(0, 5) : '');
       setEsDelivery(selectedFactura.esDelivery);
       setEstadoPedido(selectedFactura.estadoPedido);
       setEsEfectivo(selectedFactura.esEfectivo);
@@ -49,7 +49,7 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
         ...selectedFactura,
         numeroPedido,
         fechaPedido: new Date(fechaPedido),
-        horaEstimadaFin: new Date(horaEstimadaFin),
+        horaEstimadaFin: new Date(`2000-01-01T${horaEstimadaFin}:00Z`), // Agregar una fecha ficticia para el tiempo
         esDelivery,
         estadoPedido,
         esEfectivo,
@@ -157,4 +157,3 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
 };
 
 export default EditFacturaModal;
-

@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Pedido } from '../../interface/Pedido';
 import PedidoList from '../Pedidos/PedidoList';
 
+/**
+ * Componente para que el cocinero administre los pedidos en cocina y cambie su estado a "Listo".
+ */
 const CocineroPedido: React.FC = () => {
     const [pedidos, setPedidos] = useState<Pedido[]>([]);
     const [pedidoSeleccionado, setPedidoSeleccionado] = useState<Pedido | null>(null);
 
+    // Cargar los pedidos desde una fuente de datos al cargar el componente
     useEffect(() => {
         const fetchPedidos = async () => {
             try {
@@ -20,6 +24,7 @@ const CocineroPedido: React.FC = () => {
         fetchPedidos();
     }, []);
 
+    // Cambiar el estado de un pedido a "Listo" si está en estado "En cocina"
     const cambiarEstadoPedido = (nuevoEstado: string) => {
         if (pedidoSeleccionado) {
             const { estadoPedido, esDelivery, esEfectivo } = pedidoSeleccionado;
@@ -31,10 +36,12 @@ const CocineroPedido: React.FC = () => {
         }
     };
 
+    // Filtrar los pedidos en cocina
     const pedidosEnCocina = pedidos.filter((pedido) => pedido.estadoPedido === "En cocina");
 
     return (
         <div className="container mt-3">
+            {/* Mostrar la lista de pedidos en cocina */}
             <PedidoList pedidos={pedidosEnCocina} cambiarEstadoPedido={cambiarEstadoPedido} />
         </div>
     );

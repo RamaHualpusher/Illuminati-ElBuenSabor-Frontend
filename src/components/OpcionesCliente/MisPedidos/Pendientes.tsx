@@ -11,11 +11,9 @@ const Pendientes: React.FC = () => {
         const fetchPedidosPendientes = async () => {
             try {
                 const response = await axios.get<Pedido[]>('/assets/data/pedidos.json');
+                // Filtrar los pedidos con estados pendientes
                 const pedidos = response.data.filter((pedido) =>
-                    pedido.estadoPedido === 'A confirmar' ||
-                    pedido.estadoPedido === 'En cocina' ||
-                    pedido.estadoPedido === 'Listo' ||
-                    pedido.estadoPedido === 'En delivery'
+                    ['A confirmar', 'En cocina', 'Listo', 'En delivery'].includes(pedido.estadoPedido)
                 );
                 setPedidosPendientes(pedidos);
             } catch (error) {
@@ -36,6 +34,7 @@ const Pendientes: React.FC = () => {
                     />
                 ))
             ) : (
+                // Mostrar mensaje si no hay pedidos pendientes
                 <>
                     <p>No hay pedidos pendientes disponibles.</p>
                     <div className="text-center">

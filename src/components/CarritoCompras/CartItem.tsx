@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { CartContext } from './CartProvider';
-import { Producto } from '../../interface/Producto';
 import { DetallePedido } from '../../interface/DetallePedido';
+import { Producto } from '../../interface/Producto';
 
 interface CartItem {
   id: number;
@@ -14,9 +14,15 @@ interface CartItem {
 }
 
 interface CartItemProps {
-  item: CartItem & { DetallePedido: DetallePedido }; // Cambia el tipo a DetallePedido
+  item: CartItem & { DetallePedido: DetallePedido };
 }
 
+/**
+ * Componente para representar un artículo en el carrito de compras.
+ * 
+ * @param {CartItemProps} props - Propiedades del componente.
+ * @param {CartItem} props.item - Información del artículo en el carrito.
+ */
 export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const { removeFromCart, incrementItem, decrementItem } = useContext(CartContext);
 
@@ -35,11 +41,11 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
         <img src={item.image} alt={item.name} className="img-fluid rounded-circle me-2" style={{ width: "50px", height: "50px" }} />
       </div>
       <div className="flex-grow-1">
-        <div className='d-flex justifi-content-between align-items-center'>
+        <div className='d-flex justify-content-between align-items-center'>
           <h3 className="h5 flex-grow-1">{item.name}</h3>
           <p>Unitario: ${unitPrice}</p>
         </div>
-        <div className='d-flex justifi-content-between align-items-center'>
+        <div className='d-flex justify-content-between align-items-center'>
           <p>Subtotal: ${subtotal}</p>
         </div>
         <div className="d-flex justify-content-between align-items-center">

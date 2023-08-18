@@ -4,7 +4,7 @@ import AdminBar from "../NavBar/AdminBar";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useLocation } from "react-router-dom";
 import { Button, Container, Table } from "react-bootstrap";
-import FacturaPDF from "./FacturaPDF ";
+import FacturaPDF from "./FacturaPDF";
 import GenerarCreditoModal from "./GenerarCreditoModal";
 
 interface GenerarFacturaModalProps {
@@ -37,14 +37,20 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
     }
   }, []);
 
+  // Si no se encuentra un pedido, muestra un mensaje de error
   if (!pedido) {
     return <div>Error: Pedido no encontrado</div>;
   }
 
   return (
     <>
+      {/* Barra de administrador */}
       <AdminBar />
-      <div style={{marginTop: "50px"}}></div>
+
+      {/* Espacio en blanco */}
+      <div style={{ marginTop: "50px" }}></div>
+
+      {/* Muestra el modal si showModal es verdadero */}
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div
@@ -53,6 +59,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
           >
             <Container fluid>
               <div className="border p-4 bg-white">
+                {/* Logo */}
                 <div className="logo-container">
                   <img
                     src="/assets/img/logo-grupo-illuminati.jpg"
@@ -60,6 +67,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     width={100}
                   />
                 </div>
+                {/* Información del restaurante */}
                 <div className="info-container">
                   <h2>El Buen Sabor</h2>
                   <p>
@@ -68,6 +76,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     CUIT: 12-5541252-8
                   </p>
                 </div>
+                {/* Detalles del pedido */}
                 <div className="details-container">
                   <h2>DETALLES DEL PEDIDO</h2>
                   <p>Número de Pedido: {getOrDefault(pedido?.numeroPedido, "")}</p>
@@ -76,6 +85,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     Forma de Pago: {pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}
                   </p>
                 </div>
+                {/* Tabla de detalles del pedido */}
                 <div className="table-container">
                   <Table className="table">
                     <thead>
@@ -119,6 +129,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     </tfoot>
                   </Table>
                 </div>
+                {/* Información de pago */}
                 <div className="payment-container">
                   <div className="left-section" style={{ textAlign: "left" }}>
                     <p>
@@ -139,32 +150,29 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     </p>
                   </div>
                 </div>
-                <div
-                  className="thankyou-container text-center"
-                >
+                {/* Mensaje de agradecimiento */}
+                <div className="thankyou-container text-center">
                   <p>
                     Muchas gracias {pedido?.Usuario?.nombre} {pedido?.Usuario?.apellido} por comprar en
                     <br />
                     El Buen Sabor
                   </p>
                 </div>
+                {/* Botones para descargar PDF y generar nota de crédito */}
                 <div className="pdf-container">
                   <div className="pdf-container">
+                    {/* Botón para descargar PDF */}
                     <PDFDownloadLink
                       document={<FacturaPDF pedido={pedido} />}
                       fileName="factura.pdf"
-                    >                      
-                      {({ blob, url, loading, error }) =>{
-                        console.log("Loading:", loading);
-                        console.log("Error:", error);
-                        console.log("pedido:", pedido);
-                        return loading ? (
-                          "Cargando..."
-                        ) : (
-                          <Button variant="primary">Descargar PDF</Button>
-                        )
-                      }}
+                    >
+                      {({ loading }) => (
+                        <Button variant="primary">
+                          {loading ? "Cargando..." : "Descargar PDF"}
+                        </Button>
+                      )}
                     </PDFDownloadLink>
+                    {/* Botón para generar nota de crédito */}
                     <Button variant="secondary" onClick={openCreditoModal}>
                       Nota de Crédito
                     </Button>
@@ -175,6 +183,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
           </div>
         </div>
       )}
+      {/* Muestra el modal de Nota de Crédito si showCreditoModal es verdadero */}
       {showCreditoModal && (
         <GenerarCreditoModal closeModal={() => setShowCreditoModal(false)} />
       )}

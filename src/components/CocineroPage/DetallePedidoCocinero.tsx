@@ -37,10 +37,12 @@ const DetallesPedidoCocinero: React.FC = () => {
 
     const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, totalPedido, DetallePedido } = pedido;
 
+    // Volver a la página anterior
     const goBack = () => {
         window.history.go(-1);
     };
 
+    // Renderizar la lista de productos del detalle
     const renderProductos = (detalle: DetallePedido) => {
         if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) {
             return <p>Productos no disponibles</p>;
@@ -58,10 +60,12 @@ const DetallesPedidoCocinero: React.FC = () => {
         );
     };
 
+    // Formatear una fecha a una cadena legible
     const formatDate = (date: Date) => {
         return new Date(date).toLocaleDateString();
     };
 
+    // Obtener el tiempo estimado máximo de cocina en minutos
     const obtenerTiempoEstimadoMaximo = (detallePedido: DetallePedido[]) => {
         let maxTiempoEstimadoCocina = 0;
 
@@ -78,6 +82,7 @@ const DetallesPedidoCocinero: React.FC = () => {
         return maxTiempoEstimadoCocina;
     };
 
+    // Calcular el tiempo estimado de finalización
     const calcularTiempoEstimadoFinalizacion = (detallePedido: DetallePedido[], esDelivery: boolean) => {
         const tiempoEstimadoMaximo = obtenerTiempoEstimadoMaximo(detallePedido);
         const tiempoEstimadoFinalizacion = tiempoEditado !== null ? tiempoEditado : tiempoEstimadoMaximo;
@@ -85,24 +90,24 @@ const DetallesPedidoCocinero: React.FC = () => {
         return tiempoEstimadoFinalizacion + (esDelivery ? 10 : 0);
     };
 
+    // Tiempo estimado de finalización del pedido
     const tiempoEstimadoFinalizacion = calcularTiempoEstimadoFinalizacion(DetallePedido, esDelivery);
 
+    // Habilitar la edición del tiempo estimado
     const handleEditarTiempo = () => {
         setEditarTiempo(true);
     };
 
+    // Guardar el tiempo estimado editado en el backend
     const handleGuardarTiempo = async () => {
         setEditarTiempo(false);
         try {
             if (tiempoEditado !== null) {
-                // Crear un nuevo objeto con las propiedades necesarias para enviar al backend
                 const pedidoActualizado = {
                     idPedido: pedido.idPedido,
                     tiempoEstimado: tiempoEditado,
-                    // Agrega aquí todas las otras propiedades que necesitas enviar al backend, excluyendo 'horaEstimadaFin'
-                    // Por ejemplo: Usuario, fechaPedido, esEfectivo, esDelivery, totalPedido, DetallePedido, etc.
+                    // Agrega otras propiedades necesarias para enviar al backend (Usuario, fechaPedido, esEfectivo, etc.)
                 };
-                // Realizar la solicitud PUT con axios
                 await axios.put(`${API_URL_BACKEND}/${id}`, pedidoActualizado);
             }
         } catch (error) {
@@ -110,11 +115,13 @@ const DetallesPedidoCocinero: React.FC = () => {
         }
     };
 
+    // Cancelar la edición del tiempo estimado
     const handleCancelarTiempo = () => {
         setEditarTiempo(false);
         setTiempoEditado(null);
     };
 
+    // Actualizar el tiempo estimado editado
     const handleTiempoEditado = (event: React.ChangeEvent<HTMLInputElement>) => {
         const tiempoIngresado = parseInt(event.target.value);
         setTiempoEditado(tiempoIngresado);

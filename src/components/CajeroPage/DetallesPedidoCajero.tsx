@@ -5,39 +5,6 @@ import Spinner from '../Spinner/Spinner';
 import { DetallePedido } from '../../interface/DetallePedido';
 import { Producto } from '../../interface/Producto';
 
-// Función para calcular el tiempo estimado de finalización
-const calcularTiempoEstimadoFinalizacion = (detallePedido: DetallePedido[], esDelivery: boolean) => {
-    const obtenerTiempoEstimadoMaximo = (detallePedido: DetallePedido[]) => {
-        let maxTiempoEstimadoCocina = 0;
-        detallePedido.forEach((detalle: DetallePedido) => {
-            if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-                detalle.Productos.forEach((producto: Producto) => {
-                    if (producto.tiempoEstimadoCocina > maxTiempoEstimadoCocina) {
-                        maxTiempoEstimadoCocina = producto.tiempoEstimadoCocina;
-                    }
-                });
-            }
-        });
-        return maxTiempoEstimadoCocina;
-    };
-
-    const tiempoEstimadoMaximo = obtenerTiempoEstimadoMaximo(detallePedido);
-    return tiempoEstimadoMaximo + (esDelivery ? 10 : 0);
-};
-
-// Función para obtener el subtotal del pedido
-const obtenerSubtotal = (detallePedido: DetallePedido[]) => {
-    let subtotal = 0;
-    detallePedido.forEach((detalle: DetallePedido) => {
-        if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-            detalle.Productos.forEach((producto: Producto) => {
-                subtotal += producto.precio;
-            });
-        }
-    });
-    return subtotal;
-};
-
 const DetallesPedidoCajero: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [pedido, setPedido] = useState<Pedido | null>(null);
@@ -59,16 +26,7 @@ const DetallesPedidoCajero: React.FC = () => {
         fetchPedido();
     }, [id]);
 
-    if (!pedido) {
-        return <Spinner />;
-    }
-
-    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
-
-    const goBack = () => {
-        window.history.go(-1);
-    };
-
+    // Renderizar los productos en el detalle de pedido
     const renderProductos = (detalle: DetallePedido) => {
         if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) {
             return <p>Productos no disponibles</p>;
@@ -85,8 +43,47 @@ const DetallesPedidoCajero: React.FC = () => {
         );
     };
 
+    // Formatear la fecha en formato legible
     const formatDate = (date: Date) => {
         return new Date(date).toLocaleDateString();
+    };
+
+    // Calcular el tiempo estimado de finalización del pedido
+    const calcularTiempoEstimadoFinalizacion = (detallePedido: DetallePedido[], esDelivery: boolean) => {
+        let maxTiempoEstimadoCocina = 0;
+        detallePedido.forEach((detalle: DetallePedido) => {
+            if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
+                detalle.Productos.forEach((producto: Producto) => {
+                    if (producto.tiempoEstimadoCocina > maxTiempoEstimadoCocina) {
+                        maxTiempoEstimadoCocina = producto.tiempoEstimadoCocina;
+                    }
+                });
+            }
+        });
+        return maxTiempoEstimadoCocina + (esDelivery ? 10 : 0);
+    };
+
+    // Obtener el subtotal del pedido
+    const obtenerSubtotal = (detallePedido: DetallePedido[]) => {
+        let subtotal = 0;
+        detallePedido.forEach((detalle: DetallePedido) => {
+            if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
+                detalle.Productos.forEach((producto: Producto) => {
+                    subtotal += producto.precio;
+                });
+            }
+        });
+        return subtotal;
+    };
+
+    if (!pedido) {
+        return <Spinner />;
+    }
+
+    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
+
+    const goBack = () => {
+        window.history.go(-1);
     };
 
     const subtotalPedido = obtenerSubtotal(DetallePedido);
@@ -119,21 +116,16 @@ const DetallesPedidoCajero: React.FC = () => {
                                         <p className="card-text"><strong>Costo Delivery:</strong> $500</p>
                                     </>
                                 )}
-
-
                                 <h5 className="card-title">Detalle de Ítems Pedidos</h5>
-
                                 {DetallePedido.map((detalle: DetallePedido) => (
                                     <ul key={detalle.idDetallePedido} className="list-unstyled">
                                         {renderProductos(detalle)}
                                     </ul>
                                 ))}
-
                                 <p className="card-text"><strong>Subtotal:</strong> ${subtotalPedido}</p>
                                 {!esDelivery && <p className="card-text"><strong>Descuento (10%):</strong> ${subtotalPedido * 0.1}</p>}
                                 <p className="card-text"><strong>Tiempo Estimado:</strong> {tiempoEstimadoFinalizacion}Min</p>
                                 <h4 className="card-text"><strong>Total:</strong> ${totalPedido}</h4>
-
                             </div>
                             <div className="card-footer d-flex justify-content-center">
                                 <button className="btn btn-primary" onClick={goBack}>

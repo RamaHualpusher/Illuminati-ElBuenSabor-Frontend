@@ -5,9 +5,13 @@ import PedidoCardUsuario from './PedidoCardUsuario';
 import { Link } from 'react-router-dom';
 
 const Pasados: React.FC = () => {
+    // Estado para almacenar los pedidos pasados
     const [pedidosPasados, setPedidosPasados] = useState<Pedido[]>([]);
+
+    // Estado para almacenar el pedido seleccionado
     const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
 
+    // Obtener y filtrar los pedidos pasados al montar el componente
     useEffect(() => {
         const fetchPedidosPasados = async () => {
             try {
@@ -24,28 +28,27 @@ const Pasados: React.FC = () => {
         fetchPedidosPasados();
     }, []);
 
-
     return (
-        <>
-            <div style={{ minHeight: 'calc(100vh - 90px)' }}>
-                {pedidosPasados.length > 0 ? (
-                    pedidosPasados.map((pedido) => (
-                        <div key={pedido.idPedido}>
-                            <PedidoCardUsuario pedido={pedido} />
-                        </div>
-                    ))
-                ) : (
-                    <>
-                        <p>No hay pedidos pasados disponibles.</p>
-                        <div className="text-center">
-                            <Link to="/" className="btn btn-primary btn-lg mb-3">
-                                Ver Catálogo
-                            </Link>
-                        </div>
-                    </>
-                )}
-            </div>
-        </>
+        <div style={{ minHeight: 'calc(100vh - 90px)' }}>
+            {pedidosPasados.length > 0 ? (
+                // Mostrar la lista de pedidos pasados si hay al menos uno
+                pedidosPasados.map((pedido) => (
+                    <div key={pedido.idPedido}>
+                        <PedidoCardUsuario pedido={pedido} />
+                    </div>
+                ))
+            ) : (
+                // Mostrar mensaje si no hay pedidos pasados disponibles
+                <>
+                    <p>No hay pedidos pasados disponibles.</p>
+                    <div className="text-center">
+                        <Link to="/" className="btn btn-primary btn-lg mb-3">
+                            Ver Catálogo
+                        </Link>
+                    </div>
+                </>
+            )}
+        </div>
     );
 };
 

@@ -18,25 +18,25 @@ type CartAction =
   | { type: 'DECREMENT_ITEM'; payload: number }
   | { type: 'CLEAR_CART' };
 
-  interface CartContextType {
-    cartItems: CartItem[];
-    addToCart: (item: CartItem) => void;
-    removeFromCart: (itemId: number) => void;
-    incrementItem: (itemId: number) => void;  // Agregado aquí
-    decrementItem: (itemId: number) => void;  // Agregado aquí
-    clearCart: () => void;
-  }
-  
-  const initialCartState: CartItem[] = [];
-  
-  export const CartContext = createContext<CartContextType>({
-    cartItems: initialCartState,
-    addToCart: () => {},
-    removeFromCart: () => {},
-    incrementItem: () => {},  // Agregado aquí
-    decrementItem: () => {},  // Agregado aquí
-    clearCart: () => {},
-  });
+interface CartContextType {
+  cartItems: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (itemId: number) => void;
+  incrementItem: (itemId: number) => void;
+  decrementItem: (itemId: number) => void;
+  clearCart: () => void;
+}
+
+const initialCartState: CartItem[] = [];
+
+export const CartContext = createContext<CartContextType>({
+  cartItems: initialCartState,
+  addToCart: () => { },
+  removeFromCart: () => { },
+  incrementItem: () => { },
+  decrementItem: () => { },
+  clearCart: () => { },
+});
 
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
   switch (action.type) {
@@ -54,15 +54,15 @@ const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
     case 'REMOVE_FROM_CART':
       return state.filter((item) => item.id !== action.payload);
     case 'INCREMENT_ITEM':
-      return state.map((item) => 
-        item.id === action.payload 
-          ? {...item, quantity: item.quantity + 1}
+      return state.map((item) =>
+        item.id === action.payload
+          ? { ...item, quantity: item.quantity + 1 }
           : item
       );
     case 'DECREMENT_ITEM':
-      return state.map((item) => 
+      return state.map((item) =>
         item.id === action.payload && item.quantity > 1
-          ? {...item, quantity: item.quantity - 1}
+          ? { ...item, quantity: item.quantity - 1 }
           : item
       );
     case 'CLEAR_CART':
@@ -76,6 +76,12 @@ interface CartProviderProps {
   children: ReactNode;
 }
 
+/**
+ * Proveedor de contexto para el carrito de compras.
+ * 
+ * @param {CartProviderProps} props - Propiedades del componente.
+ * @param {ReactNode} props.children - Componentes hijos.
+ */
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, dispatch] = useReducer(cartReducer, initialCartState);
 
@@ -86,6 +92,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const removeFromCart = (itemId: number) => {
     dispatch({ type: 'REMOVE_FROM_CART', payload: itemId });
   };
+
   const incrementItem = (itemId: number) => {
     dispatch({ type: 'INCREMENT_ITEM', payload: itemId });
   };

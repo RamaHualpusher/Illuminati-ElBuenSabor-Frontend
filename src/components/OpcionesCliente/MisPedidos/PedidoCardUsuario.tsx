@@ -6,9 +6,10 @@ import EstadoPedidoCard from '../../Pedidos/EstadoPedidoCard';
 
 interface PedidoCardUsuarioProps {
     pedido: Pedido;
-} 
+}
 
 const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
+    // URL para el detalle del pedido
     const urlDetallePedido = `/mis-pedido/${pedido.idPedido}`;
 
     // Función para manejar la acción de "ver"
@@ -36,6 +37,7 @@ const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
                         </div>
                         <div className="d-flex justify-content-end mt-3">
                             {['Listo', 'Pagado', 'A confirmar', 'En cocina', 'En delivery', 'Entregado', 'Cancelado'].includes(pedido.estadoPedido) && (
+                                // Mostrar botones solo para ciertos estados de pedido
                                 <>
                                     <Link to={urlDetallePedido} className="btn btn-primary me-2">
                                         <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles

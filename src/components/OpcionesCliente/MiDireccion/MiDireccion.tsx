@@ -8,6 +8,7 @@ import { handleRequest } from '../../FuncionRequest/FuncionRequest';
 import { Link } from 'react-router-dom';
 
 const Direccion: FC = () => {
+    // Estados para controlar la dirección, modales y dirección seleccionada
     const [domicilio, setDomicilio] = useState<Domicilio | null>(null);
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
@@ -28,6 +29,7 @@ const Direccion: FC = () => {
         fetchDomicilio();
     }, []);
 
+    // Función para manejar la edición de la dirección
     const handleDomicilioEdit = async (domicilio: Domicilio) => {
         try {
             const updatedDomicilio = await handleRequest('PUT', API_URL, domicilio);
@@ -37,6 +39,7 @@ const Direccion: FC = () => {
         }
     };
 
+    // Función para manejar la adición de una dirección
     const handleDomicilioAdd = async (domicilio: Domicilio) => {
         try {
             const newDomicilio = await handleRequest('POST', API_URL, domicilio);
@@ -47,7 +50,7 @@ const Direccion: FC = () => {
         }
     };
 
-
+    // Funciones para controlar la apertura y cierre del modal de edición
     const handleEditModalOpen = () => {
         setEditModalShow(true);
         setSelectedDireccion(domicilio);
@@ -57,6 +60,7 @@ const Direccion: FC = () => {
         setEditModalShow(false);
     };
 
+    // Funciones para controlar la apertura y cierre del modal de adición
     const handleAddModalOpen = () => {
         setAddModalShow(true);
     };

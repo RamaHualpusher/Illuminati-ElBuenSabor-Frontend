@@ -6,6 +6,7 @@ const BotonesMenu: FC<IBotonesMenuProps> = ({
   selectedCategory,
   onCategoryChange,
 }) => {
+  // Definir los botones de categoría con sus valores, etiquetas e iconos
   const buttons: IBotonMenu[] = [
     {
       value: "Todos",
@@ -34,13 +35,16 @@ const BotonesMenu: FC<IBotonesMenuProps> = ({
     },
   ];
 
+  // Función para manejar el cambio de categoría
   const handleOptionChange = (category: string) => {
-    onCategoryChange(category);
+    onCategoryChange(category); // Llamar a la función proporcionada para cambiar la categoría
   };
 
   return (
+    // Formulario de botones de categoría
     <Form className="d-flex justify-content-center align-items-center flex-wrap">
       {buttons.map((button) => (
+        // Botón de categoría
         <Button
           key={button.value}
           variant={selectedCategory === button.value ? "dark" : "outline-secondary"}

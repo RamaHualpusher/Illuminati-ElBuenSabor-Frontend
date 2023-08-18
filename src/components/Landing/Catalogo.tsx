@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import TarjetaComida from "./TarjetaComida";
 import { ICatalogoProps } from "../../interface/ICatalogo";
 
 const Catalogo: React.FC<ICatalogoProps> = ({ filteredProductos }) => {
-  const [showButton, setShowButton] = useState(false);
 
+  // Función para determinar la clase del contenedor de las tarjetas de comida en función del número total de tarjetas
   const getTarjetaComidaContainerClass = (totalTarjetas: number) => {
     if (totalTarjetas <= 1) {
       return "col-md-12";
@@ -18,18 +18,22 @@ const Catalogo: React.FC<ICatalogoProps> = ({ filteredProductos }) => {
   };
 
   return (
-    <div className=" d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+    // Contenedor principal del catálogo
+    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
       <div>
+        {/* Verificar si no hay productos filtrados */}
         {filteredProductos.length === 0 ? (
+          // Mensaje de producto no encontrado
           <h4 className="display-4 mb-4 text-center">
             El producto en búsqueda no se encuentra.
             <br />
             <i className="bi bi-hand-thumbs-down"></i>
           </h4>
         ) : (
+          // Mostrar el catálogo de productos
           <div className="row justify-content-center">
             {filteredProductos.map((producto, index) => (
-
+              // Contenedor de cada tarjeta de comida
               <div
                 className={`text-center ${getTarjetaComidaContainerClass(
                   filteredProductos.length
@@ -37,13 +41,12 @@ const Catalogo: React.FC<ICatalogoProps> = ({ filteredProductos }) => {
                 key={index}
                 style={{ marginBottom: "20px" }}
               >
-
+                {/* Tarjeta de comida */}
                 <TarjetaComida
                   producto={producto}
                   buttonText={"Agregar al Carrito"}
-                  showButton={producto.stockActual > 0 ? true : false}
+                  showButton={producto.stockActual > 0} // Mostrar el botón si hay stock
                 />
-
               </div>
             ))}
           </div>
