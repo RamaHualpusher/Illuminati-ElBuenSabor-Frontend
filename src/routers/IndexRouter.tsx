@@ -16,6 +16,8 @@ import DetallesPedidoCajero from "../components/CajeroPage/DetallesPedidoCajero"
 
 const IndexRouter = () => {
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
+
+  // Función para cerrar el modal de generación de factura
   const closeModal = () => {
     setSelectedPedido(null);
   };
@@ -23,6 +25,7 @@ const IndexRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Rutas para las diferentes páginas */}
         <Route path="/*" element={<UserRouter />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/cocinero" element={<Cocinero />} />
@@ -34,16 +37,17 @@ const IndexRouter = () => {
         <Route path="/cocina/ingredientes" element={<Ingredientes />} />
         <Route path="/cocina/productos" element={<Productos />} />
 
+        {/* Ruta para la generación de factura */}
         <Route
           path="/factura/:pedido"
           element={<GenerarFacturaModal closeModal={closeModal} />}
         />
 
+        {/* Ruta para página de error 404 */}
         <Route path="*" element={<Page404 />} />
       </Routes>
     </BrowserRouter>
   );
 };
-
 
 export default IndexRouter;

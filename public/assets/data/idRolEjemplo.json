@@ -1,19 +1,23 @@
 [
     {
       "idRol": 1,
-      "nombreRol": "Administrador"
+      "nombreRol": "Cliente"
     },
     {
       "idRol": 2,
-      "nombreRol": "Supervisor"
+      "nombreRol": "Delivery"
     },
     {
       "idRol": 3,
-      "nombreRol": "Empleado"
+      "nombreRol": "Cocinero"
     },
     {
       "idRol": 4,
-      "nombreRol": "Cliente"
+      "nombreRol": "Cajero"
+    },
+    {
+      "idRol": 5,
+      "nombreRol": "Administrador"
     }
   ]
   

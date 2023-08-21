@@ -9,18 +9,20 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
   handleRubroEdit,
   selectedRubro,
 }) => {
+  // Estados del componente
   const [nombre, setNombre] = useState('');
   const [estado, setEstado] = useState(false);
-  const [idRubroPadre, setIdRubroPadre] = useState<Rubro | undefined>(undefined);
 
+  // Actualizar estados cuando se selecciona un rubro
   useEffect(() => {
     if (selectedRubro) {
       setNombre(selectedRubro.nombre);
       setEstado(selectedRubro.estado || false);
-      setIdRubroPadre(selectedRubro.idRubroPadre);
+      // setIdRubroPadre(selectedRubro.idRubroPadre); (No se utiliza en este componente)
     }
   }, [selectedRubro]);
 
+  // Función para manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -36,28 +38,14 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
         idRubro: selectedRubro.idRubro || 0,
         nombre,
         estado,
-        idRubroPadre,
+        // idRubroPadre, (No se utiliza en este componente)
       };
       handleRubroEdit(updatedRubro);
     }
     handleClose();
   };
 
-  // const handleStatusChange = (isActivo: boolean) => {
-  //   setRubroData((prevState) => ({
-  //     ...prevState,
-  //     activo: isActivo,
-  //   }));
-  // };
-
-  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = event.target;
-  //   setRubroData((prevState) => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
-
+  // Función para cambiar el estado
   const handleStatusChange = (isActive: boolean) => {
     setEstado(isActive);
   };
@@ -84,9 +72,7 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
             <Form.Label>Estado</Form.Label>
             <Form.Select
               value={estado ? 'alta' : 'baja'}
-              onChange={(event) =>
-                setEstado(event.target.value === 'alta' ? true : false)
-              }
+              onChange={(event) => setEstado(event.target.value === 'alta')}
               required
             >
               <option value="alta">Alta</option>

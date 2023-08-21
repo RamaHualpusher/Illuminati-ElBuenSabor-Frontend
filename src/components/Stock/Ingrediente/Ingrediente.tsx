@@ -9,6 +9,7 @@ import GenericTable from "../../GenericTable/GenericTable";
 import { Rubro } from "../../../interface/Rubro";
 
 const Ingrediente: React.FC = () => {
+  // Estados del componente
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedIngrediente, setSelectedIngrediente] = useState<Ingredientes | null>(null);
@@ -21,12 +22,14 @@ const Ingrediente: React.FC = () => {
   const API_URL = "/assets/data/ingredientesEjemplo.json";
   const API_URL_Rubro = "assets/data/rubrosIngredientesEjemplo.json";
 
+  // Configuración de acciones y columnas de la tabla
   const actions: Action = {
     create: true,
     update: true
   };
 
   const columns: Column<Ingredientes>[] = [
+    // Definición de las columnas...
     { title: 'ID', field: 'idIngredientes' },
     { title: 'Nombre', field: 'nombre' },
     {
@@ -48,6 +51,7 @@ const Ingrediente: React.FC = () => {
     },
   ];
 
+  // Filtrar ingredientes según el rubro seleccionado
   useEffect(() => {
     const filterIngredientes = () => {
       console.log("selectedRubro", selectedRubro);
@@ -66,8 +70,10 @@ const Ingrediente: React.FC = () => {
     }
   }, [selectedRubro, ingredComplete]);
 
+  // Cargar ingredientes y rubros al montar el componente
   useEffect(() => {
     const fetchData = async () => {
+      // Obtener ingredientes desde la API
       try {
         const responseData = await handleRequest('GET', API_URL);
         setIngred(responseData);
@@ -78,6 +84,7 @@ const Ingrediente: React.FC = () => {
     };
 
     const fetchRubros = async () => {
+      // Obtener rubros desde la API
       try {
         const responseData = await handleRequest("GET", API_URL_Rubro);
         setRubros(responseData);
@@ -89,6 +96,7 @@ const Ingrediente: React.FC = () => {
     fetchData();
   }, []);
 
+   // Agregar nuevo ingrediente mediante la API
   const handleIngredienteAdd = async (Ingredientes: Ingredientes) => {
     try {
       const newProducto = await handleRequest('POST', '/assets/data/ingredientesEjemplo.json', Ingredientes);
@@ -99,6 +107,7 @@ const Ingrediente: React.FC = () => {
     }
   };
 
+  // Editar ingrediente existente mediante la API
   const handleIngredienteEdit = async (producto: Ingredientes) => {
     try {
       const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.idIngredientes}`, producto);
@@ -113,7 +122,9 @@ const Ingrediente: React.FC = () => {
     }
   };
 
+  // Función para obtener un ingrediente por ID
   const ingredienteGeneric = (id: number) => {
+    // Obtener un ingrediente por ID
     let i: number = 0;
     let x: boolean = true;
     while (x) {
@@ -129,25 +140,29 @@ const Ingrediente: React.FC = () => {
     return ingredComplete[0];
   };
 
+  // Abrir modal de edición con los datos del ingrediente
   const handleEditModalOpen = (item: Ingredientes) => {
     setSelectedIngrediente(ingredienteGeneric(item.idIngredientes));
     setEditModalShow(true);
   };
 
+  // Cerrar modal de edición
   const handleEditModalClose = () => {
     setSelectedIngrediente(null);
     setEditModalShow(false);
   };
 
+  // Abrir modal de agregar
   const handleAddModalOpen = () => {
     setAddModalShow(true);
   };
 
+  // Cerrar modal de agregar
   const handleAddModalClose = () => {
     setAddModalShow(false);
   };
 
-
+// Eliminar ingrediente mediante la API (esta por las dudas pero no tiene funcion)
   const handleIngredienteDelete = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const ingredienteId: number = +rowData[0];
@@ -162,6 +177,7 @@ const Ingrediente: React.FC = () => {
       });
   }
 
+  // Manejar cambio de selección de rubro
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
     const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
@@ -171,6 +187,7 @@ const Ingrediente: React.FC = () => {
     setSelectedRubroName(selectedOption.text);
   };
 
+  // Mensaje cuando no hay ingredientes con el rubro seleccionado
   const noProductosMessage =
     selectedRubro && filteredIngredientes.length === 0 ? (
       <p>No hay ingredientes disponibles con el rubro seleccionado.</p>
@@ -180,6 +197,7 @@ const Ingrediente: React.FC = () => {
     <div>
       <Container fluid>
         <div>
+           {/* Filtros y mensajes */}
           <Form.Group controlId="idrubro">
             <select
               className="form-select"
@@ -197,6 +215,7 @@ const Ingrediente: React.FC = () => {
             </select>
           </Form.Group>
           {noProductosMessage}
+          {/* Tabla de ingredientes */}
           <GenericTable
             data={filteredIngredientes}
             columns={columns}
@@ -205,6 +224,7 @@ const Ingrediente: React.FC = () => {
             onUpdate={handleEditModalOpen}
           />
         </div>
+        {/* Modales de edición y adición */}
         <EditIngredienteModal
           show={editModalShow}
           handleClose={handleEditModalClose}

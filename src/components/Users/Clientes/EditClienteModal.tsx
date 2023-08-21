@@ -17,6 +17,7 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
   handleClienteEdit,
   selectedCliente,
 }) => {
+  // Estados para gestionar los campos del formulario
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
@@ -31,6 +32,7 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
     localidad: "",
   });
 
+  // Cargar roles al montar el componente
   useEffect(() => {
     fetch("/assets/data/idRolEjemplo.json")
       .then((response) => response.json())
@@ -42,6 +44,7 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
       });
   }, []);
 
+  // Actualizar campos al seleccionar un cliente
   useEffect(() => {
     if (selectedCliente) {
       setNombre(selectedCliente.nombre);
@@ -54,6 +57,7 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
     }
   }, [selectedCliente]);
 
+  // Manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedCliente) {

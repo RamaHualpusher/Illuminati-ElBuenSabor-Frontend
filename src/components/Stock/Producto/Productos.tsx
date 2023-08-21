@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { Container, Row, Form } from "react-bootstrap";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 import EditProductoModal from "./EditProductoModal";
 import AddProductoModal from "./AddProductoModal";
@@ -9,6 +9,7 @@ import GenericTable from "../../GenericTable/GenericTable";
 import { Rubro } from "../../../interface/Rubro";
 
 const Productos: React.FC = () => {
+  // Estados del componente
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
@@ -21,12 +22,14 @@ const Productos: React.FC = () => {
   const API_URL = "assets/data/productosLanding.json";
   const API_URL_Rubro = "assets/data/rubrosProductosEjemplo.json";
 
+  // Configuración de acciones y columnas para la tabla
   const actions: Action = {
     create: true,
     update: true,
   };
 
   const columns: Column<Producto>[] = [
+    // Definición de las columnas
     { title: "ID", field: "idProducto" },
     { title: "Nombre", field: "nombre" },
     {
@@ -47,6 +50,7 @@ const Productos: React.FC = () => {
     },
   ];
 
+  // Filtrar productos según el rubro seleccionado
   useEffect(() => {
     const filterProductos = () => {
       console.log("selectedRubro", selectedRubro);
@@ -59,13 +63,12 @@ const Productos: React.FC = () => {
         setFilteredProductos(productosComplete);
       }
     };
-
     if (productosComplete.length > 0) {
       filterProductos();
     }
   }, [selectedRubro, productosComplete]);
 
-
+  // Cargar productos y rubros al montar el componente
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -76,7 +79,6 @@ const Productos: React.FC = () => {
         console.log(error);
       }
     };
-
     const fetchRubros = async () => {
       try {
         const responseData = await handleRequest("GET", API_URL_Rubro);
@@ -85,11 +87,11 @@ const Productos: React.FC = () => {
         console.log(error);
       }
     };
-
     fetchProductos();
     fetchRubros();
   }, []);
 
+  // Agregar un producto
   const handleProductoAdd = async (producto: Producto) => {
     try {
       const newProducto = await handleRequest("POST", API_URL, producto);
@@ -99,6 +101,7 @@ const Productos: React.FC = () => {
     }
   };
 
+  // Editar un producto
   const handleProductoEdit = async (producto: Producto) => {
     try {
       const updatedProducto: Producto = await handleRequest(
@@ -116,6 +119,7 @@ const Productos: React.FC = () => {
     }
   };
 
+  // Eliminar un producto
   const handleProductoDelete = async (
     rowData: string[],
     e: React.MouseEvent<HTMLButtonElement>
@@ -131,7 +135,7 @@ const Productos: React.FC = () => {
     }
   };
 
-
+  // Abrir modal de edición
   const handleEditModalOpen = (item: Producto) => {
     const selected = productosComplete.find((producto) => producto.idProducto === item.idProducto);
     if (selected) {
@@ -140,19 +144,23 @@ const Productos: React.FC = () => {
     }
   };
 
+  // Cerrar modal de edición
   const handleEditModalClose = () => {
     setSelectedProducto(null);
     setEditModalShow(false);
   };
 
+  // Abrir modal de agregar
   const handleAddModalOpen = () => {
     setAddModalShow(true);
   };
 
+  // Cerrar modal de agregar
   const handleAddModalClose = () => {
     setAddModalShow(false);
   };
 
+  // Manejar cambio de selección de rubro
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
     const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
@@ -162,6 +170,7 @@ const Productos: React.FC = () => {
     setSelectedRubroName(selectedOption.text);
   };
 
+  // Mensaje de no productos disponibles
   const noProductosMessage =
     selectedRubro && filteredProductos.length === 0 ? (
       <p>No hay productos disponibles con el rubro seleccionado.</p>
@@ -170,6 +179,7 @@ const Productos: React.FC = () => {
   return (
     <Container fluid>
       <Row>
+        {/* Estructura del componente */}
         <div>
           <Form.Group controlId="idrubro">
             <select
@@ -199,6 +209,7 @@ const Productos: React.FC = () => {
           />
         </div>
       </Row>
+      {/* Modales de edición y agregado */}
       <AddProductoModal
         show={addModalShow}
         handleClose={handleAddModalClose}

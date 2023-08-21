@@ -3,7 +3,6 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { Producto } from "../../../interface/Producto";
 import { Rubro } from "../../../interface/Rubro";
 import { EditProductoModalProps } from "../../../interface/Producto";
-import Ingrediente from "../Ingrediente/Ingrediente";
 import { Ingredientes } from "../../../interface/Ingredientes";
 import { ProductoIngrediente } from "../../../interface/ProductoIngrediente";
 
@@ -13,51 +12,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   handleProductoEdit,
   selectedProducto,
 }) => {
-
-
-  const rubrod:Rubro={
-    idRubro:0,
-    nombre:"",
-  };
-
-
-  const defectoIngrediente:Ingredientes={
-    estado:false,
-    idIngredientes:0,
-    nombre:"none",
-    precioCosto:0,
-    ProductoIngrediente:[],
-    Rubro:rubrod,
-    stockActual:0,
-    stockMinimo:0,
-    unidadMedida:""
-  };
-
-  const defectoProducto:Producto={
-    idProducto: 0,
-      nombre:"",
-      Rubro: rubrod,
-      tiempoEstimadoCocina:0,
-      denominacion: "",
-      imagen: "",
-      stockActual: 0,
-      stockMinimo: 0,
-      preparacion: "",
-      precio:0,
-      esBebida: false,
-      estado:false,
-      DetallePedido: [],
-      ProductoIngrediente: [],
-  }
-
-  const defectoProductoIngrediente:ProductoIngrediente={
-    cantidad:0,
-    idProductoIngrediente:0,
-    Ingredientes:defectoIngrediente,
-    Producto:defectoProducto
-  }
-
-
+  // Estados del componente
   const [nombre, setNombre] = useState("");
   const [rubroId, setRubroId] = useState<number | null>(null);
   const [tiempo, setTiempo] = useState(0);
@@ -65,20 +20,57 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [selectedRubro, setSelectedRubro] = useState<Rubro | null>(null);
   const [estado, setEstado] = useState(selectedProducto?.estado || false);
-  const [ingredientes, setIngredientes]=useState<ProductoIngrediente[]|null>(null);
-  const [ingrediente,setIngrediente]=useState<ProductoIngrediente>(defectoProductoIngrediente);
-  const [cantidad,setCantidad]=useState(0);
-  const [ingredientesA,setIngredientesA]=useState<Ingredientes[]>([]);
-  const [cantIngrediente,setCantIngrediente]=useState<number>(0);
-  const [ingredienteA,setIngredienteA]=useState<Ingredientes| null>(null);
+  const [ingredientes, setIngredientes] = useState<ProductoIngrediente[] | null>(null);
+  const [cantidad, setCantidad] = useState(0);
+  const [ingredientesA, setIngredientesA] = useState<Ingredientes[]>([]);
+  const [cantIngrediente, setCantIngrediente] = useState<number>(0);
+  const [ingredienteA, setIngredienteA] = useState<Ingredientes | null>(null);
+
+  // Definición de objetos por defecto
+  const rubrod: Rubro = {
+    idRubro: 0,
+    nombre: "",
+  };
 
 
+  const defectoIngrediente: Ingredientes = {
+    estado: false,
+    idIngredientes: 0,
+    nombre: "none",
+    precioCosto: 0,
+    ProductoIngrediente: [],
+    Rubro: rubrod,
+    stockActual: 0,
+    stockMinimo: 0,
+    unidadMedida: ""
+  };
 
+  const defectoProducto: Producto = {
+    idProducto: 0,
+    nombre: "",
+    Rubro: rubrod,
+    tiempoEstimadoCocina: 0,
+    denominacion: "",
+    imagen: "",
+    stockActual: 0,
+    stockMinimo: 0,
+    preparacion: "",
+    precio: 0,
+    esBebida: false,
+    estado: false,
+    DetallePedido: [],
+    ProductoIngrediente: [],
+  }
 
+  const defectoProductoIngrediente: ProductoIngrediente = {
+    cantidad: 0,
+    idProductoIngrediente: 0,
+    Ingredientes: defectoIngrediente,
+    Producto: defectoProducto
+  }
+  const [ingrediente, setIngrediente] = useState<ProductoIngrediente>(defectoProductoIngrediente);
 
-
-  
-
+  // Cargar rubros y productos al montar el componente
   useEffect(() => {
     fetch("/assets/data/rubrosProductosEjemplo.json")
       .then((response) => response.json())
@@ -90,6 +82,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
       });
   }, []);
 
+  // Cargar ingredientes al montar el componente
   useEffect(() => {
     fetch("/assets/data/ingredientesEjemplo.json")
       .then((response) => response.json())
@@ -101,7 +94,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
       });
   }, []);
 
-
+  // Cargar datos del producto seleccionado al montar el componente
   useEffect(() => {
     if (selectedProducto) {
       setNombre(selectedProducto?.nombre || "");
@@ -114,125 +107,124 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     }
   }, [selectedProducto]);
 
-
-  const selectIngrediente=(nombre:string)=>{
-
-    if(ingrediente!==defectoProductoIngrediente){
-      selectedProducto?.ProductoIngrediente.map((ingr)=>{
-        if(ingrediente.Ingredientes.nombre===ingr.Ingredientes.nombre){
+  // Función para seleccionar un ingrediente existente
+  const selectIngrediente = (nombre: string) => {
+    if (ingrediente !== defectoProductoIngrediente) {
+      selectedProducto?.ProductoIngrediente.map((ingr) => {
+        if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
           console.log("ingrediente previo guardado")
-          ingr=ingrediente;
-          ingr.cantidad=cantidad;
-          
+          ingr = ingrediente;
+          ingr.cantidad = cantidad;
+
         }
       })
     }
     console.log("ingreso a funcion")
-    if(nombre!=="none"){
-    selectedProducto?.ProductoIngrediente.map((ingr)=>{
-      if(nombre===ingr.Ingredientes.nombre){
-        console.log("ingrediente encontrado"+ingr.Ingredientes.nombre)
-        setCantidad(ingr.cantidad);
-        setIngrediente(ingr);
-        return null;
-      }
-    })
-    return null;}
-    else{
+    if (nombre !== "none") {
+      selectedProducto?.ProductoIngrediente.map((ingr) => {
+        if (nombre === ingr.Ingredientes.nombre) {
+          console.log("ingrediente encontrado" + ingr.Ingredientes.nombre)
+          setCantidad(ingr.cantidad);
+          setIngrediente(ingr);
+          return null;
+        }
+      })
+      return null;
+    }
+    else {
       setIngrediente(defectoProductoIngrediente);
       setCantidad(0);
       return null;
     }
   }
 
-  const selectIngredienteA=(nombre:string)=>{
-
-    
+  // Función para seleccionar un ingrediente a agregar
+  const selectIngredienteA = (nombre: string) => {
     console.log("ingreso a funcion")
-    if(nombre!=="none"){
-    ingredientesA?.map((ingr)=>{
-      if(nombre===ingr.nombre){
-        console.log("ingrediente encontrado"+ingr.nombre);
-        setIngredienteA(ingr);
-        return null;
-      }
-    })
-    return null;}
-    else{
+    if (nombre !== "none") {
+      ingredientesA?.map((ingr) => {
+        if (nombre === ingr.nombre) {
+          console.log("ingrediente encontrado" + ingr.nombre);
+          setIngredienteA(ingr);
+          return null;
+        }
+      })
+      return null;
+    }
+    else {
       setIngredienteA(null)
       return null;
     }
   }
 
-
-  const agregarIngrediente=()=>{
-    if(ingredienteA!==null && cantIngrediente>0){
-      let contar:number=0;
-      ingredientes?.map((ingre)=>{
-        contar=ingre.idProductoIngrediente;
+  // Función para agregar un ingrediente a la lista de ingredientes
+  const agregarIngrediente = () => {
+    if (ingredienteA !== null && cantIngrediente > 0) {
+      let contar: number = 0;
+      ingredientes?.map((ingre) => {
+        contar = ingre.idProductoIngrediente;
       })
-      let encontrado=false
-      ingredientes?.map((ingre)=>{
-        if(ingre.Ingredientes.nombre===ingredienteA.nombre){
-          console.log("coincidencia encontrada "+ingre.Ingredientes.nombre+" cantida previa"+(ingre.cantidad))
-          ingre.cantidad+=cantIngrediente;
+      let encontrado = false
+      ingredientes?.map((ingre) => {
+        if (ingre.Ingredientes.nombre === ingredienteA.nombre) {
+          console.log("coincidencia encontrada " + ingre.Ingredientes.nombre + " cantida previa" + (ingre.cantidad))
+          ingre.cantidad += cantIngrediente;
           console.log(ingre.cantidad);
           setCantIngrediente(0);
-          encontrado=true;
+          encontrado = true;
         }
       })
 
-      if(encontrado===false)
-      {const ingre:Ingredientes|null=ingredienteA;
-      const ingres:ProductoIngrediente[]|null=ingredientes;
-      const agre:ProductoIngrediente={
-        cantidad:cantIngrediente,
-        idProductoIngrediente:contar+1,
-        Ingredientes:ingre||defectoIngrediente,
-        Producto:defectoProducto
-      }
-      ingres?.push(agre);
-      setIngredientes(ingres);
-      console.log("agregado ingrediente")
-      setCantIngrediente(0);
+      if (encontrado === false) {
+        const ingre: Ingredientes | null = ingredienteA;
+        const ingres: ProductoIngrediente[] | null = ingredientes;
+        const agre: ProductoIngrediente = {
+          cantidad: cantIngrediente,
+          idProductoIngrediente: contar + 1,
+          Ingredientes: ingre || defectoIngrediente,
+          Producto: defectoProducto
+        }
+        ingres?.push(agre);
+        setIngredientes(ingres);
+        console.log("agregado ingrediente")
+        setCantIngrediente(0);
       }
     }
   }
 
-
-  const handleCantidad=(cant:number)=>{
+  // Función para manejar cambios en la cantidad de un ingrediente
+  const handleCantidad = (cant: number) => {
     setCantidad(cant);
-    if(ingrediente!==defectoProductoIngrediente){
-      selectedProducto?.ProductoIngrediente.map((ingr)=>{
-        if(ingrediente.Ingredientes.nombre===ingr.Ingredientes.nombre){
+    if (ingrediente !== defectoProductoIngrediente) {
+      selectedProducto?.ProductoIngrediente.map((ingr) => {
+        if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
           console.log("ingrediente previo guardado")
-          ingr=ingrediente;
-          ingr.cantidad=cantidad;
-          
+          ingr = ingrediente;
+          ingr.cantidad = cantidad;
+
         }
       })
     }
   }
 
-  const handleDeletIngrediente=()=>{
-    if(selectedProducto){
-    console.log("ingreso a funcion")
-    const filtrar=selectedProducto?.ProductoIngrediente;
-    if(nombre!=="none"){
-      const filtrado=filtrar?.filter(filtrar=>filtrar.Ingredientes.nombre !==ingrediente.Ingredientes.nombre);
-      selectedProducto.ProductoIngrediente=filtrado;
-      setIngrediente(defectoProductoIngrediente);
-      setCantidad(0);
-    }}
-    else{
+  // Función para eliminar un ingrediente seleccionado
+  const handleDeletIngrediente = () => {
+    if (selectedProducto) {
+      console.log("ingreso a funcion")
+      const filtrar = selectedProducto?.ProductoIngrediente;
+      if (nombre !== "none") {
+        const filtrado = filtrar?.filter(filtrar => filtrar.Ingredientes.nombre !== ingrediente.Ingredientes.nombre);
+        selectedProducto.ProductoIngrediente = filtrado;
+        setIngrediente(defectoProductoIngrediente);
+        setCantidad(0);
+      }
+    }
+    else {
       return null;
     }
   }
 
-
-
-
-
+  // Manejar el envío del formulario de edición
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedProducto) {
@@ -243,7 +235,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
         precio: precio,
         estado,
         Rubro: selectedRubro || selectedProducto.Rubro,
-        ProductoIngrediente:selectedProducto.ProductoIngrediente,
+        ProductoIngrediente: selectedProducto.ProductoIngrediente,
       };
       handleProductoEdit(updatedProducto);
     }
@@ -252,6 +244,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
 
   return (
     <Modal show={show} onHide={handleClose}>
+      {/* Estructura del modal */}
       <Modal.Header closeButton>
         <Modal.Title>Editar Producto</Modal.Title>
       </Modal.Header>
@@ -326,20 +319,20 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
               required
             >
               <option value="none">Eliminar Ingrediente</option>
-              {selectedProducto?.ProductoIngrediente.map((Ingrediente)=>
-              <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre}</option>
+              {selectedProducto?.ProductoIngrediente.map((Ingrediente) =>
+                <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre}</option>
               )}
             </Form.Select>
             <Form.Control
-            type="number"
-            placeholder="Ingrese Cantidad"
-            value={cantidad}
-            onChange={(event) => handleCantidad(parseInt(event.target.value))}
-            required
-            >  
+              type="number"
+              placeholder="Ingrese Cantidad"
+              value={cantidad}
+              onChange={(event) => handleCantidad(parseInt(event.target.value))}
+              required
+            >
             </Form.Control>
             <Button
-            variant="danger" onClick={()=>handleDeletIngrediente()}>Eliminar Ingrediente</Button>
+              variant="danger" onClick={() => handleDeletIngrediente()}>Eliminar Ingrediente</Button>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Ingredientes</Form.Label>
@@ -349,20 +342,20 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
               required
             >
               <option value="none">Eliminar Ingrediente</option>
-              {ingredientesA.map((Ingrediente)=>
-              <option value={Ingrediente.nombre}>{Ingrediente.nombre}</option>
+              {ingredientesA.map((Ingrediente) =>
+                <option value={Ingrediente.nombre}>{Ingrediente.nombre}</option>
               )}
             </Form.Select>
             <Form.Control
-            type="number"
-            placeholder="Ingrese Cantidad"
-            value={cantIngrediente}
-            onChange={(event)=>setCantIngrediente(parseInt(event.target.value))}
-            required
-            >  
+              type="number"
+              placeholder="Ingrese Cantidad"
+              value={cantIngrediente}
+              onChange={(event) => setCantIngrediente(parseInt(event.target.value))}
+              required
+            >
             </Form.Control>
             <Button
-            variant="primary" onClick={()=>agregarIngrediente()}>Agregar Ingrediente</Button>
+              variant="primary" onClick={() => agregarIngrediente()}>Agregar Ingrediente</Button>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

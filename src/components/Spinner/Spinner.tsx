@@ -2,6 +2,7 @@ import React from "react";
 
 const Spinner: React.FC = () => {
   return (
+    // Contenedor que centra el spinner verticalmente en la pantalla
     <div
       style={{
         display: "flex",
@@ -11,8 +12,10 @@ const Spinner: React.FC = () => {
       }}
     >
       <div className="text-center">
+        {/* Spinner que muestra una animación de carga */}
         <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
+          {/* Texto que describe la acción en pantalla para accesibilidad */}
+          <span className="visually-hidden">Cargando...</span>
         </div>
       </div>
     </div>
@@ -20,4 +23,3 @@ const Spinner: React.FC = () => {
 };
 
 export default Spinner;
-

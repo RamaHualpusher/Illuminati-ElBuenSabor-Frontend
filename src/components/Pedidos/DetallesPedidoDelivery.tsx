@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Pedido } from '../../interface/Pedido';
 import Spinner from '../Spinner/Spinner';
 import { DetallePedido } from '../../interface/DetallePedido';
+import { Pedido } from '../../interface/Pedido';
 import { Producto } from '../../interface/Producto';
 
 const DetallesPedidoDelivery: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [pedido, setPedido] = useState<Pedido>();
-
+    const [pedido, setPedido] = useState<Pedido | undefined>();
 
     useEffect(() => {
         if (id) {
+            // Realiza una solicitud para obtener los detalles del pedido
             fetch('/assets/data/pedidos.json')
                 .then((response) => response.json())
                 .then((data) => {
@@ -23,8 +23,9 @@ const DetallesPedidoDelivery: React.FC = () => {
     }, [id]);
 
     if (!pedido) {
-        return <Spinner />;
+        return <Spinner />; // Muestra el spinner mientras se carga el pedido
     }
+
     const obtenerSubtotal = (detallePedido: DetallePedido[]) => {
         let subtotal = 0;
         detallePedido.forEach((detalle: DetallePedido) => {
@@ -36,14 +37,9 @@ const DetallesPedidoDelivery: React.FC = () => {
         });
         return subtotal;
     };
-    const goBack = () => {
-        window.history.go(-1);
-    };
 
-    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
-
-    const renderProductos = (detalle: DetallePedido) => {
-        if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) {
+    const renderProductos = (detalle: DetallePedido) => { //Renderiza todos los productos que hay en el pedido
+        if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) { //Si no encuentra muestra un mensaje
             return <p>Productos no disponibles</p>;
         }
 
@@ -57,8 +53,14 @@ const DetallesPedidoDelivery: React.FC = () => {
             </ul>
         );
     };
+
+    const goBack = () => {
+        window.history.go(-1); // Navega hacia atrás en la historia del navegador
+    };
+
+    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido, totalPedido } = pedido;
+
     const subtotalPedido = obtenerSubtotal(DetallePedido);
-    const totalPedido = esDelivery ? subtotalPedido + 500 : subtotalPedido * 0.9;
 
     return (
         <div className="detalle-page-container d-flex align-items-center" style={{ backgroundImage: `url('/assets/img/fondoMisPedidos.jpg') `, minHeight: '100vh' }}>
@@ -68,17 +70,14 @@ const DetallesPedidoDelivery: React.FC = () => {
                         <div className="card">
                             <div className="card-header"><h1 className="display-5">Detalles del Pedido</h1></div>
                             <div className="card-body">
-                                <h5 className="card-title">Número de Pedido: {pedido.numeroPedido}</h5>
-                                <p className="card-text"><strong> Nombre y Apellido del Cliente: </strong>{pedido.Usuario.nombre} {pedido.Usuario.apellido}</p>
-                                <p className="card-text"><strong>Teléfono:</strong> {pedido.Usuario.telefono}</p>
-                                <p className="card-text"><strong> Dirección de Entrega:</strong> {pedido.Usuario.Domicilio.calle}, {pedido.Usuario.Domicilio.localidad}, {pedido.Usuario.Domicilio.numero}</p>
-                                <p className="card-text"><strong>Fecha:</strong> {new Date(pedido.fechaPedido).toLocaleDateString()}</p>
-                                <p className="card-text"><strong>Método de Pago:</strong> {pedido.esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
-                                {!pedido.esDelivery && (
-                                    <>
-                                        <p className="card-text">Método de Entrega: Delivery</p>
-                                        <p className="card-text"><strong>Costo Delivery:</strong> $500</p>
-                                    </>
+                                <h5 className="card-title">Número de Pedido: {numeroPedido}</h5>
+                                <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario.nombre} {Usuario.apellido}</p>
+                                <p className="card-text"><strong>Teléfono:</strong> {Usuario.telefono}</p>
+                                <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario.Domicilio.calle}, {Usuario.Domicilio.localidad}, {Usuario.Domicilio.numero}</p>
+                                <p className="card-text"><strong>Fecha:</strong> {new Date(fechaPedido).toLocaleDateString()}</p>
+                                <p className="card-text"><strong>Método de Pago:</strong> {esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
+                                {esDelivery && (
+                                    <p className="card-text"><strong>Método de Entrega:</strong> Delivery</p>
                                 )}
                                 <h5 className="card-title">Detalle de Ítems Pedidos</h5>
 
@@ -90,7 +89,10 @@ const DetallesPedidoDelivery: React.FC = () => {
 
                                 <p className="card-text"><strong>Subtotal:</strong> ${subtotalPedido}</p>
                                 {!esDelivery && <p className="card-text"><strong>Descuento (10%):</strong> ${subtotalPedido * 0.1}</p>}
-                                <h3 className="card-text"><strong> Total:</strong> ${pedido.totalPedido}</h3>
+                                {esDelivery && (
+                                    <p className="card-text"><strong>Costo Delivery:</strong> $500</p>
+                                )}
+                                <h3 className="card-text"><strong>Total:</strong> ${totalPedido}</h3>
                             </div>
                             <div className="card-footer">
                                 <button className="btn btn-primary" onClick={goBack}>
@@ -99,9 +101,9 @@ const DetallesPedidoDelivery: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                </div >
-            </div >
-        </div >
+                </div>
+            </div>
+        </div>
     );
 };
 

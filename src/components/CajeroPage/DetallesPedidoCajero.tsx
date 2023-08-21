@@ -80,14 +80,13 @@ const DetallesPedidoCajero: React.FC = () => {
         return <Spinner />;
     }
 
-    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
+    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido, totalPedido } = pedido;
 
     const goBack = () => {
         window.history.go(-1);
     };
 
     const subtotalPedido = obtenerSubtotal(DetallePedido);
-    const totalPedido = esDelivery ? subtotalPedido + 500 : subtotalPedido * 0.9;
     const tiempoEstimadoFinalizacion = calcularTiempoEstimadoFinalizacion(DetallePedido, esDelivery);
 
     return (

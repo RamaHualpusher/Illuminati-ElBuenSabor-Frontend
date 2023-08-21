@@ -1,51 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Col, Row } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import EditRubroIngredienteModal from './EditRubroIngredienteModal';
 import AddRubroIngredienteModal from './AddRubroIngredienteModal';
 import { Rubro } from '../../../../interface/Rubro';
 import { handleRequest } from '../../../FuncionRequest/FuncionRequest';
 import { Action, Column } from '../../../../interface/CamposTablaGenerica';
 import GenericTable from "../../../GenericTable/GenericTable";
-import Axios from 'axios';
 
 const RubroIngrediente: React.FC = () => {
+  // Estados del componente
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedRubroIngrediente, setSelectedRubroIngrediente] = useState<Rubro | null>(null);
-  const [rubrosComplete, setRubrosComplete] = useState<Rubro[]>([]);
   const API_URL = "/assets/data/rubrosIngredientesEjemplo.json";
 
+  // Acciones de la tabla
   const actions: Action = {
     create: true,
     update: true
   };
 
+  // Cargar los rubros al montar el componente
   useEffect(() => {
-    const buscarRubros = async () => {
+    const fetchRubros = async () => {
       try {
-        const response = await Axios.get(API_URL);
-        setRubros(response.data);
-        setRubrosComplete(response.data);
+        const response = await handleRequest("GET", API_URL);
+        setRubros(response);
       } catch (error) {
         console.log(error);
       }
     };
-    buscarRubros();
+    fetchRubros();
   }, []);
 
+  // Función para manejar la adición de un rubro
   const handleRubroAdd = async (rubro: Rubro) => {
     try {
-      const newRubroIngrediente = await handleRequest('POST', API_URL, rubro);
-      setRubros(newRubroIngrediente);
+      const newRubro = await handleRequest('POST', API_URL, rubro);
+      setRubros([...rubros, newRubro]);
       setAddModalShow(false);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Columnas de la tabla
   const columns: Column<Rubro>[] = [
-    // { title: 'ID', field: 'idRubro' },
     {
       title: 'Nombre', field: 'nombre',
       render: (rubro: Rubro) => <span>{rubro.nombre}</span>,
@@ -61,86 +62,65 @@ const RubroIngrediente: React.FC = () => {
     },
   ];
 
-  function updateJsonData(updatedRubros: Rubro[]) {
-    throw new Error('Function not implemented.');
-  }
-
+  // Función para manejar la edición de un rubro
   const handleRubroEdit = async (rubro: Rubro) => {
     try {
-      const response = await Axios.put(`${API_URL}/${rubro.idRubro}`, rubro); // Use Axios to make a PUT request
-      const updatedRubro: Rubro = response.data; // Access the response data using response.data
+      const updatedRubro = await handleRequest('PUT', `${API_URL}/${rubro.idRubro}`, rubro);
       const updatedRubros = rubros.map((r) =>
         r.idRubro === updatedRubro.idRubro ? updatedRubro : r
       );
       setRubros(updatedRubros);
-      console.log(updatedRubros);
-      updateJsonData(updatedRubros); // Actualizar el JSON con los rubros modificados
     } catch (error) {
       console.log(error);
     }
+    setEditModalShow(false);
   };
 
+  // Función para abrir el modal de edición
   const handleEditModalOpen = (item: Rubro) => {
     setSelectedRubroIngrediente(item);
     setEditModalShow(true);
   };
 
+  // Función para cerrar el modal de edición
   const handleEditModalClose = () => {
     setSelectedRubroIngrediente(null);
     setEditModalShow(false);
   };
 
+  // Función para abrir el modal de adición
   const handleAddModalOpen = () => {
     setAddModalShow(true);
   };
 
+  // Función para cerrar el modal de adición
   const handleAddModalClose = () => {
     setAddModalShow(false);
   };
 
-  const rubroRow = (id: number): Rubro | undefined => {
-    return rubrosComplete.find((rubro) => rubro.idRubro === id);
-  };
-
-  // const handleRubroDelete = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   const rubroId: number = +rowData[0];
-  //   fetch(`${API_URL}/${rubroId}`, {
-  //     method: 'DELETE',
-  //   })
-  //     .then(response => {
-  //       setIngredRubro(ingredRubro.filter(item => item.idRubro !== rubroId));
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
-  // }
-
   return (
-    <div>
-      <Container fluid>
-        <div>
-          <GenericTable
-            data={rubros}
-            columns={columns}
-            actions={actions}
-            onAdd={handleAddModalOpen}
-            onUpdate={handleEditModalOpen}
-          />
-        </div>
-        <EditRubroIngredienteModal
-          show={editModalShow}
-          handleClose={handleEditModalClose}
-          handleRubroEdit={handleRubroEdit}
-          selectedRubro={selectedRubroIngrediente}
+    <Container fluid>
+      <div>
+        <GenericTable
+          data={rubros}
+          columns={columns}
+          actions={actions}
+          onAdd={handleAddModalOpen}
+          onUpdate={handleEditModalOpen}
         />
-        <AddRubroIngredienteModal
-          show={addModalShow}
-          handleClose={handleAddModalClose}
-          handleRubroAdd={handleRubroAdd}
-        />
-      </Container>
-    </div>
+      </div>
+      <EditRubroIngredienteModal
+        show={editModalShow}
+        handleClose={handleEditModalClose}
+        handleRubroEdit={handleRubroEdit}
+        selectedRubro={selectedRubroIngrediente}
+      />
+      <AddRubroIngredienteModal
+        show={addModalShow}
+        handleClose={handleAddModalClose}
+        handleRubroAdd={handleRubroAdd}
+      />
+    </Container>
   );
 };
 

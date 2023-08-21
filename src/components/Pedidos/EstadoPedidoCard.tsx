@@ -6,21 +6,22 @@ interface EstadoPedidoProps {
 }
 
 const EstadoPedidoCard: React.FC<EstadoPedidoProps> = ({ estado }) => {
+    // Función para obtener el color de fondo basado en el estado del pedido
     const getBackgroundColor = () => {
         switch (estado) {
             case "Entregado":
             case "Listo":
             case "Pagado":
-                return "#03CA48";
+                return "#03CA48"; // Verde
             case "A confirmar":
-                return "#E07700";
+                return "#E07700"; // Naranja
             case "En cocina":
             case "En delivery":
-                return "yellow";
+                return "yellow"; // Amarillo
             case "Cancelado":
-                return "#FF3131"; 
+                return "#FF3131"; // Rojo
             default:
-                return "white";
+                return "white"; // Blanco por defecto
         }
     };
 

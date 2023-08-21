@@ -9,6 +9,7 @@ import AddEmpleadoModal from "./AddEmpleadoModal";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 
 const Empleados = () => {
+    //Estados del componente
     const [empleados, setEmpleados] = useState<Usuario[]>([]);
     const [empleadosComplete, setEmpleadosComplete] = useState<Usuario[]>([]);
     const [editModalShow, setEditModalShow] = useState(false);
@@ -16,6 +17,7 @@ const Empleados = () => {
     const [selectedUsuario, setSelectedUsuario] = useState<EditUsuarioFromAdmin | null>(null);
     const API_URL = "assets/data/empleadoTabla.json";
 
+    //Acciones que se pueden realizar
     const actions: Action = {
         create: true,
         update: true,
@@ -23,6 +25,7 @@ const Empleados = () => {
     };
 
     const columns: Column<Usuario>[] = [
+        // Definir columnas de la tabla
         { title: 'ID Usuario', field: 'idUsuario' },
         { title: 'Nombre', field: 'nombre' },
         { title: 'Apellido', field: 'apellido' },
@@ -71,6 +74,7 @@ const Empleados = () => {
             .replace(/[\u0300-\u036f]/g, "");
     };
 
+    // Cargar datos de empleados al montar el componente
     useEffect(() => {
         fetch(API_URL)
             .then((response) => response.json())
@@ -83,6 +87,7 @@ const Empleados = () => {
 
 
     const handleEmpleadoAdd = async (empleado: Usuario) => {
+        // Manejar la agregación de un empleado
         const newEmpleado = await handleRequest('POST', API_URL, empleado);
         if (newEmpleado) {
             setEmpleados([...empleados, newEmpleado]);
@@ -92,6 +97,7 @@ const Empleados = () => {
         }
     };
 
+    // Manejar la edición de un empleado
     const handleEmpleadoEdit = async (empleado: EditUsuarioFromAdmin) => {
         const updatedEmpleado = await handleRequest(
             'PUT',
@@ -106,6 +112,7 @@ const Empleados = () => {
         }
     };
 
+    // Manejar la eliminación de un empleado
     const handleEmpleadoDelete = (item: Usuario) => {
         const usuarioId: number = item.idUsuario;
 
@@ -117,16 +124,17 @@ const Empleados = () => {
         }
     };
 
-
+    // Abrir modal para agregar empleado
     const handleAddModalOpen = () => {
         setAddModalShow(true);
     };
 
+    // Cerrar modal para agregar empleado
     const handleAddModalClose = () => {
         setAddModalShow(false);
     };
 
-
+    // Obtener detalles de un usuario por su ID
     const usuarioRow = (id: number) => {
         let i: number = 0;
         let x: boolean = true;
@@ -142,12 +150,13 @@ const Empleados = () => {
         return usuarioRe;
     }
 
+    // Abrir modal para editar empleado
     const handleEditModalOpen = (item: Usuario) => {
         setSelectedUsuario(usuarioRow(item.idUsuario));
         setEditModalShow(true);
     };
 
-
+    // Cerrar modal para editar empleado
     const handleEditModalClose = () => {
         setEditModalShow(false);
         setSelectedUsuario(null);

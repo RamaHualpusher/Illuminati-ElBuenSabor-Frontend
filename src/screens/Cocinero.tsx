@@ -6,9 +6,12 @@ import PanelAdmin from "../components/AdminPage/PanelAdmin";
 const Cocinero = () => {
     return (
         <div>
-            <NavBar/>          
-            <PanelAdmin title={"Cocinero"}/>  
-            <CocineroPage/>
+            {/* Barra de navegación específica para el cocinero */}
+            <NavBar />
+            {/* Panel de administración con título "Cocinero" */}
+            <PanelAdmin title={"Cocinero"} />
+            {/* Contenido de la página del cocinero */}
+            <CocineroPage />
         </div>
     );
 };

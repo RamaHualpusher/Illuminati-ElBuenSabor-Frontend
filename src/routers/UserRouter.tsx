@@ -15,7 +15,10 @@ import MiPerfil from "../components/OpcionesCliente/MiPerfil/MiPerfil";
 const UserRouter = () => {
   return (
     <div>
+      {/* Barra de navegación */}
       <NavBar />
+
+      {/* Definición de rutas */}
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/carrito" element={<CartItem />} />
@@ -25,8 +28,12 @@ const UserRouter = () => {
         <Route path="/mis-pedidos" element={<MisPedidos />} />
         <Route path="/mis-pedido/:id" element={<DetallesPedidoUsuario />} />
         <Route path="/perfil" element={<MiPerfil />} />
+
+        {/* Ruta para página de error 404 */}
         <Route path="*" element={<Page404 />} />
       </Routes>
+
+      {/* Pie de página */}
       <Footer />
     </div>
   );

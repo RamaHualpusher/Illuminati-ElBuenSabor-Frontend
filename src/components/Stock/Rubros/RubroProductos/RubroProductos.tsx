@@ -1,19 +1,18 @@
 import React, { FC, useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import { handleRequest } from '../../../FuncionRequest/FuncionRequest';
+import { Container, Row } from 'react-bootstrap';
 import EditRubroProductoModal from './EditRubroProductoModal';
 import AddRubroProductoModal from './AddRubroProductoModal';
 import { Rubro } from '../../../../interface/Rubro';
 import { Action, Column } from '../../../../interface/CamposTablaGenerica';
 import GenericTable from '../../../GenericTable/GenericTable';
 import Axios from 'axios';
+import { handleRequest } from '../../../FuncionRequest/FuncionRequest';
 
 const RubroProductos: FC = () => {
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedRubroProducto, setSelectedRubroProducto] = useState<Rubro | null>(null);
-  const [rubrosComplete, setRubrosComplete] = useState<Rubro[]>([]);
   const API_URL = '/assets/data/rubrosProductosEjemplo.json';
 
   const actions: Action = {
@@ -24,9 +23,8 @@ const RubroProductos: FC = () => {
   useEffect(() => {
     const buscarRubros = async () => {
       try {
-        const response = await Axios.get(API_URL); // Use Axios to make a GET request
-        setRubros(response.data); // Access the response data using response.data
-        setRubrosComplete(response.data);  //para que se usa?
+        const response = await Axios.get(API_URL); // Hacer una solicitud GET con Axios
+        setRubros(response.data); // Actualizar el estado con los datos de respuesta
       } catch (error) {
         console.log(error);
       }
@@ -36,8 +34,8 @@ const RubroProductos: FC = () => {
 
   const handleRubroAdd = async (rubro: Rubro) => {
     try {
-      const newRubroProducto = await handleRequest('POST', API_URL, rubro); // Use Axios to make a POST request
-      setRubros(newRubroProducto); // Access the response data using response.data
+      const newRubroProducto = await handleRequest('POST', API_URL, rubro); // Hacer una solicitud POST con la función de manejo de solicitudes
+      setRubros(newRubroProducto); // Actualizar el estado con los datos de respuesta
       setAddModalShow(false);
     } catch (error) {
       console.log(error);
@@ -61,42 +59,28 @@ const RubroProductos: FC = () => {
     },
   ];
 
+  // Función no implementada, puedes eliminarla si no es necesaria
   function updateJsonData(updatedRubros: Rubro[]) {
     throw new Error('Function not implemented.');
   }
 
   const handleRubroEdit = async (rubro: Rubro) => {
     try {
-      const response = await Axios.put(`${API_URL}/${rubro.idRubro}`, rubro); // Use Axios to make a PUT request
-      const updatedRubro: Rubro = response.data; // Access the response data using response.data
+      const response = await Axios.put(`${API_URL}/${rubro.idRubro}`, rubro); // Hacer una solicitud PUT con Axios
+      const updatedRubro: Rubro = response.data; // Actualizar con los datos de respuesta
       const updatedRubros = rubros.map((r) =>
         r.idRubro === updatedRubro.idRubro ? updatedRubro : r
       );
       setRubros(updatedRubros);
       console.log(updatedRubros);
-      updateJsonData(updatedRubros); // Actualizar el JSON con los rubros modificados
+      updateJsonData(updatedRubros); // Actualizar el JSON con los rubros modificados (si es necesario)
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const handleRubroDelete = async (
-  //   rowData: string[],
-  //   e: React.MouseEvent<HTMLButtonElement>
-  // ) => {
-  //   e.preventDefault();
-  //   const rubroId: number = +rowData[0];
-  //   try {
-  //     await handleRequest('DELETE', `${API_URL}/${rubroId}`);
-  //     const updatedRubros = rubros.filter((r) => r.idRubro !== rubroId);
-  //     setRubros(updatedRubros);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const rubroRow = (id: number): Rubro | undefined => {
-    return rubrosComplete.find((rubro) => rubro.idRubro === id);
+    return rubros.find((rubro) => rubro.idRubro === id);
   };
 
   const handleEditModalOpen = (item: Rubro) => {
@@ -130,7 +114,6 @@ const RubroProductos: FC = () => {
             actions={actions}
             onAdd={handleAddModalOpen}
             onUpdate={handleEditModalOpen}
-          // onDelete={handleRubroDelete}
           />
         </div>
       </Row>

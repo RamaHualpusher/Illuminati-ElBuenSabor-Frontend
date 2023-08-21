@@ -8,12 +8,11 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
   handleClose,
   handleRubroAdd,
 }) => {
+  // Estados del componente
   const [nombre, setNombre] = useState('');
   const [estado, setEstado] = useState(true);
-  const [idRubroPadre, setIdRubroPadre] = useState(null);
-  const [filteredRubros, setFilteredRubros] = useState<Rubro[] | null>(null);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
 
+  // Función para manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -26,13 +25,14 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
     const newRubroProducto: Rubro = {
       idRubro: 0,
       nombre: trimmedNombre,
-      estado: false,
+      estado,
       idRubroPadre: undefined,
-    }
-    handleRubroAdd(newRubroProducto); // Se pasa el objeto rubroData directamente a handleRubroAdd
+    };
+    handleRubroAdd(newRubroProducto); // Pasar el objeto rubroData directamente a handleRubroAdd
     handleClose();
   };
 
+  // Función para cambiar el estado
   const handleStatusChange = (isActive: boolean) => {
     setEstado(isActive);
   };
@@ -59,9 +59,7 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
             <Form.Label>Estado</Form.Label>
             <Form.Select
               value={estado ? 'alta' : 'baja'}
-              onChange={(event) =>
-                setEstado(event.target.value === 'alta' ? true : false)
-              }
+              onChange={(event) => setEstado(event.target.value === 'alta')}
               required
             >
               <option value="alta">Alta</option>
