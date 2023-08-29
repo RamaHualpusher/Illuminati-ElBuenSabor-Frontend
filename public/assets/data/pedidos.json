@@ -28,7 +28,7 @@
     "DetallePedido": [
       {
         "idDetallePedido": 1,
-        "cantidad": 2,
+        "cantidad": 3,
         "Productos": [
           {
             "idProducto": 1,

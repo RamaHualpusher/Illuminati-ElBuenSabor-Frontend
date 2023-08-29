@@ -19,7 +19,7 @@ const Factura = () => {
       .then((data) => {
         setFacturas(data);
         const selectedPedido = data.find((pedido: Pedido) => pedido.numeroPedido.toString() === params.pedido); // Buscar el pedido correspondiente
-        setSelectedPedido(selectedPedido || null);
+        setSelectedPedido(selectedPedido || { numeroPedido: "", Usuario: { apellido: "", nombre: "" }, fechaPedido: "", totalPedido: "" });
       })
       .catch((error) => {
         console.log(error);

@@ -19,7 +19,7 @@ const getOrDefault = (value: any, defaultValue: any) => {
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   closeModal,
 }) => {
-  const [pedido, setPedido] = useState<Pedido | null>(null);
+  const [pedido, setPedido] = useState<Pedido>();
   const location = useLocation();
   const pedidoParam = location.pathname.split("/factura/")[1];
   const parsedPedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : "";
@@ -44,7 +44,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   return (
     <>
       <AdminBar />
-      <div style={{marginTop: "50px"}}></div>
+      <div style={{ marginTop: "50px" }}></div>
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div
@@ -70,7 +70,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 </div>
                 <div className="details-container">
                   <h2>DETALLES DEL PEDIDO</h2>
-                  <p>Número de Pedido: {getOrDefault(pedido?.numeroPedido, "")}</p>
+                  <p>Número de Pedido: {getOrDefault(pedido?.numeroPedido, 0)}</p>
                   <p>Fecha: {getOrDefault(pedido?.fechaPedido?.toLocaleString(), "")}</p>
                   <p>
                     Forma de Pago: {pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}
@@ -88,7 +88,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     <tbody>
                       {pedido?.DetallePedido?.map((detalle) => (
                         <tr key={detalle?.idDetallePedido}>
-                          <td>{getOrDefault(detalle?.cantidad, "")}</td>
+                          <td>{getOrDefault(detalle?.cantidad, 0)}</td>
                           <td>
                             <ul>
                               {Array.isArray(detalle?.Productos) && detalle.Productos.map((producto) => (
@@ -102,7 +102,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                             <ul>
                               {Array.isArray(detalle?.Productos) && detalle?.Productos.map((producto) => (
                                 <li key={producto?.idProducto}>
-                                  {producto?.precio}
+                                  {getOrDefault(producto?.precio,0)}
                                 </li>
                               ))}
                             </ul>
@@ -122,18 +122,18 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 <div className="payment-container">
                   <div className="left-section" style={{ textAlign: "left" }}>
                     <p>
-                      Tipo de Pago: {getOrDefault(pedido?.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
+                      Tipo de Pago: {(pedido?.esEfectivo ? "Efectivo" : "Mercado Pago")}
                       <br />
                       Descuento:
                       <br />
-                      Envío: {getOrDefault(pedido?.esDelivery ? "Domicilio" : "Retiro local", "")}
+                      Envío: {pedido?.esDelivery ? "Domicilio" : "Retiro local"}
                     </p>
                     <p>Total a pagar: ${getOrDefault(pedido?.totalPedido, 0)}</p>
                   </div>
                   <div className="right-section">
                     <h2>Envío</h2>
                     <p>
-                      Dirección: {getOrDefault(pedido?.Usuario?.Domicilio?.calle, "")} {getOrDefault(pedido?.Usuario?.Domicilio?.numero, "")},
+                      Dirección: {getOrDefault(pedido?.Usuario?.Domicilio?.calle, "")} {getOrDefault(pedido?.Usuario?.Domicilio?.numero, 0)},
                       <br />
                       {getOrDefault(pedido?.Usuario?.Domicilio?.localidad, "")}
                     </p>
@@ -143,28 +143,34 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                   className="thankyou-container text-center"
                 >
                   <p>
-                    Muchas gracias {pedido?.Usuario?.nombre} {pedido?.Usuario?.apellido} por comprar en
+                    Muchas gracias {getOrDefault(pedido?.Usuario?.nombre,"")} {getOrDefault(pedido?.Usuario?.apellido,"")} por comprar en
                     <br />
                     El Buen Sabor
                   </p>
                 </div>
                 <div className="pdf-container">
                   <div className="pdf-container">
-                    <PDFDownloadLink
-                      document={<FacturaPDF pedido={pedido} />}
-                      fileName="factura.pdf"
-                    >                      
-                      {({ blob, url, loading, error }) =>{
-                        console.log("Loading:", loading);
-                        console.log("Error:", error);
-                        console.log("pedido:", pedido);
-                        return loading ? (
-                          "Cargando..."
-                        ) : (
-                          <Button variant="primary">Descargar PDF</Button>
-                        )
-                      }}
-                    </PDFDownloadLink>
+                    {pedido && (
+                      console.log("Pedido antes de generar :", pedido),
+                      <PDFDownloadLink
+                        document={<FacturaPDF pedido={pedido} />}
+                        fileName="factura.pdf"
+                      >
+                        {({ blob, url, loading, error }) => {
+                          // if (error) {
+                          //   return <div>Error al generar el PDF</div>;
+                          // }
+                          console.log("Loading:", loading);
+                          console.log("Error Generar factura modal:", error);
+                          console.log("pedido aca error:", pedido);
+                          return loading ? (
+                            "Cargando..."
+                          ) : (
+                            <Button variant="primary">Descargar PDF</Button>
+                          );
+                        }}
+                      </PDFDownloadLink>
+                    )}
                     <Button variant="secondary" onClick={openCreditoModal}>
                       Nota de Crédito
                     </Button>
