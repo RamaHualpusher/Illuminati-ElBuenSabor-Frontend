@@ -7,6 +7,10 @@ interface FacturaPDFProps {
 }
 
 const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
+
+  console.log("DetallePedido en Factura PDF:", pedido?.DetallePedido); 
+  console.log("Pedido en Factura PDF:", pedido); 
+
   if (!pedido) {
     return <div>Error: Pedido no encontrado</div>; // Agrega una verificación si pedido es null o undefined
   }
