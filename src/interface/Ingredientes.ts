@@ -8,8 +8,8 @@ export interface Ingredientes {
   stockMinimo: number;
   stockActual: number;
   precioCosto: number;
-  Rubro: Rubro;
   unidadMedida: string;
+  Rubro: Rubro;
   ProductoIngrediente: ProductoIngrediente[];
 }
 

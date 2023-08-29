@@ -4,11 +4,11 @@ import { DetallePedido } from "./DetallePedido";
 export interface Pedido {
   idPedido: number;
   numeroPedido: number;
-  fechaPedido: Date;
   horaEstimadaFin: Date;
   esDelivery: boolean;
-  estadoPedido: string;
   esEfectivo: boolean;
+  estadoPedido: string;
+  fechaPedido: Date;
   Usuario: Usuario;
   DetallePedido: DetallePedido[];
   totalPedido: number; //(esto no va en al base de datos ya que es persistente)
