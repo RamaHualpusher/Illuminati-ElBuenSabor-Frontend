@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { CartItem } from "./CartProvider";
 import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
 import { Domicilio } from "../../interface/Domicilio";
+import { CartItem } from "./CartProvider";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -16,6 +16,11 @@ interface ConfirmacionPedidoProps {
   onContinue: () => void;
 }
 
+/**
+ * Componente de confirmación de pedido que muestra los detalles del carrito y opciones de envío y pago.
+ * 
+ * @param {ConfirmacionPedidoProps} props - Propiedades del componente.
+ */
 const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   cartItems,
   metodoPago,
@@ -33,6 +38,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const [subTotal, setSubTotal] = useState(0);
 
   useEffect(() => {
+    // Obtener el domicilio del cliente desde una fuente de datos
     const fetchDomicilio = async () => {
       try {
         const response = await fetch("/assets/data/clienteTabla.json");
@@ -48,6 +54,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }, []);
 
   useEffect(() => {
+    // Calcular el subtotal del pedido en función de los elementos del carrito
     const totalProducto = cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
       0

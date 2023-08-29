@@ -24,7 +24,6 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [selectedRol, setSelectedRol] = useState<Rol | null>(null);
   const [selectedDomicilio, setSelectedDomicilio] = useState<Domicilio | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
-  const [domicilios, setDomicilios] = useState<Domicilio>();
   const [claveCoincide, setClaveCoincide] = useState(true);
   const [claveValida, setClaveValida] = useState(true);
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -32,6 +31,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
   const [emailEnUso, setEmailEnUso] = useState(false);
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
+  // Cargar roles al montar el componente
   useEffect(() => {
     fetch("/assets/data/idRolEjemplo.json")
       .then((response) => response.json())
@@ -43,6 +43,7 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       });
   }, []);
 
+  // Manejar el envío del formulario
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -99,7 +100,12 @@ const AddEmpleadoModal: React.FC<AddEmpleadoModalProps> = ({
       telefono,
       estado,
       Rol: selectedRol || { idRol: 0, nombreRol: "" },
-      Domicilio: selectedDomicilio || { idDomicilio: 0, calle: "", numero: 0, localidad: "" },
+      Domicilio: {
+        idDomicilio: 0,
+        calle,
+        numero: parseInt(numero),
+        localidad,
+      },
     };
     handleEmpleadoAdd(newEmpleado);
     handleClose();

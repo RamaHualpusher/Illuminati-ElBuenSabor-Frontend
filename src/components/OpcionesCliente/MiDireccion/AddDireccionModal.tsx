@@ -8,10 +8,12 @@ const AddDireccionModal: React.FC<AddDireccionModalProps> = ({
     handleClose,
     handleDireccionAdd,
 }) => {
+    // Estados para controlar los campos del formulario
     const [calle, setCalle] = useState('');
-    const [numero, setNumero] = useState(0);
+    const [numero, setNumero] = useState<number>(0);
     const [localidad, setLocalidad] = useState('');
 
+    // Función para manejar el envío del formulario
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newDireccion: Domicilio = {
@@ -20,8 +22,9 @@ const AddDireccionModal: React.FC<AddDireccionModalProps> = ({
             numero,
             localidad,
         };
+        // Llama a la función proporcionada para agregar una dirección
         handleDireccionAdd(newDireccion);
-        handleClose();
+        handleClose(); // Cierra el modal
     };
 
     return (

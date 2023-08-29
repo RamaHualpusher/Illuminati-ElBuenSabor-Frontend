@@ -4,7 +4,6 @@ import axios from "axios";
 import { Producto } from "../../../interface/Producto";
 import { Rubro } from "../../../interface/Rubro";
 import { AddProductoModalProps } from "../../../interface/Producto";
-import Ingrediente from "../Ingrediente/Ingrediente";
 import { Ingredientes } from "../../../interface/Ingredientes";
 import { ProductoIngrediente } from "../../../interface/ProductoIngrediente";
 
@@ -13,15 +12,25 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   handleClose,
   handleProductoAdd,
 }) => {
+  // Estados del componente
+  const [nombre, setNombre] = useState("");
+  const [rubroId, setRubroId] = useState<number | null>(null);
+  const [tiempo, setTiempo] = useState(0);
+  const [precio, setPrecio] = useState(0);
+  const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [estado, setEstado] = useState(true);
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [ingredientes, setIngredientes] = useState<ProductoIngrediente[] | null>(null);
+  const [cantidad, setCantidad] = useState(0);
+  const [ingredientesA, setIngredientesA] = useState<Ingredientes[]>([]);
+  const [cantIngrediente, setCantIngrediente] = useState<number>(0);
+  const [ingredienteA, setIngredienteA] = useState<Ingredientes | null>(null);
 
-
-
-
+  // Definición de objetos por defecto
   const rubrod: Rubro = {
     idRubro: 0,
     nombre: "",
   };
-
 
   const defectoIngrediente: Ingredientes = {
     estado: false,
@@ -59,21 +68,10 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     Producto: defectoProducto
   }
 
-  const [selectedProducto,setSelectedProducto]= useState<Producto>(defectoProducto);
-  const [nombre, setNombre] = useState("");
-  const [rubroId, setRubroId] = useState<number | null>(null);
-  const [tiempo, setTiempo] = useState(0);
-  const [precio, setPrecio] = useState(0);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
-  const [estado, setEstado] = useState(true); // Estado por defecto: Alta
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [ingredientes, setIngredientes] = useState<ProductoIngrediente[] | null>(null);
   const [ingrediente, setIngrediente] = useState<ProductoIngrediente>(defectoProductoIngrediente);
-  const [cantidad, setCantidad] = useState(0);
-  const [ingredientesA,setIngredientesA]=useState<Ingredientes[]>([]);
-  const [cantIngrediente,setCantIngrediente]=useState<number>(0);
-  const [ingredienteA,setIngredienteA]=useState<Ingredientes| null>(null);
+  const [selectedProducto, setSelectedProducto] = useState<Producto>(defectoProducto);
 
+  // Cargar rubros y productos al montar el componente
   useEffect(() => {
     axios
       .get<Rubro[]>("/assets/data/rubrosProductosEjemplo.json")
@@ -97,6 +95,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       });
   }, []);
 
+  // Cargar ingredientes al montar el componente
   useEffect(() => {
     fetch("/assets/data/ingredientesEjemplo.json")
       .then((response) => response.json())
@@ -108,13 +107,8 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       });
   }, []);
 
-
-
-
-
-
+  // Función para seleccionar un ingrediente existente
   const selectIngrediente = (nombre: string) => {
-
     if (ingrediente !== defectoProductoIngrediente) {
       selectedProducto?.ProductoIngrediente.map((ingr) => {
         if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
@@ -142,6 +136,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     }
   }
 
+  // Manejar cambio en la cantidad de un ingrediente
   const handleCantidad = (cant: number) => {
     setCantidad(cant);
     if (ingrediente !== defectoProductoIngrediente) {
@@ -156,6 +151,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     }
   }
 
+  // Eliminar un ingrediente seleccionado
   const handleDeletIngrediente = () => {
     if (selectedProducto) {
       console.log("ingreso a funcion")
@@ -172,64 +168,61 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     }
   }
 
-  const selectIngredienteA=(nombre:string)=>{
-
-    
+  // Función para seleccionar un ingrediente a agregar
+  const selectIngredienteA = (nombre: string) => {
     console.log("ingreso a funcion")
-    if(nombre!=="none"){
-    ingredientesA?.map((ingr)=>{
-      if(nombre===ingr.nombre){
-        console.log("ingrediente encontrado"+ingr.nombre);
-        setIngredienteA(ingr);
-        return null;
-      }
-    })
-    return null;}
-    else{
+    if (nombre !== "none") {
+      ingredientesA?.map((ingr) => {
+        if (nombre === ingr.nombre) {
+          console.log("ingrediente encontrado" + ingr.nombre);
+          setIngredienteA(ingr);
+          return null;
+        }
+      })
+      return null;
+    }
+    else {
       setIngredienteA(null)
       return null;
     }
   }
 
-
-  const agregarIngrediente=()=>{
-    if(ingredienteA!==null && cantIngrediente>0){
-      let contar:number=0;
-      ingredientes?.map((ingre)=>{
-        contar=ingre.idProductoIngrediente;
+  // Agregar un ingrediente a la lista de ingredientes del producto
+  const agregarIngrediente = () => {
+    if (ingredienteA !== null && cantIngrediente > 0) {
+      let contar: number = 0;
+      ingredientes?.map((ingre) => {
+        contar = ingre.idProductoIngrediente;
       })
-      let encontrado=false
-      ingredientes?.map((ingre)=>{
-        if(ingre.Ingredientes.nombre===ingredienteA.nombre){
-          console.log("coincidencia encontrada "+ingre.Ingredientes.nombre+" cantida previa"+(ingre.cantidad))
-          ingre.cantidad+=cantIngrediente;
+      let encontrado = false
+      ingredientes?.map((ingre) => {
+        if (ingre.Ingredientes.nombre === ingredienteA.nombre) {
+          console.log("coincidencia encontrada " + ingre.Ingredientes.nombre + " cantida previa" + (ingre.cantidad))
+          ingre.cantidad += cantIngrediente;
           console.log(ingre.cantidad);
           setCantIngrediente(0);
-          encontrado=true;
+          encontrado = true;
         }
       })
 
-      if(encontrado===false)
-      {const ingre:Ingredientes|null=ingredienteA;
-      const ingres:ProductoIngrediente[]|null=ingredientes;
-      const agre:ProductoIngrediente={
-        cantidad:cantIngrediente,
-        idProductoIngrediente:contar+1,
-        Ingredientes:ingre||defectoIngrediente,
-        Producto:defectoProducto
-      }
-      ingres?.push(agre);
-      setIngredientes(ingres);
-      console.log("agregado ingrediente")
-      setCantIngrediente(0);
+      if (encontrado === false) {
+        const ingre: Ingredientes | null = ingredienteA;
+        const ingres: ProductoIngrediente[] | null = ingredientes;
+        const agre: ProductoIngrediente = {
+          cantidad: cantIngrediente,
+          idProductoIngrediente: contar + 1,
+          Ingredientes: ingre || defectoIngrediente,
+          Producto: defectoProducto
+        }
+        ingres?.push(agre);
+        setIngredientes(ingres);
+        console.log("agregado ingrediente")
+        setCantIngrediente(0);
       }
     }
   }
 
-
-
-
-
+  // Manejar el envío del formulario de agregar producto
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const newProducto: Producto = {
@@ -255,6 +248,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
 
   return (
     <Modal show={show} onHide={handleClose}>
+      {/* Estructura del modal */}
       <Modal.Header closeButton>
         <Modal.Title>Agregar Producto</Modal.Title>
       </Modal.Header>

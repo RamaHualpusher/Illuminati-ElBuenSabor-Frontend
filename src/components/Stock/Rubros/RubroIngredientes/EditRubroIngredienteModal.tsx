@@ -3,17 +3,18 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { Rubro } from '../../../../interface/Rubro';
 import { EditRubroIngredientesModalProps } from '../../../../interface/Ingredientes';
 
-
 const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
   show,
   handleClose,
   handleRubroEdit,
   selectedRubro,
 }) => {
+  // Estados del componente
   const [nombre, setNombre] = useState('');
   const [estado, setEstado] = useState(false);
   const [idRubroPadre, setIdRubroPadre] = useState<Rubro | undefined>(undefined);
 
+  // Cargar los valores del rubro seleccionado al montar el componente
   useEffect(() => {
     if (selectedRubro) {
       setNombre(selectedRubro.nombre);
@@ -22,6 +23,7 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
     }
   }, [selectedRubro]);
 
+  // Manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -34,7 +36,6 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
     if (selectedRubro) {
       const updatedRubro: Rubro = {
         ...selectedRubro,
-        idRubro: selectedRubro.idRubro || 0,
         nombre,
         estado,
         idRubroPadre,
@@ -44,6 +45,7 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
     handleClose();
   };
 
+  // Cambiar el estado del rubro
   const handleStatusChange = (isActive: boolean) => {
     setEstado(isActive);
   };
@@ -70,7 +72,7 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
             <Form.Select
               value={estado ? 'alta' : 'baja'}
               onChange={(event) =>
-                setEstado(event.target.value === 'alta' ? true : false)
+                setEstado(event.target.value === 'alta')
               }
               required
             >

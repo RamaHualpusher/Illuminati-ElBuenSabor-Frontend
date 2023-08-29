@@ -9,33 +9,41 @@ import { Producto } from "../../interface/Producto";
 import { SearchContext } from '../Buscador/SearchContext';
 import { Link } from 'react-router-dom';
 
-const Navbar: FC = () => {
-  const { isAuthenticated, user } = useAuth0();
-  const [navbarOpen, setNavbarOpen] = useState(false);
-  const { cartItems, removeFromCart } = useContext(CartContext);
-  const [cartOpen, setCartOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [produc, setProduc] = useState<Producto[]>([]);
-  const [producComplete, setProducComplete] = useState<Producto[]>([]);
-  const { setSearchParam } = useContext(SearchContext);
-  const cartVacio = cartItems.length === 0;
+/**
+ * Barra de navegación con opciones de autenticación, carrito y búsqueda.
+ */
 
+const Navbar: FC = () => {
+  const { isAuthenticated, user } = useAuth0(); // Obtener el estado de autenticación de Auth0
+  const [navbarOpen, setNavbarOpen] = useState(false); // Estado para controlar la apertura del menú
+  const { cartItems, removeFromCart } = useContext(CartContext); // Obtener elementos del carrito y función para eliminar
+  const [cartOpen, setCartOpen] = useState(false); // Estado para controlar la apertura del carrito
+  const [searchOpen, setSearchOpen] = useState(false); // Estado para controlar la apertura de la búsqueda
+  const [produc, setProduc] = useState<Producto[]>([]); // Estado para almacenar productos
+  const [producComplete, setProducComplete] = useState<Producto[]>([]); // Estado para almacenar productos completos
+  const { setSearchParam } = useContext(SearchContext); // Obtener función para establecer parámetros de búsqueda
+  const cartVacio = cartItems.length === 0; // Verificar si el carrito está vacío
+
+  //Esta función cambia el estado de navbarOpen entre true y false
   const toggleNavbar = () => {
     setNavbarOpen(!navbarOpen);
   };
 
+  //Esta función toma un nombre completo como argumento y devuelve el primer nombre de la persona
   const getFirstName = (fullName: string) => {
     return fullName.split(' ')[0];
   };
-
+  //Esta función controla si esta abierto el carrito cuando se hace clic en el ícono de carrito.
   const toggleCart = () => {
     setCartOpen(!cartOpen);
   };
 
+  //Esta función controla si el campo de búsqueda está abierto o cerrado cuando se hace clic en el ícono de búsqueda.
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
   };
 
+  //Hace la solicitud al BackEnd para traer datos del Producto
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,6 +58,7 @@ const Navbar: FC = () => {
     fetchData();
   }, []);
 
+  //Esta función se utiliza para actualizar el parámetro de búsqueda en el contexto de búsqueda. 
   const handleSearch = (searchParam: string) => {
     setSearchParam(searchParam);
   };

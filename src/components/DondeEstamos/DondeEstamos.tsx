@@ -10,7 +10,10 @@ const DondeEstamos = () => {
                 backgroundSize: "cover",
             }}
         >
+            {/* Encabezado */}
             <h1 className="display-4 mt-5 text-white">Donde Estamos</h1>
+
+            {/* Mapa de ubicación */}
             <div className="w-100" style={{ maxWidth: "95%", height: "500px" }}>
                 <iframe
                     title="Mapa de ubicación"

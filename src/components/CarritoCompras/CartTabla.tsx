@@ -7,6 +7,11 @@ interface CartTablaProps {
     eliminarDetallePedido: (id: number) => void;
 }
 
+/**
+ * Componente que muestra una tabla con los elementos del carrito de compras.
+ * 
+ * @param {CartTablaProps} props - Propiedades del componente.
+ */
 const CartTabla: React.FC<CartTablaProps> = ({ cartItems, modificarCantidad, eliminarDetallePedido }) => {
     return (
         <div className="d-flex justify-content-center align-items-center mb-4">

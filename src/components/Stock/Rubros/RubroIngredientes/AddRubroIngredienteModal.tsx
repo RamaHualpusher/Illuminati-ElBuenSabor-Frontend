@@ -8,12 +8,13 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
   handleClose,
   handleRubroAdd,
 }) => {
+  // Estados del componente
   const [nombre, setNombre] = useState('');
-  const [estado, setEstado] = useState(false);
-  const [idRubroPadre, setIdRubroPadre] = useState(null);
-  const [filteredRubros, setFilteredRubros] = useState<Rubro[] | null>(null);
+  const [estado, setEstado] = useState(true);
   const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [filteredRubros, setFilteredRubros] = useState<Rubro[] | null>(null);
 
+  // Cargar los rubros al montar el componente
   useEffect(() => {
     fetch('/assets/data/rubrosIngredientesEjemplo.json')
       .then(response => response.json())
@@ -25,6 +26,7 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
       });
   }, []);
 
+  // Manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -37,17 +39,20 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
     const newRubroIngrediente: Rubro = {
       idRubro: 0,
       nombre: trimmedNombre,
-      estado: false,
+      estado: estado,
       idRubroPadre: undefined,
-    }
-    handleRubroAdd(newRubroIngrediente); // Se pasa el objeto rubroData directamente a handleRubroAdd
+    };
+
+    handleRubroAdd(newRubroIngrediente);  // Se pasa el objeto rubroData directamente a handleRubroAdd
     handleClose();
   };
 
+  // Cambiar el estado del rubro
   const handleStatusChange = (isActive: boolean) => {
     setEstado(isActive);
   };
 
+  // Filtrar rubros según el término de búsqueda
   const handleSearch = (searchTerm: string) => {
     // Verificar si la lista de rubros existe antes de llamar a filter
     const filteredRubros = rubros?.filter((rubro) =>
@@ -77,9 +82,7 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
             <Form.Label>Estado</Form.Label>
             <Form.Select
               value={estado ? 'alta' : 'baja'}
-              onChange={(event) =>
-                setEstado(event.target.value === 'alta' ? true : false)
-              }
+              onChange={(event) => setEstado(event.target.value === 'alta')}
               required
             >
               <option value="alta">Alta</option>

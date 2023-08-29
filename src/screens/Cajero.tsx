@@ -6,9 +6,12 @@ import CajeroPage from "../components/CajeroPage/CajeroPage";
 const Cajero = () => {
     return (
         <div>
-            <NavBar/>            
-            <PanelAdmin title={"Cajero"}/>
-            <CajeroPage/>
+            {/* Barra de navegación específica para el cajero */}
+            <NavBar />
+            {/* Panel de administración con título "Cajero" */}
+            <PanelAdmin title={"Cajero"} />
+            {/* Contenido de la página del cajero */}
+            <CajeroPage />
         </div>
     );
 };

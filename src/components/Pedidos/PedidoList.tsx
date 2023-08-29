@@ -11,6 +11,7 @@ const PedidoList: React.FC<PedidoListProps> = ({ pedidos, cambiarEstadoPedido })
     return (
         <div className="card-container container-sm">
             {pedidos.map((pedido) => (
+                // Renderiza un componente PedidoCardAdmin para cada pedido en la lista
                 <PedidoCardAdmin key={pedido.idPedido} pedido={pedido} cambiarEstadoPedido={cambiarEstadoPedido} />
             ))}
         </div>

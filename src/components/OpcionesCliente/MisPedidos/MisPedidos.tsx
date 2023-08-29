@@ -4,8 +4,10 @@ import Pasados from './Pasados';
 import Pendientes from './Pendientes';
 
 const MisPedidos: FC = () => {
+    // Estado para controlar la opción seleccionada (pendientes o pasados)
     const [selectedOption, setSelectedOption] = useState<"pedidosPendientes" | "pedidosPasados">("pedidosPendientes");
 
+    // Función para cambiar la opción seleccionada
     const handleOptionChange = (option: "pedidosPendientes" | "pedidosPasados") => {
         setSelectedOption(option);
     };
@@ -15,6 +17,7 @@ const MisPedidos: FC = () => {
             <Container style={{ marginTop: '90px' }}>
                 <h1 className="display-3">Mis Pedidos</h1>
 
+                {/* Botones para cambiar entre pedidos pendientes y pasados */}
                 <div className="d-grid gap-2 d-md-block text-center mt-3">
                     <Row>
                         <Col xs={12} md={6} lg={5} className="mx-auto mb-2">
@@ -36,11 +39,11 @@ const MisPedidos: FC = () => {
                     </Row>
                 </div>
 
+                {/* Mostrar los componentes de pedidos según la opción seleccionada */}
                 <div className="mt-4">
                     {selectedOption === 'pedidosPasados' && <Pasados />}
                     {selectedOption === 'pedidosPendientes' && <Pendientes />}
                 </div>
-
             </Container>
         </div>
     );

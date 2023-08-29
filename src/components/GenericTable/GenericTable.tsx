@@ -11,7 +11,7 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
     let isMounted = true; // Variable para controlar si el componente está montado
 
     const handleSearch = async () => {
-      if (customSearch) { // Si se proporciona una función de búsqueda personalizada
+      if (customSearch) {
         setIsLoading(true); // Habilitar la carga
         const filteredData = await customSearch(searchText); // Realizar la búsqueda personalizada
         if (isMounted) {
@@ -20,7 +20,7 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
         }
       } else {
         setFilteredData(
-          data.filter((item) => defaultSearch(item, searchText)) // Filtrar los datos en función del texto de búsqueda
+          data.filter((item) => defaultSearch(item, searchText))
         );
       }
     };
@@ -54,10 +54,10 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
     });
 
   return (
-    <Container fluid> {/* Cambiar a fluid para hacer que el contenedor sea responsivo */}
+    <Container fluid>
       <Row className="align-items-center">
         <Col sm={1}>
-          {actions.create && <Button variant="primary" onClick={onAdd}><i className="bi bi-plus-square"></i></Button>} {/* Botón para agregar un nuevo elemento */}
+          {actions.create && <Button variant="primary" onClick={onAdd}><i className="bi bi-plus-square"></i></Button>}
         </Col>
         <Col sm={10}>
           <form onSubmit={handleSearchSubmit} className="d-flex">
@@ -68,17 +68,17 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
               onChange={handleSearchChange}
               value={searchText}
             />
-            <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2"><i className="bi bi-search"></i></Button> {/* Botón de búsqueda */}
+            <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2"><i className="bi bi-search"></i></Button>
           </form>
         </Col>
       </Row>
-      <Table responsive> {/* Hacer la tabla responsiva */}
+      <Table responsive>
         <thead>
           <tr>
             {columns.map((column, index) => (
-              <th key={index} style={{ width: `${column.width ? column.width * 100 / 12 : ""}%` }}>{column.title}</th> // Encabezado de la tabla
+              <th key={index} style={{ width: `${column.width ? column.width * 100 / 12 : ""}%` }}>{column.title}</th>
             ))}
-            {(actions.update || actions.delete || actions.view) && <th>Acciones</th>} {/* Encabezado de las acciones */}
+            {(actions.update || actions.delete || actions.view) && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>
@@ -86,13 +86,13 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
             <tr key={index}>
               {columns.map((column, key) => (
                 <td key={key}>
-                  {column.render ? column.render(item) : String(item[column.field])} {/* Renderizado de los datos de la tabla */}
+                  {column.render ? column.render(item) : String(item[column.field])}
                 </td>
               ))}
               <td>
-                {actions.update && <Button variant="primary" className='mx-2' onClick={() => onUpdate!(item)}><i className="bi bi-pencil-square"></i></Button>} {/* Botón de actualización */}
-                {actions.delete && <Button variant="danger" className='mx-2' onClick={() => onDelete!(item)}><i className="bi bi-trash"></i></Button>} {/* Botón de eliminación */}
-                {actions.view && <Button variant="info" className='mx-2' onClick={() => onView!(item)}><i className="bi bi-eye"></i></Button>} {/* Botón de visualización */}
+                {actions.update && <Button variant="primary" className='mx-2' onClick={() => onUpdate!(item)}><i className="bi bi-pencil-square"></i></Button>}
+                {actions.delete && <Button variant="danger" className='mx-2' onClick={() => onDelete!(item)}><i className="bi bi-trash"></i></Button>}
+                {actions.view && <Button variant="info" className='mx-2' onClick={() => onView!(item)}><i className="bi bi-eye"></i></Button>}
               </td>
             </tr>
           ))}

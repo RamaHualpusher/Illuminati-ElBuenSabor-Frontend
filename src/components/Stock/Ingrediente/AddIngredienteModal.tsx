@@ -3,59 +3,54 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { Ingredientes } from '../../../interface/Ingredientes';
 import { Rubro } from '../../../interface/Rubro';
 import { AddIngredienteModalProps } from '../../../interface/Ingredientes';
+import axios from 'axios';
 
 const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
   show,
   handleClose,
   handleIngredienteAdd,
 }) => {
+  // Estados para los campos del formulario
   const [nombre, setNombre] = useState('');
   const [rubroId, setRubroId] = useState<number | null>(null);
   const [minStock, setMinStock] = useState(0);
   const [stockActual, setStockActual] = useState(0);
   const [precioCosto, setPrecioCosto] = useState(0);
   const [um, setUM] = useState('');
-  const [estado, setEstado] = useState(true); // Estado por defecto: Alta
+  const [estado, setEstado] = useState(true);
   const [rubros, setRubros] = useState<Rubro[]>([]);
-
-
   const unidades = ["Kg", "g", "Mg", "l", "Ml"];
 
+  // Cargar los rubros al cargar el componente
   useEffect(() => {
-    fetch('/assets/data/rubrosIngredientesEjemplo.json')
-      .then(response => response.json())
-      .then(data => {
-        setRubros(data);
-      })
-      .catch(error => {
+    const fetchRubros = async () => {
+      try {
+        const response = await axios.get<Rubro[]>('/assets/data/rubrosIngredientesEjemplo.json');
+        setRubros(response.data);
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+    fetchRubros();
   }, []);
 
+  // Manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (
-      !nombre ||
-      !rubroId ||
-      isNaN(rubroId) ||
-      !minStock ||
-      !stockActual ||
-      !precioCosto ||
-      !um
-    ) {
-      // Verificar que todos los campos requeridos estén completos
-      console.log(nombre, rubroId, minStock, stockActual, precioCosto);
+    // Verificar que todos los campos requeridos estén completos
+    if (!nombre || !rubroId || isNaN(rubroId) || !minStock || !stockActual || !precioCosto || !um) {
+      console.log('Faltan campos requeridos');
       return;
     }
 
+    // Encontrar el rubro seleccionado
     const selectedRubro = rubros.find((rubro) => rubro.idRubro === rubroId);
     if (!selectedRubro) {
       console.log('Rubro inválido');
       return;
     }
 
-
-
+    // Crear un nuevo objeto Ingredientes con los datos del formulario
     const newIngrediente: Ingredientes = {
       idIngredientes: 0,
       nombre,
@@ -67,6 +62,8 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
       unidadMedida: um,
       ProductoIngrediente: [],
     };
+
+    // Llamar a la función para agregar el ingrediente y cerrar el modal
     handleIngredienteAdd(newIngrediente);
     handleClose();
   };
@@ -78,6 +75,7 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
+          {/* Formulario para ingresar datos del ingrediente */}
           <Form.Group className="mb-3" controlId="formNombre">
             <Form.Label>Nombre</Form.Label>
             <Form.Control
@@ -162,6 +160,7 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
+          {/* Botones para cancelar y agregar */}
           <Button variant="secondary" onClick={handleClose}>
             Cancelar
           </Button>

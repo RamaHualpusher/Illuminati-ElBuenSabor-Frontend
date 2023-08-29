@@ -1,3 +1,4 @@
+import React from "react";
 import { Domicilio } from "../../interface/Domicilio";
 
 interface CartTarjetaProps {
@@ -11,6 +12,11 @@ interface CartTarjetaProps {
     subTotal: number;
 }
 
+/**
+ * Componente que muestra los detalles del pedido, incluyendo opciones de envío y método de pago.
+ * 
+ * @param {CartTarjetaProps} props - Propiedades del componente.
+ */
 const CartTarjeta: React.FC<CartTarjetaProps> = ({
     tipoEnvio,
     metodoPago,

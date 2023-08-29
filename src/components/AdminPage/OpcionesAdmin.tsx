@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import Factura from "../Factura/Factura";
-import Cliente from "../Users/Clientes/Clientes";
 import Usuarios from "../Users/Usuarios/Usuarios";
 import Rankings from "../Rankings/Rankings";
 import Stock from "../Stock/Stock/Stock";
 
 export default function OpcionesAdmin() {
+  // Estado para controlar la opción seleccionada
   const [selectedOption, setSelectedOption] = useState("usuarios");
-  const [sidebarVisible, setSidebarVisible] = useState(true); // Agrega el estado para controlar la visibilidad de la barra lateral
+  // Estado para controlar la visibilidad de la barra lateral
+  const [sidebarVisible, setSidebarVisible] = useState(true);
 
+  // Función para cambiar la opción seleccionada
   const handleOptionChange = (event: React.MouseEvent<HTMLButtonElement>) => {
     setSelectedOption(event.currentTarget.value);
   };
 
+  // Función para alternar la visibilidad de la barra lateral
   const handleSidebarToggle = () => {
     setSidebarVisible(!sidebarVisible);
   };
 
+  // Opciones disponibles en la barra lateral
   const options = [
     { name: "Usuarios", value: "usuarios" },
     { name: "Stock", value: "stock" },
@@ -27,6 +31,7 @@ export default function OpcionesAdmin() {
   return (
     <div className="d-flex flex-wrap" style={{ height: "100vh" }}>
       <div className="flex-shrink-0">
+        {/* Botón para alternar la visibilidad de la barra lateral */}
         {!sidebarVisible ? (
           <button
             className="btn btn-dark position-fixed"
@@ -49,6 +54,7 @@ export default function OpcionesAdmin() {
               marginTop: "4rem",
             }}
           >
+            {/* Botón para cerrar la barra lateral */}
             <button
               className="btn btn-outline-danger my-1 w-100 "
               onClick={handleSidebarToggle}
@@ -56,12 +62,14 @@ export default function OpcionesAdmin() {
               <i className="bi bi-x-square-fill"></i>
             </button>
 
+            {/* Renderizar las opciones de la barra lateral */}
             {options.map((option) => (
               <div
                 className="row justify-content-start my-3"
                 key={option.value}
               >
                 <div className="col">
+                  {/* Botón para seleccionar una opción */}
                   <button
                     value={option.value}
                     onClick={handleOptionChange}
@@ -89,15 +97,12 @@ export default function OpcionesAdmin() {
           marginTop: "5rem",
           overflowY: "auto",
           marginLeft: sidebarVisible ? "10rem" : "3rem",
-        }
-        }
-
+        }}
       >
         {/* Contenido principal */}
         {selectedOption === "usuarios" && <Usuarios />}
         {selectedOption === "stock" && <Stock />}
         {selectedOption === "facturas" && <Factura />}
-        {selectedOption === "clientes" && <Cliente />}
         {selectedOption === "rankings" && <Rankings />}
       </div>
     </div>

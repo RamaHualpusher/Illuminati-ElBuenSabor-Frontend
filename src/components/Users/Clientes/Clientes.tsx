@@ -7,12 +7,14 @@ import GenericTable from "../../GenericTable/GenericTable";
 import { Action, Column } from '../../../interface/CamposTablaGenerica';
 
 const Clientes = () => {
+    //Estados del componente
     const [clientes, setClientes] = useState<Usuario[]>([]);
     const [clientesComplete, setClientesComplete] = useState<Usuario[]>([]);
     const [editModalShow, setEditModalShow] = useState(false);
     const [selectedCliente, setSelectedCliente] = useState<Usuario | null>(null);
     const API_URL = "assets/data/clienteTabla.json";
 
+    // Definición de las columnas de la tabla
     const columns: Column<Usuario>[] = [
         { title: 'ID Usuario', field: 'idUsuario' },
         { title: 'Nombre', field: 'nombre' },
@@ -63,8 +65,7 @@ const Clientes = () => {
             .replace(/[\u0300-\u036f]/g, "");
     };
 
-
-
+    //Llamada a la API para cargar los clientes
     useEffect(() => {
         fetch(API_URL)
             .then((response) => response.json())
@@ -75,11 +76,13 @@ const Clientes = () => {
             .catch((error) => console.log(error));
     }, []);
 
+    //Define que acciones se pueden realizar
     const actions: Action = {
         update: true,
         delete: true
     };
 
+    //Editar un cliente 
     const handleClienteEdit = async (cliente: Usuario) => {
         const updatedCliente = await handleRequest(
             'PUT',
@@ -94,9 +97,9 @@ const Clientes = () => {
         }
     };
 
+    //Eliminar un cliente
     const handleClienteDelete = async (item: Usuario) => {
         const clienteId: number = item.idUsuario;
-
         try {
             await handleRequest('DELETE', `${API_URL}/${clienteId}`);
             setClientes(clientes.filter((item) => item.idUsuario !== clienteId));
@@ -105,6 +108,7 @@ const Clientes = () => {
         }
     };
 
+    // Función para obtener un cliente por su ID
     const usuarioRow = (id: number) => {
         let i: number = 0;
         let x: boolean = true;
@@ -118,11 +122,13 @@ const Clientes = () => {
         return clientesComplete[0];
     }
 
+    // Abrir modal de edición
     const handleEditModalOpen = (item: Usuario) => {
         setSelectedCliente(usuarioRow(item.idUsuario));
         setEditModalShow(true);
     };
 
+    // Cerrar modal de edición
     const handleEditModalClose = () => {
         setEditModalShow(false);
         setSelectedCliente(null);

@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Producto } from '../../interface/Producto';
 import Spinner from '../Spinner/Spinner';
 import { CartContext, CartItem } from '../CarritoCompras/CartProvider';
 import { DetallePedido } from '../../interface/DetallePedido';
+import { Producto } from '../../interface/Producto';
 
 const DetallePage = () => {
   const { id } = useParams<{ id: string }>();
+  const { addToCart } = useContext(CartContext);
+
   const [producto, setProducto] = useState<Producto | undefined>();
   const [showAlert, setShowAlert] = useState(false);
-  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -46,15 +47,12 @@ const DetallePage = () => {
         price: producto.precio,
         image: producto.imagen,
         title: producto.nombre,
-        DetallePedido: detallePedido, // Cambia aquí para asignar directamente el objeto DetallePedido
+        DetallePedido: detallePedido,
       };
 
       addToCart(item);
     }
   };
-
-
-
 
   if (!producto) {
     return <Spinner />;
@@ -83,7 +81,6 @@ const DetallePage = () => {
                 <h4 className="card-text">Detalles: <br />{producto.preparacion}</h4>
                 <p className="card-text">Precio de venta: ${producto.precio}</p>
                 <p className="card-text">Disponibles: {producto.stockActual}</p>
-
                 <p className="card-text">Tiempo estimado: {producto.tiempoEstimadoCocina} Min</p>
                 {ingredientesSection}
                 {producto.stockActual > 0 ? (
@@ -97,7 +94,6 @@ const DetallePage = () => {
                 )}
               </div>
             </div>
-
             <Link to="/" className="btn btn-primary btn-lg mt-3 mb-3">
               Volver al Home
             </Link>

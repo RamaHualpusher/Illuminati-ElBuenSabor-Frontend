@@ -10,6 +10,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
   handleEmpleadoEdit,
   selectedEmpleado,
 }) => {
+  //Estados del componente
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [email, setEmail] = useState("");
@@ -18,6 +19,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
   const [rolId, setRolId] = useState<number | null>(null);
   const [roles, setRoles] = useState<Rol[]>([]);
 
+  // Cargar roles al montar el componente
   useEffect(() => {
     fetch("/assets/data/idRolEjemplo.json")
       .then((response) => response.json())
@@ -29,6 +31,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
       });
   }, []);
 
+  // Cargar los datos del empleado seleccionado al montar el componente
   useEffect(() => {
     if (selectedEmpleado) {
       setNombre(selectedEmpleado.nombre);
@@ -40,6 +43,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
     }
   }, [selectedEmpleado]);
 
+  // Manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedEmpleado) {

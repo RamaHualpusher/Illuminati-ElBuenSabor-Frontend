@@ -11,12 +11,14 @@ const Page404 = () => {
                     <i className="bi bi-emoji-frown"></i>
                 </h1>
                 <div className="d-inline-block mt-3" style={{ width: "15rem" }}>
+                    {/* Enlace al inicio */}
                     <Link to="/">
                         <img src="assets/img/Logo Iluminatti.jpg" alt="Logo" className="img-thumbnail" />
                     </Link>
                 </div>
                 <h1 className="display-6">Haz clic en la imagen para volver.</h1>
             </div>
+            {/* Renderea las rutas hijas */}
             <Outlet />
         </div>
     );

@@ -10,10 +10,9 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
   handleIngredientesEdit,
   selectedIngredientes,
 }) => {
+  // Estados para los campos del formulario con valores iniciales de los ingredientes seleccionados
   const [nombre, setNombre] = useState(selectedIngredientes?.nombre || '');
-  const [rubroId, setRubroId] = useState<number | null>(
-    selectedIngredientes?.Rubro.idRubro || null
-  );
+  const [rubroId, setRubroId] = useState<number | null>(selectedIngredientes?.Rubro.idRubro || null);
   const [minStock, setMinStock] = useState(selectedIngredientes?.stockMinimo || 0);
   const [stockActual, setStockActual] = useState(selectedIngredientes?.stockActual || 0);
   const [precioCosto, setPrecioCosto] = useState(selectedIngredientes?.precioCosto || 0);
@@ -21,6 +20,10 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [um, setUm] = useState(selectedIngredientes?.unidadMedida || "Kg");
 
+  // Unidades de medida disponibles con sus factores de conversión
+  const unidades = [["Kg", 2], ["g", 1], ["Mg", 0], ["l", 1], ["Ml", 0]];
+
+  // Cargar los rubros al cargar el componente
   useEffect(() => {
     fetch('/assets/data/rubrosIngredientesEjemplo.json')
       .then(response => response.json())
@@ -32,20 +35,24 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
       });
   }, []);
 
+  // Actualizar los campos del formulario al cambiar el ingrediente seleccionado
   useEffect(() => {
     setNombre(selectedIngredientes?.nombre || '');
     setRubroId(selectedIngredientes?.Rubro.idRubro || null);
     setMinStock(selectedIngredientes?.stockMinimo || 0);
     setStockActual(selectedIngredientes?.stockActual || 0);
     setEstado(selectedIngredientes?.estado || false);
+    setPrecioCosto(selectedIngredientes?.precioCosto || 0);
     setUm(selectedIngredientes?.unidadMedida || "Kg");
   }, [selectedIngredientes]);
 
+  // Manejar el envío del formulario de edición
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedIngredientes) {
       const selectedRubro = rubros.find((rubro) => rubro.idRubro === rubroId);
 
+      // Crear un nuevo objeto Ingredientes con los datos editados
       const updatedIngredientes: Ingredientes = {
         idIngredientes: selectedIngredientes.idIngredientes,
         nombre,
@@ -62,42 +69,33 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
     handleClose();
   };
 
-  const unidades = [["Kg", 2], ["g", 1], ["Mg", 0], ["l", 1], ["Ml", 0]];
-
+  // Función para manejar la conversión de unidades de medida
   const handleUM = (unidad: string) => {
     setUm(unidad);
     let mult = 2;
     let limit = 2;
-    unidades.map((un) => {
+    unidades.forEach((un) => {
       if (um === un[0]) {
         mult = +un[1];
-        console.log(un[1] + "mult")
       } else if (unidad === un[0]) {
         limit = +un[1];
-        console.log(un[1] + "limit")
       }
-    })
+    });
     let stockA = stockActual;
     let stockM = minStock;
-    console.log(stockA + " " + stockM);
     while (mult < limit) {
-      console.log(stockA + " " + stockM);
       stockA = stockA / 10;
       stockM = stockM / 10;
       mult += 1;
-      console.log(mult)
     }
     while (mult > limit) {
-      console.log(stockA + " " + stockM);
       stockA = stockA * 10;
       stockM = stockM * 10;
-      mult += -1;
-      console.log(mult)
+      mult -= 1;
     }
-    console.log(stockA + " " + stockM);
     setStockActual(stockA);
     setMinStock(stockM);
-  }
+  };
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -106,6 +104,7 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
+          {/* Formulario para editar los datos del ingrediente */}
           <Form.Group className="mb-3" controlId="formNombre">
             <Form.Label>Nombre</Form.Label>
             <Form.Control
@@ -191,6 +190,7 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
+          {/* Botones para cancelar y guardar cambios */}
           <Button variant="secondary" onClick={handleClose}>
             Cancelar
           </Button>

@@ -16,16 +16,25 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
 
 
   useEffect(() => {
-    if (location.pathname === `/cocinero`) {
-      setUrlDetallePedido(`/cocinero/pedido/${pedido.idPedido}`);
-    } else if (location.pathname === `/delivery`) {
-      setUrlDetallePedido(`/pedido/${pedido.idPedido}`);
-    } else if (location.pathname === `/cajero`) {
-      setUrlDetallePedido(`/cajero/pedido/${pedido.idPedido}`);
+    let newUrlDetallePedido = '';
+    switch (location.pathname) {
+      case '/cocinero':
+        newUrlDetallePedido = `/cocinero/pedido/${pedido.idPedido}`;
+        break;
+      case '/delivery':
+        newUrlDetallePedido = `/pedido/${pedido.idPedido}`;
+        break;
+      case '/cajero':
+        newUrlDetallePedido = `/cajero/pedido/${pedido.idPedido}`;
+        break;
+      default:
+        break;
     }
+    setUrlDetallePedido(newUrlDetallePedido);
   }, [location.pathname, pedido.idPedido]);
 
   const handleEstadoPedidoChange = async (nuevoEstado: string) => {
+    // Lógica para cambiar el estado del pedido y actualizarlo en la base de datos
     if (pedido.esDelivery) {
       console.log("validando..");
 
@@ -67,6 +76,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
   };
 
   const renderActionButtons = () => {
+    // Definir los botones y su comportamiento según el estado del pedido
     switch (pedido.estadoPedido) {
       case 'A confirmar':
         return (

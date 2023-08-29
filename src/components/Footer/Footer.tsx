@@ -6,26 +6,49 @@ const Footer: React.FC = () => {
     <footer className="bg-dark py-5">
       <Container>
         <Row className="align-items-center">
+          {/* Columna izquierda con información de derechos de autor */}
           <Col md={4} className="text-center text-md-start mb-3 mb-md-0">
             <p className="text-muted mb-0">© {new Date().getFullYear()} El Buen Sabor</p>
           </Col>
+
+          {/* Columna derecha con información de contacto */}
           <Col md={8} className="text-center text-md-end">
             <ul className="list-unstyled mb-0 d-flex justify-content-center justify-content-md-end">
+              {/* Enlace de WhatsApp */}
               <li className="mx-2">
                 <i className="bi bi-whatsapp text-white"></i>
-                <a href={`https://wa.me/5492613695874`} target="_blank" rel="noreferrer" className="footer-link text-white px-1" >
+                <a
+                  href={`https://wa.me/5492613695874`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="footer-link text-white px-1"
+                >
                   +54 9 261 3695874
                 </a>
               </li>
+
+              {/* Enlace de ubicación */}
               <li className="mx-2">
                 <i className="bi bi-geo-alt text-white"></i>
-                <a href="https://www.google.com/maps/search/?api=1&query=Av.%20Ar%C3%ADstides%20Villanueva%20436,%20Mendoza" target="_blank" rel="noreferrer" className="footer-link text-white px-1">
-                  <span className="footer-text text-white px-1">Av. Arístides Villanueva 436, Mendoza</span>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Av.%20Ar%C3%ADstides%20Villanueva%20436,%20Mendoza"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="footer-link text-white px-1"
+                >
+                  <span className="footer-text text-white px-1">
+                    Av. Arístides Villanueva 436, Mendoza
+                  </span>
                 </a>
               </li>
+
+              {/* Enlace de correo electrónico */}
               <li className="mx-2">
                 <i className="bi bi-envelope text-white"></i>
-                <a href="mailto:elbuensaborutn@gmail.com" className="footer-link text-white px-1">
+                <a
+                  href="mailto:elbuensaborutn@gmail.com"
+                  className="footer-link text-white px-1"
+                >
                   elbuensaborutn@gmail.com
                 </a>
               </li>

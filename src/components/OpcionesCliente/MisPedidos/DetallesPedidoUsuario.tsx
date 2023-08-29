@@ -63,12 +63,15 @@ const DetallesPedidoUsuario: React.FC = () => {
         return <Spinner />;
     }
 
+    // Obtener propiedades del pedido
     const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
 
+    // Función para regresar a la página anterior
     const goBack = () => {
         window.history.go(-1);
     };
 
+    // Función para renderizar los productos del detalleF
     const renderProductos = (detalle: DetallePedido) => {
         if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) {
             return <p>Productos no disponibles</p>;
@@ -86,10 +89,12 @@ const DetallesPedidoUsuario: React.FC = () => {
         );
     };
 
+    // Función para formatear la fecha
     const formatDate = (date: Date) => {
         return new Date(date).toLocaleDateString();
     };
 
+    // Cálculos relacionados con el pedido
     const subtotalPedido = obtenerSubtotal(DetallePedido);
     const totalPedido = esDelivery ? subtotalPedido + 500 : subtotalPedido * 0.9;
     const tiempoEstimadoFinalizacion = calcularTiempoEstimadoFinalizacion(DetallePedido, esDelivery);
