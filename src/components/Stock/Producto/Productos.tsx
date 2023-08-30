@@ -33,6 +33,10 @@ const Productos: React.FC = () => {
     { title: "ID", field: "idProducto" },
     { title: "Nombre", field: "nombre" },
     {
+      title: "Imagen", field: "imagen", width: 2,
+      render: (rowData) => <img src={rowData.imagen} alt="Producto" style={{ width: "150px", height: "100px" }} />
+    },
+    {
       title: "Rubro",
       field: "Rubro",
       render: (producto: Producto) => <span>{`${producto.Rubro.nombre}`}</span>,

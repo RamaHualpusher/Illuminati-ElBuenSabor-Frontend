@@ -16,6 +16,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   const [nombre, setNombre] = useState("");
   const [rubroId, setRubroId] = useState<number | null>(null);
   const [tiempo, setTiempo] = useState(0);
+  const [imagen, setImagen] = useState("");
   const [precio, setPrecio] = useState(0);
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [estado, setEstado] = useState(true);
@@ -231,7 +232,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       Rubro: { idRubro: rubroId || 0, nombre: "" },
       tiempoEstimadoCocina: tiempo,
       denominacion: "",
-      imagen: "",
+      imagen,
       stockActual: 0,
       stockMinimo: 0,
       preparacion: "",
@@ -261,6 +262,16 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
               placeholder="Ingrese nombre"
               value={nombre}
               onChange={(event) => setNombre(event.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formImagen">
+            <Form.Label>Imagen</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese URL de la imagen"
+              value={imagen}
+              onChange={(event) => setImagen(event.target.value)}
               required
             />
           </Form.Group>
