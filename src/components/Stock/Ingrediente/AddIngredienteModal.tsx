@@ -50,6 +50,9 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
       return;
     }
 
+
+    
+
     // Crear un nuevo objeto Ingredientes con los datos del formulario
     const newIngrediente: Ingredientes = {
       idIngredientes: 0,
@@ -66,7 +69,24 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
     // Llamar a la función para agregar el ingrediente y cerrar el modal
     handleIngredienteAdd(newIngrediente);
     handleClose();
+
+    
   };
+  
+
+  const handleCancelar=()=>{
+    setNombre("");
+    setRubroId(0);
+    setEstado(true);
+    setMinStock(0);
+    setPrecioCosto(0);
+    setStockActual(0);
+    setUM("");
+    handleClose();
+  };
+
+
+
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -161,7 +181,7 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
         </Modal.Body>
         <Modal.Footer>
           {/* Botones para cancelar y agregar */}
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleCancelar}>
             Cancelar
           </Button>
           <Button variant="primary" type="submit">

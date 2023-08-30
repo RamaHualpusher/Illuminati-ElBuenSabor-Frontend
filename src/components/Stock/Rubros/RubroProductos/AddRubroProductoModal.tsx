@@ -37,6 +37,13 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
     setEstado(isActive);
   };
 
+
+  const handleCancelar=()=>{
+    setNombre("");
+    setEstado(true);
+    handleClose();
+  }
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -68,7 +75,7 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleCancelar}>
             Cancelar
           </Button>
           <Button variant="primary" type="submit">

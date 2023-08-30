@@ -94,10 +94,6 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       .catch((error) => {
         console.log(error);
       });
-  }, []);
-
-  // Cargar ingredientes al montar el componente
-  useEffect(() => {
     fetch("/assets/data/ingredientesEjemplo.json")
       .then((response) => response.json())
       .then((data: Ingredientes[]) => {
@@ -107,6 +103,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
         console.log(error);
       });
   }, []);
+
 
   // Función para seleccionar un ingrediente existente
   const selectIngrediente = (nombre: string) => {
@@ -247,6 +244,23 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     handleClose();
   };
 
+  const handleCancelar=()=>{
+    setCantIngrediente(0);
+    setCantidad(0);
+    setEstado(true);
+    setImagen("");
+    setIngrediente(defectoProductoIngrediente);
+    setIngredienteA(defectoIngrediente);
+    setIngredientes(null);
+    setNombre("");
+    setPrecio(0);
+    setProductos([]);
+    setRubroId(0);
+    setSelectedProducto(defectoProducto);
+    setTiempo(0);
+    handleClose();
+  }
+
   return (
     <Modal show={show} onHide={handleClose}>
       {/* Estructura del modal */}
@@ -343,34 +357,34 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
             >
             </Form.Control>
             <Button
-              variant="secondary" onClick={() => handleDeletIngrediente()}>Eliminar Ingrediente</Button>
+              variant="danger" onClick={() => handleDeletIngrediente()}>Eliminar Ingrediente</Button>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formModIngrediente">
             <Form.Label>Agregar Ingredientes</Form.Label>
             <Form.Select
-              value={ingrediente?.Ingredientes.nombre}
-              onChange={(event) => selectIngrediente(event.target.value)}
+              value={ingredienteA?.nombre}
+              onChange={(event) => selectIngredienteA(event.target.value)}
               required
             >
               <option value="none">Agregar Ingrediente</option>
-              {selectedProducto?.ProductoIngrediente.map((Ingrediente) =>
-                <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre}</option>
+              {ingredientesA.map((Ingrediente) =>
+                <option value={Ingrediente.nombre}>{Ingrediente.nombre}</option>
               )}
             </Form.Select>
             <Form.Control
               type="number"
               placeholder="Ingrese Cantidad"
-              value={cantidad}
-              onChange={(event) => handleCantidad(parseInt(event.target.value))}
+              value={cantIngrediente}
+              onChange={(event) => setCantIngrediente(parseInt(event.target.value))}
               required
             >
             </Form.Control>
             <Button
-              variant="secondary" onClick={() => handleDeletIngrediente()}>Eliminar Ingrediente</Button>
+              variant="success" onClick={() => agregarIngrediente()}>Eliminar Ingrediente</Button>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleCancelar}>
             Cancelar
           </Button>
           <Button variant="primary" type="submit">
