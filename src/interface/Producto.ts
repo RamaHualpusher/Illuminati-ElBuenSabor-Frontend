@@ -8,8 +8,8 @@ export interface Producto {
   tiempoEstimadoCocina: number;
   denominacion: string;
   imagen: string;
-  stockActual: number;
   stockMinimo: number;
+  stockActual: number;
   preparacion: string;
   precio: number;
   esBebida: boolean;
