@@ -6,7 +6,6 @@ import { Rubro } from "../../../interface/Rubro";
 import { AddProductoModalProps } from "../../../interface/Producto";
 import { Ingredientes } from "../../../interface/Ingredientes";
 import { ProductoIngrediente } from "../../../interface/ProductoIngrediente";
-
 const AddProductoModal: React.FC<AddProductoModalProps> = ({
   show,
   handleClose,
@@ -28,6 +27,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   const [ingredientesA, setIngredientesA] = useState<Ingredientes[]>([]);
   const [cantIngrediente, setCantIngrediente] = useState<number>(0);
   const [ingredienteA, setIngredienteA] = useState<Ingredientes | null>(null);
+  const [costo, setCosto] = useState<number>(0);
 
   // Definición de objetos por defecto
   const rubrod: Rubro = {
@@ -109,18 +109,17 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   // Función para seleccionar un ingrediente existente
   const selectIngrediente = (nombre: string) => {
     if (ingrediente !== defectoProductoIngrediente) {
-      selectedProducto?.ProductoIngrediente.map((ingr) => {
+      ingredientes?.map((ingr) => {
         if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
           console.log("ingrediente previo guardado")
           ingr = ingrediente;
           ingr.cantidad = cantidad;
-
         }
       })
     }
     console.log("ingreso a funcion")
     if (nombre !== "none") {
-      selectedProducto?.ProductoIngrediente.map((ingr) => {
+      ingredientes?.map((ingr) => {
         if (nombre === ingr.Ingredientes.nombre) {
           console.log("ingrediente encontrado" + ingr.Ingredientes.nombre)
           setCantidad(ingr.cantidad);
@@ -137,6 +136,11 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
 
   // Manejar cambio en la cantidad de un ingrediente
   const handleCantidad = (cant: number) => {
+    if (cant > cantidad) {
+      setCosto(costo + ((cant - cantidad) * ingrediente.Ingredientes.precioCosto))
+    } else {
+      setCosto(costo - ((cantidad - cant) * ingrediente.Ingredientes.precioCosto))
+    }
     setCantidad(cant);
     if (ingrediente !== defectoProductoIngrediente) {
       selectedProducto?.ProductoIngrediente.map((ingr) => {
@@ -151,12 +155,13 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
 
   // Eliminar un ingrediente seleccionado
   const handleDeletIngrediente = () => {
-    if (selectedProducto) {
+    if (ingredientes) {
       console.log("ingreso a funcion")
-      const filtrar = selectedProducto?.ProductoIngrediente;
+      const filtrar = ingredientes;
       if (nombre !== "none") {
         const filtrado = filtrar?.filter(filtrar => filtrar.Ingredientes.nombre !== ingrediente.Ingredientes.nombre);
-        selectedProducto.ProductoIngrediente = filtrado;
+        setIngredientes(filtrado);
+        setCosto(costo - ingrediente.Ingredientes.precioCosto * ingrediente.cantidad);
         setIngrediente(defectoProductoIngrediente);
         setCantidad(0);
       }
@@ -197,6 +202,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
         if (ingre.Ingredientes.nombre === ingredienteA.nombre) {
           console.log("coincidencia encontrada " + ingre.Ingredientes.nombre + " cantida previa" + (ingre.cantidad))
           ingre.cantidad += cantIngrediente;
+          setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
           console.log(ingre.cantidad);
           setCantIngrediente(0);
           encontrado = true;
@@ -212,6 +218,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
           Ingredientes: ingre || defectoIngrediente,
           Producto: defectoProducto
         }
+        setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
         ingres?.push(agre);
         setIngredientes(ingres);
         console.log("agregado ingrediente")
@@ -223,6 +230,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   // Manejar el envío del formulario de agregar producto
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (ingredientes && ingredientes.length > 0) {
     const newProducto: Producto = {
       idProducto: 0,
       nombre,
@@ -241,7 +249,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       ProductoIngrediente: selectedProducto.ProductoIngrediente,
     };
     handleProductoAdd(newProducto);
-    handleClose();
+    handleClose();}
   };
 
   const handleCancelar=()=>{
