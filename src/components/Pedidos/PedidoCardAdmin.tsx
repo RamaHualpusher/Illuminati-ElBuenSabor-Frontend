@@ -37,37 +37,36 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
     // Lógica para cambiar el estado del pedido y actualizarlo en la base de datos
     if (pedido.esDelivery) {
       console.log("validando..");
-
       const validChanges =
         (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'En cocina') ||
         (pedido.estadoPedido === 'En cocina' && nuevoEstado === 'Listo') ||
         (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'Listo') ||
-        (pedido.estadoPedido === 'Listo' && nuevoEstado === 'En delivery' && !pedido.esEfectivo) ||
-        (pedido.estadoPedido === 'En delivery' && nuevoEstado === 'Entregado' && !pedido.esEfectivo);
-      console.log("no valido");
+        (pedido.estadoPedido === 'Listo' && nuevoEstado === 'En delivery') ||
+        (pedido.estadoPedido === 'En delivery' && nuevoEstado === 'Entregado');
       if (validChanges) {
+        console.log("Válido");
         try {
+          console.log('envio put al back'); //prueba de envio
           const response = await axios.put(`/api/pedidos/${pedido.idPedido}`, { estadoPedido: nuevoEstado });
           cambiarEstadoPedido(response.data.estadoPedido);
-          console.log('envio put al back'); //prueba de envio
         } catch (error) {
           console.error(error);
         }
       }
     } else {
-      console.log("validando..")
+      console.log("validando 2..")
       console.log(location.pathname);
       const validChanges =
         (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'En cocina') ||
         (pedido.estadoPedido === 'En cocina' && nuevoEstado === 'Listo') ||
         (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'Listo') ||
         (pedido.estadoPedido === 'Listo' && nuevoEstado === 'Entregado');
-      console.log("no valido 2");
       if (validChanges) {
+        console.log("Válido");
         try {
+          console.log('envio put al back 2'); //prueba de envio
           const response = await axios.put(`/api/pedidos/${pedido.idPedido}`, { estadoPedido: nuevoEstado });
           cambiarEstadoPedido(response.data.estadoPedido);
-          console.log('envio put al back 2'); //prueba de envio
         } catch (error) {
           console.error(error);
         }
