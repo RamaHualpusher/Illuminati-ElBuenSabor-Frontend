@@ -16,6 +16,8 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   const [nombre, setNombre] = useState("");
   const [rubroId, setRubroId] = useState<number | null>(null);
   const [tiempo, setTiempo] = useState(0);
+  const [denominacion, setDenominacion] = useState("");
+  const [preparacion, setPreparacion] = useState("");
   const [imagen, setImagen] = useState("");
   const [precio, setPrecio] = useState(0);
   const [rubros, setRubros] = useState<Rubro[]>([]);
@@ -108,6 +110,26 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       });
   }, []);
 
+  // Restablecer campos del formulario cuando se muestra el modal
+  const resetFormFields = () => {
+    setNombre('');
+    setImagen('');
+    setDenominacion('');
+    setPreparacion('');
+    setRubroId(0);
+    setTiempo(0);
+    setPrecio(0);
+    setEstado(true);
+    setCantidad(0);
+  };
+
+  //Verifica si se está mostrando o no el modal para vacias los campos si se cancela
+  useEffect(() => {
+    if (show) {
+      resetFormFields();
+    }
+  }, [show]);
+
   // Función para seleccionar un ingrediente existente
   const selectIngrediente = (nombre: string) => {
     if (ingrediente !== defectoProductoIngrediente) {
@@ -146,7 +168,6 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
           console.log("ingrediente previo guardado")
           ingr = ingrediente;
           ingr.cantidad = cantidad;
-
         }
       })
     }
@@ -259,7 +280,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
             <Form.Label>Nombre</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ingrese nombre"
+              placeholder="Ingrese un nombre"
               value={nombre}
               onChange={(event) => setNombre(event.target.value)}
               required
@@ -275,6 +296,26 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
               required
             />
           </Form.Group>
+          <Form.Group className="mb-3" controlId="formDenominacion">
+            <Form.Label>Descripción</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese una descripción"
+              value={denominacion}
+              onChange={(event) => setDenominacion(event.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formPreparacion">
+            <Form.Label>Receta</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese una receta"
+              value={preparacion}
+              onChange={(event) => setPreparacion(event.target.value)}
+              required
+            />
+          </Form.Group>
           <Form.Group className="mb-3" controlId="formRubro">
             <Form.Label>Rubro</Form.Label>
             <Form.Select
@@ -283,14 +324,16 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
             >
               <option value="">Seleccione un rubro</option>
               {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
+                <option key={rubro.idRubro}
+                  value={rubro.idRubro}
+                  disabled={!rubro.estado}>
                   {rubro.nombre}
                 </option>
               ))}
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formTiempo">
-            <Form.Label>Tiempo</Form.Label>
+            <Form.Label>Tiempo en cocina</Form.Label>
             <Form.Control
               type="number"
               placeholder="Ingrese tiempo"
