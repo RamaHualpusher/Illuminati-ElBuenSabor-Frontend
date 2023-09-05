@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
-import BackButton from "../BackButtom/backButtom";
+import BackButton from "../BackButtom/BackButtom"; //Arreglen su BackButtom, Pongan la B mayuscula no va con b.
 
 /**
  * Barra de navegación para el administrador.
@@ -10,7 +10,7 @@ import BackButton from "../BackButtom/backButtom";
 const AdminBar: FC = () => {
   // Obtener el estado de autenticación y usuario del contexto de Auth0
   const { isAuthenticated, user } = useAuth0();
-  
+
   // Estado para controlar la apertura/cierre del menú desplegable
   const [navbarOpen, setNavbarOpen] = useState(false);
 

@@ -27,6 +27,7 @@
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
+          "precioCosto":20,
           "Rubro": null,
           "unidadMedida": "ml",
           "ProductoIngrediente": []

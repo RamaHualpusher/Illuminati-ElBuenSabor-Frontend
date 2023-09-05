@@ -16,6 +16,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   const [nombre, setNombre] = useState("");
   const [rubroId, setRubroId] = useState<number | null>(null);
   const [tiempo, setTiempo] = useState(0);
+  const [imagen, setImagen] = useState("");
   const [precio, setPrecio] = useState(0);
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [selectedRubro, setSelectedRubro] = useState<Rubro | null>(null);
@@ -25,6 +26,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   const [ingredientesA, setIngredientesA] = useState<Ingredientes[]>([]);
   const [cantIngrediente, setCantIngrediente] = useState<number>(0);
   const [ingredienteA, setIngredienteA] = useState<Ingredientes | null>(null);
+  const [costo, setCosto] = useState<number>(0);
 
   // Definición de objetos por defecto
   const rubrod: Rubro = {
@@ -98,30 +100,36 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   useEffect(() => {
     if (selectedProducto) {
       setNombre(selectedProducto?.nombre || "");
+      setImagen(selectedProducto?.imagen || "");
       setRubroId(selectedProducto?.Rubro?.idRubro || null);
       setSelectedRubro(selectedProducto?.Rubro || null);
       setTiempo(selectedProducto?.tiempoEstimadoCocina || 0);
       setPrecio(selectedProducto?.precio || 0);
       setEstado(selectedProducto?.estado || false);
       setIngredientes(selectedProducto.ProductoIngrediente)
+      let cos = 0;
+      ingredientes?.map((ingre) => {
+        console.log(cos);
+        cos += (ingre.Ingredientes.precioCosto * ingre.cantidad);
+      })
+      setCosto(cos);
     }
   }, [selectedProducto]);
 
   // Función para seleccionar un ingrediente existente
   const selectIngrediente = (nombre: string) => {
     if (ingrediente !== defectoProductoIngrediente) {
-      selectedProducto?.ProductoIngrediente.map((ingr) => {
+      ingredientes?.map((ingr) => {
         if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
           console.log("ingrediente previo guardado")
           ingr = ingrediente;
           ingr.cantidad = cantidad;
-
         }
       })
     }
     console.log("ingreso a funcion")
     if (nombre !== "none") {
-      selectedProducto?.ProductoIngrediente.map((ingr) => {
+      ingredientes?.map((ingr) => {
         if (nombre === ingr.Ingredientes.nombre) {
           console.log("ingrediente encontrado" + ingr.Ingredientes.nombre)
           setCantidad(ingr.cantidad);
@@ -166,16 +174,17 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
       })
       let encontrado = false
       ingredientes?.map((ingre) => {
-        if (ingre.Ingredientes.nombre === ingredienteA.nombre) {
+        if (ingre.Ingredientes.nombre === ingredienteA.nombre && ingre.Ingredientes.estado !== false) {
           console.log("coincidencia encontrada " + ingre.Ingredientes.nombre + " cantida previa" + (ingre.cantidad))
           ingre.cantidad += cantIngrediente;
+          setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
           console.log(ingre.cantidad);
           setCantIngrediente(0);
           encontrado = true;
         }
       })
 
-      if (encontrado === false) {
+      if (encontrado === false && ingredienteA.estado !== false) {
         const ingre: Ingredientes | null = ingredienteA;
         const ingres: ProductoIngrediente[] | null = ingredientes;
         const agre: ProductoIngrediente = {
@@ -184,6 +193,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
           Ingredientes: ingre || defectoIngrediente,
           Producto: defectoProducto
         }
+        setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
         ingres?.push(agre);
         setIngredientes(ingres);
         console.log("agregado ingrediente")
@@ -194,9 +204,14 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
 
   // Función para manejar cambios en la cantidad de un ingrediente
   const handleCantidad = (cant: number) => {
+    if (cant > cantidad) {
+      setCosto(costo + ((cant - cantidad) * ingrediente.Ingredientes.precioCosto))
+    } else {
+      setCosto(costo - ((cantidad - cant) * ingrediente.Ingredientes.precioCosto))
+    }
     setCantidad(cant);
     if (ingrediente !== defectoProductoIngrediente) {
-      selectedProducto?.ProductoIngrediente.map((ingr) => {
+      ingredientes?.map((ingr) => {
         if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
           console.log("ingrediente previo guardado")
           ingr = ingrediente;
@@ -209,12 +224,13 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
 
   // Función para eliminar un ingrediente seleccionado
   const handleDeletIngrediente = () => {
-    if (selectedProducto) {
+    if (ingredientes) {
       console.log("ingreso a funcion")
-      const filtrar = selectedProducto?.ProductoIngrediente;
+      const filtrar = ingredientes;
       if (nombre !== "none") {
         const filtrado = filtrar?.filter(filtrar => filtrar.Ingredientes.nombre !== ingrediente.Ingredientes.nombre);
-        selectedProducto.ProductoIngrediente = filtrado;
+        setIngredientes(filtrado);
+        setCosto(costo - ingrediente.Ingredientes.precioCosto * ingrediente.cantidad);
         setIngrediente(defectoProductoIngrediente);
         setCantidad(0);
       }
@@ -227,19 +243,23 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   // Manejar el envío del formulario de edición
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (selectedProducto) {
-      const updatedProducto: Producto = {
-        ...selectedProducto,
-        nombre,
-        tiempoEstimadoCocina: tiempo,
-        precio: precio,
-        estado,
-        Rubro: selectedRubro || selectedProducto.Rubro,
-        ProductoIngrediente: selectedProducto.ProductoIngrediente,
-      };
-      handleProductoEdit(updatedProducto);
+    if (ingredientes && ingredientes.length > 0) {
+      if (selectedProducto) {
+        const updatedProducto: Producto = {
+          ...selectedProducto,
+          nombre,
+          tiempoEstimadoCocina: tiempo,
+          precio: precio,
+          imagen,
+          estado,
+          Rubro: selectedRubro || selectedProducto.Rubro,
+          ProductoIngrediente: ingredientes || selectedProducto.ProductoIngrediente,
+        };
+
+        handleProductoEdit(updatedProducto);
+      }
+      handleClose();
     }
-    handleClose();
   };
 
   return (
@@ -257,6 +277,16 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
               placeholder="Ingrese nombre"
               value={nombre}
               onChange={(event) => setNombre(event.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formImagen">
+            <Form.Label>Imagen</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese URL de la imagen"
+              value={imagen}
+              onChange={(event) => setImagen(event.target.value)}
               required
             />
           </Form.Group>
@@ -291,7 +321,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formPrecio">
-            <Form.Label>Precio</Form.Label>
+            <Form.Label>{"Precio (costo: " + costo + ") "}</Form.Label>
             <Form.Control
               type="number"
               placeholder="Ingrese el precio"
@@ -319,8 +349,8 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
               required
             >
               <option value="none">Eliminar Ingrediente</option>
-              {selectedProducto?.ProductoIngrediente.map((Ingrediente) =>
-                <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre}</option>
+              {ingredientes?.map((Ingrediente) =>
+                <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre + " (" + Ingrediente.Ingredientes.unidadMedida + ")"}</option>
               )}
             </Form.Select>
             <Form.Control
@@ -341,9 +371,9 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
               onChange={(event) => selectIngredienteA(event.target.value)}
               required
             >
-              <option value="none">Eliminar Ingrediente</option>
+              <option value="none">Agregar Ingrediente</option>
               {ingredientesA.map((Ingrediente) =>
-                <option value={Ingrediente.nombre}>{Ingrediente.nombre}</option>
+                <option value={Ingrediente.nombre}>{Ingrediente.nombre + " (" + Ingrediente.unidadMedida + ") " + (Ingrediente.estado === false ? "Baja" : "")}</option>
               )}
             </Form.Select>
             <Form.Control
@@ -355,7 +385,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
             >
             </Form.Control>
             <Button
-              variant="primary" onClick={() => agregarIngrediente()}>Agregar Ingrediente</Button>
+              variant={ingredienteA?.estado === false ? "secondary" : "success"} onClick={() => agregarIngrediente()}>Agregar Ingrediente</Button>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
