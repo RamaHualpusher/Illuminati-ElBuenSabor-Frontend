@@ -14,6 +14,7 @@ const DetallesPedidoCocinero: React.FC = () => {
     const API_URL = "/assets/data/pedidos.json";
     const API_URL_BACKEND = "https://example.com/api/pedidos";
 
+    
     useEffect(() => {
         const fetchPedido = async () => {
             try {

@@ -13,6 +13,7 @@ import Productos from "../components/Stock/Producto/Productos";
 import Ingredientes from "../components/Stock/Ingrediente/Ingrediente";
 import DetallesPedidoCocinero from "../components/CocineroPage/DetallePedidoCocinero";
 import DetallesPedidoCajero from "../components/CajeroPage/DetallesPedidoCajero";
+import PedidosID from "../components/Rankings/RankingClientes/PedidosID";
 
 const IndexRouter = () => {
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
@@ -28,6 +29,7 @@ const IndexRouter = () => {
         {/* Rutas para las diferentes páginas */}
         <Route path="/*" element={<UserRouter />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/ranking-pedidos/:id" element={<PedidosID />} />
         <Route path="/cocinero" element={<Cocinero />} />
         <Route path="/cocinero/pedido/:id" element={<DetallesPedidoCocinero />} />
         <Route path="/cajero" element={<Cajero />} />

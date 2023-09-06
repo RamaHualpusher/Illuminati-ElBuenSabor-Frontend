@@ -183,17 +183,17 @@
     "estadoPedido": "Listo",
     "esEfectivo": true,
     "Usuario": {
-      "idUsuario": 3,
-      "nombre": "Pedro",
-      "apellido": "González",
-      "email": "pedro.gonzalez@example.com",
-      "clave": "qwerty",
-      "telefono": "555555555",
+      "idUsuario": 1,
+      "nombre": "Juan",
+      "apellido": "Pérez",
+      "email": "juan.perez@example.com",
+      "clave": "123456",
+      "telefono": "123456789",
       "Domicilio": {
-        "idDomicilio": 3,
-        "calle": "Calle Principal",
-        "numero": 789,
-        "localidad": "Pueblo Ficticio"
+        "idDomicilio": 1,
+        "calle": "Calle Falsa",
+        "numero": 123,
+        "localidad": "Ciudad Ficticia"
       },
       "Rol": {
         "idRol": 1,
