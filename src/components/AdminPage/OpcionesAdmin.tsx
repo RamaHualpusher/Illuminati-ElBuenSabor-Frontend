@@ -3,6 +3,7 @@ import Factura from "../Factura/Factura";
 import Usuarios from "../Users/Usuarios/Usuarios";
 import Rankings from "../Rankings/Rankings";
 import Stock from "../Stock/Stock/Stock";
+import Movimientos from "../Movimientos/Movimientos";
 
 export default function OpcionesAdmin() {
   // Estado para controlar la opción seleccionada
@@ -26,6 +27,7 @@ export default function OpcionesAdmin() {
     { name: "Stock", value: "stock" },
     { name: "Facturas", value: "facturas" },
     { name: "Rankings", value: "rankings" },
+    { name: "Movimientos", value: "movimientos" },
   ];
 
   return (
@@ -104,6 +106,7 @@ export default function OpcionesAdmin() {
         {selectedOption === "stock" && <Stock />}
         {selectedOption === "facturas" && <Factura />}
         {selectedOption === "rankings" && <Rankings />}
+        {selectedOption === "movimientos" && <Movimientos />}
       </div>
     </div>
   );

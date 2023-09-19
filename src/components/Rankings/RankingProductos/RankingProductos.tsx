@@ -67,9 +67,6 @@ const RankingProductos = () => {
         if (startDate !== null && endDate !== null) {
             const pedidosFiltrados = pedidos.filter(pedido => {
                 const fechaPedido = new Date(pedido.fechaPedido);
-                console.log('Fecha Pedido:', fechaPedido);
-                console.log('StartDate:', startDate);
-                console.log('EndDate:', endDate);
                 return fechaPedido >= startDate && fechaPedido <= endDate;
             });
 
