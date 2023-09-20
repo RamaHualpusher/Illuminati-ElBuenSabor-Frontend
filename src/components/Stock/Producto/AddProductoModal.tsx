@@ -60,7 +60,6 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     precio: 0,
     esBebida: false,
     estado: false,
-    DetallePedido: [],
     ProductoIngrediente: [],
   }
 
@@ -231,28 +230,28 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (ingredientes && ingredientes.length > 0) {
-    const newProducto: Producto = {
-      idProducto: 0,
-      nombre,
-      Rubro: { idRubro: rubroId || 0, nombre: "" },
-      tiempoEstimadoCocina: tiempo,
-      denominacion: "",
-      imagen,
-      stockActual: 0,
-      stockMinimo: 0,
-      preparacion: "",
-      precio,
-      esBebida: false,
-      estado,
-      DetallePedido: [],
+      const newProducto: Producto = {
+        idProducto: 0,
+        nombre,
+        Rubro: { idRubro: rubroId || 0, nombre: "" },
+        tiempoEstimadoCocina: tiempo,
+        denominacion: "",
+        imagen,
+        stockActual: 0,
+        stockMinimo: 0,
+        preparacion: "",
+        precio,
+        esBebida: false,
+        estado,
 
-      ProductoIngrediente: selectedProducto.ProductoIngrediente,
-    };
-    handleProductoAdd(newProducto);
-    handleClose();}
+        ProductoIngrediente: selectedProducto.ProductoIngrediente,
+      };
+      handleProductoAdd(newProducto);
+      handleClose();
+    }
   };
 
-  const handleCancelar=()=>{
+  const handleCancelar = () => {
     setCantIngrediente(0);
     setCantidad(0);
     setEstado(true);

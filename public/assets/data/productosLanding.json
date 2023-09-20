@@ -15,7 +15,6 @@
       "idRubro": 1,
       "nombre": "Pizzas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": [
       {
         "idProductoIngrediente": 1,
@@ -27,7 +26,7 @@
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "precioCosto":20,
+          "precioCosto": 20,
           "Rubro": null,
           "unidadMedida": "ml",
           "ProductoIngrediente": []
@@ -81,7 +80,6 @@
       "idRubro": 1,
       "nombre": "Pizzas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": [
       {
         "idProductoIngrediente": 4,
@@ -146,7 +144,6 @@
       "idRubro": 2,
       "nombre": "Bebidas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": []
   },
   {
@@ -165,7 +162,6 @@
       "idRubro": 1,
       "nombre": "Pizzas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": [
       {
         "idProductoIngrediente": 9,
@@ -260,7 +256,6 @@
       "idRubro": 3,
       "nombre": "Hamburguesas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": [
       {
         "idProductoIngrediente": 14,
@@ -355,7 +350,6 @@
       "idRubro": 3,
       "nombre": "Hamburguesas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": [
       {
         "idProductoIngrediente": 15,
@@ -435,7 +429,6 @@
       "idRubro": 2,
       "nombre": "Bebidas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": []
   },
   {
@@ -454,7 +447,6 @@
       "idRubro": 2,
       "nombre": "Bebidas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": []
   },
   {
@@ -473,7 +465,6 @@
       "idRubro": 2,
       "nombre": "Bebidas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": []
   },
   {
@@ -492,7 +483,6 @@
       "idRubro": 4,
       "nombre": "Ofertas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": [
       {
         "idProductoIngrediente": 19,
@@ -617,7 +607,6 @@
       "idRubro": 4,
       "nombre": "Ofertas"
     },
-    "DetallePedido": [],
     "ProductoIngrediente": [
       {
         "idProductoIngrediente": 26,

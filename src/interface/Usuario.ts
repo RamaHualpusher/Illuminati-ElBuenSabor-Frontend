@@ -1,5 +1,4 @@
 import { Domicilio } from "./Domicilio";
-import { Pedido } from "./Pedido";
 import { Rol } from "./Rol";
 
 export interface Usuario {
@@ -13,7 +12,6 @@ export interface Usuario {
   estado: boolean;
   Domicilio: Domicilio;
   Rol: Rol;
-  // Pedidos: Pedido[];
 }
 
 export interface EditUsuarioFromCliente {

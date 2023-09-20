@@ -10,7 +10,7 @@ export interface Ingredientes {
   precioCosto: number;
   unidadMedida: string;
   Rubro: Rubro;
-  ProductoIngrediente: ProductoIngrediente[];
+  ProductoIngrediente: ProductoIngrediente[]; //sacar todo
 }
 
 export interface AddIngredienteModalProps {

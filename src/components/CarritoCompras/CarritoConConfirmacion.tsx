@@ -10,10 +10,6 @@ const CarritoConConfirmacion: React.FC = () => {
   // Navegación
   const navigate = useNavigate();
 
-  // Estados locales para el método de pago y tipo de envío
-  const [metodoPago, setMetodoPago] = useState('Efectivo');
-  const [tipoEnvio, setTipoEnvio] = useState('Delivery');
-
   // Función para modificar la cantidad de un ítem en el carrito
   const modificarCantidad = (id: number, cantidad: number) => {
     const item = cartItems.find(item => item.id === id);
@@ -42,17 +38,12 @@ const CarritoConConfirmacion: React.FC = () => {
       {/* Renderizar el componente de confirmación de pedido */}
       <ConfirmacionPedido
         cartItems={cartItems}
-        metodoPago={metodoPago}
-        tipoEnvio={tipoEnvio}
-        setMetodoPago={setMetodoPago}
-        setTipoEnvio={setTipoEnvio}
         modificarCantidad={modificarCantidad}
         eliminarDetallePedido={id => {
           removeFromCart(id);
-        }}
+        } }
         onCancel={onCancel}
-        onContinue={onContinue}
-      />
+        onContinue={onContinue}/>
     </>
   );
 }

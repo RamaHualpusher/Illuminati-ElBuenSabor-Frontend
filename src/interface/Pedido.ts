@@ -1,3 +1,4 @@
+import { MercadoPagoDatos } from "./MercadoPagoDatos";
 import { Usuario } from "./Usuario";
 import { DetallePedido } from "./DetallePedido";
 
@@ -11,5 +12,6 @@ export interface Pedido {
   fechaPedido: Date;
   Usuario: Usuario;
   DetallePedido: DetallePedido[];
+  MercadoPagoDatos?: MercadoPagoDatos;
   totalPedido: number; //(esto no va en al base de datos ya que es persistente)
 }
