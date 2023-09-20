@@ -4,6 +4,6 @@ import { Producto } from './Producto';
 export interface ProductoIngrediente{
     idProductoIngrediente: number;
     cantidad: number;
-    Producto: Producto;
+    // Producto: Producto; cambio 20/9/23
     Ingredientes: Ingredientes;
   }

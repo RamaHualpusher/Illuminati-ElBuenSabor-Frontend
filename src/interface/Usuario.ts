@@ -13,7 +13,7 @@ export interface Usuario {
   estado: boolean;
   Domicilio: Domicilio;
   Rol: Rol;
-  // Pedidos: Pedido[];
+  // Pedidos: Pedido[]; cambio 20/9/23
 }
 
 export interface EditUsuarioFromCliente {
