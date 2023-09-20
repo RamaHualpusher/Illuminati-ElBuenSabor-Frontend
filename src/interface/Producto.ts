@@ -14,6 +14,7 @@ export interface  Producto {
   esBebida: boolean;
   estado : boolean;
   Rubro: Rubro;
+  // DetallePedido: DetallePedido[]; cambio 20/9/23
   ProductoIngrediente: ProductoIngrediente[];
 }
 

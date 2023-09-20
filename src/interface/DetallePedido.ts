@@ -3,5 +3,6 @@ import { Producto } from "./Producto";
 export interface DetallePedido {
   idDetallePedido: number;
   cantidad: number;
-  Productos: Producto[]; //sacar lista
+  // Pedido?: Pedido; cambio 20/9/23
+  Productos: Producto; 
 }

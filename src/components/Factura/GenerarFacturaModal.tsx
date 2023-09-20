@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { Button, Container, Table } from "react-bootstrap";
 import FacturaPDF from "./FacturaPDF";
 import GenerarCreditoModal from "./GenerarCreditoModal";
+import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 
 interface GenerarFacturaModalProps {
   closeModal: () => void;
@@ -41,6 +42,17 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   if (!pedido) {
     return <div>Error: Pedido no encontrado</div>;
   }
+
+  const exportToExcel = (pedido: Pedido) => {
+    // Define los datos que deseas exportar a Excel, en este caso, los detalles del pedido
+    const dataToExport = pedido?.DetallePedido || [];
+
+    // Genera un nombre de archivo basado en el número de pedido
+    const filename = `pedido_${pedido?.numeroPedido}_detalles`;
+
+    // Llama a la función para exportar a Excel
+    exportTableDataToExcel(dataToExport, filename);
+  };
 
   return (
     <>
@@ -175,6 +187,9 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     {/* Botón para generar nota de crédito */}
                     <Button variant="secondary" onClick={openCreditoModal}>
                       Nota de Crédito
+                    </Button>
+                    <Button variant="success" onClick={() => exportToExcel(pedido)}>
+                      Exportar a Excel
                     </Button>
                   </div>
                 </div>
