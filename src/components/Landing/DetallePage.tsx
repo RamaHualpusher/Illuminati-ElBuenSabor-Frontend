@@ -37,7 +37,7 @@ const DetallePage = () => {
       const detallePedido: DetallePedido = {
         idDetallePedido: 0,
         cantidad: 0,
-        Productos: [producto],
+        Productos: producto,
       };
 
       const item: CartItem = {

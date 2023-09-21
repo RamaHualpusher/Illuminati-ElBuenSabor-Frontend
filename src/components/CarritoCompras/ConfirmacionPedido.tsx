@@ -84,26 +84,26 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       const detallePedido: DetallePedido = {
         idDetallePedido: 0,
         cantidad: cartItem.quantity,
-        Productos: [
-          {
-            idProducto: productoEncontrado.idProducto,
-            nombre: productoEncontrado.nombre,
-            tiempoEstimadoCocina: productoEncontrado.tiempoEstimadoCocina,
-            denominacion: productoEncontrado.denominacion,
-            imagen: productoEncontrado.imagen,
-            stockMinimo: productoEncontrado.stockMinimo,
-            stockActual: productoEncontrado.stockActual,
-            preparacion: productoEncontrado.preparacion,
-            precio: productoEncontrado.precio,
-            esBebida: productoEncontrado.esBebida,
-            estado: productoEncontrado.estado,
-            Rubro: {
-              idRubro: productoEncontrado.Rubro.idRubro,
-              nombre: productoEncontrado.Rubro.nombre,
-            },
-            ProductoIngrediente: [],
+        Productos:
+        {
+          idProducto: productoEncontrado.idProducto,
+          nombre: productoEncontrado.nombre,
+          tiempoEstimadoCocina: productoEncontrado.tiempoEstimadoCocina,
+          denominacion: productoEncontrado.denominacion,
+          imagen: productoEncontrado.imagen,
+          stockMinimo: productoEncontrado.stockMinimo,
+          stockActual: productoEncontrado.stockActual,
+          preparacion: productoEncontrado.preparacion,
+          precio: productoEncontrado.precio,
+          esBebida: productoEncontrado.esBebida,
+          estado: productoEncontrado.estado,
+          Rubro: {
+            idRubro: productoEncontrado.Rubro.idRubro,
+            nombre: productoEncontrado.Rubro.nombre,
           },
-        ],
+          ProductoIngrediente: [],
+        },
+
       };
       return detallePedido;
     } else {
@@ -165,9 +165,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     if (pedidoCompleto !== null) {
       pedidoCompleto?.DetallePedido.forEach((detalle, index) => {
         console.log(`Detalle ${index + 1}:`);
-        console.log("ID del Producto:", detalle.Productos[0].idProducto);
-        console.log("Nombre del Producto:", detalle.Productos[0].nombre);
-        console.log("Precio del Producto:", detalle.Productos[0].precio);
+        console.log("ID del Producto:", detalle.Productos.idProducto);
+        console.log("Nombre del Producto:", detalle.Productos.nombre);
+        console.log("Precio del Producto:", detalle.Productos.precio);
         console.log("Cantidad del Producto:", detalle.cantidad);
         console.log("Es delivery:", pedidoCompleto.esDelivery);
         console.log("Es efectivo:", pedidoCompleto.esEfectivo);
