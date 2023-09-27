@@ -9,9 +9,8 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const RankingProductos = () => {
     const [productos, setProductos] = useState<Producto[]>([]);
-    const [addModalShow, setAddModalShow] = useState(false);
     const [pedidos, setPedidos] = useState<Pedido[]>([]);
-    const [searchText, setSearchText] = useState<string>('');  //agregue este, pero entiendo que podria utilizarse el search de genericTable
+    const [searchText, setSearchText] = useState<string>('');
     const [startDate, setStartDate] = useState<Date | null>(new Date());
     const [endDate, setEndDate] = useState<Date | null>(new Date());
 
@@ -47,14 +46,8 @@ const RankingProductos = () => {
     const calculateCantidadVendido = (productoId: number, esBebida: boolean) => {
         return pedidos.reduce((totalCantidad, pedido) => {
             const cantidadProductoEnPedido = pedido.DetallePedido.reduce((cantidad, detalle) => {
-                if (detalle.Productos && detalle.Productos.length > 0) {
-                    const cantidadProducto = detalle.Productos.reduce((cantidadProductoDetalle, producto) => {
-                        if (producto.idProducto === productoId && producto.esBebida === esBebida) {
-                            cantidadProductoDetalle += detalle.cantidad;
-                        }
-                        return cantidadProductoDetalle;
-                    }, 0);
-                    cantidad += cantidadProducto;
+                if (detalle.Productos && detalle.Productos.idProducto === productoId && detalle.Productos.esBebida === esBebida) {
+                    cantidad += detalle.cantidad;
                 }
                 return cantidad;
             }, 0);
@@ -63,7 +56,6 @@ const RankingProductos = () => {
     };
 
     const handleBuscarClick = () => {
-
         if (startDate !== null && endDate !== null) {
             const pedidosFiltrados = pedidos.filter(pedido => {
                 const fechaPedido = new Date(pedido.fechaPedido);
@@ -72,7 +64,7 @@ const RankingProductos = () => {
 
             const ventasPorProducto = productos.map(producto => {
                 const ventas = pedidosFiltrados.reduce((total, pedido) => {
-                    const detallePedido = pedido.DetallePedido.find(detalle => Array.isArray(detalle.Productos) && detalle.Productos.some(p => p.idProducto === producto.idProducto));
+                    const detallePedido = pedido.DetallePedido.find(detalle => detalle.Productos && detalle.Productos.idProducto === producto.idProducto);
                     if (detallePedido) {
                         return total + detallePedido.cantidad;
                     }
@@ -94,14 +86,6 @@ const RankingProductos = () => {
         } else {
             alert("Por favor, seleccione ambas fechas antes de realizar la búsqueda.");
         }
-    };
-
-    const handleAddModalOpen = () => {
-        setAddModalShow(true);
-    };
-
-    const handleAddModalClose = () => {
-        setAddModalShow(false);
     };
 
     const data = productos.map((producto) => ({
@@ -136,73 +120,56 @@ const RankingProductos = () => {
                 <Row className="mt-3">
                     <Col>
                         <Form>
-                            <Form>
-                                <Col>
-                                    <Row>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Fecha inicio búsqueda</Form.Label>
-                                                <Col>
-                                                    <DatePicker
-                                                        selected={startDate}
-                                                        onChange={(date: Date | null) => setStartDate(date)}
-                                                        dateFormat="yyyy-MM-dd"
-                                                        isClearable
-                                                        className="form-control"
-                                                    />
-                                                </Col>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Fecha fin búsqueda</Form.Label>
-                                                <Col>
-                                                    <DatePicker
-                                                        selected={endDate}
-                                                        onChange={(date: Date | null) => setEndDate(date)}
-                                                        dateFormat="yyyy-MM-dd"
-                                                        isClearable
-                                                        className="form-control"
-                                                    />
-                                                </Col>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Button variant="primary" style={{ marginTop: "30px" }} onClick={handleBuscarClick}>Buscar</Button>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Form>
+                            <Col>
+                                <Row>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Fecha inicio búsqueda</Form.Label>
+                                            <Col>
+                                                <DatePicker
+                                                    selected={startDate}
+                                                    onChange={(date: Date | null) => setStartDate(date)}
+                                                    dateFormat="yyyy-MM-dd"
+                                                    isClearable
+                                                    className="form-control"
+                                                />
+                                            </Col>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Fecha fin búsqueda</Form.Label>
+                                            <Col>
+                                                <DatePicker
+                                                    selected={endDate}
+                                                    onChange={(date: Date | null) => setEndDate(date)}
+                                                    dateFormat="yyyy-MM-dd"
+                                                    isClearable
+                                                    className="form-control"
+                                                />
+                                            </Col>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Button variant="primary" style={{ marginTop: "30px" }} onClick={handleBuscarClick}>Buscar</Button>
+                                    </Col>
+                                </Row>
+                            </Col>
                         </Form>
                     </Col>
                 </Row>
                 <Row className="mt-3">
-                    <Col md={6}>
-                        <h2>Productos Cocina</h2>
-                        <GenericTable<Producto>
-                            columns={columns}
-                            data={productosNoBebida.sort((a, b) => b.ventasNoBebida - a.ventasNoBebida)}
-                            actions={{
-                                create: true,
-                                update: false,
-                                delete: false,
-                                view: false,
-                            }}
-                            onAdd={handleAddModalOpen}
-                        />
-                    </Col>
-                    <Col md={6}>
-                        <h2>Productos Bebidas</h2>
+                    <Col>
+                        <h2>Ranking de Productos</h2>
                         <GenericTable<Producto>
                             columns={columns}
                             data={productosBebida.sort((a, b) => b.ventasBebida - a.ventasBebida)}
                             actions={{
-                                create: true,
+                                create: false,
                                 update: false,
                                 delete: false,
                                 view: false,
                             }}
-                            onAdd={handleAddModalOpen}
                         />
                     </Col>
                 </Row>

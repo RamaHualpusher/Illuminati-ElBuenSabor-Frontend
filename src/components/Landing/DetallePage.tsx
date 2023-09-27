@@ -34,10 +34,10 @@ const DetallePage = () => {
 
   const handleAddToCart = () => {
     if (producto && producto.stockActual > 0) {
-      const detallePedido: DetallePedido = {
+      const detallePedido = {
         idDetallePedido: 0,
         cantidad: 0,
-        Productos: [producto],
+        Productos: producto,
       };
 
       const item: CartItem = {

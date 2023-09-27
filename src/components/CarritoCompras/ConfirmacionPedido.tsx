@@ -4,10 +4,10 @@ import CartTarjeta from "./CartTarjeta";
 import { CartItem } from "./CartProvider";
 import axios from 'axios';
 import { Pedido } from "../../interface/Pedido";
-import { DetallePedido } from "../../interface/DetallePedido";
-import { Usuario } from "../../interface/Usuario";
 import { Producto } from "../../interface/Producto";
+import { Usuario } from "../../interface/Usuario";
 import { useAuth0 } from "@auth0/auth0-react";
+import { DetallePedido } from "../../interface/DetallePedido";
 
 
 interface ConfirmacionPedidoProps {
@@ -84,26 +84,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       const detallePedido: DetallePedido = {
         idDetallePedido: 0,
         cantidad: cartItem.quantity,
-        Productos: [
-          {
-            idProducto: productoEncontrado.idProducto,
-            nombre: productoEncontrado.nombre,
-            tiempoEstimadoCocina: productoEncontrado.tiempoEstimadoCocina,
-            denominacion: productoEncontrado.denominacion,
-            imagen: productoEncontrado.imagen,
-            stockMinimo: productoEncontrado.stockMinimo,
-            stockActual: productoEncontrado.stockActual,
-            preparacion: productoEncontrado.preparacion,
-            precio: productoEncontrado.precio,
-            esBebida: productoEncontrado.esBebida,
-            estado: productoEncontrado.estado,
-            Rubro: {
-              idRubro: productoEncontrado.Rubro.idRubro,
-              nombre: productoEncontrado.Rubro.nombre,
-            },
-            ProductoIngrediente: [],
-          },
-        ],
+        Productos: productoEncontrado, // Producto ahora es un solo objeto
       };
       return detallePedido;
     } else {
@@ -163,19 +144,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
 
     if (pedidoCompleto !== null) {
-      pedidoCompleto?.DetallePedido.forEach((detalle, index) => {
-        console.log(`Detalle ${index + 1}:`);
-        console.log("ID del Producto:", detalle.Productos[0].idProducto);
-        console.log("Nombre del Producto:", detalle.Productos[0].nombre);
-        console.log("Precio del Producto:", detalle.Productos[0].precio);
-        console.log("Cantidad del Producto:", detalle.cantidad);
-        console.log("Es delivery:", pedidoCompleto.esDelivery);
-        console.log("Es efectivo:", pedidoCompleto.esEfectivo);
-        console.log("Fecha Pedido:", pedidoCompleto.fechaPedido);
-        console.log("Estado Pedido:", pedidoCompleto.estadoPedido);
-        console.log("Total Pedido:", pedidoCompleto.totalPedido);
-      });
-
       try {
         const response = await axios.post("/api/pedido", pedidoCompleto);
         console.log("Pedido enviado al servidor:", response.data);
