@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Domicilio } from "../../interface/Domicilio";
 
 interface CartTarjetaProps {
@@ -22,6 +22,14 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
 }) => {
   const descuento = 0.1; // Descuento del 10% (0.1)
   const costoDelivery = 500;
+
+  // Manejar la selección de "Delivery" y "Mercado Pago" al cargar el componente
+  useEffect(() => {
+    if (esDelivery) {
+      // Cuando se selecciona Delivery, automáticamente selecciona Mercado Pago
+      handleEsEfectivo(false);
+    }
+  }, [esDelivery, handleEsEfectivo]);
 
   return (
     <div className="d-flex justify-content-center align-items-center mb-4">

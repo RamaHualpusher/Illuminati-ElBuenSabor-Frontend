@@ -19,7 +19,6 @@
       {
         "idProductoIngrediente": 1,
         "cantidad": 150,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 1,
           "nombre": "Salsa de tomate",
@@ -27,39 +26,48 @@
           "stockMinimo": 0,
           "stockActual": 0,
           "precioCosto": 20,
-          "Rubro": null,
-          "unidadMedida": "ml",
-          "ProductoIngrediente": []
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "ml"
         }
       },
       {
         "idProductoIngrediente": 2,
         "cantidad": 100,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 2,
           "nombre": "Queso mozzarella",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 3,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 3,
           "nombre": "Pepperoni",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       }
     ]
@@ -84,46 +92,55 @@
       {
         "idProductoIngrediente": 4,
         "cantidad": 150,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 1,
           "nombre": "Salsa de tomate",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "ml",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "ml"
         }
       },
       {
         "idProductoIngrediente": 5,
         "cantidad": 100,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 2,
           "nombre": "Queso",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 6,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 3,
           "nombre": "Jamón",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       }
     ]
@@ -143,8 +160,7 @@
     "Rubro": {
       "idRubro": 2,
       "nombre": "Bebidas"
-    },
-    "ProductoIngrediente": []
+    }
   },
   {
     "idProducto": 4,
@@ -166,76 +182,91 @@
       {
         "idProductoIngrediente": 9,
         "cantidad": 150,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 1,
           "nombre": "Salsa de tomate",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "ml",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "ml"
         }
       },
       {
         "idProductoIngrediente": 10,
         "cantidad": 100,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 6,
           "nombre": "Champiñones",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 11,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 7,
           "nombre": "Pimientos",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 12,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 8,
           "nombre": "Cebolla",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 13,
         "cantidad": 25,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 9,
           "nombre": "Aceitunas",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       }
     ]
@@ -260,76 +291,91 @@
       {
         "idProductoIngrediente": 14,
         "cantidad": 200,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 10,
           "nombre": "Carne de res",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 15,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 11,
           "nombre": "Queso",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 16,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 12,
           "nombre": "Lechuga",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 17,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 13,
           "nombre": "Tomate",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 18,
         "cantidad": 25,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 8,
           "nombre": "Cebolla",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       }
     ]
@@ -354,61 +400,73 @@
       {
         "idProductoIngrediente": 15,
         "cantidad": 1,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 4,
           "nombre": "Pan de hamburguesa",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "unidad",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "unidad"
         }
       },
       {
         "idProductoIngrediente": 16,
         "cantidad": 150,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 5,
           "nombre": "Carne de res",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 17,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 6,
           "nombre": "Queso cheddar",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 18,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 7,
           "nombre": "Barbacoa",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       }
     ]
@@ -428,8 +486,7 @@
     "Rubro": {
       "idRubro": 2,
       "nombre": "Bebidas"
-    },
-    "ProductoIngrediente": []
+    }
   },
   {
     "idProducto": 8,
@@ -446,8 +503,7 @@
     "Rubro": {
       "idRubro": 2,
       "nombre": "Bebidas"
-    },
-    "ProductoIngrediente": []
+    }
   },
   {
     "idProducto": 9,
@@ -464,8 +520,7 @@
     "Rubro": {
       "idRubro": 2,
       "nombre": "Bebidas"
-    },
-    "ProductoIngrediente": []
+    }
   },
   {
     "idProducto": 10,
@@ -487,106 +542,127 @@
       {
         "idProductoIngrediente": 19,
         "cantidad": 1,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 4,
           "nombre": "Pan de hamburguesa",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "unidad",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "unidad"
         }
       },
       {
         "idProductoIngrediente": 20,
         "cantidad": 150,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 5,
           "nombre": "Carne de res",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 21,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 6,
           "nombre": "Queso cheddar",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 22,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 7,
           "nombre": "Panceta",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 23,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 7,
           "nombre": "Cebolla",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 24,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 7,
           "nombre": "Lechuga",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 25,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 7,
           "nombre": "Pepino",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       }
     ]
@@ -611,91 +687,109 @@
       {
         "idProductoIngrediente": 26,
         "cantidad": 150,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 1,
           "nombre": "Salsa de tomate",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "ml",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "ml"
         }
       },
       {
         "idProductoIngrediente": 27,
         "cantidad": 100,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 2,
           "nombre": "Queso mozzarella",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 28,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 3,
           "nombre": "Tomate",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 29,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 3,
           "nombre": "Morron",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 30,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 3,
           "nombre": "Salame",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       },
       {
         "idProductoIngrediente": 31,
         "cantidad": 50,
-        "Producto": null,
         "Ingredientes": {
           "idIngredientes": 3,
           "nombre": "Anana",
           "estado": false,
           "stockMinimo": 0,
           "stockActual": 0,
-          "Rubro": null,
-          "unidadMedida": "gr",
-          "ProductoIngrediente": []
+          "precioCosto": 20,
+          "Rubro": {
+            "idRubro": 1,
+            "nombre": "Quesos",
+            "idRubroPadre": null
+          },
+          "unidadMedida": "gr"
         }
       }
     ]

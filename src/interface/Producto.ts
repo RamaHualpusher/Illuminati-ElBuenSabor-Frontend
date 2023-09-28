@@ -15,7 +15,7 @@ export interface  Producto {
   estado : boolean;
   Rubro: Rubro;
   // DetallePedido: DetallePedido[]; cambio 20/9/23
-  ProductoIngrediente: ProductoIngrediente[];
+  ProductoIngrediente?: ProductoIngrediente[];
 }
 
 export interface EditProductoModalProps {

@@ -8,6 +8,7 @@ import { Producto } from "../../interface/Producto";
 import { Usuario } from "../../interface/Usuario";
 import { useAuth0 } from "@auth0/auth0-react";
 import { DetallePedido } from "../../interface/DetallePedido";
+import { Alert, Button } from 'react-bootstrap';
 
 
 interface ConfirmacionPedidoProps {
@@ -35,6 +36,13 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const descuento = 0.1; // Descuento del 10% (0.1)
   const costoDelivery = 500;
   const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const [showAlert, setShowAlert] = useState(!isAuthenticated);
+  const [confirmDisabled, setConfirmDisabled] = useState(!isAuthenticated);
+
+  // Almacena la URL actual antes de redirigir
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+  // Variable de estado para almacenar la URL anterior
+  const [returnUrl, setReturnUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsuario = async () => {
@@ -67,6 +75,20 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     );
     setSubTotal(totalProducto);
   }, [cartItems]);
+
+  useEffect(() => {
+    // Después del inicio de sesión, redirige al usuario de vuelta a la página original
+    if (isAuthenticated && returnUrl) {
+      window.location.href = returnUrl;
+    }
+  }, [isAuthenticated, returnUrl]);
+
+
+  // Almacena la URL actual antes de redirigir
+  const handleLoginRedirect = () => {
+    setReturnUrl(window.location.href);
+    loginWithRedirect();
+  };
 
   const handleEsEfectivo = (esEfectivo: boolean) => {
     setEsEfectivo(esEfectivo);
@@ -137,15 +159,49 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     e.preventDefault();
 
     if (!isAuthenticated) {
-      // El usuario no ha iniciado sesión, muestra un mensaje y un botón para iniciar sesión.
-      alert("Por favor, inicie sesión para confirmar el pedido.");
-      loginWithRedirect(); // Redirige al usuario a la página de inicio de sesión de Auth0.
+      // El usuario no ha iniciado sesión, muestra un mensaje de alerta.
+      setShowAlert(true);
       return;
     }
 
+
     if (pedidoCompleto !== null) {
+
+      // pedidoCompleto?.DetallePedido.forEach((detalle, index) => {
+      //   console.log(`Detalle ${index + 1}:`);
+      //   console.log("---------------------------------");
+      //   console.log("Pedido:");
+      //   console.log("Es delivery:", pedidoCompleto.esDelivery);
+      //   console.log("Es efectivo:", pedidoCompleto.esEfectivo);
+      //   console.log("Fecha Pedido:", pedidoCompleto.fechaPedido);
+      //   console.log("Estado Pedido:", pedidoCompleto.estadoPedido);
+      //   console.log("Total Pedido:", pedidoCompleto.totalPedido);
+      //   console.log("---------------------------------");
+      //   console.log("Productos:");
+      //   console.log("Cantidad del Producto:", detalle.cantidad);
+      //   console.log("Producto:", detalle.Productos.nombre);
+      //   console.log("Tiempo Producto:", detalle.Productos.tiempoEstimadoCocina);
+      //   console.log("Imagen Producto:", detalle.Productos.imagen);
+      //   console.log("Precio individual Producto", detalle.Productos.precio);
+      //   console.log("Preparacion Producto", detalle.Productos.preparacion);
+      //   console.log("Es bebida Producto", detalle.Productos.esBebida);
+      //   console.log("Estado Producto", detalle.Productos.estado);
+      //   console.log("Rubro Producto", detalle.Productos.Rubro.nombre);
+      //   console.log("---------------------------------");
+      //   console.log("ProductosIngredientes:");
+      //   detalle.Productos.ProductoIngrediente?.forEach((prodIng, prodIngIndex) => {
+      //     console.log(`ProductoIngrediente ${prodIngIndex + 1}:`);
+      //     console.log("Cantidad:", prodIng.cantidad);
+      //     console.log("Nombre Ingrediente:", prodIng.Ingredientes.nombre);
+      //     console.log("Precio Costo Ingrediente:", prodIng.Ingredientes.precioCosto);
+      //     console.log("Unidad Medida Ingrediente:", prodIng.Ingredientes.unidadMedida);
+      //      console.log("Rubro Ingrediente:", prodIng.Ingredientes.Rubro.nombre);
+      //   });
+
+      // });
+
       try {
-        const response = await axios.post("/api/pedido", pedidoCompleto);
+        const response = await axios.post("/api/pedido", pedidoCompleto); //Cambiar la url
         console.log("Pedido enviado al servidor:", response.data);
       } catch (error) {
         console.error("Error al enviar el pedido:", error);
@@ -196,7 +252,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
       <form onSubmit={handleConfirmarPedido}>
         <div className="d-flex justify-content-center align-items-center mb-4">
-          <button type="submit" className="btn btn-primary me-2">
+          <button type="submit" className="btn btn-primary me-2" disabled={confirmDisabled}>
             Confirmar Pedido
           </button>
           <button
@@ -211,6 +267,18 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </button>
         </div>
       </form>
+
+      <div className="container mt-3">
+        <Alert show={showAlert} variant="danger">
+          Por favor, inicie sesión para confirmar el pedido.    <br />
+          <div className="mt-1">
+            <Button variant="primary" onClick={handleLoginRedirect}>
+              Iniciar Sesión
+            </Button>
+          </div>
+
+        </Alert>
+      </div>
     </div>
   );
 };
