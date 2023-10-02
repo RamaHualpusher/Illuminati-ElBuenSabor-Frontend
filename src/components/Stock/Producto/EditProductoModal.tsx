@@ -103,7 +103,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
       setTiempo(selectedProducto?.tiempoEstimadoCocina || 0);
       setPrecio(selectedProducto?.precio || 0);
       setEstado(selectedProducto?.estado || false);
-      setIngredientes(selectedProducto.ProductoIngrediente)
+      setIngredientes(selectedProducto.ProductoIngrediente|| [])
       let cos = 0;
       ingredientes?.map((ingre) => {
         console.log(cos);
