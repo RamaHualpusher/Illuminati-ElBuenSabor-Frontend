@@ -78,7 +78,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       .then((response) => {
         setRubros(response.data);
         if (selectedProducto) {
-          setIngredientes(selectedProducto.ProductoIngrediente)
+          setIngredientes(selectedProducto.ProductoIngrediente || [])
         }
       })
       .catch((error) => {
@@ -140,7 +140,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     }
     setCantidad(cant);
     if (ingrediente !== defectoProductoIngrediente) {
-      selectedProducto?.ProductoIngrediente.map((ingr) => {
+      selectedProducto?.ProductoIngrediente?.map((ingr) => {
         if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
           console.log("ingrediente previo guardado")
           ingr = ingrediente;
@@ -370,7 +370,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
               required
             >
               <option value="none">Eliminar Ingrediente</option>
-              {selectedProducto?.ProductoIngrediente.map((Ingrediente) =>
+              {selectedProducto?.ProductoIngrediente?.map((Ingrediente) =>
                 <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre}</option>
               )}
             </Form.Select>
