@@ -15,36 +15,46 @@ import MiPerfil from "../components/OpcionesCliente/MiPerfil/MiPerfil";
 const UserRouter = () => {
 
   const location = useLocation();
-  // Save scroll position when the user scrolls
+
   useEffect(() => {
-    const saveScrollPosition = () => {
-      if (location.pathname === "/") {
-        localStorage.setItem(location.pathname, JSON.stringify(window.scrollY.toFixed(1)));
-      }
-    };
-
-    // Save scroll position when the user scrolls
-    window.addEventListener('scroll', saveScrollPosition);
-
-    // Remove the event listener when the component is unmounted
+    // Guarda la posición del scroll al desmontar
     return () => {
-      window.removeEventListener('scroll', saveScrollPosition);
+      saveScrollPosition();
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    // Restaura la posición del scroll al cargar o cambiar de ruta
+    restoreScrollPosition();
+
+    // Agrega un event listener para el botón "atrás" del navegador
+    const handlePopstate = () => {
+      // Restaura la posición del scroll al presionar el botón "atrás"
+      restoreScrollPosition();
+    };
+
+    window.addEventListener("popstate", handlePopstate);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
     };
   }, [location.pathname]);
 
-  // Restore scroll position with a delay
-  useLayoutEffect(() => {
-    const restoreScrollPosition = async () => {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      if (location.pathname === "/") {
-        const savedPosition = localStorage.getItem(location.pathname);
-        window.scrollTo(0, savedPosition ? JSON.parse(savedPosition) : 0);
-      } else {
-        window.scrollTo(0, 0);
-      }
+  const saveScrollPosition = () => {
+    if (location.pathname === "/") {
+      localStorage.setItem(location.pathname, window.scrollY.toString());
     }
-    restoreScrollPosition();
-  }, [location.pathname]);
+  };
+
+  const restoreScrollPosition = () => {
+    if (location.pathname === "/") {
+      const savedPosition = localStorage.getItem(location.pathname);
+      const scrollY = savedPosition ? parseInt(savedPosition, 10) : 0;
+      window.scrollTo(0, scrollY);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  };
 
 
   return (
