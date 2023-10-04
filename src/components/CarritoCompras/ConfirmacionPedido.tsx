@@ -17,6 +17,7 @@ interface ConfirmacionPedidoProps {
   eliminarDetallePedido: (id: number) => void;
   onCancel: () => void;
   onContinue: () => void;
+  isCartEmpty: boolean; // Recibe la prop isCartEmpty
 }
 
 const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
@@ -24,7 +25,8 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   modificarCantidad,
   eliminarDetallePedido,
   onCancel,
-  onContinue
+  onContinue,
+  isCartEmpty, // Usa la prop isCartEmpty
 }) => {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [productos, setProductos] = useState<Producto[] | null>(null);
@@ -252,7 +254,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
       <form onSubmit={handleConfirmarPedido}>
         <div className="d-flex justify-content-center align-items-center mb-4">
-          <button type="submit" className="btn btn-primary me-2" disabled={confirmDisabled}>
+          <button type="submit"
+            className="btn btn-primary me-2"
+            disabled={confirmDisabled || isCartEmpty}>
             Confirmar Pedido
           </button>
           <button
@@ -267,6 +271,14 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </button>
         </div>
       </form>
+      {/* Mostrar el Alert cuando el carrito esté vacío */}
+      {isCartEmpty && (
+        <div className="container mt-3">
+          <Alert show={true} variant="warning">
+            No hay productos en el carrito. Agregue productos antes de confirmar.
+          </Alert>
+        </div>
+      )}
 
       <div className="container mt-3">
         <Alert show={showAlert} variant="danger">

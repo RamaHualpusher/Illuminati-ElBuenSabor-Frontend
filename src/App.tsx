@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import IndexRouter from './routers/IndexRouter';
@@ -7,9 +7,11 @@ import { CartProvider } from './components/CarritoCompras/CartProvider';
 import { SearchProvider } from './components/Buscador/SearchContext';
 
 function App(): JSX.Element {
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { isLoading } = useAuth0();
 
   if (isLoading) return <Spinner />;
+
+  
 
   return (
     <div className="App">

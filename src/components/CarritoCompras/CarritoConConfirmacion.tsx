@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { CartContext } from './CartProvider';
 import ConfirmacionPedido from './ConfirmacionPedido';
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +32,8 @@ const CarritoConConfirmacion: React.FC = () => {
   const onContinue = () => {
     navigate("/");
   }
+  // Determina si el carrito está vacío
+  const isCartEmpty = cartItems.length === 0;
 
   return (
     <>
@@ -41,9 +43,10 @@ const CarritoConConfirmacion: React.FC = () => {
         modificarCantidad={modificarCantidad}
         eliminarDetallePedido={id => {
           removeFromCart(id);
-        } }
+        }}
         onCancel={onCancel}
-        onContinue={onContinue}/>
+        onContinue={onContinue}
+        isCartEmpty={isCartEmpty} />
     </>
   );
 }
