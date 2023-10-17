@@ -59,7 +59,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     precio: 0,
     esBebida: false,
     estado: false,
-    ProductoIngrediente: [],
+    ProductoIngrediente: []   
   }
 
   const defectoProductoIngrediente: ProductoIngrediente = {

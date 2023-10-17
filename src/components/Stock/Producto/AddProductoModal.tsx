@@ -59,7 +59,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     precio: 0,
     esBebida: false,
     estado: false,
-    ProductoIngrediente: [],
+    ProductoIngrediente: []   
   }
 
   const defectoProductoIngrediente: ProductoIngrediente = {
@@ -240,7 +240,6 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
         precio,
         esBebida: false,
         estado,
-
         ProductoIngrediente: selectedProducto.ProductoIngrediente,
       };
       handleProductoAdd(newProducto);

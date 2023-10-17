@@ -43,7 +43,7 @@ const Movimientos = () => {
         if (Array.isArray(detalle.Productos)) {
           detalle.Productos.forEach((producto) => {
             if (Array.isArray(producto.ProductoIngrediente)) {
-              producto.ProductoIngrediente.forEach((pi) => {
+              producto.ProductoIngrediente.forEach((pi: { Ingredientes: { idIngredientes: number; }; cantidad: number; }) => {
                 // Buscar el ingrediente por su idIngredientes
                 return ingredientesData.map((ingrediente: Ingredientes) => {
                   const ingredienteBusqueda = ingredientes.find(ing => ing.idIngredientes === pi.Ingredientes.idIngredientes);
@@ -76,7 +76,7 @@ const Movimientos = () => {
         if (Array.isArray(detalle.Productos)) {
           detalle.Productos.forEach((producto) => {
             if (Array.isArray(producto.ProductoIngrediente)) {
-              producto.ProductoIngrediente.forEach((pi) => {                
+              producto.ProductoIngrediente.forEach((pi: { Ingredientes: { idIngredientes: number; }; cantidad: number; }) => {                
                 ingredientesData.forEach((ingrediente: Ingredientes) => {
                   const ingredienteBusqueda = ingredientesData.find(ing => ing.idIngredientes === pi.Ingredientes.idIngredientes);
                   console.log(ingredienteBusqueda)
