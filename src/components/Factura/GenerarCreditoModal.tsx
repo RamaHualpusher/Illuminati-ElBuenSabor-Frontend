@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DetallePedido } from "../../interface/DetallePedido";
+import { Pedido } from "../../interface/Pedido";
 import { Usuario } from "../../interface/Usuario";
 import { Domicilio } from "../../interface/Domicilio";
 import AdminBar from "../NavBar/AdminBar";
@@ -8,6 +8,7 @@ import { Table, Container } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 
 import FacturaPDF from "./FacturaPDF";
+import { DetallePedido } from '../../interface/DetallePedido';
 
 interface GenerarCreditoModalProps {
     closeModal: () => void;
@@ -16,7 +17,7 @@ interface GenerarCreditoModalProps {
 const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
     closeModal,
 }) => {
-    const [detallePedidos, setDetallePedidos] = useState<DetallePedido[]>([]);
+    const [pedidoObj, setPedido] = useState<Pedido | null>(null);
     const [usuario, setUsuario] = useState<Usuario | undefined>();
     const [domicilio, setDomicilio] = useState<Domicilio | undefined>();
     const location = useLocation();
@@ -26,7 +27,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
 
     useEffect(() => {
         if (pedido) {
-            setDetallePedidos(pedido.DetallePedido || []);
+            setPedido(pedido.DetallePedido || []);
             setUsuario(pedido.Usuario);
             if (pedido.Usuario) {
                 setDomicilio(pedido.Usuario.Domicilio);
@@ -81,29 +82,25 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                                 </tr>
                             </thead>
                             <tbody>
-                                {detallePedidos?.map((detalle) => (
-                                    <tr key={detalle?.idDetallePedido}>
-                                        <td>{detalle?.cantidad}</td>
+                                {pedidoObj?.DetallePedido && pedidoObj.DetallePedido.length > 0 && (
+                                    <tr key={pedidoObj.DetallePedido[0].idDetallePedido}>
+                                        <td>{pedidoObj.DetallePedido[0].cantidad}</td>
                                         <td>
                                             <ul>
-                                                {detalle?.Productos?.map((producto) => (
-                                                    <li key={producto.idProducto}>
-                                                        {producto.nombre}
-                                                    </li>
-                                                ))}
+                                                {/* <li key={pedidoObj.DetallePedido[0].Productos.idProducto}>
+                                                    {pedidoObj.DetallePedido[0].Productos.nombre}
+                                                </li> */}
                                             </ul>
                                         </td>
                                         <td>
                                             <ul>
-                                                {detalle?.Productos?.map((producto) => (
-                                                    <li key={producto.idProducto}>
-                                                        {producto.precio}
-                                                    </li>
-                                                ))}
+                                                {/* <li key={pedidoObj.DetallePedido[0].Productos.idProducto}>
+                                                    {pedidoObj.DetallePedido[0].Productos.precio}
+                                                </li> */}
                                             </ul>
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                             <tfoot>
                                 <tr>

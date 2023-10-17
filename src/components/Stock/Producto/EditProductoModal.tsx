@@ -40,7 +40,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     idIngredientes: 0,
     nombre: "none",
     precioCosto: 0,
-    ProductoIngrediente: [],
+    // ProductoIngrediente: [],
     Rubro: rubrod,
     stockActual: 0,
     stockMinimo: 0,
@@ -60,7 +60,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     precio: 0,
     esBebida: false,
     estado: false,
-    DetallePedido: [],
+    // DetallePedido: [],
     ProductoIngrediente: [],
   }
 
@@ -68,7 +68,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     cantidad: 0,
     idProductoIngrediente: 0,
     Ingredientes: defectoIngrediente,
-    Producto: defectoProducto
+    // Producto: defectoProducto
   }
   const [ingrediente, setIngrediente] = useState<ProductoIngrediente>(defectoProductoIngrediente);
 
@@ -191,7 +191,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
           cantidad: cantIngrediente,
           idProductoIngrediente: contar + 1,
           Ingredientes: ingre || defectoIngrediente,
-          Producto: defectoProducto
+          // Producto: defectoProducto
         }
         setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
         ingres?.push(agre);

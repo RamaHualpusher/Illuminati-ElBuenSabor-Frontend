@@ -2,7 +2,7 @@ import { Rubro } from "./Rubro";
 import { DetallePedido } from "./DetallePedido";
 import { ProductoIngrediente } from "./ProductoIngrediente";
 
-export interface Producto {
+export interface Producto {  
   idProducto: number;
   nombre: string;
   tiempoEstimadoCocina: number;

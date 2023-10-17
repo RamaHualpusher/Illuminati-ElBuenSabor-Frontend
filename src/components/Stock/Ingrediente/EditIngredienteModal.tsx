@@ -62,7 +62,7 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
         precioCosto,
         estado,
         unidadMedida: um,
-        ProductoIngrediente: selectedIngredientes.ProductoIngrediente || [],
+        // ProductoIngrediente: selectedIngredientes.ProductoIngrediente || [],
       };
       handleIngredientesEdit(updatedIngredientes);
     }

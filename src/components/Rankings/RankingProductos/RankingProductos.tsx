@@ -4,6 +4,7 @@ import { Producto } from '../../../interface/Producto';
 import GenericTable from "../../GenericTable/GenericTable";
 import { Column } from "../../../interface/CamposTablaGenerica";
 import { Pedido } from "../../../interface/Pedido";
+import { DetallePedido } from "../../../interface/DetallePedido";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -28,7 +29,7 @@ const RankingProductos = () => {
                 setPedidos(pedidosData);
             })
             .catch(error => console.log(error));
-    }, []);
+    }, []); 
 
     const columns: Column<Producto>[] = [
         { title: "ID", field: "idProducto", width: 1 },
@@ -43,6 +44,7 @@ const RankingProductos = () => {
                 <div>{calculateCantidadVendido(rowData.idProducto, false)}</div>
         },
     ];
+      
 
     const calculateCantidadVendido = (productoId: number, esBebida: boolean) => {
         return pedidos.reduce((totalCantidad, pedido) => {
@@ -58,6 +60,7 @@ const RankingProductos = () => {
                 }
                 return cantidad;
             }, 0);
+            const fechaPedido = new Date(pedido.fechaPedido).toLocaleDateString();
             return totalCantidad + cantidadProductoEnPedido;
         }, 0);
     };

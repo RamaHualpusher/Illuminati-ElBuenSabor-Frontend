@@ -6,7 +6,6 @@ import GenericTable from "../GenericTable/GenericTable";
 import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
 
-
 const Factura = () => {
   const [facturas, setFacturas] = useState<Pedido[] | null>(null);
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
