@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
         <Row className="align-items-center">
           {/* Columna izquierda con información de derechos de autor */}
           <Col md={4} className="text-center text-md-start mb-3 mb-md-0">
-            <p className="text-muted mb-0">© {new Date().getFullYear()} El Buen Sabor</p>
+            <p className="mb-0 text-white">© {new Date().getFullYear()} El Buen Sabor</p>
           </Col>
 
           {/* Columna derecha con información de contacto */}

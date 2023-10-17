@@ -1,6 +1,6 @@
+import { MercadoPagoDatos } from "./MercadoPagoDatos";
 import { Usuario } from "./Usuario";
 import { DetallePedido } from "./DetallePedido";
-import { MercadoPagoDatos } from './MercadoPagoDatos';
 
 export interface Pedido {
   idPedido: number;

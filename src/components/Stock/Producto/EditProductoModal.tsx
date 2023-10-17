@@ -40,7 +40,6 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     idIngredientes: 0,
     nombre: "none",
     precioCosto: 0,
-    // ProductoIngrediente: [],
     Rubro: rubrod,
     stockActual: 0,
     stockMinimo: 0,
@@ -60,15 +59,13 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     precio: 0,
     esBebida: false,
     estado: false,
-    // DetallePedido: [],
     ProductoIngrediente: [],
   }
 
   const defectoProductoIngrediente: ProductoIngrediente = {
     cantidad: 0,
     idProductoIngrediente: 0,
-    Ingredientes: defectoIngrediente,
-    // Producto: defectoProducto
+    Ingredientes: defectoIngrediente
   }
   const [ingrediente, setIngrediente] = useState<ProductoIngrediente>(defectoProductoIngrediente);
 
@@ -106,7 +103,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
       setTiempo(selectedProducto?.tiempoEstimadoCocina || 0);
       setPrecio(selectedProducto?.precio || 0);
       setEstado(selectedProducto?.estado || false);
-      setIngredientes(selectedProducto.ProductoIngrediente)
+      setIngredientes(selectedProducto.ProductoIngrediente|| [])
       let cos = 0;
       ingredientes?.map((ingre) => {
         console.log(cos);
@@ -190,8 +187,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
         const agre: ProductoIngrediente = {
           cantidad: cantIngrediente,
           idProductoIngrediente: contar + 1,
-          Ingredientes: ingre || defectoIngrediente,
-          // Producto: defectoProducto
+          Ingredientes: ingre || defectoIngrediente
         }
         setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
         ingres?.push(agre);

@@ -12,7 +12,12 @@ interface CartTablaProps {
  * 
  * @param {CartTablaProps} props - Propiedades del componente.
  */
-const CartTabla: React.FC<CartTablaProps> = ({ cartItems, modificarCantidad, eliminarDetallePedido }) => {
+const CartTabla: React.FC<CartTablaProps> = ({
+    cartItems,
+    modificarCantidad,
+    eliminarDetallePedido
+}) => {
+    
     return (
         <div className="d-flex justify-content-center align-items-center mb-4">
             <div className="container">

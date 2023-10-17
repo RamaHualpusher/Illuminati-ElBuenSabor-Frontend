@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { CartContext } from './CartProvider';
 import ConfirmacionPedido from './ConfirmacionPedido';
 import { useNavigate } from 'react-router-dom';
@@ -9,10 +9,6 @@ const CarritoConConfirmacion: React.FC = () => {
 
   // Navegación
   const navigate = useNavigate();
-
-  // Estados locales para el método de pago y tipo de envío
-  const [metodoPago, setMetodoPago] = useState('Efectivo');
-  const [tipoEnvio, setTipoEnvio] = useState('Delivery');
 
   // Función para modificar la cantidad de un ítem en el carrito
   const modificarCantidad = (id: number, cantidad: number) => {
@@ -36,23 +32,21 @@ const CarritoConConfirmacion: React.FC = () => {
   const onContinue = () => {
     navigate("/");
   }
+  // Determina si el carrito está vacío
+  const isCartEmpty = cartItems.length === 0;
 
   return (
     <>
       {/* Renderizar el componente de confirmación de pedido */}
       <ConfirmacionPedido
         cartItems={cartItems}
-        metodoPago={metodoPago}
-        tipoEnvio={tipoEnvio}
-        setMetodoPago={setMetodoPago}
-        setTipoEnvio={setTipoEnvio}
         modificarCantidad={modificarCantidad}
         eliminarDetallePedido={id => {
           removeFromCart(id);
         }}
         onCancel={onCancel}
         onContinue={onContinue}
-      />
+        isCartEmpty={isCartEmpty} />
     </>
   );
 }

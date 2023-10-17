@@ -1,60 +1,76 @@
 import React, { useEffect, useState } from "react";
 import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
-import { Domicilio } from "../../interface/Domicilio";
 import { CartItem } from "./CartProvider";
+import axios from 'axios';
+import { Pedido } from "../../interface/Pedido";
+import { Producto } from "../../interface/Producto";
+import { Usuario } from "../../interface/Usuario";
+import { useAuth0 } from "@auth0/auth0-react";
+import { DetallePedido } from "../../interface/DetallePedido";
+import { Alert, Button } from 'react-bootstrap';
+
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
-  metodoPago: string;
-  tipoEnvio: string;
-  setMetodoPago: (metodo: string) => void;
-  setTipoEnvio: (tipo: string) => void;
   modificarCantidad: (id: number, cantidad: number) => void;
   eliminarDetallePedido: (id: number) => void;
   onCancel: () => void;
   onContinue: () => void;
+  isCartEmpty: boolean; // Recibe la prop isCartEmpty
 }
 
-/**
- * Componente de confirmación de pedido que muestra los detalles del carrito y opciones de envío y pago.
- * 
- * @param {ConfirmacionPedidoProps} props - Propiedades del componente.
- */
 const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   cartItems,
-  metodoPago,
-  tipoEnvio,
-  setMetodoPago,
-  setTipoEnvio,
   modificarCantidad,
   eliminarDetallePedido,
   onCancel,
-  onContinue
+  onContinue,
+  isCartEmpty, // Usa la prop isCartEmpty
 }) => {
-  const [domicilio, setDomicilio] = useState<Domicilio | null>(null);
-  const [costoDelivery, setCostoDelivery] = useState(500);
-  const descuento = 0.1; // Descuento del 10% (0.1)
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [productos, setProductos] = useState<Producto[] | null>(null);
   const [subTotal, setSubTotal] = useState(0);
+  const [pedidoCompleto, setPedidoCompleto] = useState<Pedido | null>(null);
+  const [esDelivery, setEsDelivery] = useState(true);
+  const [esEfectivo, setEsEfectivo] = useState(true);
+  const [totalPedido, setTotalPedido] = useState(0);
+  const descuento = 0.1; // Descuento del 10% (0.1)
+  const costoDelivery = 500;
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const [showAlert, setShowAlert] = useState(!isAuthenticated);
+  const [confirmDisabled, setConfirmDisabled] = useState(!isAuthenticated);
+
+  // Almacena la URL actual antes de redirigir
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+  // Variable de estado para almacenar la URL anterior
+  const [returnUrl, setReturnUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    // Obtener el domicilio del cliente desde una fuente de datos
-    const fetchDomicilio = async () => {
+    const fetchUsuario = async () => {
       try {
-        const response = await fetch("/assets/data/clienteTabla.json");
-        const data = await response.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setDomicilio(data[0].Domicilio);
-        }
+        const response = await axios.get("/assets/data/clienteTabla.json");
+        const usuarioData = response.data[0];
+        setUsuario(usuarioData);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchDomicilio();
+
+    const fetchProductos = async () => {
+      try {
+        const response = await axios.get("/assets/data/productosLanding.json");
+        setProductos(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchProductos();
+    fetchUsuario();
   }, []);
 
   useEffect(() => {
-    // Calcular el subtotal del pedido en función de los elementos del carrito
     const totalProducto = cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
       0
@@ -62,33 +78,143 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     setSubTotal(totalProducto);
   }, [cartItems]);
 
-  const handleMetodoPago = (metodo: string) => {
-    setMetodoPago(metodo);
+  useEffect(() => {
+    // Después del inicio de sesión, redirige al usuario de vuelta a la página original
+    if (isAuthenticated && returnUrl) {
+      window.location.href = returnUrl;
+    }
+  }, [isAuthenticated, returnUrl]);
+
+
+  // Almacena la URL actual antes de redirigir
+  const handleLoginRedirect = () => {
+    setReturnUrl(window.location.href);
+    loginWithRedirect();
   };
 
-  const handleTipoEnvio = (tipo: string) => {
-    setTipoEnvio(tipo);
+  const handleEsEfectivo = (esEfectivo: boolean) => {
+    setEsEfectivo(esEfectivo);
   };
 
-  const handleConfirmarPedido = (e: React.FormEvent) => {
+  // Cambia el nombre de la función y la prop de tipoEnvio a esDelivery
+  const handleEsDelivery = (esDelivery: boolean) => {
+    setEsDelivery(esDelivery);
+  };
+
+  const convertirCartItemADetallePedido = (cartItem: CartItem): DetallePedido => {
+    const productoEncontrado = productos?.find(producto => producto.idProducto === cartItem.id);
+
+    if (productoEncontrado) {
+      const detallePedido: DetallePedido = {
+        idDetallePedido: 0,
+        cantidad: cartItem.quantity,
+        Productos: productoEncontrado, // Producto ahora es un solo objeto
+      };
+      return detallePedido;
+    } else {
+      throw new Error(`Producto con ID ${cartItem.id} no encontrado.`);
+    }
+  };
+
+  useEffect(() => {
+    if (usuario !== null && cartItems.length > 0) {
+      const domicilioUsuario = usuario.Domicilio;
+
+      // Calcula el total del pedido aquí
+      const nuevoTotalPedido =
+        esDelivery ? subTotal + costoDelivery : subTotal - subTotal * descuento;
+
+      const nuevoPedidoCompleto: Pedido = {
+        idPedido: 0,
+        numeroPedido: 0,
+        horaEstimadaFin: new Date(),
+        esDelivery: esDelivery,
+        esEfectivo: esEfectivo,
+        estadoPedido: "A confirmar",
+        fechaPedido: new Date(),
+        Usuario: {
+          idUsuario: usuario.idUsuario,
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          email: usuario.email,
+          clave: usuario.clave,
+          claveConfirm: usuario.claveConfirm,
+          telefono: usuario.telefono,
+          estado: usuario.estado,
+          Domicilio: domicilioUsuario,
+          Rol: {
+            idRol: usuario.Rol.idRol,
+            nombreRol: usuario.Rol.nombreRol,
+          },
+        },
+        DetallePedido: cartItems.map(convertirCartItemADetallePedido),
+        totalPedido: nuevoTotalPedido,
+      };
+
+      setTotalPedido(nuevoTotalPedido); // Actualiza el estado del total del pedido
+      setPedidoCompleto(nuevoPedidoCompleto);
+      console.log("Se cargó el Pedido");
+    }
+  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo]);
+
+  const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Objeto completo a imprimir en la consola
-    const pedidoCompleto = {
-      cartItems,
-      metodoPago,
-      tipoEnvio,
-      subTotal,
-      domicilio,
-      costoDelivery,
-      descuento
-    };
-    console.log("Pedido completo:", pedidoCompleto);
+
+    if (!isAuthenticated) {
+      // El usuario no ha iniciado sesión, muestra un mensaje de alerta.
+      setShowAlert(true);
+      return;
+    }
+
+
+    if (pedidoCompleto !== null) {
+
+      // pedidoCompleto?.DetallePedido.forEach((detalle, index) => {
+      //   console.log(`Detalle ${index + 1}:`);
+      //   console.log("---------------------------------");
+      //   console.log("Pedido:");
+      //   console.log("Es delivery:", pedidoCompleto.esDelivery);
+      //   console.log("Es efectivo:", pedidoCompleto.esEfectivo);
+      //   console.log("Fecha Pedido:", pedidoCompleto.fechaPedido);
+      //   console.log("Estado Pedido:", pedidoCompleto.estadoPedido);
+      //   console.log("Total Pedido:", pedidoCompleto.totalPedido);
+      //   console.log("---------------------------------");
+      //   console.log("Productos:");
+      //   console.log("Cantidad del Producto:", detalle.cantidad);
+      //   console.log("Producto:", detalle.Productos.nombre);
+      //   console.log("Tiempo Producto:", detalle.Productos.tiempoEstimadoCocina);
+      //   console.log("Imagen Producto:", detalle.Productos.imagen);
+      //   console.log("Precio individual Producto", detalle.Productos.precio);
+      //   console.log("Preparacion Producto", detalle.Productos.preparacion);
+      //   console.log("Es bebida Producto", detalle.Productos.esBebida);
+      //   console.log("Estado Producto", detalle.Productos.estado);
+      //   console.log("Rubro Producto", detalle.Productos.Rubro.nombre);
+      //   console.log("---------------------------------");
+      //   console.log("ProductosIngredientes:");
+      //   detalle.Productos.ProductoIngrediente?.forEach((prodIng, prodIngIndex) => {
+      //     console.log(`ProductoIngrediente ${prodIngIndex + 1}:`);
+      //     console.log("Cantidad:", prodIng.cantidad);
+      //     console.log("Nombre Ingrediente:", prodIng.Ingredientes.nombre);
+      //     console.log("Precio Costo Ingrediente:", prodIng.Ingredientes.precioCosto);
+      //     console.log("Unidad Medida Ingrediente:", prodIng.Ingredientes.unidadMedida);
+      //      console.log("Rubro Ingrediente:", prodIng.Ingredientes.Rubro.nombre);
+      //   });
+
+      // });
+
+      try {
+        const response = await axios.post("/api/pedido", pedidoCompleto); //Cambiar la url
+        console.log("Pedido enviado al servidor:", response.data);
+      } catch (error) {
+        console.error("Error al enviar el pedido:", error);
+      }
+    }
   };
 
   return (
     <div style={{ marginTop: "90px" }}>
-      <div className="row justify-content-center">
-        <h1 className="display-4 mb-0">Carrito de Compras</h1>
+      <div className="justify-content-center">
+        <h1 className="display-4">Carrito de Compras</h1>
       </div>
 
       <div className="container-fluid">
@@ -99,11 +225,13 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
                 ¿Desea agregar o eliminar algo?
               </small>
             </h1>
-            <CartTabla
-              cartItems={cartItems}
-              modificarCantidad={modificarCantidad}
-              eliminarDetallePedido={eliminarDetallePedido}
-            />
+            <div className="card shadow">
+              <CartTabla
+                cartItems={cartItems}
+                modificarCantidad={modificarCantidad}
+                eliminarDetallePedido={eliminarDetallePedido}
+              />
+            </div>
           </div>
 
           <div className="col-md-6">
@@ -113,22 +241,22 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               </small>
             </h1>
             <CartTarjeta
-              tipoEnvio={tipoEnvio}
-              metodoPago={metodoPago}
-              handleTipoEnvio={handleTipoEnvio}
-              handleMetodoPago={handleMetodoPago}
-              domicilio={domicilio}
-              costoDelivery={costoDelivery}
-              descuento={descuento}
+              esDelivery={esDelivery}
+              esEfectivo={esEfectivo}
+              handleEsDelivery={handleEsDelivery}
+              handleEsEfectivo={handleEsEfectivo}
+              domicilio={usuario ? usuario.Domicilio : null}
               subTotal={subTotal}
-            />
+              totalPedido={totalPedido} />
           </div>
         </div>
       </div>
 
       <form onSubmit={handleConfirmarPedido}>
         <div className="d-flex justify-content-center align-items-center mb-4">
-          <button type="submit" className="btn btn-primary me-2">
+          <button type="submit"
+            className="btn btn-primary me-2"
+            disabled={confirmDisabled || isCartEmpty}>
             Confirmar Pedido
           </button>
           <button
@@ -143,6 +271,26 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </button>
         </div>
       </form>
+      {/* Mostrar el Alert cuando el carrito esté vacío */}
+      {isCartEmpty && (
+        <div className="container mt-3">
+          <Alert show={true} variant="warning">
+            No hay productos en el carrito. Agregue productos antes de confirmar.
+          </Alert>
+        </div>
+      )}
+
+      <div className="container mt-3">
+        <Alert show={showAlert} variant="danger">
+          Por favor, inicie sesión para confirmar el pedido.    <br />
+          <div className="mt-1">
+            <Button variant="primary" onClick={handleLoginRedirect}>
+              Iniciar Sesión
+            </Button>
+          </div>
+
+        </Alert>
+      </div>
     </div>
   );
 };

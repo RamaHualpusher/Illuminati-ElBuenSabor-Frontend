@@ -1,8 +1,7 @@
 import { Rubro } from "./Rubro";
-import { DetallePedido } from "./DetallePedido";
 import { ProductoIngrediente } from "./ProductoIngrediente";
 
-export interface Producto {  
+export interface  Producto {
   idProducto: number;
   nombre: string;
   tiempoEstimadoCocina: number;
@@ -16,7 +15,7 @@ export interface Producto {
   estado : boolean;
   Rubro: Rubro;
   // DetallePedido: DetallePedido[]; cambio 20/9/23
-  ProductoIngrediente: ProductoIngrediente[];
+  ProductoIngrediente?: ProductoIngrediente[];
 }
 
 export interface EditProductoModalProps {

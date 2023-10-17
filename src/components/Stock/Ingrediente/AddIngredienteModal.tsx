@@ -62,8 +62,7 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
       stockActual,
       precioCosto,
       Rubro: { idRubro: rubroId, nombre: selectedRubro.nombre },
-      unidadMedida: um,
-      // ProductoIngrediente: [],
+      unidadMedida: um
     };
 
     // Llamar a la función para agregar el ingrediente y cerrar el modal

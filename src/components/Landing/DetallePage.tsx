@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
 import { CartContext, CartItem } from '../CarritoCompras/CartProvider';
-import { DetallePedido } from '../../interface/DetallePedido';
 import { Producto } from '../../interface/Producto';
 
 const DetallePage = () => {
@@ -34,10 +33,10 @@ const DetallePage = () => {
 
   const handleAddToCart = () => {
     if (producto && producto.stockActual > 0) {
-      const detallePedido: DetallePedido = {
+      const detallePedido = {
         idDetallePedido: 0,
         cantidad: 0,
-        Productos: [producto],
+        Productos: producto,
       };
 
       const item: CartItem = {
@@ -58,14 +57,14 @@ const DetallePage = () => {
     return <Spinner />;
   }
 
-  const ingredientesList = producto.ProductoIngrediente.map((productoIngrediente, index) => (
-    <span key={productoIngrediente.idProductoIngrediente}>
-      {productoIngrediente.Ingredientes.nombre}
-      {index !== producto.ProductoIngrediente.length - 1 ? ', ' : '.'}
+  const ingredientesList = producto.ProductoIngrediente?.map((productoIngrediente, index) => (
+    <span key={productoIngrediente?.idProductoIngrediente}>
+      {productoIngrediente?.Ingredientes?.nombre}
+      {index !== (producto.ProductoIngrediente?.length ?? 0) - 1 ? ', ' : '.'}
     </span>
   ));
 
-  const ingredientesSection = producto.ProductoIngrediente.length > 0 && (
+  const ingredientesSection = (producto.ProductoIngrediente?.length ?? 0) > 0 && (
     <p className="card-text">Ingredientes: {ingredientesList}</p>
   );
 

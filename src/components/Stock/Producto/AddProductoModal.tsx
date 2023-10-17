@@ -40,7 +40,6 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     idIngredientes: 0,
     nombre: "none",
     precioCosto: 0,
-    // ProductoIngrediente: [],
     Rubro: rubrod,
     stockActual: 0,
     stockMinimo: 0,
@@ -60,15 +59,13 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     precio: 0,
     esBebida: false,
     estado: false,
-    // DetallePedido: [],
     ProductoIngrediente: [],
   }
 
   const defectoProductoIngrediente: ProductoIngrediente = {
     cantidad: 0,
     idProductoIngrediente: 0,
-    Ingredientes: defectoIngrediente,
-    // Producto: defectoProducto
+    Ingredientes: defectoIngrediente
   }
 
   const [ingrediente, setIngrediente] = useState<ProductoIngrediente>(defectoProductoIngrediente);
@@ -81,7 +78,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
       .then((response) => {
         setRubros(response.data);
         if (selectedProducto) {
-          setIngredientes(selectedProducto.ProductoIngrediente)
+          setIngredientes(selectedProducto.ProductoIngrediente || [])
         }
       })
       .catch((error) => {
@@ -143,7 +140,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
     }
     setCantidad(cant);
     if (ingrediente !== defectoProductoIngrediente) {
-      selectedProducto?.ProductoIngrediente.map((ingr) => {
+      selectedProducto?.ProductoIngrediente?.map((ingr) => {
         if (ingrediente.Ingredientes.nombre === ingr.Ingredientes.nombre) {
           console.log("ingrediente previo guardado")
           ingr = ingrediente;
@@ -215,8 +212,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
         const agre: ProductoIngrediente = {
           cantidad: cantIngrediente,
           idProductoIngrediente: contar + 1,
-          Ingredientes: ingre || defectoIngrediente,
-          // Producto: defectoProducto
+          Ingredientes: ingre || defectoIngrediente
         }
         setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
         ingres?.push(agre);
@@ -231,28 +227,28 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (ingredientes && ingredientes.length > 0) {
-    const newProducto: Producto = {
-      idProducto: 0,
-      nombre,
-      Rubro: { idRubro: rubroId || 0, nombre: "" },
-      tiempoEstimadoCocina: tiempo,
-      denominacion: "",
-      imagen,
-      stockActual: 0,
-      stockMinimo: 0,
-      preparacion: "",
-      precio,
-      esBebida: false,
-      estado,
-      // DetallePedido: [],
+      const newProducto: Producto = {
+        idProducto: 0,
+        nombre,
+        Rubro: { idRubro: rubroId || 0, nombre: "" },
+        tiempoEstimadoCocina: tiempo,
+        denominacion: "",
+        imagen,
+        stockActual: 0,
+        stockMinimo: 0,
+        preparacion: "",
+        precio,
+        esBebida: false,
+        estado,
 
-      ProductoIngrediente: selectedProducto.ProductoIngrediente,
-    };
-    handleProductoAdd(newProducto);
-    handleClose();}
+        ProductoIngrediente: selectedProducto.ProductoIngrediente,
+      };
+      handleProductoAdd(newProducto);
+      handleClose();
+    }
   };
 
-  const handleCancelar=()=>{
+  const handleCancelar = () => {
     setCantIngrediente(0);
     setCantidad(0);
     setEstado(true);
@@ -374,7 +370,7 @@ const AddProductoModal: React.FC<AddProductoModalProps> = ({
               required
             >
               <option value="none">Eliminar Ingrediente</option>
-              {selectedProducto?.ProductoIngrediente.map((Ingrediente) =>
+              {selectedProducto?.ProductoIngrediente?.map((Ingrediente) =>
                 <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre}</option>
               )}
             </Form.Select>
