@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
-import { CartItem } from "./CartProvider";
+import { CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
 import { Pedido } from "../../interface/Pedido";
 import { Producto } from "../../interface/Producto";

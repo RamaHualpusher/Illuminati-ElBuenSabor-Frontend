@@ -1,4 +1,4 @@
-import { CartItem } from "../components/CarritoCompras/CartProvider";
+import { CartItem } from "../context/cart/CartProvider";
 import { DetallePedido } from "./DetallePedido";
 import { Producto } from "./Producto";
 

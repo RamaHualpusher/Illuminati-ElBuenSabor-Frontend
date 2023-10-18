@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
-import { CartContext, CartItem } from '../CarritoCompras/CartProvider';
+import { CartContext, CartItem } from '../../context/cart/CartProvider';
 import { Producto } from '../../interface/Producto';
 
 const DetallePage = () => {

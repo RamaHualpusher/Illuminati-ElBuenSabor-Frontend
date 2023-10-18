@@ -8,7 +8,7 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import ScrollPositionManager from './context/ScrollPositionManager';
 
 const DOMAIN = "el-buen-sabor.us.auth0.com";
-const CLIENT_ID = "NTUdpGCO3IIOC0tEJCmr4tXzm4FILbsV";
+const CLIENT_ID = "TwhlQY0zjHjtU8EBunrImThemxyqFNic";
 
 const root = document.getElementById('root');
 const app = (
