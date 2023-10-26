@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Col, Row } from "react-bootstrap";
 import { Producto } from "../../../interface/Producto";
 import { Rubro } from "../../../interface/Rubro";
 import { EditProductoModalProps } from "../../../interface/Producto";
@@ -17,6 +17,8 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   const [rubroId, setRubroId] = useState<number | null>(null);
   const [tiempo, setTiempo] = useState(0);
   const [imagen, setImagen] = useState("");
+  const [denominacion, setDenominacion] = useState("");
+  const [preparacion, setPreparacion] = useState("");
   const [precio, setPrecio] = useState(0);
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const [selectedRubro, setSelectedRubro] = useState<Rubro | null>(null);
@@ -38,7 +40,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   const defectoIngrediente: Ingredientes = {
     estado: false,
     idIngredientes: 0,
-    nombre: "none",
+    nombre: "",
     precioCosto: 0,
     Rubro: rubrod,
     stockActual: 0,
@@ -59,7 +61,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     precio: 0,
     esBebida: false,
     estado: false,
-    ProductoIngrediente: []   
+    ProductoIngrediente: []
   }
 
   const defectoProductoIngrediente: ProductoIngrediente = {
@@ -103,7 +105,9 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
       setTiempo(selectedProducto?.tiempoEstimadoCocina || 0);
       setPrecio(selectedProducto?.precio || 0);
       setEstado(selectedProducto?.estado || false);
-      setIngredientes(selectedProducto.ProductoIngrediente|| [])
+      setDenominacion(selectedProducto?.denominacion || "");
+      setPreparacion(selectedProducto?.preparacion || "");
+      setIngredientes(selectedProducto.ProductoIngrediente || [])
       let cos = 0;
       ingredientes?.map((ingre) => {
         console.log(cos);
@@ -259,130 +263,180 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} dialogClassName="modal-lg">
       {/* Estructura del modal */}
       <Modal.Header closeButton>
         <Modal.Title>Editar Producto</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          <Form.Group className="mb-3" controlId="formNombre">
-            <Form.Label>Nombre</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese nombre"
-              value={nombre}
-              onChange={(event) => setNombre(event.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formImagen">
-            <Form.Label>Imagen</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese URL de la imagen"
-              value={imagen}
-              onChange={(event) => setImagen(event.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formRubro">
-            <Form.Label>Rubro</Form.Label>
-            <Form.Select
-              value={selectedRubro?.idRubro || ""}
-              onChange={(event) => {
-                const rubroId = parseInt(event.target.value);
-                const rubro = rubros.find((rubro) => rubro.idRubro === rubroId);
-                setRubroId(rubroId);
-                setSelectedRubro(rubro || null);
-              }}
-              required
-            >
-              <option value="">Seleccione un rubro</option>
-              {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
-                  {rubro.nombre}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formTiempo">
-            <Form.Label>Tiempo (min)</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese tiempo en minutos"
-              value={tiempo}
-              onChange={(event) => setTiempo(parseInt(event.target.value))}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formPrecio">
-            <Form.Label>{"Precio (costo: " + costo + ") "}</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese el precio"
-              value={precio}
-              onChange={(event) => setPrecio(parseInt(event.target.value))}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formEstado">
-            <Form.Label>Estado</Form.Label>
-            <Form.Select
-              value={estado ? 'alta' : 'baja'}
-              onChange={(event) => setEstado(event.target.value === 'alta')}
-              required
-            >
-              <option value="alta">Alta</option>
-              <option value="baja">Baja</option>
-            </Form.Select>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formEstado">
-            <Form.Label>Ingredientes</Form.Label>
-            <Form.Select
-              value={ingrediente?.Ingredientes.nombre}
-              onChange={(event) => selectIngrediente(event.target.value)}
-              required
-            >
-              <option value="none">Eliminar Ingrediente</option>
-              {ingredientes?.map((Ingrediente) =>
-                <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre + " (" + Ingrediente.Ingredientes.unidadMedida + ")"}</option>
-              )}
-            </Form.Select>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese Cantidad"
-              value={cantidad}
-              onChange={(event) => handleCantidad(parseInt(event.target.value))}
-              required
-            >
-            </Form.Control>
-            <Button
-              variant="danger" onClick={() => handleDeletIngrediente()}>Eliminar Ingrediente</Button>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formEstado">
-            <Form.Label>Ingredientes</Form.Label>
-            <Form.Select
-              value={ingredienteA?.nombre}
-              onChange={(event) => selectIngredienteA(event.target.value)}
-              required
-            >
-              <option value="none">Agregar Ingrediente</option>
-              {ingredientesA.map((Ingrediente) =>
-                <option value={Ingrediente.nombre}>{Ingrediente.nombre + " (" + Ingrediente.unidadMedida + ") " + (Ingrediente.estado === false ? "Baja" : "")}</option>
-              )}
-            </Form.Select>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese Cantidad"
-              value={cantIngrediente}
-              onChange={(event) => setCantIngrediente(parseInt(event.target.value))}
-              required
-            >
-            </Form.Control>
-            <Button
-              variant={ingredienteA?.estado === false ? "secondary" : "success"} onClick={() => agregarIngrediente()}>Agregar Ingrediente</Button>
-          </Form.Group>
+          <Row>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formNombre">
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ingrese nombre"
+                  value={nombre}
+                  onChange={(event) => setNombre(event.target.value)}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formImagen">
+                <Form.Label>Imagen</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ingrese URL de la imagen"
+                  value={imagen}
+                  onChange={(event) => setImagen(event.target.value)}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formEstado">
+                <Form.Label>Estado</Form.Label>
+                <Form.Select
+                  value={estado ? 'alta' : 'baja'}
+                  onChange={(event) => setEstado(event.target.value === 'alta')}
+                  required
+                >
+                  <option value="alta">Alta</option>
+                  <option value="baja">Baja</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formDenominacion">
+                <Form.Label>Descripción</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={2}
+                  placeholder="Ingrese una descripción"
+                  value={denominacion}
+                  onChange={(event) => setDenominacion(event.target.value)}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formPreparacion">
+                <Form.Label>Receta</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={2}
+                  placeholder="Ingrese una receta"
+                  value={preparacion}
+                  onChange={(event) => setPreparacion(event.target.value)}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formRubro">
+                <Form.Label>Rubro</Form.Label>
+                <Form.Select
+                  value={selectedRubro?.idRubro || ""}
+                  onChange={(event) => {
+                    const rubroId = parseInt(event.target.value);
+                    const rubro = rubros.find((rubro) => rubro.idRubro === rubroId);
+                    setRubroId(rubroId);
+                    setSelectedRubro(rubro || null);
+                  }}
+                  required
+                >
+                  <option value="">Seleccione un rubro</option>
+                  {rubros.map((rubro) => (
+                    <option key={rubro.idRubro} value={rubro.idRubro}>
+                      {rubro.nombre}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formTiempo">
+                <Form.Label>Tiempo (min)</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese tiempo en minutos"
+                  value={tiempo}
+                  onChange={(event) => setTiempo(parseInt(event.target.value))}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formPrecio">
+                <Form.Label>{"Precio (costo: " + costo + ") "}</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese el precio"
+                  value={precio}
+                  onChange={(event) => setPrecio(parseInt(event.target.value))}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formEstado">
+                <Form.Label>Ingredientes</Form.Label>
+                <Form.Select
+                  value={ingrediente?.Ingredientes.nombre}
+                  onChange={(event) => selectIngrediente(event.target.value)}
+                  required
+                >
+                  <option value="none">Eliminar Ingrediente</option>
+                  {ingredientes?.map((Ingrediente) =>
+                    <option value={Ingrediente.Ingredientes.nombre}>{Ingrediente.Ingredientes.nombre + " (" + Ingrediente.Ingredientes.unidadMedida + ")"}</option>
+                  )}
+                </Form.Select>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese Cantidad"
+                  value={cantidad}
+                  onChange={(event) => handleCantidad(parseInt(event.target.value))}
+                  required
+                >
+                </Form.Control>
+                <Button
+                  variant="danger" onClick={() => handleDeletIngrediente()}>Eliminar Ingrediente</Button>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formEstado">
+                <Form.Label>Ingredientes</Form.Label>
+                <Form.Select
+                  value={ingredienteA?.nombre}
+                  onChange={(event) => selectIngredienteA(event.target.value)}
+                  required
+                >
+                  <option value="none">Agregar Ingrediente</option>
+                  {ingredientesA.map((Ingrediente) =>
+                    <option value={Ingrediente.nombre}>{Ingrediente.nombre + " (" + Ingrediente.unidadMedida + ") " + (Ingrediente.estado === false ? "Baja" : "")}</option>
+                  )}
+                </Form.Select>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese Cantidad"
+                  value={cantIngrediente}
+                  onChange={(event) => setCantIngrediente(parseInt(event.target.value))}
+                  required
+                >
+                </Form.Control>
+                <Button
+                  variant={ingredienteA?.estado === false ? "secondary" : "success"} onClick={() => agregarIngrediente()}>Agregar Ingrediente</Button>
+              </Form.Group>
+            </Col>
+          </Row>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

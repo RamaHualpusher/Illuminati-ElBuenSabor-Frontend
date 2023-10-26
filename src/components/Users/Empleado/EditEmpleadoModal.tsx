@@ -10,13 +10,20 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
   handleEmpleadoEdit,
   selectedEmpleado,
 }) => {
-  //Estados del componente
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const [email, setEmail] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [estado, setEstado] = useState(true);
-  const [rolId, setRolId] = useState<number | null>(null);
+  // Función para inicializar un nuevo objeto Usuario
+  const initializeUsuario = (empleado: EditUsuarioFromAdmin | null): EditUsuarioFromAdmin => {
+    return empleado || {
+      idUsuario: 0,
+      nombre: "",
+      apellido: "",
+      email: "",
+      telefono: "",
+      estado: true,
+      Rol: { idRol: 0, nombreRol: "" },
+    };
+  };
+
+  const [empleado, setEmpleado] = useState<EditUsuarioFromAdmin>(initializeUsuario(selectedEmpleado));
   const [roles, setRoles] = useState<Rol[]>([]);
 
   // Cargar roles al montar el componente
@@ -31,34 +38,16 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
       });
   }, []);
 
-  // Cargar los datos del empleado seleccionado al montar el componente
+  // Actualizar campos al seleccionar un cliente
   useEffect(() => {
     if (selectedEmpleado) {
-      setNombre(selectedEmpleado.nombre);
-      setApellido(selectedEmpleado.apellido);
-      setEmail(selectedEmpleado.email);
-      setTelefono(selectedEmpleado.telefono);
-      setRolId(selectedEmpleado.Rol.idRol);
-      setEstado(selectedEmpleado.estado);
+      setEmpleado(selectedEmpleado);
     }
   }, [selectedEmpleado]);
 
-  // Manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (selectedEmpleado) {
-      const selectedRol = roles.find((rol) => rol.idRol === rolId);
-      const updatedEmpleado: EditUsuarioFromAdmin = {
-        ...selectedEmpleado,
-        nombre,
-        apellido,
-        email,
-        telefono,
-        estado,
-        Rol: selectedRol !== undefined ? selectedRol : selectedEmpleado.Rol,
-      };
-      handleEmpleadoEdit(updatedEmpleado);
-    }
+    handleEmpleadoEdit(empleado);
     handleClose();
   };
 
@@ -76,8 +65,8 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
                 <Form.Control
                   type="text"
                   placeholder="Ingrese nombre"
-                  value={nombre}
-                  onChange={(event) => setNombre(event.target.value)}
+                  value={empleado.nombre}
+                  onChange={(event) => setEmpleado({ ...empleado, nombre: event.target.value })}
                   required
                 />
               </Form.Group>
@@ -88,8 +77,8 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
                 <Form.Control
                   type="text"
                   placeholder="Ingrese apellido"
-                  value={apellido}
-                  onChange={(event) => setApellido(event.target.value)}
+                  value={empleado.apellido}
+                  onChange={(event) => setEmpleado({ ...empleado, apellido: event.target.value })}
                   required
                 />
               </Form.Group>
@@ -102,8 +91,8 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
                 <Form.Control
                   type="email"
                   placeholder="Ingrese email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  value={empleado.email}
+                  onChange={(event) => setEmpleado({ ...empleado, email: event.target.value })}
                   required
                 />
               </Form.Group>
@@ -114,41 +103,45 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
                 <Form.Control
                   type="text"
                   placeholder="Ingrese teléfono"
-                  value={telefono}
-                  onChange={(event) => setTelefono(event.target.value)}
+                  value={empleado.telefono}
+                  onChange={(event) => setEmpleado({ ...empleado, telefono: event.target.value })}
                   required
                 />
               </Form.Group>
             </Col>
           </Row>
-          <Form.Group className="mb-3" controlId="formEstado">
-            <Form.Label>Estado</Form.Label>
-            <Form.Select
-              value={estado ? 'activo' : 'bloqueado'}
-              onChange={(event) =>
-                setEstado(event.target.value === 'activo' ? true : false)
-              }
-              required
-            >
-              <option value="activo">Activo</option>
-              <option value="bloqueado">Bloqueado</option>
-            </Form.Select>
-          </Form.Group>
-          <Form.Group controlId="formRol">
-            <Form.Label>Rol</Form.Label>
-            <Form.Select
-              value={rolId || ""}
-              onChange={(event) => setRolId(parseInt(event.target.value))}
-              required
-            >
-              <option value="">Seleccione un rol</option>
-              {roles.map((rol) => (
-                <option key={rol.idRol} value={rol.idRol}>
-                  {rol.nombreRol}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formEstado">
+                <Form.Label>Estado</Form.Label>
+                <Form.Select
+                  value={empleado.estado ? 'activo' : 'bloqueado'}
+                  onChange={(event) => setEmpleado({ ...empleado, estado: event.target.value === 'activo' })}
+                  required
+                >
+                  <option value="activo">Activo</option>
+                  <option value="bloqueado">Bloqueado</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group controlId="formRol">
+                <Form.Label>Rol</Form.Label>
+                <Form.Select
+                  value={empleado.Rol.idRol || ""}
+                  onChange={(event) => setEmpleado({ ...empleado, Rol: { ...empleado.Rol, idRol: parseInt(event.target.value) } })}
+                  required
+                >
+                  <option value="">Seleccione un rol</option>
+                  {roles.map((rol) => (
+                    <option key={rol.idRol} value={rol.idRol}>
+                      {rol.nombreRol}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -159,7 +152,7 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
           </Button>
         </Modal.Footer>
       </Form>
-    </Modal>
+    </Modal >
   );
 };
 
