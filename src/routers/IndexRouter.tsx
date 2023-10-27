@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import UserRouter from "./UserRouter";
 import Admin from "../screens/Admin";
 import Cocinero from "../screens/Cocinero";
@@ -22,33 +22,32 @@ const IndexRouter = () => {
   const closeModal = () => {
     setSelectedPedido(null);
   };
-  
+
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Rutas para las diferentes páginas */}
-        <Route path="/*" element={<UserRouter />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/admin/ranking-pedidos/:id" element={<PedidosID />} />
-        <Route path="/cocinero" element={<Cocinero />} />
-        <Route path="/cocinero/pedido/:id" element={<DetallesPedidoCocinero />} />
-        <Route path="/cajero" element={<Cajero />} />
-        <Route path="/cajero/pedido/:id" element={<DetallesPedidoCajero />} />
-        <Route path="/delivery" element={<Delivery />} />
-        <Route path="/pedido/:id" element={<DetallesPedidoDelivery />} />
-        <Route path="/cocina/ingredientes" element={<Ingredientes />} />
-        <Route path="/cocina/productos" element={<Productos />} />
 
-        {/* Ruta para la generación de factura */}
-        <Route
-          path="/factura/:pedido"
-          element={<GenerarFacturaModal closeModal={closeModal} />}
-        />
+    <Routes>
+      {/* Rutas para las diferentes páginas */}
+      <Route path="/*" element={<UserRouter />} />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin/ranking-pedidos/:id" element={<PedidosID />} />
+      <Route path="/cocinero" element={<Cocinero />} />
+      <Route path="/cocinero/pedido/:id" element={<DetallesPedidoCocinero />} />
+      <Route path="/cajero" element={<Cajero />} />
+      <Route path="/cajero/pedido/:id" element={<DetallesPedidoCajero />} />
+      <Route path="/delivery" element={<Delivery />} />
+      <Route path="/pedido/:id" element={<DetallesPedidoDelivery />} />
+      <Route path="/cocina/ingredientes" element={<Ingredientes />} />
+      <Route path="/cocina/productos" element={<Productos />} />
 
-        {/* Ruta para página de error 404 */}
-        <Route path="*" element={<Page404 />} />
-      </Routes>
-    </BrowserRouter>
+      {/* Ruta para la generación de factura */}
+      <Route
+        path="/factura/:pedido"
+        element={<GenerarFacturaModal closeModal={closeModal} />}
+      />
+
+      {/* Ruta para página de error 404 */}
+      <Route path="*" element={<Page404 />} />
+    </Routes>
   );
 };
 

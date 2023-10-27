@@ -6,20 +6,23 @@ import Spinner from './components/Spinner/Spinner';
 import { CartProvider } from './context/cart/CartProvider';
 import { SearchProvider } from './components/Buscador/SearchContext';
 import { UserPermissionProvider } from './context/permission/UserPermission';
+import { BrowserRouter } from 'react-router-dom';
+import ScrollManager from './util/ScrollManager';// Importa el componente ScrollManager
 
 function App(): JSX.Element {
   const { isLoading } = useAuth0();
 
   if (isLoading) return <Spinner />;
 
-
-
   return (
     <div className="App">
       <UserPermissionProvider>
         <SearchProvider>
           <CartProvider>
-            <IndexRouter />
+            <BrowserRouter>
+              <ScrollManager />
+              <IndexRouter />
+            </BrowserRouter>
           </CartProvider>
         </SearchProvider>
       </UserPermissionProvider>
