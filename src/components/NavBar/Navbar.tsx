@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Dropdown, ListGroup, Button } from 'react-bootstrap';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
-import { CartContext } from '../CarritoCompras/CartProvider';
+import { CartContext } from '../../context/cart/CartProvider';
 import CartItem from '../CarritoCompras/CartItem';
 import { Producto } from "../../interface/Producto";
 import { SearchContext } from '../Buscador/SearchContext';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import { Ingredientes } from '../../../interface/Ingredientes';
 import { Rubro } from '../../../interface/Rubro';
 import { AddIngredienteModalProps } from '../../../interface/Ingredientes';
@@ -10,18 +10,23 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
   handleClose,
   handleIngredienteAdd,
 }) => {
-  // Estados para los campos del formulario
-  const [nombre, setNombre] = useState('');
-  const [rubroId, setRubroId] = useState<number | null>(null);
-  const [minStock, setMinStock] = useState(0);
-  const [stockActual, setStockActual] = useState(0);
-  const [precioCosto, setPrecioCosto] = useState(0);
-  const [um, setUM] = useState('');
-  const [estado, setEstado] = useState(true);
+  // Función para inicializar un nuevo ingrediente
+  const initializeNewIngrediente = (): Ingredientes => ({
+    idIngredientes: 0,
+    nombre: '',
+    estado: true,
+    stockMinimo: 0,
+    stockActual: 0,
+    precioCosto: 0,
+    Rubro: { idRubro: 0, nombre: '' },
+    unidadMedida: '',
+  });
+
+  const [newIngrediente, setNewIngrediente] = useState<Ingredientes>(initializeNewIngrediente);
   const [rubros, setRubros] = useState<Rubro[]>([]);
   const unidades = ["Kg", "g", "Mg", "l", "Ml"];
+  const [selectedRubro, setSelectedRubro] = useState<Rubro | null>(null);
 
-  // Cargar los rubros al cargar el componente
   useEffect(() => {
     const fetchRubros = async () => {
       try {
@@ -34,58 +39,31 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
     fetchRubros();
   }, []);
 
-  // Manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Verificar que todos los campos requeridos estén completos
-    if (!nombre || !rubroId || isNaN(rubroId) || !minStock || !stockActual || !precioCosto || !um) {
+    if (!newIngrediente.nombre || !newIngrediente.Rubro.idRubro || isNaN(newIngrediente.Rubro.idRubro) || !newIngrediente.stockMinimo || !newIngrediente.stockActual || !newIngrediente.precioCosto || !newIngrediente.unidadMedida) {
       console.log('Faltan campos requeridos');
       return;
     }
 
-    // Encontrar el rubro seleccionado
-    const selectedRubro = rubros.find((rubro) => rubro.idRubro === rubroId);
     if (!selectedRubro) {
       console.log('Rubro inválido');
       return;
     }
 
-
-    
-
-    // Crear un nuevo objeto Ingredientes con los datos del formulario
-    const newIngrediente: Ingredientes = {
-      idIngredientes: 0,
-      nombre,
-      estado,
-      stockMinimo: minStock,
-      stockActual,
-      precioCosto,
-      Rubro: { idRubro: rubroId, nombre: selectedRubro.nombre },
-      unidadMedida: um
+    const updatedIngrediente: Ingredientes = {
+      ...newIngrediente,
+      Rubro: { idRubro: newIngrediente.Rubro.idRubro, nombre: selectedRubro.nombre },
     };
 
-    // Llamar a la función para agregar el ingrediente y cerrar el modal
-    handleIngredienteAdd(newIngrediente);
-    handleClose();
-
-    
-  };
-  
-
-  const handleCancelar=()=>{
-    setNombre("");
-    setRubroId(0);
-    setEstado(true);
-    setMinStock(0);
-    setPrecioCosto(0);
-    setStockActual(0);
-    setUM("");
+    handleIngredienteAdd(updatedIngrediente);
     handleClose();
   };
 
-
-
+  const handleCancelar = () => {
+    setNewIngrediente(initializeNewIngrediente());
+    handleClose();
+  };
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -94,82 +72,102 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          {/* Formulario para ingresar datos del ingrediente */}
-          <Form.Group className="mb-3" controlId="formNombre">
-            <Form.Label>Nombre</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese nombre"
-              value={nombre}
-              onChange={(event) => setNombre(event.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formRubro">
-            <Form.Label>Rubro</Form.Label>
-            <Form.Select
-              onChange={(event) => setRubroId(parseInt(event.target.value))}
-              required
-            >
-              <option value="">Seleccione un rubro</option>
-              {rubros.map((rubro) => (
-                <option
-                  key={rubro.idRubro}
-                  value={rubro.idRubro}
-                  disabled={!rubro.estado}>
-                  {rubro.nombre}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formMinStock">
-            <Form.Label>Min Stock</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese stock mínimo"
-              value={minStock}
-              onChange={(event) => setMinStock(parseInt(event.target.value))}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formStockActual">
-            <Form.Label>Stock Actual</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese stock actual"
-              value={stockActual}
-              onChange={(event) => setStockActual(parseInt(event.target.value))}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formPrecioCosto">
-            <Form.Label>PrecioCosto</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Ingrese precio Costo"
-              value={precioCosto}
-              onChange={(event) => setPrecioCosto(parseInt(event.target.value))}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formUM">
-            <Form.Label>UM</Form.Label>
-            <Form.Select
-              value={um}
-              onChange={(event) => setUM(event.target.value)}
-              required
-            >
-              {unidades.map((unidades) =>
-                <option value={unidades}>{unidades}</option>
-              )}
-            </Form.Select>
-          </Form.Group>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formNombre">
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ingrese nombre"
+                  value={newIngrediente.nombre}
+                  onChange={(event) => setNewIngrediente({ ...newIngrediente, nombre: event.target.value })}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formRubro">
+                <Form.Label>Rubro</Form.Label>
+                <Form.Select
+                  onChange={(event) => setNewIngrediente({ ...newIngrediente, Rubro: { idRubro: parseInt(event.target.value), nombre: selectedRubro ? selectedRubro.nombre : '' } })}
+                  required
+                >
+                  <option value="">Seleccione un rubro</option>
+                  {rubros.map((rubro) => (
+                    <option
+                      key={rubro.idRubro}
+                      value={rubro.idRubro}
+                      disabled={!rubro.estado}
+                    >
+                      {rubro.nombre}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formMinStock">
+                <Form.Label>Min Stock</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese stock mínimo"
+                  value={newIngrediente.stockMinimo}
+                  onChange={(event) => setNewIngrediente({ ...newIngrediente, stockMinimo: parseInt(event.target.value) })}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formStockActual">
+                <Form.Label>Stock Actual</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese stock actual"
+                  value={newIngrediente.stockActual}
+                  onChange={(event) => setNewIngrediente({ ...newIngrediente, stockActual: parseInt(event.target.value) })}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formPrecioCosto">
+                <Form.Label>PrecioCosto</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese precio Costo"
+                  value={newIngrediente.precioCosto}
+                  onChange={(event) => setNewIngrediente({ ...newIngrediente, precioCosto: parseInt(event.target.value) })}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formUM">
+                <Form.Label>UM</Form.Label>
+                <Form.Select
+                  value={newIngrediente.unidadMedida}
+                  onChange={(event) => setNewIngrediente({ ...newIngrediente, unidadMedida: event.target.value })}
+                  required
+                >
+                  {unidades.map((unidad) => (
+                    <option key={unidad} value={unidad}>
+                      {unidad}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={estado ? 'alta' : 'baja'}
+              value={newIngrediente.estado ? 'alta' : 'baja'}
               onChange={(event) =>
-                setEstado(event.target.value === 'alta' ? true : false)
+                setNewIngrediente({ ...newIngrediente, estado: event.target.value === 'alta' })
               }
               required
             >
@@ -179,7 +177,6 @@ const AddIngredienteModal: React.FC<AddIngredienteModalProps> = ({
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          {/* Botones para cancelar y agregar */}
           <Button variant="secondary" onClick={handleCancelar}>
             Cancelar
           </Button>

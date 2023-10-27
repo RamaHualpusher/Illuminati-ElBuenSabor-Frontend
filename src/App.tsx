@@ -1,25 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import IndexRouter from './routers/IndexRouter';
 import Spinner from './components/Spinner/Spinner';
-import { CartProvider } from './components/CarritoCompras/CartProvider';
+import { CartProvider } from './context/cart/CartProvider';
 import { SearchProvider } from './components/Buscador/SearchContext';
+import { UserPermissionProvider } from './context/permission/UserPermission';
 
 function App(): JSX.Element {
   const { isLoading } = useAuth0();
 
   if (isLoading) return <Spinner />;
 
-  
+
 
   return (
     <div className="App">
-      <SearchProvider>
-        <CartProvider>
-          <IndexRouter />
-        </CartProvider>
-      </SearchProvider>
+      <UserPermissionProvider>
+        <SearchProvider>
+          <CartProvider>
+            <IndexRouter />
+          </CartProvider>
+        </SearchProvider>
+      </UserPermissionProvider>
     </div>
   );
 }

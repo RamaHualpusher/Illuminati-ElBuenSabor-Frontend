@@ -1,5 +1,5 @@
 import React from "react";
-import { CartItem } from "./CartProvider";
+import { CartItem } from "../../context/cart/CartProvider";
 
 interface CartTablaProps {
     cartItems: CartItem[];
