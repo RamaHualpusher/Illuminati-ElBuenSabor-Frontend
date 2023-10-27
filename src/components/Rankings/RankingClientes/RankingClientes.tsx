@@ -75,8 +75,6 @@ const RankingClientes = () => {
     return pedidos.filter((pedido) => pedido.Usuario.idUsuario === usuarioId).length;
   };
 
-
-
   // Función para cambiar el orden
   const handleChangeOrden = (nuevoOrden: "cantidadPedidos" | "importeTotal") => {
     setOrden(nuevoOrden);

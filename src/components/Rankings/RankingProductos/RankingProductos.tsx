@@ -4,7 +4,6 @@ import { Producto } from '../../../interface/Producto';
 import GenericTable from "../../GenericTable/GenericTable";
 import { Column } from "../../../interface/CamposTablaGenerica";
 import { Pedido } from "../../../interface/Pedido";
-import { DetallePedido } from "../../../interface/DetallePedido";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -28,35 +27,65 @@ const RankingProductos = () => {
                 setPedidos(pedidosData);
             })
             .catch(error => console.log(error));
-    }, []); 
+    }, []);
 
-    const columns: Column<Producto>[] = [
-        { title: "ID", field: "idProducto", width: 1 },
+    const columns: Column<Pedido>[] = [
+        { title: "Fecha Pedido", field: "fechaPedido", width: 2 },
         {
-            title: "Producto", field: "imagen", width: 1,
-            render: (rowData) => <img src={rowData.imagen} alt="Producto" style={{ width: "120px", height: "100px" }} />
+            title: "Producto",
+            field: "DetallePedido",
+            width: 2,
+            render: (rowData) => (
+                <img src={rowData.DetallePedido[0].Productos.imagen} alt="Producto" style={{ width: "120px", height: "100px" }} />
+            ),
         },
-        { title: "Nombre", field: "nombre", width: 4 },
+        // aca no se si entrar con un "map" y ver todos losa tributos del detalle pedido y luego en "data" debajo de esta seccion, poner esos 
+        //atributos, o como organizarme para ver esos items.
         {
-            title: "Ventas por producto", field: "stockActual", width: 3,
-            render: (rowData) =>
-                <div>{calculateCantidadVendido(rowData.idProducto, false)}</div>
+            title: "Nombre", field: "DetallePedido", width: 4,            
+            render: (rowData: Pedido) => (                
+                <ul>                    
+                    {rowData.DetallePedido.map((detalle, index) => (
+                        <li key={index}>
+                            Nombre: {detalle.Productos.nombre}
+                        </li>
+                    ))}                    
+                </ul>
+            ),
+        },
+        {
+            title: "Ventas por producto", field: "DetallePedido", width: 3,
+            render: (rowData: Pedido) =>
+                // <div>{calculateCantidadVendido(rowData.DetallePedido[0].cantidad, false)}</div>
+                <ul>
+                    {rowData.DetallePedido.map((detalle, index) => (
+                        <li key={index}>
+                            {detalle.cantidad}
+                        </li>
+                    ))}
+                </ul>
         },
     ];
-      
+
+    // const data = pedidos.map((pedido) => ({
+    //     //aca esto no esta infresando en la tabla generica
+    //     fechaPedido: pedido.fechaPedido,
+    //     DetallePedido: pedido.DetallePedido[0].Productos.imagen ||
+    //         pedido.DetallePedido[0].Productos.nombre ||
+    //         pedido.DetallePedido[0].Productos.idProducto
+    // }));
 
     const calculateCantidadVendido = (productoId: number, esBebida: boolean) => {
         return pedidos.reduce((totalCantidad, pedido) => {
-            const cantidadProductoEnPedido = pedido.DetallePedido.reduce((cantidad, detalle) => {
-                if (detalle.Productos && detalle.Productos.idProducto === productoId && detalle.Productos.esBebida === esBebida) {
-                    cantidad += detalle.cantidad;
-                }
-                return cantidad;
-            }, 0);
-            const fechaPedido = new Date(pedido.fechaPedido).toLocaleDateString();
-            return totalCantidad + cantidadProductoEnPedido;
+          const cantidadProductoEnPedido = pedido.DetallePedido.reduce((cantidad, detalle) => {
+            if (detalle.Productos && detalle.Productos.idProducto === productoId && detalle.Productos.esBebida === esBebida) {
+              cantidad += detalle.cantidad;
+            }
+            return cantidad;
+          }, 0);
+          return totalCantidad + cantidadProductoEnPedido;
         }, 0);
-    };
+      };      
 
     const handleBuscarClick = () => {
         if (startDate !== null && endDate !== null) {
@@ -65,57 +94,49 @@ const RankingProductos = () => {
                 return fechaPedido >= startDate && fechaPedido <= endDate;
             });
 
-            const ventasPorProducto = productos.map(producto => {
-                const ventas = pedidosFiltrados.reduce((total, pedido) => {
-                    const detallePedido = pedido.DetallePedido.find(detalle => detalle.Productos && detalle.Productos.idProducto === producto.idProducto);
-                    if (detallePedido) {
-                        return total + detallePedido.cantidad;
+            const ventasPorProducto = pedidosFiltrados.map((pedido) => {
+                const ventas = pedido.DetallePedido.reduce((total, detalle) => {
+                    if (detalle.Productos) {
+                        return total + detalle.cantidad;
                     }
                     return total;
                 }, 0);
-                return { ...producto, ventas };
+                return { ...pedido, ventas };
             });
 
             // Filtrar los productos por el texto ingresado
-            const productosFiltrados = ventasPorProducto.filter(producto =>
-                producto.nombre.toLowerCase().includes(searchText.toLowerCase())
+            const productosFiltrados = ventasPorProducto.filter((pedido) =>
+                pedido.DetallePedido.some((detalle) =>
+                    detalle.Productos.nombre.toLowerCase().includes(searchText.toLowerCase())
+                )
             );
-
             // Ordenar la lista de productos por ventas
             productosFiltrados.sort((a, b) => b.ventas - a.ventas);
 
             // Actualizar el estado con los productos filtrados y ordenados
-            setProductos(productosFiltrados);
+            setPedidos(productosFiltrados);
         } else {
             alert("Por favor, seleccione ambas fechas antes de realizar la búsqueda.");
         }
     };
 
-    const data = productos.map((producto) => ({
-        idProducto: producto.idProducto,
-        imagen: producto.imagen,
-        nombre: producto.nombre,
-        denominacion: producto.denominacion,
-        stockActual: calculateCantidadVendido(producto.idProducto, false),
-    }));
-
-    const productosBebida = productos
-        .filter(producto => producto.esBebida)
-        .map(producto => ({
-            ...producto,
-            ventasNoBebida: calculateCantidadVendido(producto.idProducto, false),
-            ventasBebida: calculateCantidadVendido(producto.idProducto, true)
+    const pedidosBebida = pedidos
+        .filter((pedido) => pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
+        .map((pedido) => ({
+            ...pedido,
+            ventasNoBebida: calculateCantidadVendido(pedido.idPedido, false),
+            ventasBebida: calculateCantidadVendido(pedido.idPedido, true),
         }));
 
-    const productosNoBebida = productos
-        .filter(producto => !producto.esBebida)
-        .map(producto => ({
-            ...producto,
-            ventasNoBebida: calculateCantidadVendido(producto.idProducto, false),
-            ventasBebida: calculateCantidadVendido(producto.idProducto, true)
+    const pedidosNoBebida = pedidos
+        .filter((pedido) => !pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
+        .map((pedido) => ({
+            ...pedido,
+            ventasNoBebida: calculateCantidadVendido(pedido.idPedido, false),
+            ventasBebida: calculateCantidadVendido(pedido.idPedido, true),
         }));
 
-    const mergedProducts = [...productosBebida, ...productosNoBebida];
+    const mergedProducts = [...pedidosBebida, ...pedidosNoBebida];
 
     return (
         <div>
@@ -164,9 +185,9 @@ const RankingProductos = () => {
                 <Row className="mt-3">
                     <Col>
                         <h2>Ranking de Productos</h2>
-                        <GenericTable<Producto>
+                        <GenericTable<Pedido>
                             columns={columns}
-                            data={productosBebida.sort((a, b) => b.ventasBebida - a.ventasBebida)}
+                            data={pedidosNoBebida.sort((a, b) => b.ventasNoBebida - a.ventasNoBebida)}
                             actions={{
                                 create: false,
                                 update: false,
@@ -175,6 +196,20 @@ const RankingProductos = () => {
                             }}
                         />
                     </Col>
+                    <Col>
+                        <h2>Ranking Bebidas</h2>
+                        <GenericTable<Pedido>
+                            columns={columns}
+                            data={pedidosBebida.sort((a, b) => b.ventasBebida - a.ventasBebida)}
+                            actions={{
+                                create: false,
+                                update: false,
+                                delete: false,
+                                view: false,
+                            }}
+                        />
+                    </Col>
+
                 </Row>
             </Container>
         </div>
