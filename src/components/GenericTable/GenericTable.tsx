@@ -1,11 +1,14 @@
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { Button, Table, InputGroup, FormControl, Container, Row, Col } from 'react-bootstrap';
 import { TableProps } from '../../interface/CamposTablaGenerica';
+import DatePicker from 'react-datepicker';
 
-function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, onView, customSearch }: TableProps<T>) {
+function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, onView, customSearch, customDate, showDate=false }: TableProps<T>) {
   const [searchText, setSearchText] = useState(""); // Estado para almacenar el texto de búsqueda
   const [filteredData, setFilteredData] = useState<T[]>(data); // Estado para almacenar los datos filtrados
   const [isLoading, setIsLoading] = useState(false); // Estado para indicar si se está realizando una búsqueda
+  const [firstDate, setFirstDate] = useState<Date | null>(); //Primera Fecha para Buscar
+  const [secondDate, setSecondDate] = useState<Date | null>(); //Segunda Fecha para Buscar
 
   useEffect(() => {
     let isMounted = true; // Variable para controlar si el componente está montado
@@ -47,6 +50,16 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
     }
   };
 
+  const handleDateSearch = async (e: FormEvent) => {
+    e.preventDefault();
+    if (customDate) {
+      setIsLoading(true);
+      const filteredData = await customDate(firstDate || null, secondDate || null);
+      setFilteredData(filteredData);
+      setIsLoading(false);
+    }
+  }
+
   const defaultSearch = (item: T, search: string): boolean =>
     columns.some(column => {
       const value = item[column.field];
@@ -70,6 +83,29 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
             />
             <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2"><i className="bi bi-search"></i></Button>
           </form>
+          {showDate === true &&
+            <Col sm={8}>
+              <form onSubmit={handleDateSearch} className='d-flex'>
+                <DatePicker
+                  placeholderText='Fecha Inicial'
+                  selected={firstDate}
+                  onChange={(date: Date | null) => setFirstDate(date)}
+                  dateFormat="yyyy-MM-dd"
+                  isClearable
+                  className="form-control"
+                />
+                <DatePicker
+                  placeholderText='Fecha Final'
+                  selected={secondDate}
+                  onChange={(date: Date | null) => setSecondDate(date)}
+                  dateFormat="yyyy-MM-dd"
+                  isClearable
+                  className="form-control"
+                />
+                <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2"><i className="bi bi-search"></i></Button>
+              </form>
+            </Col>
+          }
         </Col>
       </Row>
       <Table responsive>
