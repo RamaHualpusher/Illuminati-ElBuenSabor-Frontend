@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Ingredientes } from '../../../interface/Ingredientes'; // Interfaz para los ingredientes
+import { IIngredientes } from '../../../interface/IIngredientes'; // Interfaz para los ingredientes
 import EditCompraIngredientesModal from './EditCompraIngredientesModal'; // Componente modal para editar compra de ingredientes
 import { handleRequest } from '../../FuncionRequest/FuncionRequest'; // Función para realizar solicitudes HTTP
 import { Button, Table } from 'react-bootstrap'; // Componente de botón de Bootstrap
 
 const CompraIngrediente: React.FC = () => {
-    const [ingredientes, setIngredientes] = useState<Ingredientes[]>([]); // Estado para almacenar los ingredientes
+    const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]); // Estado para almacenar los ingredientes
     const stockMinimoPercentage = 20; // Porcentaje para determinar ingredientes cerca del stock mínimo
     const [editModalShow, setEditModalShow] = useState(false); // Estado para mostrar el modal de edición
-    const [selectedIngrediente, setSelectedIngrediente] = useState<Ingredientes | null>(null); // Estado para el ingrediente seleccionado
-    const [ingred, setIngred] = useState<Ingredientes[]>([]); // Estado para almacenar ingredientes
+    const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null); // Estado para el ingrediente seleccionado
+    const [ingred, setIngred] = useState<IIngredientes[]>([]); // Estado para almacenar ingredientes
 
     const API_URL = "/assets/data/ingredientesEjemplo.json"; // URL simulada para obtener datos de ingredientes
 
@@ -26,7 +26,7 @@ const CompraIngrediente: React.FC = () => {
     }, []);
 
     // Función para filtrar ingredientes con stock bajo
-    const lowStockFilter = (item: Ingredientes) => {
+    const lowStockFilter = (item: IIngredientes) => {
         const difference = item.stockActual - item.stockMinimo;
         return difference <= 0 || difference <= stockMinimoPercentage / 100 * item.stockMinimo;
     };
@@ -43,14 +43,14 @@ const CompraIngrediente: React.FC = () => {
     };
 
     // Función para manejar la edición de ingredientes
-    const handleIngredienteEdit = async (producto: Ingredientes) => {
+    const handleIngredienteEdit = async (producto: IIngredientes) => {
         try {
             // Realizar una solicitud PUT simulada para actualizar los datos del ingrediente
-            const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.idIngredientes}`, producto);
+            const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.id}`, producto);
 
             // Actualizar los datos del ingrediente en el estado
             const newData = [...ingred];
-            const index = newData.findIndex((item) => item.idIngredientes === producto.idIngredientes);
+            const index = newData.findIndex((item) => item.id === producto.id);
             newData[index] = updatedProducto;
 
             setIngred(newData); // Actualizar el estado con los nuevos datos

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Pedido } from "../../interface/Pedido";
+import { IPedido } from "../../interface/IPedido";
 import { useNavigate, useParams } from "react-router-dom";
-import { Action, Column } from "../../interface/CamposTablaGenerica";
+import { IAction, IColumn } from "../../interface/ICamposTablaGenerica";
 import GenericTable from "../GenericTable/GenericTable";
 import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
 
 const Factura = () => {
-  const [facturas, setFacturas] = useState<Pedido[] | null>(null);
-  const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
+  const [facturas, setFacturas] = useState<IPedido[] | null>(null);
+  const [selectedPedido, setSelectedPedido] = useState<IPedido | null>(null);
   const navigate = useNavigate();
   const API_URL = "assets/data/pedidos.json";
   const params = useParams<{ pedido: string }>();
@@ -19,7 +19,7 @@ const Factura = () => {
       .then((data) => {
         setFacturas(data);
         const selectedPedido = data.find(
-          (pedido: Pedido) => pedido.numeroPedido.toString() === params.pedido
+          (pedido: IPedido) => pedido.numeroPedido.toString() === params.pedido
         ); // Buscar el pedido correspondiente
         setSelectedPedido(selectedPedido || null);
       })
@@ -32,40 +32,40 @@ const Factura = () => {
   if (!facturas || facturas === null) return <Spinner />;
 
   // Define las columnas para la tabla de facturas
-  const columns: Column<Pedido>[] = [
+  const columns: IColumn<IPedido>[] = [
     {
       title: "Numero Factura",
       field: "numeroPedido",
-      render: (pedido: Pedido) => (
+      render: (pedido: IPedido) => (
         <span>{pedido.numeroPedido.toString()}</span>
       ),
     },
     {
       title: "Usuario",
       field: "Usuario",
-      render: (pedido: Pedido) => (
+      render: (pedido: IPedido) => (
         <span>{`${pedido.Usuario.apellido} ${pedido.Usuario.nombre}`}</span>
       ),
     },
     {
       title: "Fecha",
       field: "fechaPedido",
-      render: (pedido: Pedido) => <span>{pedido.fechaPedido.toString()}</span>,
+      render: (pedido: IPedido) => <span>{pedido.fechaPedido.toString()}</span>,
     },
     {
       title: "Total",
       field: "totalPedido",
-      render: (pedido: Pedido) => <span>{pedido.totalPedido.toString()}</span>,
+      render: (pedido: IPedido) => <span>{pedido.totalPedido.toString()}</span>,
     },
   ];
 
   // Define las acciones disponibles para cada fila de la tabla
-  const actions: Action = {
+  const actions: IAction = {
     view: true, // Acción de ver detalles
   };
 
   // Función para manejar la acción de "ver detalles"
-  const onView = (pedido: Pedido) => {
+  const onView = (pedido: IPedido) => {
     setSelectedPedido(pedido);
     const encodedPedido = encodeURIComponent(JSON.stringify(pedido));
     window.open(`/factura/${encodedPedido}`, "_blank"); // Abre una nueva ventana con los detalles del pedido
@@ -77,7 +77,7 @@ const Factura = () => {
   };
 
   // Función para búsqueda personalizada por número de factura
-  const customSearch = (searchText: string): Promise<Pedido[]> => {
+  const customSearch = (searchText: string): Promise<IPedido[]> => {
     return new Promise((resolve) => {
       const filteredData = facturas?.filter((factura) =>
         factura.numeroPedido.toString().includes(searchText)
@@ -97,7 +97,7 @@ const Factura = () => {
         <Row className="mt-3">
           <Col>
             {/* Renderiza la tabla de facturas */}
-            <GenericTable<Pedido>
+            <GenericTable<IPedido>
               data={facturas}
               columns={columns}
               actions={actions}

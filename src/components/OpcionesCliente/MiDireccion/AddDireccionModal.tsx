@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Domicilio } from '../../../interface/Domicilio';
-import { AddDireccionModalProps } from '../../../interface/Domicilio';
+import { IDomicilio } from '../../../interface/IDomicilio';
+import { IAddDireccionModalProps } from '../../../interface/IDomicilio';
 
-const AddDireccionModal: React.FC<AddDireccionModalProps> = ({
+const AddDireccionModal: React.FC<IAddDireccionModalProps> = ({
     show,
     handleClose,
     handleDireccionAdd,
@@ -16,8 +16,8 @@ const AddDireccionModal: React.FC<AddDireccionModalProps> = ({
     // Función para manejar el envío del formulario
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const newDireccion: Domicilio = {
-            idDomicilio: 0,
+        const newDireccion: IDomicilio = {
+            id: 0,
             calle,
             numero,
             localidad,

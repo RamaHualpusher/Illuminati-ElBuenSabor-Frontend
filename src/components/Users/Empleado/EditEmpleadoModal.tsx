@@ -1,34 +1,50 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
-import { Rol } from "../../../interface/Rol";
-import { EditUsuarioFromAdmin } from "../../../interface/Usuario";
-import { EditEmpleadoModalProps } from "../../../interface/Usuario";
+import { IRol } from "../../../interface/IRol";
+import { IEditUsuarioFromAdmin } from "../../../interface/IUsuario";
+import { IEditEmpleadoModalProps } from "../../../interface/IUsuario";
 
-const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
+const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
   show,
   handleClose,
   handleEmpleadoEdit,
   selectedEmpleado,
 }) => {
-  // Función para inicializar un nuevo objeto Usuario
-  const initializeUsuario = (empleado: EditUsuarioFromAdmin | null): EditUsuarioFromAdmin => {
+  const initializeUsuario = (empleado: IEditUsuarioFromAdmin | null): IEditUsuarioFromAdmin => {
     return empleado || {
-      idUsuario: 0,
+      id: 0,
       nombre: "",
       apellido: "",
       email: "",
       telefono: "",
-      estado: true,
-      Rol: { idRol: 0, nombreRol: "" },
+      activo: true,
+      rol: { id: 0, nombreRol: "" },
+      domicilio: {
+        id: 0,
+        calle: "",
+        numero: 0,
+        localidad: "",
+      },
     };
   };
 
-  const [empleado, setEmpleado] = useState<EditUsuarioFromAdmin>(initializeUsuario(selectedEmpleado));
-  const [roles, setRoles] = useState<Rol[]>([]);
+  const [usuario, setUsuario] = useState<IEditUsuarioFromAdmin>(initializeUsuario(selectedEmpleado));
+  const [roles, setRoles] = useState<IRol[]>([]);
+  const [emailValido, setEmailValido] = useState(true);
+  const [emailEnUso, setEmailEnUso] = useState(false);
+  const [originalEmail, setOriginalEmail] = useState("");
+  const API_URL = process.env.REACT_APP_API_URL || "";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Cargar roles al montar el componente
   useEffect(() => {
-    fetch("/assets/data/idRolEjemplo.json")
+    if (selectedEmpleado) {
+      setUsuario(selectedEmpleado);
+      setOriginalEmail(selectedEmpleado.email);
+    }
+  }, [selectedEmpleado]);
+
+  useEffect(() => {
+    fetch(API_URL + "rol")
       .then((response) => response.json())
       .then((data) => {
         setRoles(data);
@@ -38,19 +54,58 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
       });
   }, []);
 
-  // Actualizar campos al seleccionar un cliente
-  useEffect(() => {
+  const handleCancelar = () => {
+    // Restablecer los valores del estado al valor original del selectedEgresado
     if (selectedEmpleado) {
-      setEmpleado(selectedEmpleado);
+      setUsuario(initializeUsuario);
     }
-  }, [selectedEmpleado]);
+    // Restablecer otros estados si es necesario
+    setEmailValido(true);
+    setEmailEnUso(false);
+    setIsSubmitting(false);
+    handleClose(); // Cerrar el modal
+  }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    handleEmpleadoEdit(empleado);
+
+    // Verificar si el correo electrónico ya está en uso
+    try {
+      const response = await fetch(API_URL + "usuario/empleados");
+      const empleados = await response.json();
+
+      if (usuario.email !== originalEmail) {
+        const emailExists = empleados.some((empleado: any) => empleado.email === usuario.email);
+
+        if (emailExists) {
+          setEmailEnUso(true);
+          return;
+        } else {
+          setEmailEnUso(false);
+        }
+      }
+
+    } catch (error) {
+      console.error("Error al verificar el email:", error);
+      return;
+    }
+
+    // Verificar dirección de correo electrónico
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailRegex.test(usuario.email)) {
+      setEmailValido(false);
+      return;
+    } else {
+      setEmailValido(true);
+    }
+
+    setIsSubmitting(true); //Si ya se apreto una vez el boton de editar este se deshabilita
+    handleEmpleadoEdit(usuario);
+    setUsuario(initializeUsuario);
+    setIsSubmitting(false);
     handleClose();
   };
-
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -65,8 +120,8 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
                 <Form.Control
                   type="text"
                   placeholder="Ingrese nombre"
-                  value={empleado.nombre}
-                  onChange={(event) => setEmpleado({ ...empleado, nombre: event.target.value })}
+                  value={usuario.nombre}
+                  onChange={(event) => setUsuario({ ...usuario, nombre: event.target.value })}
                   required
                 />
               </Form.Group>
@@ -77,8 +132,8 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
                 <Form.Control
                   type="text"
                   placeholder="Ingrese apellido"
-                  value={empleado.apellido}
-                  onChange={(event) => setEmpleado({ ...empleado, apellido: event.target.value })}
+                  value={usuario.apellido}
+                  onChange={(event) => setUsuario({ ...usuario, apellido: event.target.value })}
                   required
                 />
               </Form.Group>
@@ -91,10 +146,13 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
                 <Form.Control
                   type="email"
                   placeholder="Ingrese email"
-                  value={empleado.email}
-                  onChange={(event) => setEmpleado({ ...empleado, email: event.target.value })}
+                  value={usuario.email}
+                  onChange={(event) => setUsuario({ ...usuario, email: event.target.value })}
                   required
+                  isInvalid={!emailValido || emailEnUso}
                 />
+                {!emailValido && <Form.Control.Feedback type="invalid">Email no válido.</Form.Control.Feedback>}
+                {emailEnUso && <Form.Control.Feedback type="invalid">Este email ya está en uso.</Form.Control.Feedback>}
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -103,8 +161,8 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
                 <Form.Control
                   type="text"
                   placeholder="Ingrese teléfono"
-                  value={empleado.telefono}
-                  onChange={(event) => setEmpleado({ ...empleado, telefono: event.target.value })}
+                  value={usuario.telefono}
+                  onChange={(event) => setUsuario({ ...usuario, telefono: event.target.value })}
                   required
                 />
               </Form.Group>
@@ -115,8 +173,8 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
               <Form.Group className="mb-3" controlId="formEstado">
                 <Form.Label>Estado</Form.Label>
                 <Form.Select
-                  value={empleado.estado ? 'activo' : 'bloqueado'}
-                  onChange={(event) => setEmpleado({ ...empleado, estado: event.target.value === 'activo' })}
+                  value={usuario.activo ? 'activo' : 'bloqueado'}
+                  onChange={(event) => setUsuario({ ...usuario, activo: event.target.value === 'activo' })}
                   required
                 >
                   <option value="activo">Activo</option>
@@ -125,29 +183,77 @@ const EditEmpleadoModal: React.FC<EditEmpleadoModalProps> = ({
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group controlId="formRol">
+              <Form.Group className="mb-3" controlId="formRol">
                 <Form.Label>Rol</Form.Label>
-                <Form.Select
-                  value={empleado.Rol.idRol || ""}
-                  onChange={(event) => setEmpleado({ ...empleado, Rol: { ...empleado.Rol, idRol: parseInt(event.target.value) } })}
+                <Form.Control
+                  as="select"
+                  value={usuario.rol.id || ""}
+                  onChange={(event) => {
+                    const selectedIdRol = parseInt(event.target.value);
+                    const selectedRol = roles.find((rol) => rol.id === selectedIdRol) || { idRol: 0, nombreRol: "" };
+                    setUsuario((prevUsuario) => ({ ...prevUsuario, rol: selectedRol }));
+                  }}
                   required
                 >
                   <option value="">Seleccione un rol</option>
                   {roles.map((rol) => (
-                    <option key={rol.idRol} value={rol.idRol}>
+                    <option key={rol.id} value={rol.id}>
                       {rol.nombreRol}
                     </option>
                   ))}
-                </Form.Select>
+                </Form.Control>
               </Form.Group>
             </Col>
           </Row>
+          <Form.Group className="mb-3" controlId="formDomicilio">
+            <Form.Label>Domicilio:</Form.Label>
+            <Row>
+              <Col>
+                <Form.Label>Calle</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ingrese calle"
+                  value={usuario.domicilio.calle}
+                  onChange={(event) =>
+                    setUsuario({
+                      ...usuario,
+                      domicilio: {
+                        ...usuario.domicilio,
+                        calle: event.target.value, // Actualizar solo la calle
+                      },
+                    })
+                  }
+                  required
+                />
+              </Col>
+              <Col md={3}>
+                <Form.Label>Número</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese número"
+                  value={usuario.domicilio.numero}
+                  onChange={(event) => setUsuario({ ...usuario, domicilio: { ...usuario.domicilio, numero: parseInt(event.target.value) } })}
+                  required
+                />
+              </Col>
+              <Col>
+                <Form.Label>Localidad</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ingrese localidad"
+                  value={usuario.domicilio.localidad}
+                  onChange={(event) => setUsuario({ ...usuario, domicilio: { ...usuario.domicilio, localidad: event.target.value } })}
+                  required
+                />
+              </Col>
+            </Row>
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleCancelar}>
             Cancelar
           </Button>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" disabled={isSubmitting}>
             Guardar Cambios
           </Button>
         </Modal.Footer>

@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Pedido } from '../../../interface/Pedido';
+import { IPedido } from '../../../interface/IPedido';
 import PedidoCardUsuario from './PedidoCardUsuario';
 import { Link } from 'react-router-dom';
 
 const Pasados: React.FC = () => {
     // Estado para almacenar los pedidos pasados
-    const [pedidosPasados, setPedidosPasados] = useState<Pedido[]>([]);
+    const [pedidosPasados, setPedidosPasados] = useState<IPedido[]>([]);
 
     // Estado para almacenar el pedido seleccionado
-    const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
+    const [selectedPedido, setSelectedPedido] = useState<IPedido | null>(null);
 
     // Obtener y filtrar los pedidos pasados al montar el componente
     useEffect(() => {
         const fetchPedidosPasados = async () => {
             try {
-                const response = await axios.get<Pedido[]>('/assets/data/pedidos.json');
+                const response = await axios.get<IPedido[]>('/assets/data/pedidos.json');
                 const pedidos = response.data.filter((pedido) =>
                     pedido.estadoPedido === 'Entregado' || pedido.estadoPedido === 'Cancelado'
                 );
@@ -33,7 +33,7 @@ const Pasados: React.FC = () => {
             {pedidosPasados.length > 0 ? (
                 // Mostrar la lista de pedidos pasados si hay al menos uno
                 pedidosPasados.map((pedido) => (
-                    <div key={pedido.idPedido}>
+                    <div key={pedido.id}>
                         <PedidoCardUsuario pedido={pedido} />
                     </div>
                 ))

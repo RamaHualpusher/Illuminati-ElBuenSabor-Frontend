@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Pedido } from "../../interface/Pedido";
-import { Usuario } from "../../interface/Usuario";
-import { Domicilio } from "../../interface/Domicilio";
+import { IPedido } from "../../interface/IPedido";
+import { IUsuario } from "../../interface/IUsuario";
+import { IDomicilio } from "../../interface/IDomicilio";
 import AdminBar from "../NavBar/AdminBar";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Table, Container } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
-
 import FacturaPDF from "./FacturaPDF";
-import { DetallePedido } from '../../interface/DetallePedido';
 
 interface GenerarCreditoModalProps {
     closeModal: () => void;
@@ -17,9 +15,9 @@ interface GenerarCreditoModalProps {
 const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
     closeModal,
 }) => {
-    const [pedidoObj, setPedido] = useState<Pedido | null>(null);
-    const [usuario, setUsuario] = useState<Usuario | undefined>();
-    const [domicilio, setDomicilio] = useState<Domicilio | undefined>();
+    const [pedidoObj, setPedido] = useState<IPedido | null>(null);
+    const [usuario, setUsuario] = useState<IUsuario | undefined>();
+    const [domicilio, setDomicilio] = useState<IDomicilio | undefined>();
     const location = useLocation();
     const pedidoParam = location.pathname.split("/factura/")[1];
     const pedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : null;
@@ -83,7 +81,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                             </thead>
                             <tbody>
                                 {pedidoObj?.DetallePedido && pedidoObj.DetallePedido.length > 0 && (
-                                    <tr key={pedidoObj.DetallePedido[0].idDetallePedido}>
+                                    <tr key={pedidoObj.DetallePedido[0].id}>
                                         <td>{pedidoObj.DetallePedido[0].cantidad}</td>
                                         <td>
                                             <ul>
@@ -125,8 +123,8 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                         <div className="right-section">
                             <h2>Envío</h2>
                             <p>
-                                Dirección: {usuario?.Domicilio?.calle} {usuario?.Domicilio?.numero},<br />
-                                {usuario?.Domicilio?.localidad}
+                                Dirección: {usuario?.domicilio?.calle} {usuario?.domicilio?.numero},<br />
+                                {usuario?.domicilio?.localidad}
                             </p>
                         </div>
                     </div>

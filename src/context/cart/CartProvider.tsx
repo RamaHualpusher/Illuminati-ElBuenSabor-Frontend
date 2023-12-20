@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, ReactNode } from 'react';
-import { DetallePedido } from '../../interface/DetallePedido';
+import { IDetallePedido } from '../../interface/IDetallePedido';
 
 export interface CartItem {
   id: number;
@@ -8,7 +8,7 @@ export interface CartItem {
   price: number;
   image: string;
   title: string;
-  DetallePedido: DetallePedido;
+  DetallePedido: IDetallePedido;
 }
 
 type CartAction =

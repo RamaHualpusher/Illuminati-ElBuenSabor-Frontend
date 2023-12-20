@@ -3,34 +3,34 @@ import { Container, Row, Form } from "react-bootstrap";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 import EditProductoModal from "./EditProductoModal";
 import AddProductoModal from "./AddProductoModal";
-import { Producto } from "../../../interface/Producto";
-import { Action, Column } from "../../../interface/CamposTablaGenerica";
+import { IProducto } from "../../../interface/IProducto";
+import { IAction, IColumn } from "../../../interface/ICamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
-import { Rubro } from "../../../interface/Rubro";
+import { IRubro } from "../../../interface/IRubro";
 
 const Productos: React.FC = () => {
   // Estados del componente
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
-  const [selectedProducto, setSelectedProducto] = useState<Producto | null>(null);
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [productosComplete, setProductosComplete] = useState<Producto[]>([]);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [selectedProducto, setSelectedProducto] = useState<IProducto | null>(null);
+  const [productos, setProductos] = useState<IProducto[]>([]);
+  const [productosComplete, setProductosComplete] = useState<IProducto[]>([]);
+  const [rubros, setRubros] = useState<IRubro[]>([]);
   const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
   const [selectedRubroName, setSelectedRubroName] = useState<string>("");
-  const [filteredProductos, setFilteredProductos] = useState<Producto[]>([]);
+  const [filteredProductos, setFilteredProductos] = useState<IProducto[]>([]);
   const API_URL = "assets/data/productosLanding.json";
   const API_URL_Rubro = "assets/data/rubrosProductosEjemplo.json";
 
   // Configuración de acciones y columnas para la tabla
-  const actions: Action = {
+  const actions: IAction = {
     create: true,
     update: true,
   };
 
-  const columns: Column<Producto>[] = [
+  const columns: IColumn<IProducto>[] = [
     // Definición de las columnas
-    { title: "ID", field: "idProducto" },
+    { title: "ID", field: "id" },
     { title: "Nombre", field: "nombre" },
     {
       title: "Imagen", field: "imagen", width: 2,
@@ -39,16 +39,16 @@ const Productos: React.FC = () => {
     {
       title: "Rubro",
       field: "Rubro",
-      render: (producto: Producto) => <span>{`${producto.Rubro.nombre}`}</span>,
+      render: (producto: IProducto) => <span>{`${producto.Rubro.nombre}`}</span>,
     },
     { title: "Tiempo en Cocina", field: "tiempoEstimadoCocina" },
     { title: "Precio", field: "precio" },
     {
       title: "Estado",
-      field: "estado",
-      render: (producto: Producto) => (
-        <span className={`${producto.estado ? "text-success" : "text-danger"}`}>
-          {producto.estado ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
+      field: "activo",
+      render: (producto: IProducto) => (
+        <span className={`${producto.activo ? "text-success" : "text-danger"}`}>
+          {producto.activo ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
         </span>
       ),
     },
@@ -96,7 +96,7 @@ const Productos: React.FC = () => {
   }, []);
 
   // Agregar un producto
-  const handleProductoAdd = async (producto: Producto) => {
+  const handleProductoAdd = async (producto: IProducto) => {
     try {
       const newProducto = await handleRequest("POST", API_URL, producto);
       setProductos([...productos, newProducto]);
@@ -106,16 +106,16 @@ const Productos: React.FC = () => {
   };
 
   // Editar un producto
-  const handleProductoEdit = async (producto: Producto) => {
+  const handleProductoEdit = async (producto: IProducto) => {
     try {
-      const updatedProducto: Producto = await handleRequest(
+      const updatedProducto: IProducto = await handleRequest(
         "PUT",
-        `${API_URL}/${producto.idProducto}`,
+        `${API_URL}/${producto.id}`,
         producto
       );
 
       const updatedProductos = productos.map((p) =>
-        p.idProducto === updatedProducto.idProducto ? updatedProducto : p
+        p.id === updatedProducto.id ? updatedProducto : p
       );
       setProductos(updatedProductos);
     } catch (error) {
@@ -132,7 +132,7 @@ const Productos: React.FC = () => {
     const productoId: number = +rowData[0];
     try {
       await handleRequest("DELETE", `${API_URL}/${productoId}`);
-      const updatedProductos = productos.filter((p) => p.idProducto !== productoId);
+      const updatedProductos = productos.filter((p) => p.id !== productoId);
       setProductos(updatedProductos);
     } catch (error) {
       console.log(error);
@@ -140,8 +140,8 @@ const Productos: React.FC = () => {
   };
 
   // Abrir modal de edición
-  const handleEditModalOpen = (item: Producto) => {
-    const selected = productosComplete.find((producto) => producto.idProducto === item.idProducto);
+  const handleEditModalOpen = (item: IProducto) => {
+    const selected = productosComplete.find((producto) => producto.id === item.id);
     if (selected) {
       setSelectedProducto(selected);
       setEditModalShow(true);

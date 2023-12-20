@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { Producto } from '../../../interface/Producto';
+import { IProducto } from '../../../interface/IProducto';
 import GenericTable from "../../GenericTable/GenericTable";
-import { Column } from "../../../interface/CamposTablaGenerica";
-import { Pedido } from "../../../interface/Pedido";
+import { IColumn } from "../../../interface/ICamposTablaGenerica";
+import { IPedido } from "../../../interface/IPedido";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const RankingProductos = () => {
-    const [productos, setProductos] = useState<Producto[]>([]);
-    const [pedidos, setPedidos] = useState<Pedido[]>([]);
+    const [productos, setProductos] = useState<IProducto[]>([]);
+    const [pedidos, setPedidos] = useState<IPedido[]>([]);
     const [searchText, setSearchText] = useState<string>('');
     const [startDate, setStartDate] = useState<Date | null>(new Date());
     const [endDate, setEndDate] = useState<Date | null>(new Date());
@@ -29,7 +29,7 @@ const RankingProductos = () => {
             .catch(error => console.log(error));
     }, []);
 
-    const columns: Column<Pedido>[] = [
+    const columns: IColumn<IPedido>[] = [
         { title: "Fecha Pedido", field: "fechaPedido", width: 2 },
         {
             title: "Producto",
@@ -42,20 +42,20 @@ const RankingProductos = () => {
         // aca no se si entrar con un "map" y ver todos losa tributos del detalle pedido y luego en "data" debajo de esta seccion, poner esos 
         //atributos, o como organizarme para ver esos items.
         {
-            title: "Nombre", field: "DetallePedido", width: 4,            
-            render: (rowData: Pedido) => (                
-                <ul>                    
+            title: "Nombre", field: "DetallePedido", width: 4,
+            render: (rowData: IPedido) => (
+                <ul>
                     {rowData.DetallePedido.map((detalle, index) => (
                         <li key={index}>
                             Nombre: {detalle.Productos.nombre}
                         </li>
-                    ))}                    
+                    ))}
                 </ul>
             ),
         },
         {
             title: "Ventas por producto", field: "DetallePedido", width: 3,
-            render: (rowData: Pedido) =>
+            render: (rowData: IPedido) =>
                 // <div>{calculateCantidadVendido(rowData.DetallePedido[0].cantidad, false)}</div>
                 <ul>
                     {rowData.DetallePedido.map((detalle, index) => (
@@ -77,15 +77,15 @@ const RankingProductos = () => {
 
     const calculateCantidadVendido = (productoId: number, esBebida: boolean) => {
         return pedidos.reduce((totalCantidad, pedido) => {
-          const cantidadProductoEnPedido = pedido.DetallePedido.reduce((cantidad, detalle) => {
-            if (detalle.Productos && detalle.Productos.idProducto === productoId && detalle.Productos.esBebida === esBebida) {
-              cantidad += detalle.cantidad;
-            }
-            return cantidad;
-          }, 0);
-          return totalCantidad + cantidadProductoEnPedido;
+            const cantidadProductoEnPedido = pedido.DetallePedido.reduce((cantidad, detalle) => {
+                if (detalle.Productos && detalle.Productos.id === productoId && detalle.Productos.esBebida === esBebida) {
+                    cantidad += detalle.cantidad;
+                }
+                return cantidad;
+            }, 0);
+            return totalCantidad + cantidadProductoEnPedido;
         }, 0);
-      };      
+    };
 
     const handleBuscarClick = () => {
         if (startDate !== null && endDate !== null) {
@@ -121,19 +121,19 @@ const RankingProductos = () => {
     };
 
     const pedidosBebida = pedidos
-        .filter((pedido) => pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
+        .filter((pedido) => pedido.id !== undefined && pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
         .map((pedido) => ({
             ...pedido,
-            ventasNoBebida: calculateCantidadVendido(pedido.idPedido, false),
-            ventasBebida: calculateCantidadVendido(pedido.idPedido, true),
+            ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
+            ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
         }));
 
     const pedidosNoBebida = pedidos
-        .filter((pedido) => !pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
+        .filter((pedido) => pedido.id !== undefined && !pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
         .map((pedido) => ({
             ...pedido,
-            ventasNoBebida: calculateCantidadVendido(pedido.idPedido, false),
-            ventasBebida: calculateCantidadVendido(pedido.idPedido, true),
+            ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
+            ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
         }));
 
     const mergedProducts = [...pedidosBebida, ...pedidosNoBebida];
@@ -185,7 +185,7 @@ const RankingProductos = () => {
                 <Row className="mt-3">
                     <Col>
                         <h2>Ranking de Productos</h2>
-                        <GenericTable<Pedido>
+                        <GenericTable<IPedido>
                             columns={columns}
                             data={pedidosNoBebida.sort((a, b) => b.ventasNoBebida - a.ventasNoBebida)}
                             actions={{
@@ -198,7 +198,7 @@ const RankingProductos = () => {
                     </Col>
                     <Col>
                         <h2>Ranking Bebidas</h2>
-                        <GenericTable<Pedido>
+                        <GenericTable<IPedido>
                             columns={columns}
                             data={pedidosBebida.sort((a, b) => b.ventasBebida - a.ventasBebida)}
                             actions={{

@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
-import { Ingredientes } from '../../../interface/Ingredientes';
-import { Rubro } from '../../../interface/Rubro';
-import { EditIngredientesModalProps } from '../../../interface/Ingredientes';
+import { IIngredientes } from '../../../interface/IIngredientes';
+import { IRubro } from '../../../interface/IRubro';
+import { IEditIngredientesModalProps } from '../../../interface/IIngredientes';
 
-const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
+const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
   show,
   handleClose,
   handleIngredientesEdit,
   selectedIngredientes,
 }) => {
   // Función para inicializar los atributos de la interfaz
-  const initializeIngredientes = (): Ingredientes => ({
-    idIngredientes: 0,
+  const initializeIngredientes = (): IIngredientes => ({
+    id: 0,
     nombre: '',
-    estado: false,
+    activo: false,
     stockMinimo: 0,
     stockActual: 0,
     precioCosto: 0,
@@ -22,8 +22,8 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
     Rubro: { idRubro: 0, nombre: '' },
   });
 
-  const [ingredientes, setIngredientes] = useState<Ingredientes>(initializeIngredientes);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [ingredientes, setIngredientes] = useState<IIngredientes>(initializeIngredientes);
+  const [rubros, setRubros] = useState<IRubro[]>([]);
   const unidades = ["Kg", "g", "Mg", "l", "Ml"];
 
   // Cargar los rubros al cargar el componente
@@ -42,9 +42,9 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
   useEffect(() => {
     if (selectedIngredientes) {
       setIngredientes({
-        idIngredientes: selectedIngredientes.idIngredientes,
+        id: selectedIngredientes.id,
         nombre: selectedIngredientes.nombre || '',
-        estado: selectedIngredientes.estado || false,
+        activo: selectedIngredientes.activo || false,
         stockMinimo: selectedIngredientes.stockMinimo || 0,
         stockActual: selectedIngredientes.stockActual || 0,
         precioCosto: selectedIngredientes.precioCosto || 0,
@@ -61,7 +61,7 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
       const selectedRubro = rubros.find((rubro) => rubro.idRubro === ingredientes.Rubro.idRubro);
 
       // Crear un nuevo objeto Ingredientes con los datos editados
-      const updatedIngredientes: Ingredientes = {
+      const updatedIngredientes: IIngredientes = {
         ...ingredientes,
         Rubro: selectedRubro || { idRubro: 0, nombre: '' },
       };
@@ -126,7 +126,7 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
                     <option
                       key={rubro.idRubro}
                       value={rubro.idRubro}
-                      disabled={!rubro.estado}>
+                      disabled={!rubro.activo}>
                       {rubro.nombre}
                     </option>
                   ))}
@@ -191,8 +191,8 @@ const EditIngredientesModal: React.FC<EditIngredientesModalProps> = ({
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={ingredientes.estado ? 'alta' : 'baja'}
-              onChange={(event) => setIngredientes({ ...ingredientes, estado: event.target.value === 'alta' })}
+              value={ingredientes.activo ? 'alta' : 'baja'}
+              onChange={(event) => setIngredientes({ ...ingredientes, activo: event.target.value === 'alta' })}
               required
             >
               <option value="alta">Alta</option>

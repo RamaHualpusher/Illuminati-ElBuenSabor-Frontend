@@ -1,8 +1,8 @@
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { Button, Table, InputGroup, FormControl, Container, Row, Col } from 'react-bootstrap';
-import { TableProps } from '../../interface/CamposTablaGenerica';
+import { ITableProps } from '../../interface/ICamposTablaGenerica';
 
-function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, onView, customSearch }: TableProps<T>) {
+function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, onView, customSearch }: ITableProps<T>) {
   const [searchText, setSearchText] = useState(""); // Estado para almacenar el texto de búsqueda
   const [filteredData, setFilteredData] = useState<T[]>(data); // Estado para almacenar los datos filtrados
   const [isLoading, setIsLoading] = useState(false); // Estado para indicar si se está realizando una búsqueda

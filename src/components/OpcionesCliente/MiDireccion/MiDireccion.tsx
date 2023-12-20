@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Button } from 'react-bootstrap';
-import { Domicilio } from '../../../interface/Domicilio';
+import { IDomicilio } from '../../../interface/IDomicilio';
 import EditDireccionModal from './EditDireccionModal';
 import AddDireccionModal from './AddDireccionModal';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
@@ -9,10 +9,10 @@ import { Link } from 'react-router-dom';
 
 const Direccion: FC = () => {
     // Estados para controlar la dirección, modales y dirección seleccionada
-    const [domicilio, setDomicilio] = useState<Domicilio | null>(null);
+    const [domicilio, setDomicilio] = useState<IDomicilio | null>(null);
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
-    const [selectedDireccion, setSelectedDireccion] = useState<Domicilio | null>(null);
+    const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
 
     const API_URL = '/assets/data/domicilioCliente.json';
 
@@ -30,7 +30,7 @@ const Direccion: FC = () => {
     }, []);
 
     // Función para manejar la edición de la dirección
-    const handleDomicilioEdit = async (domicilio: Domicilio) => {
+    const handleDomicilioEdit = async (domicilio: IDomicilio) => {
         try {
             const updatedDomicilio = await handleRequest('PUT', API_URL, domicilio);
             setDomicilio(updatedDomicilio);
@@ -40,7 +40,7 @@ const Direccion: FC = () => {
     };
 
     // Función para manejar la adición de una dirección
-    const handleDomicilioAdd = async (domicilio: Domicilio) => {
+    const handleDomicilioAdd = async (domicilio: IDomicilio) => {
         try {
             const newDomicilio = await handleRequest('POST', API_URL, domicilio);
             setDomicilio(newDomicilio);

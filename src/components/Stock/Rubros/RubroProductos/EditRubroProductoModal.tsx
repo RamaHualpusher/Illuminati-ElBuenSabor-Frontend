@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Rubro } from '../../../../interface/Rubro';
-import { EditRubroProductoModalProps } from '../../../../interface/Producto';
+import { IRubro } from '../../../../interface/IRubro';
+import { IEditRubroProductoModalProps } from '../../../../interface/IProducto';
 
-const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
+const EditRubroProductoModal: React.FC<IEditRubroProductoModalProps> = ({
   show,
   handleClose,
   handleRubroEdit,
@@ -11,13 +11,13 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
 }) => {
   // Estados del componente
   const [nombre, setNombre] = useState('');
-  const [estado, setEstado] = useState(false);
+  const [activo, setActivo] = useState(false);
 
   // Actualizar estados cuando se selecciona un rubro
   useEffect(() => {
     if (selectedRubro) {
       setNombre(selectedRubro.nombre);
-      setEstado(selectedRubro.estado || false);
+      setActivo(selectedRubro.activo || false);
       // setIdRubroPadre(selectedRubro.idRubroPadre); (No se utiliza en este componente)
     }
   }, [selectedRubro]);
@@ -33,11 +33,11 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
     }
 
     if (selectedRubro) {
-      const updatedRubro: Rubro = {
+      const updatedRubro: IRubro = {
         ...selectedRubro,
         idRubro: selectedRubro.idRubro || 0,
         nombre,
-        estado,
+        activo,
         // idRubroPadre, (No se utiliza en este componente)
       };
       handleRubroEdit(updatedRubro);
@@ -47,7 +47,7 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
 
   // Función para cambiar el estado
   const handleStatusChange = (isActive: boolean) => {
-    setEstado(isActive);
+    setActivo(isActive);
   };
 
   return (
@@ -71,8 +71,8 @@ const EditRubroProductoModal: React.FC<EditRubroProductoModalProps> = ({
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={estado ? 'alta' : 'baja'}
-              onChange={(event) => setEstado(event.target.value === 'alta')}
+              value={activo ? 'alta' : 'baja'}
+              onChange={(event) => setActivo(event.target.value === 'alta')}
               required
             >
               <option value="alta">Alta</option>

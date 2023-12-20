@@ -5,7 +5,7 @@ import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import { CartContext } from '../../context/cart/CartProvider';
 import CartItem from '../CarritoCompras/CartItem';
-import { Producto } from "../../interface/Producto";
+import { IProducto } from "../../interface/IProducto";
 import { SearchContext } from '../Buscador/SearchContext';
 import { Link } from 'react-router-dom';
 
@@ -19,8 +19,8 @@ const Navbar: FC = () => {
   const { cartItems, removeFromCart } = useContext(CartContext); // Obtener elementos del carrito y función para eliminar
   const [cartOpen, setCartOpen] = useState(false); // Estado para controlar la apertura del carrito
   const [searchOpen, setSearchOpen] = useState(false); // Estado para controlar la apertura de la búsqueda
-  const [produc, setProduc] = useState<Producto[]>([]); // Estado para almacenar productos
-  const [producComplete, setProducComplete] = useState<Producto[]>([]); // Estado para almacenar productos completos
+  const [produc, setProduc] = useState<IProducto[]>([]); // Estado para almacenar productos
+  const [producComplete, setProducComplete] = useState<IProducto[]>([]); // Estado para almacenar productos completos
   const { setSearchParam } = useContext(SearchContext); // Obtener función para establecer parámetros de búsqueda
   const cartVacio = cartItems.length === 0; // Verificar si el carrito está vacío
 
