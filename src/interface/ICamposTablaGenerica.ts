@@ -21,4 +21,6 @@ export interface ITableProps<T> {
   onDelete?: (item: T) => void; // Manejador de evento para la acción de eliminación (opcional)
   onView?: (item: T) => void; // Manejador de evento para la acción de visualización (opcional)
   customSearch?: (searchText: string) => Promise<T[]>; // Función de búsqueda personalizada (opcional)
+  customDate?: (firtsDate:Date|null, secondDate:Date|null) => Promise<T[]>; // Función de busqueda por fechas(opcional)
+  showDate?: boolean; // Permite Mostrar busqueda por fecha (opcional)
 }
