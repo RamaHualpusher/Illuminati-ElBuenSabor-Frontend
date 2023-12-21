@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { AddRubroProductoModalProps } from '../../../../interface/Producto';
-import { Rubro } from '../../../../interface/Rubro';
+import { IAddRubroProductoModalProps } from '../../../../interface/IProducto';
+import { IRubro } from '../../../../interface/IRubro';
 
-const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
+const AddRubroProductoModal: React.FC<IAddRubroProductoModalProps> = ({
   show,
   handleClose,
   handleRubroAdd,
 }) => {
   // Estados del componente
   const [nombre, setNombre] = useState('');
-  const [estado, setEstado] = useState(true);
+  const [activo, setActivo] = useState(true);
 
   // Función para manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -22,10 +22,10 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
       return;
     }
 
-    const newRubroProducto: Rubro = {
+    const newRubroProducto: IRubro = {
       idRubro: 0,
       nombre: trimmedNombre,
-      estado,
+      activo,
       idRubroPadre: undefined,
     };
     handleRubroAdd(newRubroProducto); // Pasar el objeto rubroData directamente a handleRubroAdd
@@ -34,13 +34,13 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
 
   // Función para cambiar el estado
   const handleStatusChange = (isActive: boolean) => {
-    setEstado(isActive);
+    setActivo(isActive);
   };
 
 
-  const handleCancelar=()=>{
+  const handleCancelar = () => {
     setNombre("");
-    setEstado(true);
+    setActivo(true);
     handleClose();
   }
 
@@ -65,8 +65,8 @@ const AddRubroProductoModal: React.FC<AddRubroProductoModalProps> = ({
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={estado ? 'alta' : 'baja'}
-              onChange={(event) => setEstado(event.target.value === 'alta')}
+              value={activo ? 'alta' : 'baja'}
+              onChange={(event) => setActivo(event.target.value === 'alta')}
               required
             >
               <option value="alta">Alta</option>

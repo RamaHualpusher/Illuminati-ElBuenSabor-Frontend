@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Col, Row } from "react-bootstrap";
-import { Producto } from "../../../interface/Producto";
-import { Rubro } from "../../../interface/Rubro";
-import { EditProductoModalProps } from "../../../interface/Producto";
-import { Ingredientes } from "../../../interface/Ingredientes";
-import { ProductoIngrediente } from "../../../interface/ProductoIngrediente";
+import { IProducto } from "../../../interface/IProducto";
+import { IRubro } from "../../../interface/IRubro";
+import { IEditProductoModalProps } from "../../../interface/IProducto";
+import { IIngredientes } from "../../../interface/IIngredientes";
+import { IProductoIngrediente } from "../../../interface/IProductoIngrediente";
 
-const EditProductoModal: React.FC<EditProductoModalProps> = ({
+const EditProductoModal: React.FC<IEditProductoModalProps> = ({
   show,
   handleClose,
   handleProductoEdit,
@@ -20,26 +20,26 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   const [denominacion, setDenominacion] = useState("");
   const [preparacion, setPreparacion] = useState("");
   const [precio, setPrecio] = useState(0);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
-  const [selectedRubro, setSelectedRubro] = useState<Rubro | null>(null);
-  const [estado, setEstado] = useState(selectedProducto?.estado || false);
-  const [ingredientes, setIngredientes] = useState<ProductoIngrediente[] | null>(null);
+  const [rubros, setRubros] = useState<IRubro[]>([]);
+  const [selectedRubro, setSelectedRubro] = useState<IRubro | null>(null);
+  const [activo, setActivo] = useState(selectedProducto?.activo || false);
+  const [ingredientes, setIngredientes] = useState<IProductoIngrediente[] | null>(null);
   const [cantidad, setCantidad] = useState(0);
-  const [ingredientesA, setIngredientesA] = useState<Ingredientes[]>([]);
+  const [ingredientesA, setIngredientesA] = useState<IIngredientes[]>([]);
   const [cantIngrediente, setCantIngrediente] = useState<number>(0);
-  const [ingredienteA, setIngredienteA] = useState<Ingredientes | null>(null);
+  const [ingredienteA, setIngredienteA] = useState<IIngredientes | null>(null);
   const [costo, setCosto] = useState<number>(0);
 
   // Definición de objetos por defecto
-  const rubrod: Rubro = {
+  const rubrod: IRubro = {
     idRubro: 0,
     nombre: "",
   };
 
 
-  const defectoIngrediente: Ingredientes = {
-    estado: false,
-    idIngredientes: 0,
+  const defectoIngrediente: IIngredientes = {
+    id: 0,
+    activo: false,
     nombre: "",
     precioCosto: 0,
     Rubro: rubrod,
@@ -48,8 +48,8 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     unidadMedida: ""
   };
 
-  const defectoProducto: Producto = {
-    idProducto: 0,
+  const defectoProducto: IProducto = {
+    id: 0,
     nombre: "",
     Rubro: rubrod,
     tiempoEstimadoCocina: 0,
@@ -60,22 +60,22 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     preparacion: "",
     precio: 0,
     esBebida: false,
-    estado: false,
+    activo: false,
     ProductoIngrediente: []
   }
 
-  const defectoProductoIngrediente: ProductoIngrediente = {
+  const defectoProductoIngrediente: IProductoIngrediente = {
     cantidad: 0,
-    idProductoIngrediente: 0,
+    id: 0,
     Ingredientes: defectoIngrediente
   }
-  const [ingrediente, setIngrediente] = useState<ProductoIngrediente>(defectoProductoIngrediente);
+  const [ingrediente, setIngrediente] = useState<IProductoIngrediente>(defectoProductoIngrediente);
 
   // Cargar rubros y productos al montar el componente
   useEffect(() => {
     fetch("/assets/data/rubrosProductosEjemplo.json")
       .then((response) => response.json())
-      .then((data: Rubro[]) => {
+      .then((data: IRubro[]) => {
         setRubros(data);
       })
       .catch((error) => {
@@ -87,7 +87,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
   useEffect(() => {
     fetch("/assets/data/ingredientesEjemplo.json")
       .then((response) => response.json())
-      .then((data: Ingredientes[]) => {
+      .then((data: IIngredientes[]) => {
         setIngredientesA(data);
       })
       .catch((error) => {
@@ -104,7 +104,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
       setSelectedRubro(selectedProducto?.Rubro || null);
       setTiempo(selectedProducto?.tiempoEstimadoCocina || 0);
       setPrecio(selectedProducto?.precio || 0);
-      setEstado(selectedProducto?.estado || false);
+      setActivo(selectedProducto?.activo || false);
       setDenominacion(selectedProducto?.denominacion || "");
       setPreparacion(selectedProducto?.preparacion || "");
       setIngredientes(selectedProducto.ProductoIngrediente || [])
@@ -171,11 +171,13 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     if (ingredienteA !== null && cantIngrediente > 0) {
       let contar: number = 0;
       ingredientes?.map((ingre) => {
-        contar = ingre.idProductoIngrediente;
+        if (ingre.id !== undefined) {
+          contar = ingre.id;
+        }
       })
       let encontrado = false
       ingredientes?.map((ingre) => {
-        if (ingre.Ingredientes.nombre === ingredienteA.nombre && ingre.Ingredientes.estado !== false) {
+        if (ingre.Ingredientes.nombre === ingredienteA.nombre && ingre.Ingredientes.activo !== false) {
           console.log("coincidencia encontrada " + ingre.Ingredientes.nombre + " cantida previa" + (ingre.cantidad))
           ingre.cantidad += cantIngrediente;
           setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
@@ -185,12 +187,12 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
         }
       })
 
-      if (encontrado === false && ingredienteA.estado !== false) {
-        const ingre: Ingredientes | null = ingredienteA;
-        const ingres: ProductoIngrediente[] | null = ingredientes;
-        const agre: ProductoIngrediente = {
+      if (encontrado === false && ingredienteA.activo !== false) {
+        const ingre: IIngredientes | null = ingredienteA;
+        const ingres: IProductoIngrediente[] | null = ingredientes;
+        const agre: IProductoIngrediente = {
           cantidad: cantIngrediente,
-          idProductoIngrediente: contar + 1,
+          id: contar + 1,
           Ingredientes: ingre || defectoIngrediente
         }
         setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
@@ -245,13 +247,13 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
     event.preventDefault();
     if (ingredientes && ingredientes.length > 0) {
       if (selectedProducto) {
-        const updatedProducto: Producto = {
+        const updatedProducto: IProducto = {
           ...selectedProducto,
           nombre,
           tiempoEstimadoCocina: tiempo,
           precio: precio,
           imagen,
-          estado,
+          activo,
           Rubro: selectedRubro || selectedProducto.Rubro,
           ProductoIngrediente: ingredientes || selectedProducto.ProductoIngrediente,
         };
@@ -299,8 +301,8 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
               <Form.Group className="mb-3" controlId="formEstado">
                 <Form.Label>Estado</Form.Label>
                 <Form.Select
-                  value={estado ? 'alta' : 'baja'}
-                  onChange={(event) => setEstado(event.target.value === 'alta')}
+                  value={activo ? 'alta' : 'baja'}
+                  onChange={(event) => setActivo(event.target.value === 'alta')}
                   required
                 >
                   <option value="alta">Alta</option>
@@ -421,7 +423,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
                 >
                   <option value="none">Agregar Ingrediente</option>
                   {ingredientesA.map((Ingrediente) =>
-                    <option value={Ingrediente.nombre}>{Ingrediente.nombre + " (" + Ingrediente.unidadMedida + ") " + (Ingrediente.estado === false ? "Baja" : "")}</option>
+                    <option value={Ingrediente.nombre}>{Ingrediente.nombre + " (" + Ingrediente.unidadMedida + ") " + (Ingrediente.activo === false ? "Baja" : "")}</option>
                   )}
                 </Form.Select>
                 <Form.Control
@@ -433,7 +435,7 @@ const EditProductoModal: React.FC<EditProductoModalProps> = ({
                 >
                 </Form.Control>
                 <Button
-                  variant={ingredienteA?.estado === false ? "secondary" : "success"} onClick={() => agregarIngrediente()}>Agregar Ingrediente</Button>
+                  variant={ingredienteA?.activo === false ? "secondary" : "success"} onClick={() => agregarIngrediente()}>Agregar Ingrediente</Button>
               </Form.Group>
             </Col>
           </Row>

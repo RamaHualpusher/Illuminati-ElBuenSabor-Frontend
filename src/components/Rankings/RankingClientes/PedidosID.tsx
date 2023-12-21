@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Pedido } from '../../../interface/Pedido';
+import { IPedido } from '../../../interface/IPedido';
 import axios from 'axios';
 import PedidoCardUsuario from '../../OpcionesCliente/MisPedidos/PedidoCardUsuario';
 import AdminBar from '../../NavBar/AdminBar';
 
 const PedidosID: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [pedidos, setPedidos] = useState<Pedido[]>([]);
+    const [pedidos, setPedidos] = useState<IPedido[]>([]);
     const API_URL = "/assets/data/pedidos.json";
 
     useEffect(() => {
@@ -16,7 +16,7 @@ const PedidosID: React.FC = () => {
                 if (id) {
                     const response = await axios.get(API_URL);
                     const data = response.data;
-                    const pedidosFiltrados = data.filter((pedido: Pedido) => pedido.Usuario.idUsuario === parseInt(id));
+                    const pedidosFiltrados = data.filter((pedido: IPedido) => pedido.Usuario.id === parseInt(id));
                     setPedidos(pedidosFiltrados || []);
                 }
             } catch (error) {
@@ -36,8 +36,8 @@ const PedidosID: React.FC = () => {
                 </div>
             </div>
             <div className="row">
-                {pedidos.map((pedido: Pedido) => (
-                    <div key={pedido.idPedido}>
+                {pedidos.map((pedido: IPedido) => (
+                    <div key={pedido.id}>
                         <div className="card-body">
                             <PedidoCardUsuario pedido={pedido} />
                         </div>

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { CartContext } from '../../context/cart/CartProvider';
-import { DetallePedido } from '../../interface/DetallePedido';
-import { Producto } from '../../interface/Producto';
+import { IDetallePedido } from '../../interface/IDetallePedido';
+import { IProducto } from '../../interface/IProducto';
 
 interface CartItem {
   id: number;
@@ -10,11 +10,11 @@ interface CartItem {
   price: number;
   image: string;
   title: string;
-  Producto?: Producto;
+  Producto?: IProducto;
 }
 
 interface CartItemProps {
-  item: CartItem & { DetallePedido: DetallePedido };
+  item: CartItem & { DetallePedido: IDetallePedido };
 }
 
 /**

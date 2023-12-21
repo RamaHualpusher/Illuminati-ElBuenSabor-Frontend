@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICartIconProps } from '../../interface/CarritoCompras';
+import { ICartIconProps } from '../../interface/ICarritoCompras';
 
 /**
  * Componente para mostrar un ícono de carrito de compras.

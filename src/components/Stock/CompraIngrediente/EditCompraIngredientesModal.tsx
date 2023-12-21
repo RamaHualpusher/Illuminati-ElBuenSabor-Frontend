@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
-import { Ingredientes, EditCompraIngredientesModalProps } from '../../../interface/Ingredientes';
+import { IIngredientes, IEditCompraIngredientesModalProps } from '../../../interface/IIngredientes';
 
-const EditCompraIngredientesModal: React.FC<EditCompraIngredientesModalProps> = ({
+const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> = ({
   show,
   handleClose,
   handleIngredientesEdit,
   selectedIngredientes,
 }) => {
   // Estados locales para almacenar los datos del formulario y los ingredientes
-  const [ingredientes, setIngredientes] = useState<Ingredientes[]>([]);
+  const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]);
   const [nombre, setNombre] = useState('');
   const [precioCosto, setPrecioCosto] = useState(0);
-  const [estado, setEstado] = useState(true);
+  const [activo, setActivo] = useState(true);
   const [cantidad, setCantidad] = useState(0);
   const [minStock, setMinStock] = useState(0);
   const [stockActual, setStockActual] = useState(0);
@@ -38,21 +38,22 @@ const EditCompraIngredientesModal: React.FC<EditCompraIngredientesModalProps> = 
   // Efecto para actualizar campos al seleccionar un ingrediente
   useEffect(() => {
     if (selectedIngredientes) {
-      setNombre(selectedIngredientes.nombre);
-      setPrecioCosto(selectedIngredientes.precioCosto);
-      setEstado(selectedIngredientes.estado);
-      setMinStock(selectedIngredientes.stockMinimo);
-      setStockActual(selectedIngredientes.stockActual);
-      setUnidadMedida(selectedIngredientes.unidadMedida);
-      setSelectedIngredienteId(selectedIngredientes.idIngredientes);
+      setNombre(selectedIngredientes.nombre ?? '');
+      setPrecioCosto(selectedIngredientes.precioCosto ?? 0);
+      setActivo(selectedIngredientes.activo ?? false);
+      setMinStock(selectedIngredientes.stockMinimo ?? 0);
+      setStockActual(selectedIngredientes.stockActual ?? 0);
+      setUnidadMedida(selectedIngredientes.unidadMedida ?? '');
+      setSelectedIngredienteId(selectedIngredientes.id ?? null);
     }
   }, [selectedIngredientes]);
+
 
   // Restablecer campos del formulario cuando se muestra el modal
   const resetFormFields = () => {
     setNombre('');
     setPrecioCosto(0);
-    setEstado(true);
+    setActivo(true);
     setCantidad(0);
     setMinStock(0);
     setStockActual(0);
@@ -68,7 +69,7 @@ const EditCompraIngredientesModal: React.FC<EditCompraIngredientesModalProps> = 
 
   // Manejar cambio de ingrediente seleccionado
   const handleIngredienteChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedIngrediente = ingredientes.find(ingrediente => ingrediente.idIngredientes === parseInt(e.target.value));
+    const selectedIngrediente = ingredientes.find(ingrediente => ingrediente.id === parseInt(e.target.value));
     if (selectedIngrediente) {
       setUnidadMedida(selectedIngrediente.unidadMedida);
       setPrecioCosto(selectedIngrediente.precioCosto);
@@ -83,11 +84,11 @@ const EditCompraIngredientesModal: React.FC<EditCompraIngredientesModalProps> = 
       // Calcular el nuevo stock actualizado
       const stockUpdated = stockActual + calculateStockFromAmountAndUnit(cantidad, unidadMedida);
       // Crear un nuevo objeto de ingredientes con valores modificados
-      const editedIngredientes: Ingredientes = {
+      const editedIngredientes: IIngredientes = {
         ...selectedIngredientes, // Mantenemos los valores existentes
         stockActual: stockUpdated,
         precioCosto,
-        estado,
+        activo,
       };
       // Llamar a la función para editar ingredientes
       handleIngredientesEdit(editedIngredientes);
@@ -128,7 +129,7 @@ const EditCompraIngredientesModal: React.FC<EditCompraIngredientesModalProps> = 
             >
               <option value="">Seleccione un ingrediente</option>
               {ingredientes.map(ingrediente => (
-                <option key={ingrediente.idIngredientes} value={ingrediente.idIngredientes}>
+                <option key={ingrediente.id} value={ingrediente.id}>
                   {ingrediente.nombre}
                 </option>
               ))}
@@ -146,8 +147,8 @@ const EditCompraIngredientesModal: React.FC<EditCompraIngredientesModalProps> = 
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={estado ? 'alta' : 'baja'}
-              onChange={(event) => setEstado(event.target.value === 'alta')}
+              value={activo ? 'alta' : 'baja'}
+              onChange={(event) => setActivo(event.target.value === 'alta')}
               required
             >
               <option value="alta">Alta</option>

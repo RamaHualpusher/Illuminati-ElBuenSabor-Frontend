@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Pedido } from '../../interface/Pedido';
+import { IPedido } from '../../interface/IPedido';
 import PedidoList from '../Pedidos/PedidoList';
 
 /**
  * Componente para que el cocinero administre los pedidos en cocina y cambie su estado a "Listo".
  */
 const CocineroPedido: React.FC = () => {
-    const [pedidos, setPedidos] = useState<Pedido[]>([]);
-    const [pedidoSeleccionado, setPedidoSeleccionado] = useState<Pedido | null>(null);
+    const [pedidos, setPedidos] = useState<IPedido[]>([]);
+    const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedido | null>(null);
 
     // Cargar los pedidos desde una fuente de datos al cargar el componente
     useEffect(() => {

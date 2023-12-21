@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
-import { DetallePedido } from '../../interface/DetallePedido';
-import { Pedido } from '../../interface/Pedido';
-import { Producto } from '../../interface/Producto';
+import { IDetallePedido } from '../../interface/IDetallePedido';
+import { IPedido } from '../../interface/IPedido';
+import { IProducto } from '../../interface/IProducto';
 
 const DetallesPedidoDelivery: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [pedido, setPedido] = useState<Pedido | undefined>();
+    const [pedido, setPedido] = useState<IPedido | undefined>();
 
     useEffect(() => {
         if (id) {
@@ -15,7 +15,7 @@ const DetallesPedidoDelivery: React.FC = () => {
             fetch('/assets/data/pedidos.json')
                 .then((response) => response.json())
                 .then((data) => {
-                    const pedidoEncontrado = data.find((pedido: Pedido) => pedido.idPedido === parseInt(id));
+                    const pedidoEncontrado = data.find((pedido: IPedido) => pedido.id === parseInt(id));
                     setPedido(pedidoEncontrado);
                 })
                 .catch((error) => console.error(error));
@@ -26,11 +26,11 @@ const DetallesPedidoDelivery: React.FC = () => {
         return <Spinner />; // Muestra el spinner mientras se carga el pedido
     }
 
-    const obtenerSubtotal = (detallePedido: DetallePedido[]) => {
+    const obtenerSubtotal = (detallePedido: IDetallePedido[]) => {
         let subtotal = 0;
-        detallePedido.forEach((detalle: DetallePedido) => {
+        detallePedido.forEach((detalle: IDetallePedido) => {
             if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-                detalle.Productos.forEach((producto: Producto) => {
+                detalle.Productos.forEach((producto: IProducto) => {
                     subtotal += producto.precio;
                 });
             }
@@ -38,15 +38,15 @@ const DetallesPedidoDelivery: React.FC = () => {
         return subtotal;
     };
 
-    const renderProductos = (detalle: DetallePedido) => { //Renderiza todos los productos que hay en el pedido
+    const renderProductos = (detalle: IDetallePedido) => { //Renderiza todos los productos que hay en el pedido
         if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) { //Si no encuentra muestra un mensaje
             return <p>Productos no disponibles</p>;
         }
 
         return (
             <ul>
-                {detalle.Productos.map((producto: Producto) => (
-                    <li key={producto.idProducto}>
+                {detalle.Productos.map((producto: IProducto) => (
+                    <li key={producto.id}>
                         <strong>{producto.nombre}</strong>: ${producto.precio}
                     </li>
                 ))}
@@ -73,7 +73,7 @@ const DetallesPedidoDelivery: React.FC = () => {
                                 <h5 className="card-title">Número de Pedido: {numeroPedido}</h5>
                                 <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario.nombre} {Usuario.apellido}</p>
                                 <p className="card-text"><strong>Teléfono:</strong> {Usuario.telefono}</p>
-                                <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario.Domicilio.calle}, {Usuario.Domicilio.localidad}, {Usuario.Domicilio.numero}</p>
+                                <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario.domicilio.calle}, {Usuario.domicilio.localidad}, {Usuario.domicilio.numero}</p>
                                 <p className="card-text"><strong>Fecha:</strong> {new Date(fechaPedido).toLocaleDateString()}</p>
                                 <p className="card-text"><strong>Método de Pago:</strong> {esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
                                 {esDelivery && (
@@ -81,8 +81,8 @@ const DetallesPedidoDelivery: React.FC = () => {
                                 )}
                                 <h5 className="card-title">Detalle de Ítems Pedidos</h5>
 
-                                {DetallePedido.map((detalle: DetallePedido) => (
-                                    <ul key={detalle.idDetallePedido} className="list-unstyled">
+                                {DetallePedido.map((detalle: IDetallePedido) => (
+                                    <ul key={detalle.id} className="list-unstyled">
                                         {renderProductos(detalle)}
                                     </ul>
                                 ))}

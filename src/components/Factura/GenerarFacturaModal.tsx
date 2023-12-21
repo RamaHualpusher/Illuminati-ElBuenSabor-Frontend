@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pedido } from "../../interface/Pedido";
+import { IPedido } from "../../interface/IPedido";
 import AdminBar from "../NavBar/AdminBar";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useLocation } from "react-router-dom";
@@ -20,7 +20,7 @@ const getOrDefault = (value: any, defaultValue: any) => {
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
   closeModal,
 }) => {
-  const [pedido, setPedido] = useState<Pedido | null>(null);
+  const [pedido, setPedido] = useState<IPedido | null>(null);
   const location = useLocation();
   const pedidoParam = location.pathname.split("/factura/")[1];
   const parsedPedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : "";
@@ -43,7 +43,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
     return <div>Error: Pedido no encontrado</div>;
   }
 
-  const exportToExcel = (pedido: Pedido) => {
+  const exportToExcel = (pedido: IPedido) => {
     // Define los datos que deseas exportar a Excel, en este caso, los detalles del pedido
     const dataToExport = pedido?.DetallePedido || [];
 
@@ -109,7 +109,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     </thead>
                     <tbody>
                       {pedido?.DetallePedido?.map((detalle) => (
-                        <tr key={detalle?.idDetallePedido}>
+                        <tr key={detalle?.id}>
                           <td>{getOrDefault(detalle?.cantidad, "")}</td>
                           <td>
                             <ul>
@@ -156,9 +156,9 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                   <div className="right-section">
                     <h2>Envío</h2>
                     <p>
-                      Dirección: {getOrDefault(pedido?.Usuario?.Domicilio?.calle, "")} {getOrDefault(pedido?.Usuario?.Domicilio?.numero, "")},
+                      Dirección: {getOrDefault(pedido?.Usuario?.domicilio?.calle, "")} {getOrDefault(pedido?.Usuario?.domicilio?.numero, "")},
                       <br />
-                      {getOrDefault(pedido?.Usuario?.Domicilio?.localidad, "")}
+                      {getOrDefault(pedido?.Usuario?.domicilio?.localidad, "")}
                     </p>
                   </div>
                 </div>

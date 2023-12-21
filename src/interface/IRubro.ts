@@ -1,9 +1,9 @@
-import Base from "./IBase";
+import { IBase } from "./IBase";
 
-export interface Rubro extends Base {
+export interface IRubro extends IBase {
   idRubro: number;
   nombre: string;
-  idRubroPadre?: Rubro;
+  idRubroPadre?: IRubro;
 }
 
 //el simbolo ? indica que el id puede no traer informacion

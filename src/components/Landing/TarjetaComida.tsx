@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { CartContext, CartItem } from "../../context/cart/CartProvider";
 import { ICardProps } from "../../interface/ICard";
-import { DetallePedido } from "../../interface/DetallePedido";
+import { IDetallePedido } from "../../interface/IDetallePedido";
 
 /**
  * Componente de tarjeta para mostrar información de un producto.
@@ -15,20 +15,20 @@ const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText, showButton 
   const handleCartClick = () => {
     if (producto.stockActual > 0) {
       // Crear un objeto DetallePedido para el carrito
-      const detallePedido: DetallePedido = {
-        idDetallePedido: 0,
+      const detallePedido: IDetallePedido = {
+        id: 0,
         cantidad: 1,
         Productos: producto,
       };
 
       // Crear un objeto CartItem para agregar al carrito
       const item: CartItem = {
-        id: producto.idProducto,
-        name: producto.nombre,
+        id: producto?.id ?? 0,
+        name: producto?.nombre ?? '',
         quantity: 1,
-        price: producto.precio,
-        image: producto.imagen,
-        title: producto.nombre,
+        price: producto?.precio ?? 0,
+        image: producto?.imagen ?? '',
+        title: producto?.nombre ?? '',
         DetallePedido: detallePedido,
       };
       addToCart(item); // Agregar el item al carrito
@@ -70,7 +70,7 @@ const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText, showButton 
         {renderButton()}
 
         {/* Enlace para ver detalles del producto */}
-        <Link to={`/productos/${producto.idProducto}`} className="btn btn-primary float-right">
+        <Link to={`/productos/${producto.id}`} className="btn btn-primary float-right">
           Ver Detalles
         </Link>
       </div>

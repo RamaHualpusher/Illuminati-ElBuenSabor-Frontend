@@ -1,10 +1,10 @@
-export interface MercadoPagoDatos {
-  idMercadoPagoDatos: number;
+import { IBase } from "./IBase";
+
+export interface IMercadoPagoDatos extends IBase {
   identificadorPago: number;
   fechaCreacion: Date;
   fechaAprobacion: Date;
   formaPago: string;
   metodoPago: string;
   numTarjeta: string;
-  estado: string;
 }

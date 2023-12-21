@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Pedido } from '../../../interface/Pedido';
+import { IPedido } from '../../../interface/IPedido';
 import PedidoCardUsuario from './PedidoCardUsuario';
 import { Link } from 'react-router-dom';
 
 const Pendientes: React.FC = () => {
-    const [pedidosPendientes, setPedidosPendientes] = useState<Pedido[]>([]);
+    const [pedidosPendientes, setPedidosPendientes] = useState<IPedido[]>([]);
 
     useEffect(() => {
         const fetchPedidosPendientes = async () => {
             try {
-                const response = await axios.get<Pedido[]>('/assets/data/pedidos.json');
+                const response = await axios.get<IPedido[]>('/assets/data/pedidos.json');
                 // Filtrar los pedidos con estados pendientes
                 const pedidos = response.data.filter((pedido) =>
                     ['A confirmar', 'En cocina', 'Listo', 'En delivery'].includes(pedido.estadoPedido)
@@ -29,7 +29,7 @@ const Pendientes: React.FC = () => {
             {pedidosPendientes.length > 0 ? (
                 pedidosPendientes.map((pedido) => (
                     <PedidoCardUsuario
-                        key={pedido.idPedido}
+                        key={pedido.id}
                         pedido={pedido}
                     />
                 ))

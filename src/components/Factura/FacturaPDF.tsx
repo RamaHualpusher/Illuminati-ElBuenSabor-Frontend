@@ -1,15 +1,15 @@
 import React from "react";
-import { Pedido } from "../../interface/Pedido";
+import { IPedido } from "../../interface/IPedido";
 import { Container, Table } from "react-bootstrap";
 
 interface FacturaPDFProps {
-  pedido: Pedido | null;
+  pedido: IPedido | null;
 }
 
 const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
 
-  console.log("DetallePedido en Factura PDF:", pedido?.DetallePedido); 
-  console.log("Pedido en Factura PDF:", pedido); 
+  console.log("DetallePedido en Factura PDF:", pedido?.DetallePedido);
+  console.log("Pedido en Factura PDF:", pedido);
 
   if (!pedido) {
     return <div>Error: Pedido no encontrado</div>; // Agrega una verificación si pedido es null o undefined
@@ -70,7 +70,7 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
               </thead>
               <tbody>
                 {DetallePedido && DetallePedido.length > 0 && DetallePedido.map((detalle) => (
-                  <tr key={detalle?.idDetallePedido}>
+                  <tr key={detalle?.id}>
                     <td>{getOrDefault(detalle?.cantidad, "")}</td>
                     <td>
                       <ul>
@@ -118,9 +118,9 @@ const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
               <div>Envío</div>
               <div>
                 <p>
-                  Dirección: {getOrDefault(Usuario?.Domicilio?.calle, "")} {getOrDefault(Usuario?.Domicilio?.numero, "")},
+                  Dirección: {getOrDefault(Usuario?.domicilio?.calle, "")} {getOrDefault(Usuario?.domicilio?.numero, "")},
                   <br />
-                  {getOrDefault(Usuario?.Domicilio?.localidad, "")}
+                  {getOrDefault(Usuario?.domicilio?.localidad, "")}
                 </p>
               </div>
             </div>

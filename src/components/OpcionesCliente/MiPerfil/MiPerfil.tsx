@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { EditUsuarioFromCliente } from '../../../interface/Usuario';
+import { IEditUsuarioFromCliente } from '../../../interface/IUsuario';
 
 const MiPerfil: React.FC = () => {
     // Obtener información de autenticación del usuario
@@ -14,8 +14,8 @@ const MiPerfil: React.FC = () => {
 
     // Obtener el ID del usuario y crear objeto usuario para edición
     const idUsuario = user.sub ? parseInt(user.sub) : 0;
-    const usuario: EditUsuarioFromCliente = {
-        idUsuario: idUsuario,
+    const usuario: IEditUsuarioFromCliente = {
+        id: idUsuario,
         nombre: user.given_name || '',
         apellido: user.family_name || '',
         email: user.email || '',

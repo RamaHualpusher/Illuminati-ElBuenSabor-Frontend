@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Pedido } from "../../interface/Pedido";
+import { IPedido } from "../../interface/IPedido";
 import PedidoList from "../Pedidos/PedidoList";
 
 const DeliveryPage: React.FC = () => {
-  const [pedidos, setPedidos] = useState<Pedido[]>([]);
-  const [pedidoSeleccionado, setPedidoSeleccionado] = useState<Pedido | null>(null);
+  const [pedidos, setPedidos] = useState<IPedido[]>([]);
+  const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedido | null>(null);
 
   useEffect(() => {
     // Cargar la lista de pedidos al montar el componente

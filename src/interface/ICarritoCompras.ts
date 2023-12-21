@@ -1,6 +1,6 @@
 import { CartItem } from "../context/cart/CartProvider";
-import { DetallePedido } from "./DetallePedido";
-import { Producto } from "./Producto";
+import { IDetallePedido } from "./IDetallePedido";
+import { IProducto } from "./IProducto";
 
 export interface ICartIconProps {
   icon: string;
@@ -14,9 +14,9 @@ export interface ICartItem {
   price: number;
   image: string;
   title: string;
-  Producto?: Producto;
+  Producto?: IProducto;
 }
 
 export interface ICartItemProps {
-  item: CartItem & { DetallePedido: DetallePedido };
+  item: CartItem & { DetallePedido: IDetallePedido };
 }

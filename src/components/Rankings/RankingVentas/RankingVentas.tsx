@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from 'react-bootstrap';
-import { Usuario } from "../../../interface/Usuario";
-import { Column } from "../../../interface/CamposTablaGenerica";
+import { IUsuario } from "../../../interface/IUsuario";
+import { IColumn } from "../../../interface/ICamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
 
 const RankingVentas = () => {
-    const [clientes, setClientes] = useState<Usuario[]>([]);
+    const [clientes, setClientes] = useState<IUsuario[]>([]);
     const [addModalShow, setAddModalShow] = useState(false);
 
-    const columns: Column<Usuario>[] = [
-        { title: "ID", field: "idUsuario", width: 2 },
+    const columns: IColumn<IUsuario>[] = [
+        { title: "ID", field: "id", width: 2 },
         { title: "Nombre", field: "nombre", width: 3 },
         { title: "Apellido", field: "apellido", width: 3 },
         { title: "Cantidad de Pedidos", field: "telefono", width: 2 },
@@ -38,7 +38,7 @@ const RankingVentas = () => {
             <Container fluid>
                 <Row className="mt-3">
                     <Col>
-                        <GenericTable<Usuario>
+                        <GenericTable<IUsuario>
                             columns={columns}
                             data={clientes}
                             actions={{

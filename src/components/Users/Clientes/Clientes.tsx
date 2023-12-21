@@ -1,48 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { Usuario } from "../../../interface/Usuario";
+import { IUsuario } from "../../../interface/IUsuario";
 import { Container, Row, Col } from 'react-bootstrap';
 import EditClienteModal from "./EditClienteModal";
 import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 import GenericTable from "../../GenericTable/GenericTable";
-import { Action, Column } from '../../../interface/CamposTablaGenerica';
+import { IAction, IColumn } from '../../../interface/ICamposTablaGenerica';
 
 const Clientes = () => {
     //Estados del componente
-    const [clientes, setClientes] = useState<Usuario[]>([]);
-    const [clientesComplete, setClientesComplete] = useState<Usuario[]>([]);
+    const [clientes, setClientes] = useState<IUsuario[]>([]);
+    const [clientesComplete, setClientesComplete] = useState<IUsuario[]>([]);
     const [editModalShow, setEditModalShow] = useState(false);
-    const [selectedCliente, setSelectedCliente] = useState<Usuario | null>(null);
+    const [selectedCliente, setSelectedCliente] = useState<IUsuario | null>(null);
     const API_URL = "assets/data/clienteTabla.json";
 
     // Definición de las columnas de la tabla
-    const columns: Column<Usuario>[] = [
-        { title: 'ID Usuario', field: 'idUsuario' },
+    const columns: IColumn<IUsuario>[] = [
+        { title: 'ID Usuario', field: 'id' },
         { title: 'Nombre', field: 'nombre' },
         { title: 'Apellido', field: 'apellido' },
         { title: 'Email', field: 'email' },
         { title: 'Teléfono', field: 'telefono' },
         {
-            title: 'Domicilio', field: 'Domicilio', render: (usuario: Usuario) =>
-                <span>{`${usuario.Domicilio.calle},${usuario.Domicilio.numero},${usuario.Domicilio.localidad}`}</span>
+            title: 'Domicilio', field: 'domicilio', render: (usuario: IUsuario) =>
+                <span>{`${usuario.domicilio.calle},${usuario.domicilio.numero},${usuario.domicilio.localidad}`}</span>
         },
         {
             title: "Estado",
-            field: "estado",
-            render: (usuario: Usuario) => (
-                <span className={`${usuario.estado ? "text-success" : "text-danger"}`}>
-                    {usuario.estado ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
+            field: "activo",
+            render: (usuario: IUsuario) => (
+                <span className={`${usuario.activo ? "text-success" : "text-danger"}`}>
+                    {usuario.activo ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
                 </span>
             ),
         },
     ];
 
     // Función para busqueda personalizada por ID y nombre
-    const customSearch = (searchText: string): Promise<Usuario[]> => {
+    const customSearch = (searchText: string): Promise<IUsuario[]> => {
         return new Promise((resolve) => {
             const normalizedSearchText = normalizeString(searchText);
 
             const filteredData = clientes.filter((cliente) => {
-                const normalizedIdUsuario = normalizeString(cliente.idUsuario.toString());
+                const normalizedIdUsuario = cliente.id ? normalizeString(cliente.id.toString()) : '';
                 const normalizedNombre = normalizeString(cliente.nombre.toString());
                 const normalizedApellido = normalizeString(cliente.apellido.toString());
 
@@ -77,43 +77,43 @@ const Clientes = () => {
     }, []);
 
     //Define que acciones se pueden realizar
-    const actions: Action = {
+    const actions: IAction = {
         update: true,
         delete: true
     };
 
     //Editar un cliente 
-    const handleClienteEdit = async (cliente: Usuario) => {
+    const handleClienteEdit = async (cliente: IUsuario) => {
         const updatedCliente = await handleRequest(
             'PUT',
-            `${API_URL}/${cliente.idUsuario}`,
+            `${API_URL}/${cliente.id}`,
             cliente
         );
         if (updatedCliente) {
             const newData = clientes.map((item) =>
-                item.idUsuario === cliente.idUsuario ? updatedCliente : item
+                item.id === cliente.id ? updatedCliente : item
             );
             setClientes(newData);
         }
     };
 
     //Eliminar un cliente
-    const handleClienteDelete = async (item: Usuario) => {
-        const clienteId: number = item.idUsuario;
+    const handleClienteDelete = async (item: IUsuario) => {
+        const clienteId: number = item.id || 0;
         try {
             await handleRequest('DELETE', `${API_URL}/${clienteId}`);
-            setClientes(clientes.filter((item) => item.idUsuario !== clienteId));
+            setClientes(clientes.filter((item) => item.id !== clienteId));
         } catch (error) {
             console.log(error);
         }
     };
 
     // Función para obtener un cliente por su ID
-    const usuarioRow = (id: number) => {
+    const usuarioRow = (id: number | undefined) => {
         let i: number = 0;
         let x: boolean = true;
         while (x) {
-            if (clientesComplete[i].idUsuario === id) {
+            if (clientesComplete[i].id === id) {
                 return clientesComplete[i];
                 x = false;
             }
@@ -123,8 +123,8 @@ const Clientes = () => {
     }
 
     // Abrir modal de edición
-    const handleEditModalOpen = (item: Usuario) => {
-        setSelectedCliente(usuarioRow(item.idUsuario));
+    const handleEditModalOpen = (item: IUsuario) => {
+        setSelectedCliente(usuarioRow(item.id));
         setEditModalShow(true);
     };
 
@@ -139,7 +139,7 @@ const Clientes = () => {
             <Container fluid>
                 <Row className="mt-3">
                     <Col>
-                        <GenericTable<Usuario>
+                        <GenericTable<IUsuario>
                             data={clientes}
                             columns={columns}
                             actions={actions}

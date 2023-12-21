@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Rubro } from '../../../../interface/Rubro';
-import { EditRubroIngredientesModalProps } from '../../../../interface/Ingredientes';
+import { IRubro } from '../../../../interface/IRubro';
+import { IEditRubroIngredientesModalProps } from '../../../../interface/IIngredientes';
 
-const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
+const EditRubroIngredientesModal: React.FC<IEditRubroIngredientesModalProps> = ({
   show,
   handleClose,
   handleRubroEdit,
@@ -11,14 +11,14 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
 }) => {
   // Estados del componente
   const [nombre, setNombre] = useState('');
-  const [estado, setEstado] = useState(false);
-  const [idRubroPadre, setIdRubroPadre] = useState<Rubro | undefined>(undefined);
+  const [activo, setActivo] = useState(false);
+  const [idRubroPadre, setIdRubroPadre] = useState<IRubro | undefined>(undefined);
 
   // Cargar los valores del rubro seleccionado al montar el componente
   useEffect(() => {
     if (selectedRubro) {
       setNombre(selectedRubro.nombre);
-      setEstado(selectedRubro.estado || false);
+      setActivo(selectedRubro.activo || false);
       setIdRubroPadre(selectedRubro.idRubroPadre);
     }
   }, [selectedRubro]);
@@ -34,10 +34,10 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
     }
 
     if (selectedRubro) {
-      const updatedRubro: Rubro = {
+      const updatedRubro: IRubro = {
         ...selectedRubro,
         nombre,
-        estado,
+        activo,
         idRubroPadre,
       };
       handleRubroEdit(updatedRubro);
@@ -47,7 +47,7 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
 
   // Cambiar el estado del rubro
   const handleStatusChange = (isActive: boolean) => {
-    setEstado(isActive);
+    setActivo(isActive);
   };
 
   return (
@@ -70,9 +70,9 @@ const EditRubroIngredientesModal: React.FC<EditRubroIngredientesModalProps> = ({
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={estado ? 'alta' : 'baja'}
+              value={activo ? 'alta' : 'baja'}
               onChange={(event) =>
-                setEstado(event.target.value === 'alta')
+                setActivo(event.target.value === 'alta')
               }
               required
             >

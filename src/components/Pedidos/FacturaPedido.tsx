@@ -1,12 +1,12 @@
 import React ,{useEffect, useState}from "react";
 import { Link ,useParams} from "react-router-dom";
 import { handleRequestSingle } from "../FuncionRequest/FuncionRequest";
-import { Pedido } from "../../interface/Pedido";
+import { IPedido } from "../../interface/IPedido";
 
 const FacturaPedido=()=>{
     const { id  } = useParams<{id: string}>();
     const {phat} = useParams<{phat: string}>();
-    const [pedido,setPedido]=useState<Pedido>();
+    const [pedido,setPedido]=useState<IPedido>();
 
     const link=`/${phat}`
 

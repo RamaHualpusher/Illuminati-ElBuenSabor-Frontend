@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
-import { Pedido } from '../../interface/Pedido';
+import { IPedido } from '../../interface/IPedido';
 import { Link, useLocation } from 'react-router-dom';
 import EstadoPedidoCard from './EstadoPedidoCard';
 import axios from 'axios';
 
 interface PedidoCardAdminProps {
-  pedido: Pedido;
+  pedido: IPedido;
   cambiarEstadoPedido: (nuevoEstado: string) => void;
 }
 
@@ -19,19 +19,19 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
     let newUrlDetallePedido = '';
     switch (location.pathname) {
       case '/cocinero':
-        newUrlDetallePedido = `/cocinero/pedido/${pedido.idPedido}`;
+        newUrlDetallePedido = `/cocinero/pedido/${pedido.id}`;
         break;
       case '/delivery':
-        newUrlDetallePedido = `/pedido/${pedido.idPedido}`;
+        newUrlDetallePedido = `/pedido/${pedido.id}`;
         break;
       case '/cajero':
-        newUrlDetallePedido = `/cajero/pedido/${pedido.idPedido}`;
+        newUrlDetallePedido = `/cajero/pedido/${pedido.id}`;
         break;
       default:
         break;
     }
     setUrlDetallePedido(newUrlDetallePedido);
-  }, [location.pathname, pedido.idPedido]);
+  }, [location.pathname, pedido.id]);
 
   const handleEstadoPedidoChange = async (nuevoEstado: string) => {
     // Lógica para cambiar el estado del pedido y actualizarlo en la base de datos
@@ -47,7 +47,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
         console.log("Válido");
         try {
           console.log('envio put al back'); //prueba de envio
-          const response = await axios.put(`/api/pedidos/${pedido.idPedido}`, { estadoPedido: nuevoEstado });
+          const response = await axios.put(`/api/pedidos/${pedido.id}`, { estadoPedido: nuevoEstado });
           cambiarEstadoPedido(response.data.estadoPedido);
         } catch (error) {
           console.error(error);
@@ -65,7 +65,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
         console.log("Válido");
         try {
           console.log('envio put al back 2'); //prueba de envio
-          const response = await axios.put(`/api/pedidos/${pedido.idPedido}`, { estadoPedido: nuevoEstado });
+          const response = await axios.put(`/api/pedidos/${pedido.id}`, { estadoPedido: nuevoEstado });
           cambiarEstadoPedido(response.data.estadoPedido);
         } catch (error) {
           console.error(error);

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Domicilio } from '../../../interface/Domicilio';
-import { EditDireccionModalProps } from '../../../interface/Domicilio';
+import { IDomicilio } from '../../../interface/IDomicilio';
+import { IEditDireccionModalProps } from '../../../interface/IDomicilio';
 
-const EditDireccionModal: React.FC<EditDireccionModalProps> = ({
+const EditDireccionModal: React.FC<IEditDireccionModalProps> = ({
     show,
     handleClose,
     handleDireccionEdit,
@@ -35,9 +35,9 @@ const EditDireccionModal: React.FC<EditDireccionModalProps> = ({
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (selectedDireccion) {
-            const updatedDomicilio: Domicilio = {
+            const updatedDomicilio: IDomicilio = {
                 ...selectedDireccion,
-                idDomicilio: selectedDireccion.idDomicilio || 0,
+                id: selectedDireccion.id || 0,
                 calle,
                 numero,
                 localidad,

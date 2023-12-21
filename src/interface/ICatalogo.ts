@@ -1,6 +1,5 @@
-import { Producto } from "./Producto";
-
+import { IProducto } from "./IProducto";
 
 export interface ICatalogoProps {
-  filteredProductos: Producto[];
+  filteredProductos: IProducto[];
 }
