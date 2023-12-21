@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
-import { Button, Table, InputGroup, FormControl, Container, Row, Col } from 'react-bootstrap';
+import { Button, Table, FormControl, Container, Row, Col } from 'react-bootstrap';
 import { ITableProps } from '../../interface/ICamposTablaGenerica';
 import DatePicker from 'react-datepicker';
 
