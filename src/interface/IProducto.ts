@@ -12,8 +12,8 @@ export interface IProducto extends IBase {
   preparacion: string;
   precio: number;
   esBebida: boolean;
-  Rubro: IRubro;
-  ProductoIngrediente?: IProductoIngrediente[];
+  rubro: IRubro;
+  productoIngrediente?: IProductoIngrediente[];
 }
 
 export interface IEditProductoModalProps {

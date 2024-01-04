@@ -71,7 +71,7 @@ export default function Landing() {
   const filteredProductos =
     selectedCategory === "Todos"
       ? filteredProducts
-      : filteredProducts.filter((producto) => producto.Rubro.nombre === selectedCategory);
+      : filteredProducts.filter((producto) => producto.rubro.nombre === selectedCategory);
 
   // Manejar el scroll al top de la página
   const handleScrollToTop = () => {

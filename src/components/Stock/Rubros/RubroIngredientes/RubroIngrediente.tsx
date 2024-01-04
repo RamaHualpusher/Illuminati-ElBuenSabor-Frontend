@@ -65,9 +65,9 @@ const RubroIngrediente: React.FC = () => {
   // Función para manejar la edición de un rubro
   const handleRubroEdit = async (rubro: IRubro) => {
     try {
-      const updatedRubro = await handleRequest('PUT', `${API_URL}/${rubro.idRubro}`, rubro);
+      const updatedRubro = await handleRequest('PUT', `${API_URL}/${rubro.id}`, rubro);
       const updatedRubros = rubros.map((r) =>
-        r.idRubro === updatedRubro.idRubro ? updatedRubro : r
+        r.id === updatedRubro.id ? updatedRubro : r
       );
       setRubros(updatedRubros);
     } catch (error) {

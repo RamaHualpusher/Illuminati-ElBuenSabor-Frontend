@@ -19,7 +19,7 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
     stockActual: 0,
     precioCosto: 0,
     unidadMedida: "Kg",
-    Rubro: { idRubro: 0, nombre: '' },
+    rubro: { id: 0, nombre: '' },
   });
 
   const [ingredientes, setIngredientes] = useState<IIngredientes>(initializeIngredientes);
@@ -49,7 +49,7 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
         stockActual: selectedIngredientes.stockActual || 0,
         precioCosto: selectedIngredientes.precioCosto || 0,
         unidadMedida: selectedIngredientes.unidadMedida || "Kg",
-        Rubro: selectedIngredientes.Rubro || { idRubro: 0, nombre: '' },
+        rubro: selectedIngredientes.rubro || { id: 0, nombre: '' },
       });
     }
   }, [selectedIngredientes]);
@@ -58,12 +58,12 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedIngredientes) {
-      const selectedRubro = rubros.find((rubro) => rubro.idRubro === ingredientes.Rubro.idRubro);
+      const selectedRubro = rubros.find((rubro) => rubro.id === ingredientes.rubro.id);
 
       // Crear un nuevo objeto Ingredientes con los datos editados
       const updatedIngredientes: IIngredientes = {
         ...ingredientes,
-        Rubro: selectedRubro || { idRubro: 0, nombre: '' },
+        rubro: selectedRubro || { id: 0, nombre: '' },
       };
       handleIngredientesEdit(updatedIngredientes);
     }
@@ -115,17 +115,17 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
               <Form.Group className="mb-3" controlId="formRubro">
                 <Form.Label>Rubro</Form.Label>
                 <Form.Select
-                  value={ingredientes.Rubro.idRubro || ''}
+                  value={ingredientes.rubro.id || ''}
                   onChange={(event) => {
-                    setIngredientes({ ...ingredientes, Rubro: { idRubro: parseInt(event.target.value), nombre: '' } });
+                    setIngredientes({ ...ingredientes, rubro: { id: parseInt(event.target.value), nombre: '' } });
                   }}
                   required
                 >
                   <option value="">Seleccione un rubro</option>
                   {rubros.map((rubro) => (
                     <option
-                      key={rubro.idRubro}
-                      value={rubro.idRubro}
+                      key={rubro.id}
+                      value={rubro.id}
                       disabled={!rubro.activo}>
                       {rubro.nombre}
                     </option>

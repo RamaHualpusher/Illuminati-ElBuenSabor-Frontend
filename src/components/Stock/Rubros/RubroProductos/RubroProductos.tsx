@@ -66,10 +66,10 @@ const RubroProductos: FC = () => {
 
   const handleRubroEdit = async (rubro: IRubro) => {
     try {
-      const response = await Axios.put(`${API_URL}/${rubro.idRubro}`, rubro); // Hacer una solicitud PUT con Axios
+      const response = await Axios.put(`${API_URL}/${rubro.id}`, rubro); // Hacer una solicitud PUT con Axios
       const updatedRubro: IRubro = response.data; // Actualizar con los datos de respuesta
       const updatedRubros = rubros.map((r) =>
-        r.idRubro === updatedRubro.idRubro ? updatedRubro : r
+        r.id === updatedRubro.id ? updatedRubro : r
       );
       setRubros(updatedRubros);
       console.log(updatedRubros);
@@ -79,12 +79,15 @@ const RubroProductos: FC = () => {
     }
   };
 
-  const rubroRow = (id: number): IRubro | undefined => {
-    return rubros.find((rubro) => rubro.idRubro === id);
+  const rubroRow = (id?: number): IRubro | undefined => {
+    if (id === undefined) {
+      return undefined;
+    }
+    return rubros.find((rubro) => rubro.id === id);
   };
 
   const handleEditModalOpen = (item: IRubro) => {
-    const selected = rubroRow(item.idRubro);
+    const selected = rubroRow(item.id);
     if (selected) {
       setSelectedRubroProducto(selected);
       setEditModalShow(true);
