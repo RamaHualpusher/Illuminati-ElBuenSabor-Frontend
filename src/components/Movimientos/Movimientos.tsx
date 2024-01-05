@@ -168,11 +168,11 @@ const Movimientos = () => {
   };
 
     // Función para la búsqueda personalizada por número de factura
-    const customDate=(firstDate:Date|null, secondDate:Date|null):Promise<Pedido[]>=>{
+    const customDate=(firstDate:Date|null, secondDate:Date|null):Promise<IPedido[]>=>{
       return new Promise((resolve)=>{
         
         const filtrar=movimientos;
-        let filtrados:Pedido[]=[];
+        let filtrados:IPedido[]=[];
         filtrar.map((factura)=>{
           const fecha=new Date(factura.fechaPedido);
           console.log(fecha);
