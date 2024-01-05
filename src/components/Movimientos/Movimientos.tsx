@@ -167,46 +167,26 @@ const Movimientos = () => {
     exportTableDataToExcel(dataToExport, filename);
   };
 
+    // Función para la búsqueda personalizada por número de factura
+    const customDate=(firstDate:Date|null, secondDate:Date|null):Promise<Pedido[]>=>{
+      return new Promise((resolve)=>{
+        
+        const filtrar=movimientos;
+        let filtrados:Pedido[]=[];
+        filtrar.map((factura)=>{
+          const fecha=new Date(factura.fechaPedido);
+          console.log(fecha);
+          if((firstDate===null || fecha>=firstDate) && (secondDate===null || fecha<= secondDate)){
+            filtrados.push(factura);
+          }
+        })
+        resolve(filtrados);
+      })
+    }
+
   return (
     <div>
       <Container fluid>
-        <Row className="mt-2">
-          <Col>
-            <Form>
-              <Form.Group>
-                <Form.Label>Fecha inicio búsqueda</Form.Label>
-                <Col>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date: Date | null) => setStartDate(date)}
-                    dateFormat="yyyy-MM-dd"
-                    isClearable
-                    className="form-control"
-                  />
-                </Col>
-              </Form.Group>
-            </Form>
-          </Col>
-          <Col>
-            <Form>
-              <Form.Group>
-                <Form.Label>Fecha fin búsqueda</Form.Label>
-                <Col>
-                  <DatePicker
-                    selected={endDate}
-                    onChange={(date: Date | null) => setEndDate(date)}
-                    dateFormat="yyyy-MM-dd"
-                    isClearable
-                    className="form-control"
-                  />
-                </Col>
-              </Form.Group>
-            </Form>
-          </Col>
-          <Col>
-            <Button variant="primary" style={{ marginTop: "30px" }} onClick={handleBuscarClick}>Buscar</Button>
-          </Col>
-        </Row>
         <Row className="mt-3">
           <Col className="d-flex justify-content-center">
             <GenericTable<Pedido>
@@ -219,6 +199,8 @@ const Movimientos = () => {
                 view: false
               }}
               onAdd={handleAddModalOpen}
+              customDate={customDate}
+              showDate={true}
             />
           </Col>
         </Row>
