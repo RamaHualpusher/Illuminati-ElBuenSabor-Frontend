@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Rubro } from '../../../../interface/Rubro';
-import { AddRubroIngredienteModalProps } from '../../../../interface/Ingredientes';
+import { IRubro } from '../../../../interface/IRubro';
+import { IAddRubroIngredienteModalProps } from '../../../../interface/IIngredientes';
 
-const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
+const AddRubroIngredienteModal: React.FC<IAddRubroIngredienteModalProps> = ({
   show,
   handleClose,
   handleRubroAdd,
 }) => {
   // Estados del componente
   const [nombre, setNombre] = useState('');
-  const [estado, setEstado] = useState(true);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
-  const [filteredRubros, setFilteredRubros] = useState<Rubro[] | null>(null);
+  const [activo, setActivo] = useState(true);
+  const [rubros, setRubros] = useState<IRubro[]>([]);
+  const [filteredRubros, setFilteredRubros] = useState<IRubro[] | null>(null);
 
   // Cargar los rubros al montar el componente
   useEffect(() => {
@@ -36,10 +36,10 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
       return;
     }
 
-    const newRubroIngrediente: Rubro = {
-      idRubro: 0,
+    const newRubroIngrediente: IRubro = {
+      id: 0,
       nombre: trimmedNombre,
-      estado: estado,
+      activo: activo,
       idRubroPadre: undefined,
     };
 
@@ -49,7 +49,7 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
 
   // Cambiar el estado del rubro
   const handleStatusChange = (isActive: boolean) => {
-    setEstado(isActive);
+    setActivo(isActive);
   };
 
   // Filtrar rubros según el término de búsqueda
@@ -61,9 +61,9 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
     setFilteredRubros(filteredRubros);
   };
 
-  const handleCancelar=()=>{
+  const handleCancelar = () => {
     setNombre("");
-    setEstado(true);
+    setActivo(true);
     handleClose();
   }
 
@@ -87,8 +87,8 @@ const AddRubroIngredienteModal: React.FC<AddRubroIngredienteModalProps> = ({
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={estado ? 'alta' : 'baja'}
-              onChange={(event) => setEstado(event.target.value === 'alta')}
+              value={activo ? 'alta' : 'baja'}
+              onChange={(event) => setActivo(event.target.value === 'alta')}
               required
             >
               <option value="alta">Alta</option>

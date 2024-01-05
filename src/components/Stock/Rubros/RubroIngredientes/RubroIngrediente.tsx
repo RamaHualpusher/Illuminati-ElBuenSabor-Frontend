@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import EditRubroIngredienteModal from './EditRubroIngredienteModal';
 import AddRubroIngredienteModal from './AddRubroIngredienteModal';
-import { Rubro } from '../../../../interface/Rubro';
+import { IRubro } from '../../../../interface/IRubro';
 import { handleRequest } from '../../../FuncionRequest/FuncionRequest';
-import { Action, Column } from '../../../../interface/CamposTablaGenerica';
+import { IAction, IColumn } from '../../../../interface/ICamposTablaGenerica';
 import GenericTable from "../../../GenericTable/GenericTable";
 
 const RubroIngrediente: React.FC = () => {
   // Estados del componente
-  const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [rubros, setRubros] = useState<IRubro[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
-  const [selectedRubroIngrediente, setSelectedRubroIngrediente] = useState<Rubro | null>(null);
+  const [selectedRubroIngrediente, setSelectedRubroIngrediente] = useState<IRubro | null>(null);
   const API_URL = "/assets/data/rubrosIngredientesEjemplo.json";
 
   // Acciones de la tabla
-  const actions: Action = {
+  const actions: IAction = {
     create: true,
     update: true
   };
@@ -35,7 +35,7 @@ const RubroIngrediente: React.FC = () => {
   }, []);
 
   // Función para manejar la adición de un rubro
-  const handleRubroAdd = async (rubro: Rubro) => {
+  const handleRubroAdd = async (rubro: IRubro) => {
     try {
       const newRubro = await handleRequest('POST', API_URL, rubro);
       setRubros([...rubros, newRubro]);
@@ -46,28 +46,28 @@ const RubroIngrediente: React.FC = () => {
   };
 
   // Columnas de la tabla
-  const columns: Column<Rubro>[] = [
+  const columns: IColumn<IRubro>[] = [
     {
       title: 'Nombre', field: 'nombre',
-      render: (rubro: Rubro) => <span>{rubro.nombre}</span>,
+      render: (rubro: IRubro) => <span>{rubro.nombre}</span>,
     },
     {
       title: "Estado",
-      field: "estado",
-      render: (rubro: Rubro) => (
-        <span className={`${rubro.estado ? "text-success" : "text-danger"}`}>
-          {rubro.estado ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
+      field: "activo",
+      render: (rubro: IRubro) => (
+        <span className={`${rubro.activo ? "text-success" : "text-danger"}`}>
+          {rubro.activo ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
         </span>
       ),
     },
   ];
 
   // Función para manejar la edición de un rubro
-  const handleRubroEdit = async (rubro: Rubro) => {
+  const handleRubroEdit = async (rubro: IRubro) => {
     try {
-      const updatedRubro = await handleRequest('PUT', `${API_URL}/${rubro.idRubro}`, rubro);
+      const updatedRubro = await handleRequest('PUT', `${API_URL}/${rubro.id}`, rubro);
       const updatedRubros = rubros.map((r) =>
-        r.idRubro === updatedRubro.idRubro ? updatedRubro : r
+        r.id === updatedRubro.id ? updatedRubro : r
       );
       setRubros(updatedRubros);
     } catch (error) {
@@ -77,7 +77,7 @@ const RubroIngrediente: React.FC = () => {
   };
 
   // Función para abrir el modal de edición
-  const handleEditModalOpen = (item: Rubro) => {
+  const handleEditModalOpen = (item: IRubro) => {
     setSelectedRubroIngrediente(item);
     setEditModalShow(true);
   };

@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
 import { CartContext, CartItem } from '../../context/cart/CartProvider';
-import { Producto } from '../../interface/Producto';
+import { IProducto } from '../../interface/IProducto';
 
 const DetallePage = () => {
   const { id } = useParams<{ id: string }>();
   const { addToCart } = useContext(CartContext);
 
-  const [producto, setProducto] = useState<Producto | undefined>();
+  const [producto, setProducto] = useState<IProducto | undefined>();
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const DetallePage = () => {
         try {
           const response = await fetch('/assets/data/productosLanding.json');
           const data = await response.json();
-          const productoEncontrado = data.find((producto: Producto) => producto.idProducto === parseInt(id));
+          const productoEncontrado = data.find((producto: IProducto) => producto.id === parseInt(id));
           setProducto(productoEncontrado);
           if (productoEncontrado && productoEncontrado.stockActual === 0) {
             setShowAlert(true);
@@ -34,18 +34,18 @@ const DetallePage = () => {
   const handleAddToCart = () => {
     if (producto && producto.stockActual > 0) {
       const detallePedido = {
-        idDetallePedido: 0,
+        id: 0,
         cantidad: 0,
         Productos: producto,
       };
 
       const item: CartItem = {
-        id: producto.idProducto,
-        name: producto.nombre,
+        id: producto?.id ?? 0,
+        name: producto?.nombre ?? '',
         quantity: 1,
-        price: producto.precio,
-        image: producto.imagen,
-        title: producto.nombre,
+        price: producto?.precio ?? 0,
+        image: producto?.imagen ?? '',
+        title: producto?.nombre ?? '',
         DetallePedido: detallePedido,
       };
 
@@ -57,14 +57,14 @@ const DetallePage = () => {
     return <Spinner />;
   }
 
-  const ingredientesList = producto.ProductoIngrediente?.map((productoIngrediente, index) => (
-    <span key={productoIngrediente?.idProductoIngrediente}>
-      {productoIngrediente?.Ingredientes?.nombre}
-      {index !== (producto.ProductoIngrediente?.length ?? 0) - 1 ? ', ' : '.'}
+  const ingredientesList = producto.productoIngrediente?.map((productoIngrediente, index) => (
+    <span key={productoIngrediente?.id}>
+      {productoIngrediente?.ingredientes?.nombre}
+      {index !== (producto.productoIngrediente?.length ?? 0) - 1 ? ', ' : '.'}
     </span>
   ));
 
-  const ingredientesSection = (producto.ProductoIngrediente?.length ?? 0) > 0 && (
+  const ingredientesSection = (producto.productoIngrediente?.length ?? 0) > 0 && (
     <p className="card-text">Ingredientes: {ingredientesList}</p>
   );
 

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
-import { Pedido } from '../../interface/Pedido';
+import { IPedido } from '../../interface/IPedido';
 
 interface EditFacturaModalProps {
   show: boolean;
   handleClose: () => void;
-  handleFacturaEdit: (factura: Pedido) => void;
-  selectedFactura: Pedido | null;
+  handleFacturaEdit: (factura: IPedido) => void;
+  selectedFactura: IPedido | null;
 }
 
 const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
@@ -45,7 +45,7 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
         return;
       }
 
-      const updatedFactura: Pedido = {
+      const updatedFactura: IPedido = {
         ...selectedFactura,
         numeroPedido,
         fechaPedido: new Date(fechaPedido),

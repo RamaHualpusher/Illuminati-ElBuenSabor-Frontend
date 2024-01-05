@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap';
-import { Usuario } from "../../../interface/Usuario";
-import { Column } from "../../../interface/CamposTablaGenerica";
+import { IUsuario } from "../../../interface/IUsuario";
+import { IColumn } from "../../../interface/ICamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
-import { Pedido } from "../../../interface/Pedido";
+import { IPedido } from "../../../interface/IPedido";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 const RankingClientes = () => {
-  const [clientes, setClientes] = useState<Usuario[]>([]);
-  const [pedidos, setPedidos] = useState<Pedido[]>([]);
+  const [clientes, setClientes] = useState<IUsuario[]>([]);
+  const [pedidos, setPedidos] = useState<IPedido[]>([]);
   const [orden, setOrden] = useState<"cantidadPedidos" | "importeTotal">("cantidadPedidos"); // Estado para el orden
 
   const API_URL_PEDIDOS = "assets/data/pedidos.json";
@@ -39,24 +39,24 @@ const RankingClientes = () => {
 
 
   // Define las columnas para la tabla 
-  const columns: Column<Usuario>[] = [
-    { title: "ID", field: "idUsuario", width: 2 },
+  const columns: IColumn<IUsuario>[] = [
+    { title: "ID", field: "id", width: 2 },
     { title: "Nombre", field: "nombre", width: 2 },
     { title: "Apellido", field: "apellido", width: 2 },
     {
       title: "Cantidad de Pedidos", field: "telefono", width: 2,
       render: (rowData) =>
-        <div>{calculateCantidadPedidos(rowData.idUsuario)}</div>
+        <div>{calculateCantidadPedidos(rowData.id)}</div>
     },
     {
       title: "Importe Total", field: "telefono", width: 2,
       render: (rowData) =>
-        <div>{calculateImporteTotal(rowData.idUsuario)}</div>
+        <div>{calculateImporteTotal(rowData.id)}</div>
     },
     {
       title: "Pedidos", field: "telefono", width: 2,
       render: (rowData) => (
-        <Link to={`/admin/ranking-pedidos/${rowData.idUsuario}`} className="btn btn-primary me-2">
+        <Link to={`/admin/ranking-pedidos/${rowData.id}`} className="btn btn-primary me-2">
           Ver <i className="bi bi-file-earmark-text-fill me-1"></i>
         </Link>
       ),
@@ -64,15 +64,15 @@ const RankingClientes = () => {
   ];
 
   //Funcion para calcular el importe total
-  const calculateImporteTotal = (usuarioId: number) => {
+  const calculateImporteTotal = (usuarioId: number | undefined) => {
     return pedidos
-      .filter((pedido) => pedido.Usuario.idUsuario === usuarioId)
+      .filter((pedido) => pedido.Usuario.id === usuarioId)
       .reduce((total, pedido) => total + pedido.totalPedido, 0);
   };
 
   //Funcion para calcular la cantidad de pedidos por cada usuario
-  const calculateCantidadPedidos = (usuarioId: number) => {
-    return pedidos.filter((pedido) => pedido.Usuario.idUsuario === usuarioId).length;
+  const calculateCantidadPedidos = (usuarioId: number | undefined) => {
+    return pedidos.filter((pedido) => pedido.Usuario.id === usuarioId).length;
   };
 
   // Función para cambiar el orden
@@ -83,21 +83,21 @@ const RankingClientes = () => {
     const clientesOrdenados = [...clientes];
     if (nuevoOrden === "cantidadPedidos") {
       clientesOrdenados.sort((a, b) =>
-        calculateCantidadPedidos(b.idUsuario) - calculateCantidadPedidos(a.idUsuario)
+        calculateCantidadPedidos(b.id) - calculateCantidadPedidos(a.id)
       );
     } else if (nuevoOrden === "importeTotal") {
       clientesOrdenados.sort((a, b) =>
-        calculateImporteTotal(b.idUsuario) - calculateImporteTotal(a.idUsuario)
+        calculateImporteTotal(b.id) - calculateImporteTotal(a.id)
       );
     }
     setClientes(clientesOrdenados);
   };
 
   // Función para búsqueda personalizada por id de usuario
-  const customSearch = (searchText: string): Promise<Usuario[]> => {
+  const customSearch = (searchText: string): Promise<IUsuario[]> => {
     return new Promise((resolve) => {
       const filteredData = clientes?.filter((usuario) =>
-        usuario.idUsuario.toString().includes(searchText)
+        usuario.id?.toString().includes(searchText)
       );
       resolve(filteredData);
     });
@@ -118,7 +118,7 @@ const RankingClientes = () => {
                 </Dropdown.Item>
               </DropdownButton>
             </div>
-            <GenericTable<Usuario>
+            <GenericTable<IUsuario>
               customSearch={customSearch}
               columns={columns}
               data={clientes}

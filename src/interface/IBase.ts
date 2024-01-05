@@ -1,4 +1,4 @@
-export default interface Base {
+export interface IBase {
   id?: number;
-  estado?: boolean;
+  activo?: boolean;
 }

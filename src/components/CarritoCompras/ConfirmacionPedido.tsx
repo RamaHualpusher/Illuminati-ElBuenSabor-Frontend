@@ -3,11 +3,11 @@ import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
 import { CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
-import { Pedido } from "../../interface/Pedido";
-import { Producto } from "../../interface/Producto";
-import { Usuario } from "../../interface/Usuario";
+import { IPedido } from "../../interface/IPedido";
+import { IProducto } from "../../interface/IProducto";
+import { IUsuario } from "../../interface/IUsuario";
 import { useAuth0 } from "@auth0/auth0-react";
-import { DetallePedido } from "../../interface/DetallePedido";
+import { IDetallePedido } from "../../interface/IDetallePedido";
 import { Alert, Button } from 'react-bootstrap';
 
 
@@ -28,10 +28,10 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   onContinue,
   isCartEmpty, // Usa la prop isCartEmpty
 }) => {
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
-  const [productos, setProductos] = useState<Producto[] | null>(null);
+  const [usuario, setUsuario] = useState<IUsuario | null>(null);
+  const [productos, setProductos] = useState<IProducto[] | null>(null);
   const [subTotal, setSubTotal] = useState(0);
-  const [pedidoCompleto, setPedidoCompleto] = useState<Pedido | null>(null);
+  const [pedidoCompleto, setPedidoCompleto] = useState<IPedido | null>(null);
   const [esDelivery, setEsDelivery] = useState(true);
   const [esEfectivo, setEsEfectivo] = useState(true);
   const [totalPedido, setTotalPedido] = useState(0);
@@ -101,12 +101,12 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     setEsDelivery(esDelivery);
   };
 
-  const convertirCartItemADetallePedido = (cartItem: CartItem): DetallePedido => {
-    const productoEncontrado = productos?.find(producto => producto.idProducto === cartItem.id);
+  const convertirCartItemADetallePedido = (cartItem: CartItem): IDetallePedido => {
+    const productoEncontrado = productos?.find(producto => producto.id === cartItem.id);
 
     if (productoEncontrado) {
-      const detallePedido: DetallePedido = {
-        idDetallePedido: 0,
+      const detallePedido: IDetallePedido = {
+        id: 0,
         cantidad: cartItem.quantity,
         Productos: productoEncontrado, // Producto ahora es un solo objeto
       };
@@ -118,14 +118,14 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
   useEffect(() => {
     if (usuario !== null && cartItems.length > 0) {
-      const domicilioUsuario = usuario.Domicilio;
+      const domicilioUsuario = usuario.domicilio;
 
       // Calcula el total del pedido aquí
       const nuevoTotalPedido =
         esDelivery ? subTotal + costoDelivery : subTotal - subTotal * descuento;
 
-      const nuevoPedidoCompleto: Pedido = {
-        idPedido: 0,
+      const nuevoPedidoCompleto: IPedido = {
+        id: 0,
         numeroPedido: 0,
         horaEstimadaFin: new Date(),
         esDelivery: esDelivery,
@@ -133,18 +133,18 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         estadoPedido: "A confirmar",
         fechaPedido: new Date(),
         Usuario: {
-          idUsuario: usuario.idUsuario,
+          id: usuario.id,
           nombre: usuario.nombre,
           apellido: usuario.apellido,
           email: usuario.email,
           clave: usuario.clave,
           claveConfirm: usuario.claveConfirm,
           telefono: usuario.telefono,
-          estado: usuario.estado,
-          Domicilio: domicilioUsuario,
-          Rol: {
-            idRol: usuario.Rol.idRol,
-            nombreRol: usuario.Rol.nombreRol,
+          activo: usuario.activo,
+          domicilio: domicilioUsuario,
+          rol: {
+            id: usuario.rol.id,
+            nombreRol: usuario.rol.nombreRol,
           },
         },
         DetallePedido: cartItems.map(convertirCartItemADetallePedido),
@@ -245,7 +245,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               esEfectivo={esEfectivo}
               handleEsDelivery={handleEsDelivery}
               handleEsEfectivo={handleEsEfectivo}
-              domicilio={usuario ? usuario.Domicilio : null}
+              domicilio={usuario ? usuario.domicilio : null}
               subTotal={subTotal}
               totalPedido={totalPedido} />
           </div>

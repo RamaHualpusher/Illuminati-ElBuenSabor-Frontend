@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { Domicilio } from "../../interface/Domicilio";
+import { IDomicilio } from "../../interface/IDomicilio";
 
 interface CartTarjetaProps {
   esDelivery: boolean;
   esEfectivo: boolean;
   handleEsDelivery: (esDelivery: boolean) => void;
   handleEsEfectivo: (esEfectivo: boolean) => void;
-  domicilio: Domicilio | null;
+  domicilio: IDomicilio | null;
   subTotal: number;
   totalPedido: number;
 }

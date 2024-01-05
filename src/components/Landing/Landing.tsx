@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import BotonesMenu from "./BotonesMenu";
 import ImagenMenu from "./ImagenMenu";
 import ComoFunc from "./ComoFunc";
-import { Producto } from "../../interface/Producto";
+import { IProducto } from "../../interface/IProducto";
 import { SearchContext } from "../Buscador/SearchContext";
 import DondeEstamos from "../DondeEstamos/DondeEstamos";
 import Catalogo from "./Catalogo";
@@ -15,8 +15,8 @@ export default function Landing() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
 
   // Estado para almacenar los productos y los productos filtrados
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Producto[]>([]);
+  const [productos, setProductos] = useState<IProducto[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<IProducto[]>([]);
 
   // Obtener el parámetro de búsqueda del contexto
   const { searchParam } = useContext(SearchContext);
@@ -71,7 +71,7 @@ export default function Landing() {
   const filteredProductos =
     selectedCategory === "Todos"
       ? filteredProducts
-      : filteredProducts.filter((producto) => producto.Rubro.nombre === selectedCategory);
+      : filteredProducts.filter((producto) => producto.rubro.nombre === selectedCategory);
 
   // Manejar el scroll al top de la página
   const handleScrollToTop = () => {

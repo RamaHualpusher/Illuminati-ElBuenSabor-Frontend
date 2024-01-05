@@ -1,16 +1,16 @@
 import React from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
-import { Pedido } from '../../../interface/Pedido';
+import { IPedido } from '../../../interface/IPedido';
 import { Link } from 'react-router-dom';
 import EstadoPedidoCard from '../../Pedidos/EstadoPedidoCard';
 
 interface PedidoCardUsuarioProps {
-    pedido: Pedido;
+    pedido: IPedido;
 }
 
 const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
     // URL para el detalle del pedido
-    const urlDetallePedido = `/mis-pedido/${pedido.idPedido}`;
+    const urlDetallePedido = `/mis-pedido/${pedido.id}`;
 
     // Función para manejar la acción de "ver"
     const onView = () => {

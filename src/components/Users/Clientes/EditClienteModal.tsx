@@ -1,48 +1,48 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Col, Row } from "react-bootstrap";
-import { Usuario } from "../../../interface/Usuario";
-import { Rol } from "../../../interface/Rol";
+import { IUsuario } from "../../../interface/IUsuario";
+import { IRol } from "../../../interface/IRol";
 
-interface EditClienteModalProps {
+interface IEditClienteModalProps {
   show: boolean;
   handleClose: () => void;
-  handleClienteEdit: (cliente: Usuario) => void;
-  selectedCliente: Usuario | null;
+  handleClienteEdit: (cliente: IUsuario) => void;
+  selectedCliente: IUsuario | null;
 }
 
-const EditClienteModal: React.FC<EditClienteModalProps> = ({
+const EditClienteModal: React.FC<IEditClienteModalProps> = ({
   show,
   handleClose,
   handleClienteEdit,
   selectedCliente,
 }) => {
   // Función para inicializar un nuevo objeto Usuario
-  const initializeUsuario = (): Usuario => {
+  const initializeUsuario = (): IUsuario => {
     return {
-      idUsuario: 0,
+      id: 0,
       nombre: "",
       apellido: "",
       email: "",
       clave: "",
       claveConfirm: "",
       telefono: "",
-      estado: true,
-      Domicilio: {
-        idDomicilio: 0,
+      activo: true,
+      domicilio: {
+        id: 0,
         calle: "",
         numero: 0,
         localidad: "",
       },
-      Rol: {
-        idRol: 0,
+      rol: {
+        id: 0,
         nombreRol: "",
       },
     };
   };
 
   // Estado para gestionar el usuario en el formulario
-  const [usuario, setUsuario] = useState<Usuario>(initializeUsuario());
-  const [roles, setRoles] = useState<Rol[]>([]);
+  const [usuario, setUsuario] = useState<IUsuario>(initializeUsuario());
+  const [roles, setRoles] = useState<IRol[]>([]);
 
   // Cargar roles al montar el componente
   useEffect(() => {
@@ -142,11 +142,11 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
               <Form.Group className="mb-3" controlId="formEstado">
                 <Form.Label>Estado</Form.Label>
                 <Form.Select
-                  value={usuario.estado ? "activo" : "bloqueado"}
+                  value={usuario.activo ? "activo" : "bloqueado"}
                   onChange={(event) =>
                     setUsuario({
                       ...usuario,
-                      estado: event.target.value === "activo",
+                      activo: event.target.value === "activo",
                     })
                   }
                   required
@@ -165,11 +165,11 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
                   <Form.Control
                     type="text"
                     placeholder="Ingrese calle"
-                    value={usuario.Domicilio.calle}
+                    value={usuario.domicilio.calle}
                     onChange={(event) =>
                       setUsuario({
                         ...usuario,
-                        Domicilio: { ...usuario.Domicilio, calle: event.target.value },
+                        domicilio: { ...usuario.domicilio, calle: event.target.value },
                       })
                     }
                     required
@@ -183,12 +183,12 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
                 <Form.Control
                   type="number"
                   placeholder="Ingrese número"
-                  value={usuario.Domicilio.numero}
+                  value={usuario.domicilio.numero}
                   onChange={(event) =>
                     setUsuario({
                       ...usuario,
-                      Domicilio: {
-                        ...usuario.Domicilio,
+                      domicilio: {
+                        ...usuario.domicilio,
                         numero: parseInt(event.target.value),
                       },
                     })
@@ -203,12 +203,12 @@ const EditClienteModal: React.FC<EditClienteModalProps> = ({
                 <Form.Control
                   type="text"
                   placeholder="Ingrese localidad"
-                  value={usuario.Domicilio.localidad}
+                  value={usuario.domicilio.localidad}
                   onChange={(event) =>
                     setUsuario({
                       ...usuario,
-                      Domicilio: {
-                        ...usuario.Domicilio,
+                      domicilio: {
+                        ...usuario.domicilio,
                         localidad: event.target.value,
                       },
                     })

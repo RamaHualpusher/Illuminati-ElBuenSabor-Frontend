@@ -1,10 +1,10 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import jwt_decode from "jwt-decode";
 import { useAuth0 } from "@auth0/auth0-react";
-import { UserRole } from "../../interface/UserRole";
+import { IUserRole } from "../../interface/IUserRole";
 
 type UserPermission = {
-    permission: UserRole;
+    permission: IUserRole;
     loadUserPermission: () => Promise<void>;
 };
 
@@ -24,7 +24,7 @@ export const useUserPermission = () => {
 
 export const UserPermissionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
-    const [permission, setPermission] = useState<UserRole>(UserRole.Cliente);
+    const [permission, setPermission] = useState<IUserRole>(IUserRole.Cliente);
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
     const loadUserPermission = useCallback(async () => {
@@ -47,7 +47,7 @@ export const UserPermissionProvider: React.FC<{ children: React.ReactNode }> = (
                 }
 
                 const decoded = jwt_decode<PermissionsType>(fetchedToken);
-                setPermission(UserRole[decoded.permissions[0] as keyof typeof UserRole]);
+                setPermission(IUserRole[decoded.permissions[0] as keyof typeof IUserRole]);
             } catch (error) {
                 console.error('Error al obtener y decodificar el token JWT:', error);
             }

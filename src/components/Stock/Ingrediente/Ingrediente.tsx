@@ -2,39 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { Container, Col, Row, Form } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
-import { Ingredientes } from '../../../interface/Ingredientes';
+import { IIngredientes } from '../../../interface/IIngredientes';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
-import { Action, Column } from '../../../interface/CamposTablaGenerica';
+import { IAction, IColumn } from '../../../interface/ICamposTablaGenerica';
 import GenericTable from "../../GenericTable/GenericTable";
-import { Rubro } from "../../../interface/Rubro";
+import { IRubro } from "../../../interface/IRubro";
 
 const Ingrediente: React.FC = () => {
   // Estados del componente
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
-  const [selectedIngrediente, setSelectedIngrediente] = useState<Ingredientes | null>(null);
-  const [ingred, setIngred] = useState<Ingredientes[]>([]);
-  const [ingredComplete, setIngredComplete] = useState<Ingredientes[]>([]);
-  const [rubros, setRubros] = useState<Rubro[]>([]);
+  const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null);
+  const [ingred, setIngred] = useState<IIngredientes[]>([]);
+  const [ingredComplete, setIngredComplete] = useState<IIngredientes[]>([]);
+  const [rubros, setRubros] = useState<IRubro[]>([]);
   const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
   const [selectedRubroName, setSelectedRubroName] = useState<string>("");
-  const [filteredIngredientes, setFilteredIngredientes] = useState<Ingredientes[]>([]);
+  const [filteredIngredientes, setFilteredIngredientes] = useState<IIngredientes[]>([]);
   const API_URL = "/assets/data/ingredientesEjemplo.json";
   const API_URL_Rubro = "assets/data/rubrosIngredientesEjemplo.json";
 
   // Configuración de acciones y columnas de la tabla
-  const actions: Action = {
+  const actions: IAction = {
     create: true,
     update: true
   };
 
-  const columns: Column<Ingredientes>[] = [
+  const columns: IColumn<IIngredientes>[] = [
     // Definición de las columnas...
-    { title: 'ID', field: 'idIngredientes' },
+    { title: 'ID', field: 'id' },
     { title: 'Nombre', field: 'nombre' },
     {
-      title: 'Rubro', field: 'Rubro', render: (ingredientes: Ingredientes) =>
-        <span>{`${ingredientes.Rubro.nombre}`}</span>
+      title: 'Rubro', field: 'rubro', render: (ingredientes: IIngredientes) =>
+        <span>{`${ingredientes.rubro.nombre}`}</span>
     },
     { title: 'Precio', field: 'precioCosto' },
     { title: 'Min Stock', field: 'stockMinimo' },
@@ -42,10 +42,10 @@ const Ingrediente: React.FC = () => {
     { title: 'UM', field: 'unidadMedida' },
     {
       title: "Estado",
-      field: "estado",
-      render: (ingredientes: Ingredientes) => (
-        <span className={`${ingredientes.estado ? "text-success" : "text-danger"}`}>
-          {ingredientes.estado ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
+      field: "activo",
+      render: (ingredientes: IIngredientes) => (
+        <span className={`${ingredientes.activo ? "text-success" : "text-danger"}`}>
+          {ingredientes.activo ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
         </span>
       ),
     },
@@ -57,7 +57,7 @@ const Ingrediente: React.FC = () => {
       console.log("selectedRubro", selectedRubro);
       if (selectedRubro) {
         const filtered = ingredComplete.filter(
-          (ingrediente) => ingrediente.Rubro.idRubro === selectedRubro
+          (ingrediente) => ingrediente.rubro.id === selectedRubro
         );
         setFilteredIngredientes(filtered);
       } else {
@@ -96,8 +96,8 @@ const Ingrediente: React.FC = () => {
     fetchData();
   }, []);
 
-   // Agregar nuevo ingrediente mediante la API
-  const handleIngredienteAdd = async (Ingredientes: Ingredientes) => {
+  // Agregar nuevo ingrediente mediante la API
+  const handleIngredienteAdd = async (Ingredientes: IIngredientes) => {
     try {
       const newProducto = await handleRequest('POST', '/assets/data/ingredientesEjemplo.json', Ingredientes);
 
@@ -108,12 +108,12 @@ const Ingrediente: React.FC = () => {
   };
 
   // Editar ingrediente existente mediante la API
-  const handleIngredienteEdit = async (producto: Ingredientes) => {
+  const handleIngredienteEdit = async (producto: IIngredientes) => {
     try {
-      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.idIngredientes}`, producto);
+      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.id}`, producto);
 
       const newData = [...ingred];
-      const index = newData.findIndex((item) => item.idIngredientes === producto.idIngredientes);
+      const index = newData.findIndex((item) => item.id === producto.id);
       newData[index] = updatedProducto;
 
       setIngred(newData);
@@ -131,7 +131,7 @@ const Ingrediente: React.FC = () => {
       if (i >= ingredComplete.length) {
         // No se encontró el ingrediente, salir del ciclo
         x = false;
-      } else if (ingredComplete[i].idIngredientes === +id) {
+      } else if (ingredComplete[i].id === +id) {
         // Ingrediente encontrado
         return ingredComplete[i];
       }
@@ -141,10 +141,16 @@ const Ingrediente: React.FC = () => {
   };
 
   // Abrir modal de edición con los datos del ingrediente
-  const handleEditModalOpen = (item: Ingredientes) => {
-    setSelectedIngrediente(ingredienteGeneric(item.idIngredientes));
-    setEditModalShow(true);
+  const handleEditModalOpen = (item: IIngredientes) => {
+    if (item.id !== undefined) {
+      setSelectedIngrediente(ingredienteGeneric(item.id));
+      setEditModalShow(true);
+    } else {
+      console.error("ID del ingrediente es undefined");
+      // Otra lógica de manejo de errores o mensajes que desees agregar
+    }
   };
+
 
   // Cerrar modal de edición
   const handleEditModalClose = () => {
@@ -162,7 +168,7 @@ const Ingrediente: React.FC = () => {
     setAddModalShow(false);
   };
 
-// Eliminar ingrediente mediante la API (esta por las dudas pero no tiene funcion)
+  // Eliminar ingrediente mediante la API (esta por las dudas pero no tiene funcion)
   const handleIngredienteDelete = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const ingredienteId: number = +rowData[0];
@@ -170,7 +176,7 @@ const Ingrediente: React.FC = () => {
       method: 'DELETE',
     })
       .then(response => {
-        setIngred(ingred.filter(item => item.idIngredientes !== ingredienteId));
+        setIngred(ingred.filter(item => item.id !== ingredienteId));
       })
       .catch(error => {
         console.log(error);
@@ -182,7 +188,7 @@ const Ingrediente: React.FC = () => {
     const { value } = event.target;
     const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
     const selectedRubroId = parseInt(value);
-    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);
+    const selectedRubro = rubros.find((rubro) => rubro.id === selectedRubroId);
     setSelectedRubro(selectedRubroId ? selectedRubroId : null);
     setSelectedRubroName(selectedOption.text);
   };
@@ -197,18 +203,18 @@ const Ingrediente: React.FC = () => {
     <div>
       <Container fluid>
         <div>
-           {/* Filtros y mensajes */}
-          <Form.Group controlId="idrubro">
+          {/* Filtros y mensajes */}
+          <Form.Group controlId="id">
             <select
               className="form-select"
-              name="idRubro"
+              name="id"
               value={selectedRubro ? selectedRubro : ""}
               onChange={handleSelectChange}
               style={{ width: "250px", margin: "10px" }}
             >
               <option value="">Todos los rubros</option>
               {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
+                <option key={rubro.id} value={rubro.id}>
                   {rubro.nombre}
                 </option>
               ))}

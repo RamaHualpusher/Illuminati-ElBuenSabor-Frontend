@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Pedido } from '../../../interface/Pedido';
+import { IPedido } from '../../../interface/IPedido';
 import Spinner from '../../Spinner/Spinner';
-import { DetallePedido } from '../../../interface/DetallePedido';
-import { Producto } from '../../../interface/Producto';
+import { IDetallePedido } from '../../../interface/IDetallePedido';
+import { IProducto } from '../../../interface/IProducto';
 
 // Función para calcular el tiempo estimado de finalización
-const calcularTiempoEstimadoFinalizacion = (detallePedido: DetallePedido[], esDelivery: boolean) => {
-    const obtenerTiempoEstimadoMaximo = (detallePedido: DetallePedido[]) => {
+const calcularTiempoEstimadoFinalizacion = (detallePedido: IDetallePedido[], esDelivery: boolean) => {
+    const obtenerTiempoEstimadoMaximo = (detallePedido: IDetallePedido[]) => {
         let maxTiempoEstimadoCocina = 0;
-        detallePedido.forEach((detalle: DetallePedido) => {
+        detallePedido.forEach((detalle: IDetallePedido) => {
             if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-                detalle.Productos.forEach((producto: Producto) => {
+                detalle.Productos.forEach((producto: IProducto) => {
                     if (producto.tiempoEstimadoCocina > maxTiempoEstimadoCocina) {
                         maxTiempoEstimadoCocina = producto.tiempoEstimadoCocina;
                     }
@@ -26,11 +26,11 @@ const calcularTiempoEstimadoFinalizacion = (detallePedido: DetallePedido[], esDe
 };
 
 // Función para obtener el subtotal del pedido
-const obtenerSubtotal = (detallePedido: DetallePedido[]) => {
+const obtenerSubtotal = (detallePedido: IDetallePedido[]) => {
     let subtotal = 0;
-    detallePedido.forEach((detalle: DetallePedido) => {
+    detallePedido.forEach((detalle: IDetallePedido) => {
         if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-            detalle.Productos.forEach((producto: Producto) => {
+            detalle.Productos.forEach((producto: IProducto) => {
                 subtotal += producto.precio;
             });
         }
@@ -40,7 +40,7 @@ const obtenerSubtotal = (detallePedido: DetallePedido[]) => {
 
 const DetallesPedidoUsuario: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [pedido, setPedido] = useState<Pedido | null>(null);
+    const [pedido, setPedido] = useState<IPedido | null>(null);
 
     useEffect(() => {
         const fetchPedido = async () => {
@@ -48,7 +48,7 @@ const DetallesPedidoUsuario: React.FC = () => {
                 if (id) {
                     const response = await fetch('/assets/data/pedidos.json');
                     const data = await response.json();
-                    const pedidoEncontrado = data.find((pedido: Pedido) => pedido.idPedido === parseInt(id));
+                    const pedidoEncontrado = data.find((pedido: IPedido) => pedido.id === parseInt(id));
                     setPedido(pedidoEncontrado || null);
                 }
             } catch (error) {
@@ -72,15 +72,15 @@ const DetallesPedidoUsuario: React.FC = () => {
     };
 
     // Función para renderizar los productos del detalleF
-    const renderProductos = (detalle: DetallePedido) => {
+    const renderProductos = (detalle: IDetallePedido) => {
         if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) {
             return <p>Productos no disponibles</p>;
         }
 
         return (
             <ul>
-                {detalle.Productos.map((producto: Producto) => (
-                    <li key={producto.idProducto}>
+                {detalle.Productos.map((producto: IProducto) => (
+                    <li key={producto.id}>
                         <strong>{producto.nombre}</strong>: ${producto.precio} - <i className="bi bi-clock-fill"></i> {producto.tiempoEstimadoCocina}Min
                         {!producto.esBebida && producto.preparacion && <p> <strong>Preparación:</strong> <br /> {producto.preparacion}</p>}
                     </li>
@@ -111,9 +111,9 @@ const DetallesPedidoUsuario: React.FC = () => {
                                 <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario.nombre} {Usuario.apellido}</p>
                                 <p className="card-text"><strong>Teléfono:</strong> {Usuario.telefono}</p>
                                 {!esDelivery ? (
-                                    <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario.Domicilio.calle}, {Usuario.Domicilio.localidad}, {Usuario.Domicilio.numero}</p>
+                                    <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario.domicilio.calle}, {Usuario.domicilio.localidad}, {Usuario.domicilio.numero}</p>
                                 ) : (
-                                    <p className="card-text"><strong> Dirección de Entrega:</strong> {Usuario.Domicilio.calle}, {Usuario.Domicilio.localidad}, {Usuario.Domicilio.numero}</p>
+                                    <p className="card-text"><strong> Dirección de Entrega:</strong> {Usuario.domicilio.calle}, {Usuario.domicilio.localidad}, {Usuario.domicilio.numero}</p>
                                 )}
                                 <p className="card-text"><strong>Fecha:</strong> {formatDate(fechaPedido)}</p>
                                 <p className="card-text"><strong>Método de Pago:</strong> {esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
@@ -125,8 +125,8 @@ const DetallesPedidoUsuario: React.FC = () => {
 
                                 <h5 className="card-title">Detalle de Ítems Pedidos</h5>
 
-                                {DetallePedido.map((detalle: DetallePedido) => (
-                                    <ul key={detalle.idDetallePedido} className="list-unstyled">
+                                {DetallePedido.map((detalle: IDetallePedido) => (
+                                    <ul key={detalle.id} className="list-unstyled">
                                         {renderProductos(detalle)}
                                     </ul>
                                 ))}
