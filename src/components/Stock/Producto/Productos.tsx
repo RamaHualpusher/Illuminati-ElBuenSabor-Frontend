@@ -19,8 +19,7 @@ const Productos: React.FC = () => {
   const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
   const [selectedRubroName, setSelectedRubroName] = useState<string>("");
   const [filteredProductos, setFilteredProductos] = useState<IProducto[]>([]);
-  const API_URL = "assets/data/productosLanding.json";
-  const API_URL_Rubro = "assets/data/rubrosProductosEjemplo.json";
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Configuración de acciones y columnas para la tabla
   const actions: IAction = {
@@ -41,8 +40,8 @@ const Productos: React.FC = () => {
     },
     {
       title: "Rubro",
-      field: "Rubro",
-      render: (producto: IProducto) => <span>{`${producto.Rubro.nombre}`}</span>,
+      field: "rubro",
+      render: (producto: IProducto) => <span>{`${producto.rubro.nombre}`}</span>,
     },
     { title: "Tiempo en Cocina", field: "tiempoEstimadoCocina" },
     { title: "Precio", field: "precio" },
@@ -63,7 +62,7 @@ const Productos: React.FC = () => {
       console.log("selectedRubro", selectedRubro);
       if (selectedRubro) {
         const filtered = productosComplete.filter(
-          (producto) => producto.Rubro.idRubro === selectedRubro
+          (producto) => producto.rubro.id === selectedRubro
         );
         setFilteredProductos(filtered);
       } else {
@@ -79,7 +78,7 @@ const Productos: React.FC = () => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const responseData = await handleRequest("GET", API_URL);
+        const responseData = await handleRequest("GET", API_URL + "producto");
         setProductos(responseData);
         setProductosComplete(responseData);
       } catch (error) {
@@ -88,7 +87,7 @@ const Productos: React.FC = () => {
     };
     const fetchRubros = async () => {
       try {
-        const responseData = await handleRequest("GET", API_URL_Rubro);
+        const responseData = await handleRequest("GET", API_URL + "rubro");
         setRubros(responseData);
       } catch (error) {
         console.log(error);
@@ -101,7 +100,7 @@ const Productos: React.FC = () => {
   // Agregar un producto
   const handleProductoAdd = async (producto: IProducto) => {
     try {
-      const newProducto = await handleRequest("POST", API_URL, producto);
+      const newProducto = await handleRequest("POST", API_URL + "producto", producto);
       setProductos([...productos, newProducto]);
     } catch (error) {
       console.log(error);
@@ -113,7 +112,7 @@ const Productos: React.FC = () => {
     try {
       const updatedProducto: IProducto = await handleRequest(
         "PUT",
-        `${API_URL}/${producto.id}`,
+        `${API_URL + "producto"}/${producto.id}`,
         producto
       );
 
@@ -134,7 +133,7 @@ const Productos: React.FC = () => {
     e.preventDefault();
     const productoId: number = +rowData[0];
     try {
-      await handleRequest("DELETE", `${API_URL}/${productoId}`);
+      await handleRequest("DELETE", `${API_URL + "producto"}/${productoId}`);
       const updatedProductos = productos.filter((p) => p.id !== productoId);
       setProductos(updatedProductos);
     } catch (error) {
@@ -172,7 +171,7 @@ const Productos: React.FC = () => {
     const { value } = event.target;
     const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
     const selectedRubroId = parseInt(value);
-    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);
+    const selectedRubro = rubros.find((rubro) => rubro.id === selectedRubroId);
     setSelectedRubro(selectedRubroId ? selectedRubroId : null);
     setSelectedRubroName(selectedOption.text);
   };
@@ -188,17 +187,17 @@ const Productos: React.FC = () => {
       <Row>
         {/* Estructura del componente */}
         <div>
-          <Form.Group controlId="idrubro">
+          <Form.Group controlId="id">
             <select
               className="form-select"
-              name="idRubro"
+              name="id"
               value={selectedRubro ? selectedRubro : ""}
               onChange={handleSelectChange}
               style={{ width: "250px", margin: "10px" }}
             >
               <option value="">Todos los rubros</option>
               {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
+                <option key={rubro.id} value={rubro.id}>
                   {rubro.nombre}
                 </option>
               ))}

@@ -33,8 +33,8 @@ const Ingrediente: React.FC = () => {
     { title: 'ID', field: 'id' },
     { title: 'Nombre', field: 'nombre' },
     {
-      title: 'Rubro', field: 'Rubro', render: (ingredientes: IIngredientes) =>
-        <span>{`${ingredientes.Rubro.nombre}`}</span>
+      title: 'Rubro', field: 'rubro', render: (ingredientes: IIngredientes) =>
+        <span>{`${ingredientes.rubro.nombre}`}</span>
     },
     { title: 'Precio', field: 'precioCosto' },
     { title: 'Min Stock', field: 'stockMinimo' },
@@ -57,7 +57,7 @@ const Ingrediente: React.FC = () => {
       console.log("selectedRubro", selectedRubro);
       if (selectedRubro) {
         const filtered = ingredComplete.filter(
-          (ingrediente) => ingrediente.Rubro.idRubro === selectedRubro
+          (ingrediente) => ingrediente.rubro.id === selectedRubro
         );
         setFilteredIngredientes(filtered);
       } else {
@@ -188,7 +188,7 @@ const Ingrediente: React.FC = () => {
     const { value } = event.target;
     const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
     const selectedRubroId = parseInt(value);
-    const selectedRubro = rubros.find((rubro) => rubro.idRubro === selectedRubroId);
+    const selectedRubro = rubros.find((rubro) => rubro.id === selectedRubroId);
     setSelectedRubro(selectedRubroId ? selectedRubroId : null);
     setSelectedRubroName(selectedOption.text);
   };
@@ -204,17 +204,17 @@ const Ingrediente: React.FC = () => {
       <Container fluid>
         <div>
           {/* Filtros y mensajes */}
-          <Form.Group controlId="idrubro">
+          <Form.Group controlId="id">
             <select
               className="form-select"
-              name="idRubro"
+              name="id"
               value={selectedRubro ? selectedRubro : ""}
               onChange={handleSelectChange}
               style={{ width: "250px", margin: "10px" }}
             >
               <option value="">Todos los rubros</option>
               {rubros.map((rubro) => (
-                <option key={rubro.idRubro} value={rubro.idRubro}>
+                <option key={rubro.id} value={rubro.id}>
                   {rubro.nombre}
                 </option>
               ))}

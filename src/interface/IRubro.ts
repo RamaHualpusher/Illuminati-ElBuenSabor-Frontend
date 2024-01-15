@@ -1,7 +1,6 @@
 import { IBase } from "./IBase";
 
 export interface IRubro extends IBase {
-  idRubro: number;
   nombre: string;
   idRubroPadre?: IRubro;
 }

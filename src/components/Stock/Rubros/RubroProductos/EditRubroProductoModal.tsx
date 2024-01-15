@@ -35,7 +35,7 @@ const EditRubroProductoModal: React.FC<IEditRubroProductoModalProps> = ({
     if (selectedRubro) {
       const updatedRubro: IRubro = {
         ...selectedRubro,
-        idRubro: selectedRubro.idRubro || 0,
+        id: selectedRubro.id || 0,
         nombre,
         activo,
         // idRubroPadre, (No se utiliza en este componente)

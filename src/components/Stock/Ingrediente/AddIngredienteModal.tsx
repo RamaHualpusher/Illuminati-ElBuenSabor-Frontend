@@ -18,7 +18,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
     stockMinimo: 0,
     stockActual: 0,
     precioCosto: 0,
-    Rubro: { idRubro: 0, nombre: '' },
+    rubro: { id: 0, nombre: '' },
     unidadMedida: '',
   });
 
@@ -41,7 +41,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!newIngrediente.nombre || !newIngrediente.Rubro.idRubro || isNaN(newIngrediente.Rubro.idRubro) || !newIngrediente.stockMinimo || !newIngrediente.stockActual || !newIngrediente.precioCosto || !newIngrediente.unidadMedida) {
+    if (!newIngrediente.nombre || !newIngrediente.rubro.id || isNaN(newIngrediente.rubro.id) || !newIngrediente.stockMinimo || !newIngrediente.stockActual || !newIngrediente.precioCosto || !newIngrediente.unidadMedida) {
       console.log('Faltan campos requeridos');
       return;
     }
@@ -53,7 +53,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
 
     const updatedIngrediente: IIngredientes = {
       ...newIngrediente,
-      Rubro: { idRubro: newIngrediente.Rubro.idRubro, nombre: selectedRubro.nombre },
+      rubro: { id: newIngrediente.rubro.id, nombre: selectedRubro.nombre },
     };
 
     handleIngredienteAdd(updatedIngrediente);
@@ -89,14 +89,14 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
               <Form.Group className="mb-3" controlId="formRubro">
                 <Form.Label>Rubro</Form.Label>
                 <Form.Select
-                  onChange={(event) => setNewIngrediente({ ...newIngrediente, Rubro: { idRubro: parseInt(event.target.value), nombre: selectedRubro ? selectedRubro.nombre : '' } })}
+                  onChange={(event) => setNewIngrediente({ ...newIngrediente, rubro: { id: parseInt(event.target.value), nombre: selectedRubro ? selectedRubro.nombre : '' } })}
                   required
                 >
                   <option value="">Seleccione un rubro</option>
                   {rubros.map((rubro) => (
                     <option
-                      key={rubro.idRubro}
-                      value={rubro.idRubro}
+                      key={rubro.id}
+                      value={rubro.id}
                       disabled={!rubro.activo}
                     >
                       {rubro.nombre}

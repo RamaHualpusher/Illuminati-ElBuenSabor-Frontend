@@ -37,7 +37,7 @@ const AddRubroIngredienteModal: React.FC<IAddRubroIngredienteModalProps> = ({
     }
 
     const newRubroIngrediente: IRubro = {
-      idRubro: 0,
+      id: 0,
       nombre: trimmedNombre,
       activo: activo,
       idRubroPadre: undefined,

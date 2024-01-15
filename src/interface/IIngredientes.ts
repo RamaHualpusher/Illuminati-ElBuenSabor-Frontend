@@ -7,7 +7,7 @@ export interface IIngredientes extends IBase{
   stockActual: number;
   precioCosto: number;
   unidadMedida: string;
-  Rubro: IRubro;
+  rubro: IRubro;
 }
 
 export interface IAddIngredienteModalProps {

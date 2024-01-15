@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { Button, Container, Row, Col, Form } from 'react-bootstrap';
-import DatePicker from "react-datepicker";
+//import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import GenericTable from '../GenericTable/GenericTable';
 import { IColumn } from '../../interface/ICamposTablaGenerica';
@@ -157,42 +157,42 @@ const Movimientos = () => {
     setAddModalShow(false);
   };
 
-  const handleBuscarClick = () => {     
-  if (startDate !== null && endDate !== null) {
-    const pedidosFiltrados = pedidos.filter((pedido) => {
-      const fechaPedido = new Date(pedido.fechaPedido);
-      const searchTermLowerCase = searchTerm.toLowerCase();
-      const nombreUsuario = pedido.Usuario.nombre.toLowerCase();
-      const apellidoUsuario = pedido.Usuario.apellido.toLowerCase();
+  const handleBuscarClick = () => {
+    if (startDate !== null && endDate !== null) {
+      const pedidosFiltrados = pedidos.filter((pedido) => {
+        const fechaPedido = new Date(pedido.fechaPedido);
+        const searchTermLowerCase = searchTerm.toLowerCase();
+        const nombreUsuario = pedido.Usuario.nombre.toLowerCase();
+        const apellidoUsuario = pedido.Usuario.apellido.toLowerCase();
 
-      return (
-        (fechaPedido >= startDate && fechaPedido <= endDate) &&
-        (pedido.numeroPedido.toString().includes(searchTermLowerCase) ||
-          nombreUsuario.includes(searchTermLowerCase) ||
-          apellidoUsuario.includes(searchTermLowerCase))
-      );
-    });
+        return (
+          (fechaPedido >= startDate && fechaPedido <= endDate) &&
+          (pedido.numeroPedido.toString().includes(searchTermLowerCase) ||
+            nombreUsuario.includes(searchTermLowerCase) ||
+            apellidoUsuario.includes(searchTermLowerCase))
+        );
+      });
 
-    const movimientosFiltrados = movimientosCalculados.filter((movimiento) => {
-      const fechaPedido = new Date(movimiento.fechaPedido);
-      return fechaPedido >= startDate && fechaPedido <= endDate;
-    });
-    
-   pedidosFiltrados.sort((a, b) => b.totalPedido - a.totalPedido);
+      const movimientosFiltrados = movimientosCalculados.filter((movimiento) => {
+        const fechaPedido = new Date(movimiento.fechaPedido);
+        return fechaPedido >= startDate && fechaPedido <= endDate;
+      });
 
-    const costoTotalFiltrado = pedidosFiltrados.reduce((total, pedido) => total + calcularCostoTotalPedidos([pedido], ingredientes), 0);
-    const ingresoTotalFiltrado = calcularIngresoTotalPedidos(pedidosFiltrados);
-    const gananciaTotalFiltrada = ingresoTotalFiltrado - costoTotalFiltrado;
+      pedidosFiltrados.sort((a, b) => b.totalPedido - a.totalPedido);
 
-    setCostoTotal(costoTotalFiltrado);
-    setIngresoTotal(ingresoTotalFiltrado);
-    setGananciaTotal(gananciaTotalFiltrada);
+      const costoTotalFiltrado = pedidosFiltrados.reduce((total, pedido) => total + calcularCostoTotalPedidos([pedido], ingredientes), 0);
+      const ingresoTotalFiltrado = calcularIngresoTotalPedidos(pedidosFiltrados);
+      const gananciaTotalFiltrada = ingresoTotalFiltrado - costoTotalFiltrado;
 
-    setFilteredMovimientos(movimientosFiltrados);
-  } else {
-    alert("Por favor, seleccione ambas fechas antes de realizar la búsqueda.");
-  }
-};
+      setCostoTotal(costoTotalFiltrado);
+      setIngresoTotal(ingresoTotalFiltrado);
+      setGananciaTotal(gananciaTotalFiltrada);
+
+      setFilteredMovimientos(movimientosFiltrados);
+    } else {
+      alert("Por favor, seleccione ambas fechas antes de realizar la búsqueda.");
+    }
+  };
 
   const exportDataToExcel = () => {
     const dataToExport = movimientosCalculados;
@@ -200,47 +200,27 @@ const Movimientos = () => {
     exportTableDataToExcel(dataToExport, filename);
   };
 
+  // Función para la búsqueda personalizada por número de factura
+  const customDate = (firstDate: Date | null, secondDate: Date | null): Promise<IPedido[]> => {
+    return new Promise((resolve) => {
+
+      const filtrar = movimientos;
+      let filtrados: IPedido[] = [];
+      filtrar.map((factura) => {
+        const fecha = new Date(factura.fechaPedido);
+        console.log(fecha);
+        if ((firstDate === null || fecha >= firstDate) && (secondDate === null || fecha <= secondDate)) {
+          filtrados.push(factura);
+        }
+      })
+      resolve(filtrados);
+    })
+  }
+
   return (
     <div>
       <Container fluid>
-        <Row className="mt-2">
-          <Col>
-            <Form>
-              <Form.Group>
-                <Form.Label>Fecha inicio búsqueda</Form.Label>
-                <Col>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={handleDateChangeStart}
-                    dateFormat="yyyy-MM-dd"
-                    isClearable
-                    className="form-control"
-                  />
-                </Col>
-              </Form.Group>
-            </Form>
-          </Col>
-          <Col>
-            <Form>
-              <Form.Group>
-                <Form.Label>Fecha fin búsqueda</Form.Label>
-                <Col>
-                  <DatePicker
-                    selected={endDate}
-                    onChange={handleDateChangeEnd}
-                    dateFormat="yyyy-MM-dd"
-                    isClearable
-                    className="form-control"
-                  />
-                </Col>
-              </Form.Group>
-            </Form>
-          </Col>
-          <Col>
-            <Button variant="primary" style={{ marginTop: "30px" }} onClick={handleBuscarClick}>Buscar por fechas</Button>
-          </Col>
-        </Row>
-        <Row className="mt-3" style={{}}>
+        <Row className="mt-3">
           <Col className="d-flex justify-content-center">
             <GenericTable<IPedido>
               data={filteredMovimientos.sort((a, b) => b.totalPedido - a.totalPedido)}
@@ -252,6 +232,7 @@ const Movimientos = () => {
                 view: false
               }}
               onAdd={handleAddModalOpen}
+              customDate={customDate}
               showDate={true}
             />
           </Col>

@@ -23,7 +23,7 @@ const AddRubroProductoModal: React.FC<IAddRubroProductoModalProps> = ({
     }
 
     const newRubroProducto: IRubro = {
-      idRubro: 0,
+      id: 0,
       nombre: trimmedNombre,
       activo,
       idRubroPadre: undefined,
