@@ -1,6 +1,6 @@
 [
   {
-    "idProducto": 1,
+    "id": 1,
     "nombre": "Pizza Muzza",
     "tiempoEstimadoCocina": 15,
     "denominacion": "Pizzas",
@@ -17,7 +17,7 @@
     },
     "ProductoIngrediente": [
       {
-        "idProductoIngrediente": 1,
+        "idIngrediente": 1,
         "cantidad": 150,
         "Ingredientes": {
           "idIngredientes": 1,
@@ -35,7 +35,7 @@
         }
       },
       {
-        "idProductoIngrediente": 2,
+        "idIngrediente": 2,
         "cantidad": 100,
         "Ingredientes": {
           "idIngredientes": 2,
@@ -53,7 +53,7 @@
         }
       },
       {
-        "idProductoIngrediente": 3,
+        "idIngrediente": 3,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 3,
@@ -73,7 +73,7 @@
     ]
   },
   {
-    "idProducto": 2,
+    "id": 2,
     "nombre": "Pizza Especial",
     "tiempoEstimadoCocina": 10,
     "denominacion": "Pizzas",
@@ -90,7 +90,7 @@
     },
     "ProductoIngrediente": [
       {
-        "idProductoIngrediente": 4,
+        "idIngrediente": 4,
         "cantidad": 150,
         "Ingredientes": {
           "idIngredientes": 1,
@@ -108,7 +108,7 @@
         }
       },
       {
-        "idProductoIngrediente": 5,
+        "idIngrediente": 5,
         "cantidad": 100,
         "Ingredientes": {
           "idIngredientes": 2,
@@ -126,7 +126,7 @@
         }
       },
       {
-        "idProductoIngrediente": 6,
+        "idIngrediente": 6,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 3,
@@ -146,7 +146,7 @@
     ]
   },
   {
-    "idProducto": 3,
+    "id": 3,
     "nombre": "Coca-Cola 500ml",
     "tiempoEstimadoCocina": 0,
     "denominacion": "Bebidas",
@@ -163,7 +163,7 @@
     }
   },
   {
-    "idProducto": 4,
+    "id": 4,
     "nombre": "Pizza Vegetariana",
     "tiempoEstimadoCocina": 10,
     "denominacion": "Pizzas",
@@ -180,7 +180,7 @@
     },
     "ProductoIngrediente": [
       {
-        "idProductoIngrediente": 9,
+        "idIngrediente": 9,
         "cantidad": 150,
         "Ingredientes": {
           "idIngredientes": 1,
@@ -198,7 +198,7 @@
         }
       },
       {
-        "idProductoIngrediente": 10,
+        "idIngrediente": 10,
         "cantidad": 100,
         "Ingredientes": {
           "idIngredientes": 6,
@@ -216,7 +216,7 @@
         }
       },
       {
-        "idProductoIngrediente": 11,
+        "idIngrediente": 11,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 7,
@@ -234,7 +234,7 @@
         }
       },
       {
-        "idProductoIngrediente": 12,
+        "idIngrediente": 12,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 8,
@@ -252,7 +252,7 @@
         }
       },
       {
-        "idProductoIngrediente": 13,
+        "idIngrediente": 13,
         "cantidad": 25,
         "Ingredientes": {
           "idIngredientes": 9,
@@ -272,7 +272,7 @@
     ]
   },
   {
-    "idProducto": 5,
+    "id": 5,
     "nombre": "Hamburguesa Clásica",
     "tiempoEstimadoCocina": 15,
     "denominacion": "Hamburguesas",
@@ -289,7 +289,7 @@
     },
     "ProductoIngrediente": [
       {
-        "idProductoIngrediente": 14,
+        "idIngrediente": 14,
         "cantidad": 200,
         "Ingredientes": {
           "idIngredientes": 10,
@@ -307,7 +307,7 @@
         }
       },
       {
-        "idProductoIngrediente": 15,
+        "idIngrediente": 15,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 11,
@@ -325,7 +325,7 @@
         }
       },
       {
-        "idProductoIngrediente": 16,
+        "idIngrediente": 16,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 12,
@@ -343,7 +343,7 @@
         }
       },
       {
-        "idProductoIngrediente": 17,
+        "idIngrediente": 17,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 13,
@@ -361,7 +361,7 @@
         }
       },
       {
-        "idProductoIngrediente": 18,
+        "idIngrediente": 18,
         "cantidad": 25,
         "Ingredientes": {
           "idIngredientes": 8,
@@ -381,7 +381,7 @@
     ]
   },
   {
-    "idProducto": 6,
+    "id": 6,
     "nombre": "Hamburguesa Triple Barbacoa",
     "tiempoEstimadoCocina": 8,
     "denominacion": "Hamburguesas",
@@ -398,7 +398,7 @@
     },
     "ProductoIngrediente": [
       {
-        "idProductoIngrediente": 15,
+        "idIngrediente": 15,
         "cantidad": 1,
         "Ingredientes": {
           "idIngredientes": 4,
@@ -416,7 +416,7 @@
         }
       },
       {
-        "idProductoIngrediente": 16,
+        "idIngrediente": 16,
         "cantidad": 150,
         "Ingredientes": {
           "idIngredientes": 5,
@@ -434,7 +434,7 @@
         }
       },
       {
-        "idProductoIngrediente": 17,
+        "idIngrediente": 17,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 6,
@@ -452,7 +452,7 @@
         }
       },
       {
-        "idProductoIngrediente": 18,
+        "idIngrediente": 18,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 7,
@@ -472,7 +472,7 @@
     ]
   },
   {
-    "idProducto": 7,
+    "id": 7,
     "nombre": "Fanta 500ml",
     "tiempoEstimadoCocina": 0,
     "denominacion": "Bebidas",
@@ -489,7 +489,7 @@
     }
   },
   {
-    "idProducto": 8,
+    "id": 8,
     "nombre": "Sprite 500ml",
     "tiempoEstimadoCocina": 0,
     "denominacion": "Bebidas",
@@ -506,7 +506,7 @@
     }
   },
   {
-    "idProducto": 9,
+    "id": 9,
     "nombre": "Cerveza Andes Origen",
     "tiempoEstimadoCocina": 0,
     "denominacion": "Bebidas",
@@ -523,7 +523,7 @@
     }
   },
   {
-    "idProducto": 10,
+    "id": 10,
     "nombre": "Promo Hamburguesa con Coca-Cola",
     "tiempoEstimadoCocina": 8,
     "denominacion": "Ofertas",
@@ -540,7 +540,7 @@
     },
     "ProductoIngrediente": [
       {
-        "idProductoIngrediente": 19,
+        "idIngrediente": 19,
         "cantidad": 1,
         "Ingredientes": {
           "idIngredientes": 4,
@@ -558,7 +558,7 @@
         }
       },
       {
-        "idProductoIngrediente": 20,
+        "idIngrediente": 20,
         "cantidad": 150,
         "Ingredientes": {
           "idIngredientes": 5,
@@ -576,7 +576,7 @@
         }
       },
       {
-        "idProductoIngrediente": 21,
+        "idIngrediente": 21,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 6,
@@ -594,7 +594,7 @@
         }
       },
       {
-        "idProductoIngrediente": 22,
+        "idIngrediente": 22,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 7,
@@ -612,7 +612,7 @@
         }
       },
       {
-        "idProductoIngrediente": 23,
+        "idIngrediente": 23,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 7,
@@ -630,7 +630,7 @@
         }
       },
       {
-        "idProductoIngrediente": 24,
+        "idIngrediente": 24,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 7,
@@ -648,7 +648,7 @@
         }
       },
       {
-        "idProductoIngrediente": 25,
+        "idIngrediente": 25,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 7,
@@ -668,7 +668,7 @@
     ]
   },
   {
-    "idProducto": 11,
+    "id": 11,
     "nombre": "Promo Pizza Especial con una Coca-Cola",
     "tiempoEstimadoCocina": 15,
     "denominacion": "Ofertas",
@@ -685,7 +685,7 @@
     },
     "ProductoIngrediente": [
       {
-        "idProductoIngrediente": 26,
+        "idIngrediente": 26,
         "cantidad": 150,
         "Ingredientes": {
           "idIngredientes": 1,
@@ -703,7 +703,7 @@
         }
       },
       {
-        "idProductoIngrediente": 27,
+        "idIngrediente": 27,
         "cantidad": 100,
         "Ingredientes": {
           "idIngredientes": 2,
@@ -721,7 +721,7 @@
         }
       },
       {
-        "idProductoIngrediente": 28,
+        "idIngrediente": 28,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 3,
@@ -739,7 +739,7 @@
         }
       },
       {
-        "idProductoIngrediente": 29,
+        "idIngrediente": 29,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 3,
@@ -757,7 +757,7 @@
         }
       },
       {
-        "idProductoIngrediente": 30,
+        "idIngrediente": 30,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 3,
@@ -775,7 +775,7 @@
         }
       },
       {
-        "idProductoIngrediente": 31,
+        "idIngrediente": 31,
         "cantidad": 50,
         "Ingredientes": {
           "idIngredientes": 3,

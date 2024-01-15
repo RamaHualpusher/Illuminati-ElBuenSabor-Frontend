@@ -80,7 +80,9 @@ const Factura = () => {
   const customSearch = (searchText: string): Promise<IPedido[]> => {
     return new Promise((resolve) => {
       const filteredData = facturas?.filter((factura) =>
-        factura.numeroPedido.toString().includes(searchText)
+        factura.numeroPedido.toString().includes(searchText) ||
+        factura.Usuario.nombre.toLowerCase().toString().includes(searchText) ||
+        factura.Usuario.apellido.toLowerCase().toString().includes(searchText)
       );
       resolve(filteredData);
     });

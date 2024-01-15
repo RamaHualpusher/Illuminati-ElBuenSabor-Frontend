@@ -14,7 +14,7 @@ const Empleados = () => {
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
     const [selectedUsuario, setSelectedUsuario] = useState<IEditUsuarioFromAdmin | null>(null);
-    const API_URL = process.env.REACT_APP_API_URL || "";
+    const API_URL = process.env.REACT_APP_API_URL || "";    
     const [filterOption, setFilterOption] = useState<string>("all"); // Puedes inicializarlo con "all"
 
     //Acciones que se pueden realizar
@@ -56,12 +56,12 @@ const Empleados = () => {
                 const normalizedNombre = normalizeString(empleado.nombre.toString());
                 const normalizedApellido = normalizeString(empleado.apellido.toString());
 
-                return (
+                 return (
                     (filterOption === "all" || (filterOption === "active" && empleado.activo)
                         || (filterOption === "inactive" && !empleado.activo)) &&
                     (normalizedIdUsuario.includes(normalizedSearchText) ||
                         normalizedNombre.includes(normalizedSearchText) ||
-                        normalizedApellido.includes(normalizedSearchText))
+                        normalizedApellido.includes(normalizedSearchText))                       
                 );
             });
 
@@ -259,6 +259,7 @@ const Empleados = () => {
                         </Form.Select>
                     </Col>
                     <Col sm={12}>
+                    {empleados && empleados.length > 0 ? (
                         <GenericTable
                             data={empleados}
                             columns={columns}
@@ -268,6 +269,9 @@ const Empleados = () => {
                             onDelete={handleEmpleadoDelete}
                             customSearch={customSearch}
                         />
+                    ) : (
+                        <p>No hay datos de empleados disponibles.</p>
+                    )}
                     </Col>
                 </Row>
                 <AddEmpleadoModal
@@ -275,7 +279,6 @@ const Empleados = () => {
                     handleClose={handleAddModalClose}
                     handleEmpleadoAdd={handleEmpleadoAdd}
                 />
-
                 <EditEmpleadoModal
                     show={editModalShow}
                     handleClose={handleEditModalClose}

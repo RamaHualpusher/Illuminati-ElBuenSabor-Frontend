@@ -1,6 +1,6 @@
 [
   {
-    "idUsuario": 1,
+    "id": 1,
     "nombre": "Juan",
     "apellido": "Pérez",
     "email": "juan@example.com",
@@ -19,7 +19,7 @@
     }
   },
   {
-    "idUsuario": 2,
+    "id": 2,
     "nombre": "María",
     "apellido": "Gómez",
     "email": "maria@example.com",
@@ -38,7 +38,7 @@
     }
   },
   {
-    "idUsuario": 3,
+    "id": 3,
     "nombre": "Carlos",
     "apellido": "Rodríguez",
     "email": "carlos@example.com",

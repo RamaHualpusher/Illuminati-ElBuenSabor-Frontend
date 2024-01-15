@@ -1,5 +1,5 @@
 {
-  "idDomicilio": 1,
+  "id": 1,
   "calle": "Calle Principal",
   "numero": 123,
   "localidad": "Ciudad Ejemplo"

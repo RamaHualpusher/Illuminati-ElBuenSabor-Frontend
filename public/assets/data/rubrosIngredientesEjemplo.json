@@ -1,31 +1,31 @@
 [
     {
-      "idRubro": 1,
+      "id": 1,
       "nombre": "Quesos",
       "estado": true
     },
     {
-      "idRubro": 2,
+      "id": 2,
       "nombre": "Salsas",
       "estado": true
     },
     {
-      "idRubro": 3,
+      "id": 3,
       "nombre": "Carnes",
       "estado": false
     },
     {
-      "idRubro": 4,
+      "id": 4,
       "nombre": "Verduras",
       "estado": true
     },
     {
-      "idRubro": 5,
+      "id": 5,
       "nombre": "Frutas",
       "estado": false
     },
     {
-      "idRubro": 6,
+      "id": 6,
       "nombre": "Especias",
       "estado": true
     }

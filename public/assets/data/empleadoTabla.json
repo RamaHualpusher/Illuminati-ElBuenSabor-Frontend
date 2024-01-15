@@ -1,6 +1,6 @@
 [
   {
-    "idUsuario": 1,
+    "id": 1,
     "nombre": "John",
     "apellido": "Doe",
     "email": "johndoe@example.com",
@@ -19,7 +19,7 @@
     }
   },
   {
-    "idUsuario": 2,
+    "id": 2,
     "nombre": "Pepe",
     "apellido": "Roberte",
     "email": "pepeRob@example.com",

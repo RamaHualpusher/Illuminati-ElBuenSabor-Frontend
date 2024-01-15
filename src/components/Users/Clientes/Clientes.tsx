@@ -23,7 +23,7 @@ const Clientes = () => {
         { title: 'Teléfono', field: 'telefono' },
         {
             title: 'Domicilio', field: 'domicilio', render: (usuario: IUsuario) =>
-                <span>{`${usuario.domicilio.calle},${usuario.domicilio.numero},${usuario.domicilio.localidad}`}</span>
+                <span>{`${usuario.domicilio ? usuario.domicilio.calle : ""} ${usuario.domicilio ? usuario.domicilio.numero : ""} ${usuario.domicilio ? usuario.domicilio.localidad : ""}`}</span>
         },
         {
             title: "Estado",
@@ -39,6 +39,7 @@ const Clientes = () => {
     // Función para busqueda personalizada por ID y nombre
     const customSearch = (searchText: string): Promise<IUsuario[]> => {
         return new Promise((resolve) => {
+            // console.log("Clientes en customSearch:", clientes);
             const normalizedSearchText = normalizeString(searchText);
 
             const filteredData = clientes.filter((cliente) => {
@@ -46,10 +47,15 @@ const Clientes = () => {
                 const normalizedNombre = normalizeString(cliente.nombre.toString());
                 const normalizedApellido = normalizeString(cliente.apellido.toString());
 
+                // Verifica que cliente.domicilio no sea undefined antes de acceder a las propiedades
+                const domicilioCalle = cliente.domicilio?.calle || "";
+                const domicilioNumero = cliente.domicilio?.numero || "";
+                const domicilioLocalidad = cliente.domicilio?.localidad || "";
                 return (
                     normalizedIdUsuario.includes(normalizedSearchText) ||
                     normalizedNombre.includes(normalizedSearchText) ||
-                    normalizedApellido.includes(normalizedSearchText)
+                    normalizedApellido.includes(normalizedSearchText)||
+                    normalizeString(`${domicilioCalle},${domicilioNumero},${domicilioLocalidad}`).includes(normalizedSearchText)
                 );
             });
 
@@ -70,6 +76,7 @@ const Clientes = () => {
         fetch(API_URL)
             .then((response) => response.json())
             .then((data) => {
+                // console.log("Clientes cargados:", data);
                 setClientes(data);
                 setClientesComplete(data);
             })
@@ -139,14 +146,18 @@ const Clientes = () => {
             <Container fluid>
                 <Row className="mt-3">
                     <Col>
-                        <GenericTable<IUsuario>
-                            data={clientes}
-                            columns={columns}
-                            actions={actions}
-                            onUpdate={handleEditModalOpen}
-                            onDelete={handleClienteDelete}
-                            customSearch={customSearch}
-                        />
+                        {clientes && clientes.length > 0 ? (
+                            <GenericTable<IUsuario>
+                                data={clientes}
+                                columns={columns}
+                                actions={actions}
+                                onUpdate={handleEditModalOpen}
+                                onDelete={handleClienteDelete}
+                                customSearch={customSearch}                                
+                            />
+                        ) : (
+                            <p>No hay datos de clientes disponibles.</p>
+                        )}
                     </Col>
                 </Row>
                 <EditClienteModal

@@ -213,13 +213,13 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                 <Form.Control
                   type="text"
                   placeholder="Ingrese calle"
-                  value={usuario.domicilio.calle}
+                  value={usuario.domicilio.calle || ""}
                   onChange={(event) =>
                     setUsuario({
                       ...usuario,
                       domicilio: {
                         ...usuario.domicilio,
-                        calle: event.target.value, // Actualizar solo la calle
+                        calle: event.target.value || "", // Actualizar solo la calle
                       },
                     })
                   }

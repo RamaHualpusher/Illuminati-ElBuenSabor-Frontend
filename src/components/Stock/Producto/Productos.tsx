@@ -30,7 +30,10 @@ const Productos: React.FC = () => {
 
   const columns: IColumn<IProducto>[] = [
     // Definición de las columnas
-    { title: "ID", field: "id" },
+    {
+      title: "ID", field: "id"
+      
+    },
     { title: "Nombre", field: "nombre" },
     {
       title: "Imagen", field: "imagen", width: 2,
@@ -201,9 +204,7 @@ const Productos: React.FC = () => {
               ))}
             </select>
           </Form.Group>
-
           {noProductosMessage}
-
           <GenericTable
             data={filteredProductos}
             columns={columns}
