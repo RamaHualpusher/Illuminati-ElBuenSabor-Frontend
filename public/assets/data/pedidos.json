@@ -1,14 +1,14 @@
 [
   {
-    "idPedido": 123456,
+    "id": 123456,
     "numeroPedido": 123456,
-    "fechaPedido": "2023-03-14",
+    "fechaPedido": "2023-12-14",
     "horaEstimadaFin": "2023-03-14T10:30:00",
     "esDelivery": true,
     "estadoPedido": "A confirmar",
     "esEfectivo": true,
     "Usuario": {
-      "idUsuario": 1,
+      "id": 1,
       "nombre": "Juan",
       "apellido": "Pérez",
       "email": "juan.perez@example.com",
@@ -21,17 +21,17 @@
         "localidad": "Ciudad Ficticia"
       },
       "Rol": {
-        "idRol": 1,
+        "id": 1,
         "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 1,
+        "id": 1,
         "cantidad": 3,
         "Productos": [
           {
-            "idProducto": 1,
+            "id": 1,
             "nombre": "Pizza Muzza",
             "tiempoEstimadoCocina": 15,
             "denominacion": "Pizzas",
@@ -43,12 +43,23 @@
             "esBebida": false,
             "estado": true,
             "Rubro": {
-              "idRubro": 1,
+              "id": 1,
               "nombre": "Pizzas"
+            },
+            "ProductoIngrediente": {
+              "id": 1,
+              "cantidad": 3,
+              "Ingredientes": {
+                "nombre": "algo",
+                "stockMinimo": 2,
+                "stockActual": 10,
+                "precioCosto": 100,
+                "unidadMedida": "UM"
+              }
             }
           },
           {
-            "idProducto": 5,
+            "id": 5,
             "nombre": "Hamburguesa Clásica",
             "tiempoEstimadoCocina": 15,
             "denominacion": "Hamburguesas",
@@ -60,12 +71,12 @@
             "esBebida": false,
             "estado": true,
             "Rubro": {
-              "idRubro": 3,
+              "id": 3,
               "nombre": "Hamburguesas"
             }
           },
           {
-            "idProducto": 7,
+            "id": 7,
             "nombre": "Fanta 500ml",
             "tiempoEstimadoCocina": 0,
             "denominacion": "Bebidas",
@@ -77,7 +88,7 @@
             "esBebida": true,
             "estado": true,
             "Rubro": {
-              "idRubro": 2,
+              "id": 2,
               "nombre": "Bebidas"
             }
           }
@@ -87,7 +98,7 @@
     "totalPedido": 4500
   },
   {
-    "idPedido": 123457,
+    "id": 123457,
     "numeroPedido": 123457,
     "fechaPedido": "2023-03-12",
     "horaEstimadaFin": "2023-03-12T11:45:00",
@@ -95,7 +106,7 @@
     "estadoPedido": "En cocina",
     "esEfectivo": false,
     "Usuario": {
-      "idUsuario": 2,
+      "id": 2,
       "nombre": "María",
       "apellido": "López",
       "email": "maria.lopez@example.com",
@@ -108,18 +119,18 @@
         "localidad": "Ciudad Imaginaria"
       },
       "Rol": {
-        "idRol": 1,
+        "id": 1,
         "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 2,
+        "id": 2,
         "cantidad": 3,
         "Pedido": {},
         "Productos": [
           {
-            "idProducto": 1,
+            "id": 1,
             "nombre": "Pizza Muzza",
             "tiempoEstimadoCocina": 15,
             "denominacion": "Pizzas",
@@ -131,12 +142,12 @@
             "esBebida": false,
             "estado": true,
             "Rubro": {
-              "idRubro": 1,
+              "id": 1,
               "nombre": "Pizzas"
             }
           },
           {
-            "idProducto": 5,
+            "id": 5,
             "nombre": "Hamburguesa Clásica",
             "tiempoEstimadoCocina": 15,
             "denominacion": "Hamburguesas",
@@ -148,12 +159,12 @@
             "esBebida": false,
             "estado": true,
             "Rubro": {
-              "idRubro": 3,
+              "id": 3,
               "nombre": "Hamburguesas"
             }
           },
           {
-            "idProducto": 7,
+            "id": 7,
             "nombre": "Fanta 500ml",
             "tiempoEstimadoCocina": 0,
             "denominacion": "Bebidas",
@@ -165,7 +176,7 @@
             "esBebida": true,
             "estado": true,
             "Rubro": {
-              "idRubro": 2,
+              "id": 2,
               "nombre": "Bebidas"
             }
           }
@@ -175,7 +186,7 @@
     "totalPedido": 3000
   },
   {
-    "idPedido": 123458,
+    "id": 123458,
     "numeroPedido": 123458,
     "fechaPedido": "2023-03-16",
     "horaEstimadaFin": "2023-03-16T15:00:00",
@@ -183,7 +194,7 @@
     "estadoPedido": "Listo",
     "esEfectivo": true,
     "Usuario": {
-      "idUsuario": 1,
+      "id": 1,
       "nombre": "Juan",
       "apellido": "Pérez",
       "email": "juan.perez@example.com",
@@ -196,13 +207,13 @@
         "localidad": "Ciudad Ficticia"
       },
       "Rol": {
-        "idRol": 1,
+        "id": 1,
         "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 3,
+        "id": 3,
         "cantidad": 1,
         "Pedido": {},
         "Productos": {}
@@ -211,7 +222,7 @@
     "totalPedido": 5000
   },
   {
-    "idPedido": 123459,
+    "id": 123459,
     "numeroPedido": 123459,
     "fechaPedido": "2023-03-18",
     "horaEstimadaFin": "2023-03-18T19:30:00",
@@ -219,7 +230,7 @@
     "estadoPedido": "Entregado",
     "esEfectivo": false,
     "Usuario": {
-      "idUsuario": 4,
+      "id": 4,
       "nombre": "Luis",
       "apellido": "Fernández",
       "email": "luis.fernandez@example.com",
@@ -232,13 +243,13 @@
         "localidad": "Ciudad de Ensueño"
       },
       "Rol": {
-        "idRol": 1,
+        "id": 1,
         "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 4,
+        "id": 4,
         "cantidad": 2,
         "Pedido": {},
         "Productos": {}
@@ -247,7 +258,7 @@
     "totalPedido": 1500
   },
   {
-    "idPedido": 123460,
+    "id": 123460,
     "numeroPedido": 123460,
     "fechaPedido": "2023-03-20",
     "horaEstimadaFin": "2023-03-20T13:15:00",
@@ -255,7 +266,7 @@
     "estadoPedido": "Cancelado",
     "esEfectivo": false,
     "Usuario": {
-      "idUsuario": 5,
+      "id": 5,
       "nombre": "Ana",
       "apellido": "García",
       "email": "ana.garcia@example.com",
@@ -268,13 +279,13 @@
         "localidad": "Villa Ficticia"
       },
       "Rol": {
-        "idRol": 1,
+        "id": 1,
         "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 5,
+        "id": 5,
         "cantidad": 3,
         "Pedido": {},
         "Productos": {}
@@ -283,7 +294,7 @@
     "totalPedido": 4000
   },
   {
-    "idPedido": 123461,
+    "id": 123461,
     "numeroPedido": 123461,
     "fechaPedido": "2023-04-25",
     "horaEstimadaFin": "2023-03-20T13:15:00",
@@ -291,7 +302,7 @@
     "estadoPedido": "En delivery",
     "esEfectivo": false,
     "Usuario": {
-      "idUsuario": 6,
+      "id": 6,
       "nombre": "Anuel",
       "apellido": "Martínez",
       "email": "anuel.martinez@example.com",
@@ -304,13 +315,13 @@
         "localidad": "Pueblo Imaginario"
       },
       "Rol": {
-        "idRol": 1,
+        "id": 1,
         "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 6,
+        "id": 6,
         "cantidad": 2,
         "Pedido": {},
         "Productos": {}
@@ -319,7 +330,7 @@
     "totalPedido": 4000
   },
   {
-    "idPedido": 123462,
+    "id": 123462,
     "numeroPedido": 123462,
     "fechaPedido": "2023-04-16",
     "horaEstimadaFin": "2023-03-20T13:50:00",
@@ -327,7 +338,7 @@
     "estadoPedido": "En delivery",
     "esEfectivo": false,
     "Usuario": {
-      "idUsuario": 7,
+      "id": 7,
       "nombre": "Jorge",
       "apellido": "Hernández",
       "email": "jorge.hernandez@example.com",
@@ -340,18 +351,18 @@
         "localidad": "Villa de Ensueño"
       },
       "Rol": {
-        "idRol": 1,
+        "id": 1,
         "nombreRol": "Cliente"
       }
     },
     "DetallePedido": [
       {
-        "idDetallePedido": 7,
+        "id": 7,
         "cantidad": 1,
         "Pedido": {},
         "Productos": [
           {
-            "idProducto": 1,
+            "id": 1,
             "nombre": "Pizza Muzza",
             "tiempoEstimadoCocina": 15,
             "denominacion": "Pizzas",
@@ -363,12 +374,12 @@
             "esBebida": false,
             "estado": true,
             "Rubro": {
-              "idRubro": 1,
+              "id": 1,
               "nombre": "Pizzas"
             }
           },
           {
-            "idProducto": 5,
+            "id": 5,
             "nombre": "Hamburguesa Clásica",
             "tiempoEstimadoCocina": 15,
             "denominacion": "Hamburguesas",
@@ -380,12 +391,12 @@
             "esBebida": false,
             "estado": true,
             "Rubro": {
-              "idRubro": 3,
+              "id": 3,
               "nombre": "Hamburguesas"
             }
           },
           {
-            "idProducto": 7,
+            "id": 7,
             "nombre": "Fanta 500ml",
             "tiempoEstimadoCocina": 0,
             "denominacion": "Bebidas",
@@ -397,7 +408,7 @@
             "esBebida": true,
             "estado": true,
             "Rubro": {
-              "idRubro": 2,
+              "id": 2,
               "nombre": "Bebidas"
             }
           }

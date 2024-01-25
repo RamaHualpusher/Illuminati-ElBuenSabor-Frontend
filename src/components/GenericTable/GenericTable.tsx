@@ -3,23 +3,34 @@ import { Button, Table, FormControl, Container, Row, Col } from 'react-bootstrap
 import { ITableProps } from '../../interface/ICamposTablaGenerica';
 import DatePicker from 'react-datepicker';
 
-function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, onView, customSearch, customDate, showDate=false }: ITableProps<T>) {
-  const [searchText, setSearchText] = useState(""); // Estado para almacenar el texto de búsqueda
-  const [filteredData, setFilteredData] = useState<T[]>(data); // Estado para almacenar los datos filtrados
-  const [isLoading, setIsLoading] = useState(false); // Estado para indicar si se está realizando una búsqueda
-  const [firstDate, setFirstDate] = useState<Date | null>(); //Primera Fecha para Buscar
-  const [secondDate, setSecondDate] = useState<Date | null>(); //Segunda Fecha para Buscar
+function GenericTable<T>({
+  data,
+  columns,
+  actions,
+  onAdd,
+  onUpdate,
+  onDelete,
+  onView,
+  customSearch,
+  customDate,
+  showDate = false,
+}: ITableProps<T>) {
+  const [searchText, setSearchText] = useState("");
+  const [filteredData, setFilteredData] = useState<T[]>(data);
+  const [isLoading, setIsLoading] = useState(false);
+  const [firstDate, setFirstDate] = useState<Date | null>(null);
+  const [secondDate, setSecondDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    let isMounted = true; // Variable para controlar si el componente está montado
+    let isMounted = true;
 
     const handleSearch = async () => {
       if (customSearch) {
-        setIsLoading(true); // Habilitar la carga
-        const filteredData = await customSearch(searchText); // Realizar la búsqueda personalizada
+        setIsLoading(true);
+        const filteredData = await customSearch(searchText);
         if (isMounted) {
-          setFilteredData(filteredData); // Actualizar los datos filtrados
-          setIsLoading(false); // Deshabilitar la carga
+          setFilteredData(filteredData);
+          setIsLoading(false);
         }
       } else {
         setFilteredData(
@@ -30,38 +41,54 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
 
     handleSearch();
 
-    // Cleanup: establecer la variable isMounted en false cuando el componente se desmonta
     return () => {
       isMounted = false;
     };
   }, [searchText, data, customSearch]);
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value); // Actualizar el estado del texto de búsqueda cuando cambia
+    setSearchText(e.target.value);
   };
 
   const handleSearchSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (customSearch) {
-      setIsLoading(true); // Habilitar la carga
-      const filteredData = await customSearch(searchText); // Realizar la búsqueda personalizada
-      setFilteredData(filteredData); // Actualizar los datos filtrados
-      setIsLoading(false); // Deshabilitar la carga
+      setIsLoading(true);
+      const normalizedSearchText = normalizeString(searchText);
+      const filteredData = await customSearch(normalizedSearchText);
+      setFilteredData(filteredData);
+      setIsLoading(false);
     }
+  };
+  
+  //sirve para buscar todo en minuscula, sin importar tildes
+  const normalizeString = (str: string): string => {
+    return str
+      .toLowerCase()
+      .normalize("NFD") // Eliminar tildes
+      .replace(/[\u0300-\u036f]/g, "");
   };
 
   const handleDateSearch = async (e: FormEvent) => {
     e.preventDefault();
     if (customDate) {
       setIsLoading(true);
+      // Aplicar lógica de filtrado similar a handleBuscarClick
       const filteredData = await customDate(firstDate || null, secondDate || null);
-      setFilteredData(filteredData);
+
+      if (filteredData && filteredData.length > 0) {
+        setFilteredData(filteredData);
+      } else {
+        // Si no hay resultados, puedes manejarlo como desees, por ejemplo, mostrando un mensaje
+        console.log("No hay resultados para las fechas seleccionadas.");
+      }
+
       setIsLoading(false);
     }
-  }
+  };
 
   const defaultSearch = (item: T, search: string): boolean =>
-    columns.some(column => {
+    columns.some((column) => {
       const value = item[column.field];
       return typeof value === 'string' && value.toLowerCase().includes(search.toLowerCase());
     });
@@ -73,27 +100,19 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
           {actions.create && <Button variant="primary" onClick={onAdd}><i className="bi bi-plus-square"></i></Button>}
         </Col>
         <Col sm={10}>
-          <form onSubmit={handleSearchSubmit} className="d-flex">
-            <FormControl
-              placeholder="Buscar"
-              aria-label="Search"
-              aria-describedby="basic-addon2"
-              onChange={handleSearchChange}
-              value={searchText}
-            />
-            <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2"><i className="bi bi-search"></i></Button>
-          </form>
-          {showDate === true &&
-            <Col sm={8}>
+          {showDate === true && (
+            <Col sm={8} style={{ marginTop: "10px" }}>
               <form onSubmit={handleDateSearch} className='d-flex'>
-                <DatePicker
-                  placeholderText='Fecha Inicial'
-                  selected={firstDate}
-                  onChange={(date: Date | null) => setFirstDate(date)}
-                  dateFormat="yyyy-MM-dd"
-                  isClearable
-                  className="form-control"
-                />
+                <div style={{ marginRight: "10px" }}>
+                  <DatePicker
+                    placeholderText="Fecha Inicial"
+                    selected={firstDate}
+                    onChange={(date: Date | null) => setFirstDate(date)}
+                    dateFormat="yyyy-MM-dd"
+                    isClearable
+                    className="form-control"
+                  />
+                </div>
                 <DatePicker
                   placeholderText='Fecha Final'
                   selected={secondDate}
@@ -102,17 +121,34 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
                   isClearable
                   className="form-control"
                 />
-                <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2"><i className="bi bi-search"></i></Button>
+                <Button variant="outline-secondary" style={{ marginLeft: "10px" }} type="submit" onClick={handleDateSearch} disabled={isLoading} className="ml-2">
+                  <i className="bi bi-search" ></i>
+                </Button>
               </form>
             </Col>
-          }
+          )}
+          <form onSubmit={handleSearchSubmit} className="d-flex" style={{marginTop: "10px"}}>
+            <FormControl
+              placeholder="Buscar"
+              aria-label="Search"
+              aria-describedby="basic-addon2"
+              onChange={handleSearchChange}
+              value={searchText}
+            />
+            <Button variant="outline-secondary" type="submit" disabled={isLoading} className="ml-2" style={{marginLeft:"10px"}}>
+              <i className="bi bi-search"></i>
+            </Button>
+          </form>
+          
         </Col>
       </Row>
       <Table responsive>
         <thead>
           <tr>
             {columns.map((column, index) => (
-              <th key={index} style={{ width: `${column.width ? column.width * 100 / 12 : ""}%` }}>{column.title}</th>
+              <th key={index} style={{ width: `${column.width ? column.width * 100 / 12 : ""}%` }}>
+                {column.title}
+              </th>
             ))}
             {(actions.update || actions.delete || actions.view) && <th>Acciones</th>}
           </tr>
@@ -126,9 +162,21 @@ function GenericTable<T>({ data, columns, actions, onAdd, onUpdate, onDelete, on
                 </td>
               ))}
               <td>
-                {actions.update && <Button variant="primary" className='mx-2' onClick={() => onUpdate!(item)}><i className="bi bi-pencil-square"></i></Button>}
-                {actions.delete && <Button variant="danger" className='mx-2' onClick={() => onDelete!(item)}><i className="bi bi-trash"></i></Button>}
-                {actions.view && <Button variant="info" className='mx-2' onClick={() => onView!(item)}><i className="bi bi-eye"></i></Button>}
+                {actions.update && (
+                  <Button variant="primary" className='mx-2' onClick={() => onUpdate!(item)}>
+                    <i className="bi bi-pencil-square"></i>
+                  </Button>
+                )}
+                {actions.delete && (
+                  <Button variant="danger" className='mx-2' onClick={() => onDelete!(item)}>
+                    <i className="bi bi-trash"></i>
+                  </Button>
+                )}
+                {actions.view && (
+                  <Button variant="info" className='mx-2' onClick={() => onView!(item)}>
+                    <i className="bi bi-eye"></i>
+                  </Button>
+                )}
               </td>
             </tr>
           ))}

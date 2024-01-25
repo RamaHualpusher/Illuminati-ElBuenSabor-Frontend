@@ -32,60 +32,53 @@ const RankingProductos = () => {
     const columns: IColumn<IPedido>[] = [
         { title: "Fecha Pedido", field: "fechaPedido", width: 2 },
         {
-            title: "Producto",
+            title: "Imagen",
             field: "DetallePedido",
             width: 2,
             render: (rowData) => (
-                <img src={rowData.DetallePedido[0].Productos.imagen} alt="Producto" style={{ width: "120px", height: "100px" }} />
+                <img src={rowData.DetallePedido[0].Productos.imagen} style={{ width: "120px", height: "100px" }} />
             ),
         },
         // aca no se si entrar con un "map" y ver todos losa tributos del detalle pedido y luego en "data" debajo de esta seccion, poner esos 
         //atributos, o como organizarme para ver esos items.
         {
-            title: "Nombre", field: "DetallePedido", width: 4,
-            render: (rowData: IPedido) => (
-                <ul>
-                    {rowData.DetallePedido.map((detalle, index) => (
-                        <li key={index}>
-                            Nombre: {detalle.Productos.nombre}
-                        </li>
-                    ))}
-                </ul>
+            title: "Nombre", field: "DetallePedido", width: 3,
+            render: (rowData) => (
+                <span>{`${rowData.DetallePedido[0].Productos.nombre}`}</span>
             ),
         },
         {
-            title: "Ventas por producto", field: "DetallePedido", width: 3,
+            title: "Ventas por producto", field: "DetallePedido", width: 4,
             render: (rowData: IPedido) =>
-                // <div>{calculateCantidadVendido(rowData.DetallePedido[0].cantidad, false)}</div>
-                <ul>
-                    {rowData.DetallePedido.map((detalle, index) => (
-                        <li key={index}>
-                            {detalle.cantidad}
-                        </li>
-                    ))}
-                </ul>
+                <div>{calculateCantidadVendido(rowData.DetallePedido[0].cantidad, true)}</div>
+                // el de abajo me muestra la cantidad solo por producto individual, pero no si hay dos productos iguales, la cantidad vendida en total
+                // <ul>
+                //     {rowData.DetallePedido.map((detalle, index) => (
+                //         <li key={index}>
+                //             {detalle.cantidad}
+                //         </li>
+                //     ))}
+                // </ul>
         },
     ];
 
-    // const data = pedidos.map((pedido) => ({
-    //     //aca esto no esta infresando en la tabla generica
-    //     fechaPedido: pedido.fechaPedido,
-    //     DetallePedido: pedido.DetallePedido[0].Productos.imagen ||
-    //         pedido.DetallePedido[0].Productos.nombre ||
-    //         pedido.DetallePedido[0].Productos.idProducto
-    // }));
-
-    const calculateCantidadVendido = (productoId: number, esBebida: boolean) => {
+    const calculateCantidadVendido = (productoId: number, esBebida: boolean | undefined) => {
         return pedidos.reduce((totalCantidad, pedido) => {
             const cantidadProductoEnPedido = pedido.DetallePedido.reduce((cantidad, detalle) => {
-                if (detalle.Productos && detalle.Productos.id === productoId && detalle.Productos.esBebida === esBebida) {
+                if (
+                    detalle.Productos &&
+                    detalle.Productos.id === productoId &&
+                    (esBebida === undefined || detalle.Productos.esBebida === esBebida)
+                ) {
                     cantidad += detalle.cantidad;
                 }
                 return cantidad;
             }, 0);
+            console.log(`Pedido ${pedido.numeroPedido}, Cantidad: ${cantidadProductoEnPedido}`);
             return totalCantidad + cantidadProductoEnPedido;
         }, 0);
     };
+    
 
     const handleBuscarClick = () => {
         if (startDate !== null && endDate !== null) {
@@ -127,13 +120,13 @@ const RankingProductos = () => {
             ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
             ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
         }));
-
+       
     const pedidosNoBebida = pedidos
         .filter((pedido) => pedido.id !== undefined && !pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
         .map((pedido) => ({
             ...pedido,
-            ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
-            ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
+            ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
+            ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
         }));
 
     const mergedProducts = [...pedidosBebida, ...pedidosNoBebida];
@@ -194,6 +187,7 @@ const RankingProductos = () => {
                                 delete: false,
                                 view: false,
                             }}
+                            showDate={true}
                         />
                     </Col>
                     <Col>
@@ -207,6 +201,7 @@ const RankingProductos = () => {
                                 delete: false,
                                 view: false,
                             }}
+                            showDate={true}
                         />
                     </Col>
 

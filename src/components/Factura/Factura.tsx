@@ -80,11 +80,31 @@ const Factura = () => {
   const customSearch = (searchText: string): Promise<IPedido[]> => {
     return new Promise((resolve) => {
       const filteredData = facturas?.filter((factura) =>
-        factura.numeroPedido.toString().includes(searchText)
+        factura.numeroPedido.toString().includes(searchText) ||
+        factura.Usuario.nombre.toLowerCase().toString().includes(searchText) ||
+        factura.Usuario.apellido.toLowerCase().toString().includes(searchText)
       );
       resolve(filteredData);
     });
   };
+
+  // Función para la búsqueda personalizada por número de factura
+  const customDate=(firstDate:Date|null, secondDate:Date|null):Promise<IPedido[]>=>{
+    return new Promise((resolve)=>{
+      
+      const filtrar=facturas;
+      let filtrados:IPedido[]=[];
+      filtrar.map((factura)=>{
+        const fecha=new Date(factura.fechaPedido);
+        console.log(fecha);
+        if((firstDate===null || fecha>=firstDate) && (secondDate===null || fecha<= secondDate)){
+          filtrados.push(factura);
+        }
+      })
+      resolve(filtrados);
+    })
+  };
+
 
   return (
     <div>
@@ -103,6 +123,8 @@ const Factura = () => {
               actions={actions}
               onView={onView}
               customSearch={customSearch}
+              customDate={customDate}
+              showDate={true}
             />
           </Col>
         </Row>

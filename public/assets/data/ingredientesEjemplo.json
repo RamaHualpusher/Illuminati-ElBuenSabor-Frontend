@@ -1,6 +1,6 @@
 [
   {
-    "idIngredientes": 1,
+    "id": 1,
     "nombre": "Queso Azul",
     "estado": true,
     "stockMinimo": 15,
@@ -9,15 +9,15 @@
     "cantidad": 0,
     "precioCosto": 600,
     "Rubro": {
-      "idRubro": 1,
+      "id": 1,
       "nombre": "Quesos",
-      "idRubroPadre": null
+      "idPadre": null
     },
     "unidadMedida": "kg",
     "ProductoIngrediente": []
   },
   {
-    "idIngredientes": 2,
+    "id": 2,
     "nombre": "Azúcar",
     "estado": false,
     "stockMinimo": 20,
@@ -26,15 +26,15 @@
     "cantidad": 0,
     "precioCosto": 500,
     "Rubro": {
-      "idRubro": 4,
+      "id": 4,
       "nombre": "Endulzantes",
-      "idRubroPadre": null
+      "idPadre": null
     },
     "unidadMedida": "kg",
     "ProductoIngrediente": []
   },
   {
-    "idIngredientes": 3,
+    "id": 3,
     "nombre": "Aceite de oliva",
     "estado": true,
     "stockMinimo": 3,
@@ -43,9 +43,9 @@
     "cantidad": 0,
     "precioCosto": 800,
     "Rubro": {
-      "idRubro": 5,
+      "id": 5,
       "nombre": "Aceites",
-      "idRubroPadre": null
+      "idPadre": null
     },
     "unidadMedida": "l",
     "ProductoIngrediente": []

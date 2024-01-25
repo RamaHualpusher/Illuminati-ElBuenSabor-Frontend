@@ -169,7 +169,7 @@ const EditClienteModal: React.FC<IEditClienteModalProps> = ({
                     onChange={(event) =>
                       setUsuario({
                         ...usuario,
-                        domicilio: { ...usuario.domicilio, calle: event.target.value },
+                        domicilio: { ...usuario.domicilio, calle: event.target.value || ""},
                       })
                     }
                     required

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Container, Row, Col, Dropdown, DropdownButton,Form } from 'react-bootstrap';
 import { IUsuario } from "../../../interface/IUsuario";
 import { IColumn } from "../../../interface/ICamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
@@ -11,6 +11,7 @@ const RankingClientes = () => {
   const [clientes, setClientes] = useState<IUsuario[]>([]);
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
   const [orden, setOrden] = useState<"cantidadPedidos" | "importeTotal">("cantidadPedidos"); // Estado para el orden
+  const [searchText, setSearchText] = useState<string>("");
 
   const API_URL_PEDIDOS = "assets/data/pedidos.json";
   const API_URL_CLIENTES = "assets/data/clienteTabla.json";
@@ -40,7 +41,8 @@ const RankingClientes = () => {
 
   // Define las columnas para la tabla 
   const columns: IColumn<IUsuario>[] = [
-    { title: "ID", field: "id", width: 2 },
+    { title: "ID", field: "id",
+     width: 2 },
     { title: "Nombre", field: "nombre", width: 2 },
     { title: "Apellido", field: "apellido", width: 2 },
     {
@@ -97,26 +99,32 @@ const RankingClientes = () => {
   const customSearch = (searchText: string): Promise<IUsuario[]> => {
     return new Promise((resolve) => {
       const filteredData = clientes?.filter((usuario) =>
-        usuario.id?.toString().includes(searchText)
+        usuario.nombre?.toLowerCase().toString().includes(searchText) ||
+        usuario.apellido?.toLowerCase().toString().includes(searchText)
       );
       resolve(filteredData);
     });
   };
 
+   // Función para manejar cambios en el campo de búsqueda
+   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
   return (
     <div>
       <Container fluid>
-        <Row className="mt-3">
+      <Row className="mt-3">
           <Col>
-            <div className="mb-3 d-flex justify-content-end">
-              <DropdownButton id="dropdown-basic-button" title="Ordenar por">
-                <Dropdown.Item onClick={() => handleChangeOrden("cantidadPedidos")}>
-                  Cantidad de Pedidos
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => handleChangeOrden("importeTotal")}>
-                  Importe Total
-                </Dropdown.Item>
-              </DropdownButton>
+            <div className="mb-3 d-flex justify-content" style={{ width: "250px", margin: "10px" }}>
+              <Form.Select
+                className="me-2"
+                value={orden}
+                onChange={(e: any) => handleChangeOrden(e.target.value as "cantidadPedidos" | "importeTotal")}
+              >
+                <option value="cantidadPedidos">Cantidad de Pedidos</option>
+                <option value="importeTotal">Importe Total</option>
+              </Form.Select>             
             </div>
             <GenericTable<IUsuario>
               customSearch={customSearch}
@@ -135,5 +143,6 @@ const RankingClientes = () => {
     </div>
   );
 };
+
 
 export default RankingClientes;

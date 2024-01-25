@@ -9,7 +9,7 @@
     "estadoPedido": "A Confirmar",
     "esEfectivo": true,
     "Usuario": {
-      "idUsuario": 1,
+      "id": 1,
       "nombre": "John",
       "apellido": "Doe",
       "email": "johndoe@example.com",
@@ -80,7 +80,7 @@
     "estadoPedido": "Confirmado",
     "esEfectivo": false,
     "Usuario": {
-      "idUsuario": 2,
+      "id": 2,
       "nombre": "Jane",
       "apellido": "Smith",
       "email": "janesmith@example.com",
