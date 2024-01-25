@@ -29,6 +29,7 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
   const [cantIngrediente, setCantIngrediente] = useState<number>(0);
   const [ingredienteA, setIngredienteA] = useState<IIngredientes | null>(null);
   const [costo, setCosto] = useState<number>(0);
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Definición de objetos por defecto
   const rubro: IRubro = {
@@ -73,7 +74,7 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
 
   // Cargar rubros y productos al montar el componente
   useEffect(() => {
-    fetch("/assets/data/rubrosProductosEjemplo.json")
+    fetch(API_URL + "rubro")
       .then((response) => response.json())
       .then((data: IRubro[]) => {
         setRubros(data);
@@ -85,7 +86,7 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
 
   // Cargar ingredientes al montar el componente
   useEffect(() => {
-    fetch("/assets/data/ingredientesEjemplo.json")
+    fetch(API_URL + "ingrediente")
       .then((response) => response.json())
       .then((data: IIngredientes[]) => {
         setIngredientesA(data);

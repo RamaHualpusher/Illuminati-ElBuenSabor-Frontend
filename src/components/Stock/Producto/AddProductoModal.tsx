@@ -6,6 +6,7 @@ import { IRubro } from "../../../interface/IRubro";
 import { IAddProductoModalProps } from "../../../interface/IProducto";
 import { IIngredientes } from "../../../interface/IIngredientes";
 import { IProductoIngrediente } from "../../../interface/IProductoIngrediente";
+import GenericTable from "../../GenericTable/GenericTable";
 
 const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   show,
@@ -39,6 +40,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   const [ingrediente, setIngrediente] = useState<IProductoIngrediente | null>(null);
   const [costo, setCosto] = useState<number>(0);
   const API_URL = process.env.REACT_APP_API_URL || "";
+  const [selectedIngredients, setSelectedIngredients] = useState<IProductoIngrediente[]>([]);
 
   // Cargar rubros y productos al montar el componente
   useEffect(() => {
@@ -46,13 +48,12 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
       .get<IRubro[]>(API_URL + "rubro")
       .then((response) => {
         setRubros(response.data);
-        console.log(response.data)
       })
       .catch((error) => {
         console.log(error);
       });
 
-    fetch("/assets/data/ingredientesEjemplo.json")
+    fetch(API_URL + "ingrediente")
       .then((response) => response.json())
       .then((data: IIngredientes[]) => {
         setIngredientesA(data);
@@ -82,11 +83,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
 
       updatedProduct.productoIngrediente = updatedProduct.productoIngrediente.map((ingr) => {
         if (ingr.ingredientes.nombre === ingredienteA.nombre) {
-          console.log("coincidencia encontrada " + ingr.ingredientes.nombre + " cantidad previa " + ingr.cantidad);
           ingr.cantidad += cantIngrediente;
-          setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
-          console.log(ingr.cantidad);
-          setCantIngrediente(0);
           encontrado = true;
         }
         return ingr;
@@ -100,14 +97,14 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
         };
 
         updatedProduct.productoIngrediente.push(newProductIngrediente);
-
-        setCosto(costo + (cantIngrediente * ingredienteA.precioCosto));
-        setCantIngrediente(0);
       }
 
       setProduct(updatedProduct);
+      setCosto((prevCosto) => prevCosto + cantIngrediente * ingredienteA.precioCosto);
+      setCantIngrediente(0);
+      setSelectedIngredients(updatedProduct.productoIngrediente || []);
     }
-  }
+  };
 
   // Función para seleccionar un ingrediente existente
   const selectIngrediente = (nombre: string) => {
@@ -168,10 +165,16 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (product.productoIngrediente && product.productoIngrediente.length > 0) {
+      console.log(product);
       handleProductoAdd(product);
       handleCancelar();
     }
   };
+
+  // Actualizamos selectedIngredients cada vez que cambia product.productoIngrediente
+  useEffect(() => {
+    setSelectedIngredients(product.productoIngrediente || []);
+  }, [product.productoIngrediente]);
 
   const handleCancelar = () => {
     setProduct(initializeProduct);
@@ -215,7 +218,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                 />
               </Form.Group>
             </Col>
-            <Col md={4}>
+            <Col md={2}>
               <Form.Group className="mb-3" controlId="formEstado">
                 <Form.Label>Estado</Form.Label>
                 <Form.Select
@@ -228,6 +231,18 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                   <option value="alta">Alta</option>
                   <option value="baja">Baja</option>
                 </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={2}>
+              <Form.Group className="mb-3" controlId="formEstado">
+                <Form.Label>Es Bebida</Form.Label>
+                <Form.Check
+                  type="switch"
+                  id="esBebidaSwitch"
+                  label={product.esBebida ? 'Sí' : 'No'}
+                  checked={product.esBebida}
+                  onChange={() => setProduct({ ...product, esBebida: !product.esBebida })}
+                />
               </Form.Group>
             </Col>
           </Row>
@@ -261,7 +276,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
           </Row>
           <Row>
             <Col md={4}>
-              <Form.Group className="mb-3" controlId="formRubro">
+              <Form.Group className="mb-3 mt-4" controlId="formRubro">
                 <Form.Label>Rubro</Form.Label>
                 <Form.Select
                   onChange={(event) => {
@@ -282,7 +297,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                 </Form.Select>
               </Form.Group>
             </Col>
-            <Col md={4}>
+            <Col md={2}>
               <Form.Group className="mb-3" controlId="formTiempo">
                 <Form.Label>Tiempo en cocina</Form.Label>
                 <Form.Control
@@ -294,8 +309,8 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                 />
               </Form.Group>
             </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3" controlId="formPrecio">
+            <Col md={2}>
+              <Form.Group className="mb-3 mt-4" controlId="formPrecio">
                 <Form.Label>Precio</Form.Label>
                 <Form.Control
                   type="number"
@@ -305,7 +320,30 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                   required
                 />
               </Form.Group>
-
+            </Col>
+            <Col md={2}>
+              <Form.Group className="mb-3 mt-4" controlId="formStockMin">
+                <Form.Label>Stock Mínimo</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese stock"
+                  value={product.stockMinimo}
+                  onChange={(event) => setProduct({ ...product, stockMinimo: parseFloat(event.target.value) })}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={2}>
+              <Form.Group className="mb-3 mt-4" controlId="formStockAct">
+                <Form.Label>Stock Actual</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Ingrese stock"
+                  value={product.stockActual}
+                  onChange={(event) => setProduct({ ...product, stockActual: parseFloat(event.target.value) })}
+                  required
+                />
+              </Form.Group>
             </Col>
           </Row>
           <Row>
@@ -370,6 +408,25 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
               </Form.Group>
             </Col>
           </Row>
+          <Row>
+            <Col md={12}>
+              <h3>Ingredientes Seleccionados</h3>
+              <GenericTable<IProductoIngrediente>
+                data={selectedIngredients}
+                columns={[
+                  {
+                    title: 'Ingrediente',
+                    field: 'ingredientes',
+                    render: (ingrediente) => <span>{ingrediente.ingredientes.nombre}</span>,
+                  },
+                  { title: 'Cantidad', field: 'cantidad' },
+                  // Puedes agregar más columnas según sea necesario
+                ]}
+                actions={{ delete: false, update: false, view: false, create: false }}
+              />
+            </Col>
+          </Row>
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCancelar}>

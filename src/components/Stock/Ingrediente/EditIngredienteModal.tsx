@@ -3,6 +3,7 @@ import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import { IIngredientes } from '../../../interface/IIngredientes';
 import { IRubro } from '../../../interface/IRubro';
 import { IEditIngredientesModalProps } from '../../../interface/IIngredientes';
+import axios from 'axios';
 
 const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
   show,
@@ -19,24 +20,26 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
     stockActual: 0,
     precioCosto: 0,
     unidadMedida: "Kg",
-    rubro: { id: 0, nombre: '' },
+    rubro: { id: 0, nombre: '', activo: true },
   });
 
   const [ingredientes, setIngredientes] = useState<IIngredientes>(initializeIngredientes);
   const [rubros, setRubros] = useState<IRubro[]>([]);
   const unidades = ["Kg", "g", "Mg", "l", "Ml"];
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Cargar los rubros al cargar el componente
   useEffect(() => {
-    fetch('/assets/data/rubrosIngredientesEjemplo.json')
-      .then(response => response.json())
-      .then(data => {
-        setRubros(data);
-      })
-      .catch(error => {
+    const fetchRubros = async () => {
+      try {
+        const response = await axios.get<IRubro[]>(API_URL + "rubro");
+        setRubros(response.data);
+      } catch (error) {
         console.log(error);
-      });
-  }, []);
+      }
+    };
+    fetchRubros();
+  }, [API_URL]);
 
   // Actualizar los campos del formulario al cambiar el ingrediente seleccionado
   useEffect(() => {
@@ -49,7 +52,7 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
         stockActual: selectedIngredientes.stockActual || 0,
         precioCosto: selectedIngredientes.precioCosto || 0,
         unidadMedida: selectedIngredientes.unidadMedida || "Kg",
-        rubro: selectedIngredientes.rubro || { id: 0, nombre: '' },
+        rubro: selectedIngredientes.rubro || { id: 0, nombre: '', activo: true },
       });
     }
   }, [selectedIngredientes]);

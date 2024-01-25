@@ -18,33 +18,44 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
     stockMinimo: 0,
     stockActual: 0,
     precioCosto: 0,
-    rubro: { id: 0, nombre: '' },
+    rubro: { id: 0, nombre: '', activo: true },
     unidadMedida: '',
   });
 
   const [newIngrediente, setNewIngrediente] = useState<IIngredientes>(initializeNewIngrediente);
   const [rubros, setRubros] = useState<IRubro[]>([]);
-  const unidades = ["Kg", "g", "Mg", "l", "Ml"];
-  const [selectedRubro, setSelectedRubro] = useState<IRubro | null>(null);
+  const unidades = ["Kg", "g", "mg", "L", "ml"];
+  const [selectedRubroId, setSelectedRubroId] = useState<number | null>(null);
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     const fetchRubros = async () => {
       try {
-        const response = await axios.get<IRubro[]>('/assets/data/rubrosIngredientesEjemplo.json');
+        const response = await axios.get<IRubro[]>(API_URL + "rubro");
         setRubros(response.data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchRubros();
-  }, []);
+  }, [API_URL]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!newIngrediente.nombre || !newIngrediente.rubro.id || isNaN(newIngrediente.rubro.id) || !newIngrediente.stockMinimo || !newIngrediente.stockActual || !newIngrediente.precioCosto || !newIngrediente.unidadMedida) {
+
+    if (
+      !newIngrediente.nombre ||
+      !selectedRubroId ||
+      !newIngrediente.stockMinimo ||
+      !newIngrediente.stockActual ||
+      !newIngrediente.precioCosto ||
+      !newIngrediente.unidadMedida
+    ) {
       console.log('Faltan campos requeridos');
       return;
     }
+
+    const selectedRubro = rubros.find((rubro) => rubro.id === selectedRubroId);
 
     if (!selectedRubro) {
       console.log('Rubro inválido');
@@ -53,7 +64,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
 
     const updatedIngrediente: IIngredientes = {
       ...newIngrediente,
-      rubro: { id: newIngrediente.rubro.id, nombre: selectedRubro.nombre },
+      rubro: { id: selectedRubro.id, nombre: selectedRubro.nombre, activo: selectedRubro.activo },
     };
 
     handleIngredienteAdd(updatedIngrediente);
@@ -62,6 +73,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
 
   const handleCancelar = () => {
     setNewIngrediente(initializeNewIngrediente());
+    setSelectedRubroId(null);
     handleClose();
   };
 
@@ -89,16 +101,19 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
               <Form.Group className="mb-3" controlId="formRubro">
                 <Form.Label>Rubro</Form.Label>
                 <Form.Select
-                  onChange={(event) => setNewIngrediente({ ...newIngrediente, rubro: { id: parseInt(event.target.value), nombre: selectedRubro ? selectedRubro.nombre : '' } })}
+                  onChange={(event) => {
+                    const rubroId = parseInt(event.target.value);
+                    setSelectedRubroId(rubroId);
+                    const selectedRubro = rubros.find((rubro) => rubro.id === rubroId);
+                    if (selectedRubro) {
+                      setNewIngrediente({ ...newIngrediente, rubro: { id: rubroId, nombre: selectedRubro.nombre } });
+                    }
+                  }}
                   required
                 >
                   <option value="">Seleccione un rubro</option>
                   {rubros.map((rubro) => (
-                    <option
-                      key={rubro.id}
-                      value={rubro.id}
-                      disabled={!rubro.activo}
-                    >
+                    <option key={rubro.id} value={rubro.id} disabled={!rubro.activo}>
                       {rubro.nombre}
                     </option>
                   ))}
@@ -109,7 +124,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3" controlId="formMinStock">
-                <Form.Label>Min Stock</Form.Label>
+                <Form.Label>Stock Mínimo</Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Ingrese stock mínimo"
@@ -153,6 +168,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
                   onChange={(event) => setNewIngrediente({ ...newIngrediente, unidadMedida: event.target.value })}
                   required
                 >
+                  <option value="">Seleccione una unidad</option>
                   {unidades.map((unidad) => (
                     <option key={unidad} value={unidad}>
                       {unidad}
@@ -165,7 +181,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={newIngrediente.activo ? 'alta' : 'baja'}
+              value={newIngrediente.activo ? 'Alta' : 'Baja'}
               onChange={(event) =>
                 setNewIngrediente({ ...newIngrediente, activo: event.target.value === 'alta' })
               }

@@ -19,13 +19,14 @@ const Ingrediente: React.FC = () => {
   const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
   const [selectedRubroName, setSelectedRubroName] = useState<string>("");
   const [filteredIngredientes, setFilteredIngredientes] = useState<IIngredientes[]>([]);
-  const API_URL = "/assets/data/ingredientesEjemplo.json";
-  const API_URL_Rubro = "assets/data/rubrosIngredientesEjemplo.json";
+  const API_URL = process.env.REACT_APP_API_URL || "";
+  const [filterOption, setFilterOption] = useState<string>("all");
 
   // Configuración de acciones y columnas de la tabla
   const actions: IAction = {
     create: true,
-    update: true
+    update: true,
+    delete: true
   };
 
   const columns: IColumn<IIngredientes>[] = [
@@ -33,7 +34,9 @@ const Ingrediente: React.FC = () => {
     { title: 'ID', field: 'id' },
     { title: 'Nombre', field: 'nombre' },
     {
-      title: 'Rubro', field: 'rubro', render: (ingredientes: IIngredientes) =>
+      title: 'Rubro',
+      field: 'rubro', render: (
+        ingredientes: IIngredientes) =>
         <span>{`${ingredientes.rubro.nombre}`}</span>
     },
     { title: 'Precio', field: 'precioCosto' },
@@ -54,7 +57,6 @@ const Ingrediente: React.FC = () => {
   // Filtrar ingredientes según el rubro seleccionado
   useEffect(() => {
     const filterIngredientes = () => {
-      console.log("selectedRubro", selectedRubro);
       if (selectedRubro) {
         const filtered = ingredComplete.filter(
           (ingrediente) => ingrediente.rubro.id === selectedRubro
@@ -75,7 +77,15 @@ const Ingrediente: React.FC = () => {
     const fetchData = async () => {
       // Obtener ingredientes desde la API
       try {
-        const responseData = await handleRequest('GET', API_URL);
+        let url = API_URL + "ingrediente";
+
+        if (filterOption === "active") {
+          url = API_URL + "ingrediente/active";
+        } else if (filterOption === "inactive") {
+          url = API_URL + "ingrediente/inactive";
+        }
+
+        const responseData = await handleRequest('GET', url);
         setIngred(responseData);
         setIngredComplete(responseData);
       } catch (error) {
@@ -86,7 +96,7 @@ const Ingrediente: React.FC = () => {
     const fetchRubros = async () => {
       // Obtener rubros desde la API
       try {
-        const responseData = await handleRequest("GET", API_URL_Rubro);
+        const responseData = await handleRequest("GET", API_URL + "rubro");
         setRubros(responseData);
       } catch (error) {
         console.log(error);
@@ -94,14 +104,14 @@ const Ingrediente: React.FC = () => {
     };
     fetchRubros();
     fetchData();
-  }, []);
+  }, [filterOption]);
 
   // Agregar nuevo ingrediente mediante la API
   const handleIngredienteAdd = async (Ingredientes: IIngredientes) => {
     try {
-      const newProducto = await handleRequest('POST', '/assets/data/ingredientesEjemplo.json', Ingredientes);
-
+      const newProducto = await handleRequest('POST', API_URL + "ingrediente", Ingredientes);
       setIngred([...ingred, newProducto]);
+      setIngredComplete([...ingredComplete, newProducto]);
     } catch (error) {
       console.log(error);
     }
@@ -110,15 +120,31 @@ const Ingrediente: React.FC = () => {
   // Editar ingrediente existente mediante la API
   const handleIngredienteEdit = async (producto: IIngredientes) => {
     try {
-      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.id}`, producto);
+      const updatedProducto = await handleRequest('PUT', `${API_URL + "ingrediente"}/${producto.id}`, producto);
 
-      const newData = [...ingred];
-      const index = newData.findIndex((item) => item.id === producto.id);
-      newData[index] = updatedProducto;
-
-      setIngred(newData);
+      if (updatedProducto) {
+        const newData = ingred.map((item) =>
+          item.id === producto.id ? updatedProducto : item
+        );
+        setIngred(newData);
+        setIngredComplete(newData);
+      }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // Eliminar ingrediente mediante la API (esta por las dudas pero no tiene funcion)
+  const handleIngredienteDelete = async (item: IIngredientes) => {
+    const itemId: number = item.id || 0;
+
+    try {
+      await handleRequest('DELETE', `${API_URL + "ingrediente"}/${itemId}`);
+      setIngred(ingred.filter((item) => item.id !== itemId));
+      setIngredComplete(ingred.filter((item) => item.id !== itemId));
+      console.log("Ingrediente eliminado correctamente");
+    } catch (error) {
+      console.log("Error al eliminar Ingrediente:", error);
     }
   };
 
@@ -147,7 +173,6 @@ const Ingrediente: React.FC = () => {
       setEditModalShow(true);
     } else {
       console.error("ID del ingrediente es undefined");
-      // Otra lógica de manejo de errores o mensajes que desees agregar
     }
   };
 
@@ -168,21 +193,6 @@ const Ingrediente: React.FC = () => {
     setAddModalShow(false);
   };
 
-  // Eliminar ingrediente mediante la API (esta por las dudas pero no tiene funcion)
-  const handleIngredienteDelete = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const ingredienteId: number = +rowData[0];
-    fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingredienteId}`, {
-      method: 'DELETE',
-    })
-      .then(response => {
-        setIngred(ingred.filter(item => item.id !== ingredienteId));
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
   // Manejar cambio de selección de rubro
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
@@ -202,34 +212,54 @@ const Ingrediente: React.FC = () => {
   return (
     <div>
       <Container fluid>
-        <div>
-          {/* Filtros y mensajes */}
-          <Form.Group controlId="id">
-            <select
-              className="form-select"
-              name="id"
-              value={selectedRubro ? selectedRubro : ""}
-              onChange={handleSelectChange}
-              style={{ width: "250px", margin: "10px" }}
-            >
-              <option value="">Todos los rubros</option>
-              {rubros.map((rubro) => (
-                <option key={rubro.id} value={rubro.id}>
-                  {rubro.nombre}
-                </option>
-              ))}
-            </select>
-          </Form.Group>
-          {noProductosMessage}
-          {/* Tabla de ingredientes */}
-          <GenericTable
-            data={filteredIngredientes}
-            columns={columns}
-            actions={actions}
-            onAdd={handleAddModalOpen}
-            onUpdate={handleEditModalOpen}
-          />
-        </div>
+        <Row className="mt-3">
+          <Col sm={3} className="mb-3">
+            <Form.Group controlId="id">
+              <select
+                className="form-select"
+                name="id"
+                value={selectedRubro ? selectedRubro : ""}
+                onChange={handleSelectChange}
+                style={{ width: "100%" }}
+              >
+                <option value="">Todos los rubros</option>
+                {rubros.map((rubro) => (
+                  <option key={rubro.id} value={rubro.id}>
+                    {rubro.nombre}
+                  </option>
+                ))}
+              </select>
+            </Form.Group>
+          </Col>
+          <Col sm={2} className="mb-3">
+            <Form.Group controlId="filterOption">
+              <select
+                className="form-select"
+                name="filterOption"
+                value={filterOption}
+                onChange={(e) => setFilterOption(e.target.value)}
+                style={{ width: "100%" }}
+              >
+                <option value="all">Todos</option>
+                <option value="active">Activos</option>
+                <option value="inactive">Inactivos</option>
+              </select>
+            </Form.Group>
+          </Col>
+        </Row>
+
+        {noProductosMessage}
+
+        {/* Tabla de ingredientes */}
+        <GenericTable
+          data={filteredIngredientes}
+          columns={columns}
+          actions={actions}
+          onAdd={handleAddModalOpen}
+          onUpdate={handleEditModalOpen}
+          onDelete={handleIngredienteDelete}
+        />
+
         {/* Modales de edición y adición */}
         <EditIngredienteModal
           show={editModalShow}
@@ -244,6 +274,7 @@ const Ingrediente: React.FC = () => {
         />
       </Container>
     </div>
+
   );
 };
 

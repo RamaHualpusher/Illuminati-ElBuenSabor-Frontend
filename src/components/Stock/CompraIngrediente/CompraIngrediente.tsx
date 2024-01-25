@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { IIngredientes } from '../../../interface/IIngredientes'; // Interfaz para los ingredientes
-import EditCompraIngredientesModal from './EditCompraIngredientesModal'; // Componente modal para editar compra de ingredientes
-import { handleRequest } from '../../FuncionRequest/FuncionRequest'; // Función para realizar solicitudes HTTP
-import { Button, Table } from 'react-bootstrap'; // Componente de botón de Bootstrap
+import { IIngredientes } from '../../../interface/IIngredientes';
+import EditCompraIngredientesModal from './EditCompraIngredientesModal';
+import { handleRequest } from '../../FuncionRequest/FuncionRequest';
+import { Button, Table } from 'react-bootstrap';
 
 const CompraIngrediente: React.FC = () => {
-    const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]); // Estado para almacenar los ingredientes
-    const stockMinimoPercentage = 20; // Porcentaje para determinar ingredientes cerca del stock mínimo
-    const [editModalShow, setEditModalShow] = useState(false); // Estado para mostrar el modal de edición
-    const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null); // Estado para el ingrediente seleccionado
-    const [ingred, setIngred] = useState<IIngredientes[]>([]); // Estado para almacenar ingredientes
-
-    const API_URL = "/assets/data/ingredientesEjemplo.json"; // URL simulada para obtener datos de ingredientes
+    const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]);
+    const stockMinimoPercentage = 20;
+    const [editModalShow, setEditModalShow] = useState(false);
+    const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null);
+    const [ingred, setIngred] = useState<IIngredientes[]>([]);
+    const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
         // Simulando una llamada a la API para obtener los ingredientes
-        fetch(API_URL)
+        fetch(API_URL + "ingrediente")
             .then((response) => response.json())
             .then((data) => {
-                setIngredientes(data); // Actualizar el estado de ingredientes con los datos obtenidos
+                setIngredientes(data);
+                console.log(data)
             })
             .catch((error) => {
                 console.error("Error fetching ingredientes:", error);
@@ -46,7 +46,7 @@ const CompraIngrediente: React.FC = () => {
     const handleIngredienteEdit = async (producto: IIngredientes) => {
         try {
             // Realizar una solicitud PUT simulada para actualizar los datos del ingrediente
-            const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.id}`, producto);
+            const updatedProducto = await handleRequest('PUT', `${API_URL + "ingrediente"}/${producto.id}`, producto);
 
             // Actualizar los datos del ingrediente en el estado
             const newData = [...ingred];
@@ -73,13 +73,13 @@ const CompraIngrediente: React.FC = () => {
                 </Button>
             </div>
             {/* Tabla de ingredientes */}
-            <Table responsive>
+            <Table responsive className="table">
                 <thead>
                     <tr>
                         <th>Nombre</th>
                         <th>Stock Mínimo</th>
                         <th>Stock Actual</th>
-                        <th>Stock Dif</th>
+                        <th>Stock Diferencia</th>
                         <th>Unidad de Medida</th>
                     </tr>
                 </thead>

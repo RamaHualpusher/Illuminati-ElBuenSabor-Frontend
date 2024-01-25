@@ -56,7 +56,6 @@ const Productos: React.FC = () => {
   // Filtrar productos según el rubro seleccionado
   useEffect(() => {
     const filterProductos = () => {
-      console.log("selectedRubro", selectedRubro);
       if (selectedRubro) {
         const filtered = productosComplete.filter(
           (producto) => producto.rubro.id === selectedRubro
@@ -78,6 +77,7 @@ const Productos: React.FC = () => {
         const responseData = await handleRequest("GET", API_URL + "producto");
         setProductos(responseData);
         setProductosComplete(responseData);
+        console.log(responseData);
       } catch (error) {
         console.log(error);
       }
@@ -97,8 +97,36 @@ const Productos: React.FC = () => {
   // Agregar un producto
   const handleProductoAdd = async (producto: IProducto) => {
     try {
+      // Primero, agrega el producto sin los ingredientes
       const newProducto = await handleRequest("POST", API_URL + "producto", producto);
-      setProductos([...productos, newProducto]);
+
+      // Luego, agrega ProductoIngrediente
+      const ingredientesPromises = producto.productoIngrediente?.map(async (productoIngrediente) => {
+        const nuevoProductoIngrediente = {
+          ...productoIngrediente,
+          producto: { id: newProducto.id },
+          ingrediente: { id: productoIngrediente.ingredientes.id },
+          activo: true, 
+        };
+        console.log(productoIngrediente);
+        console.log(nuevoProductoIngrediente);
+        return await handleRequest("POST", API_URL + "producto-ingrediente", nuevoProductoIngrediente);
+      });
+
+      // Verifica que haya elementos antes de llamar a Promise.all
+      if (ingredientesPromises && ingredientesPromises.length > 0) {
+        // Espera a que se completen todas las promesas de los ingredientes
+        const nuevosIngredientes = await Promise.all(ingredientesPromises);
+
+        // Actualiza el estado con el producto completo
+        const productoCompleto: IProducto = {
+          ...newProducto,
+          productoIngrediente: nuevosIngredientes,
+        };
+
+        setProductos([...productos, productoCompleto]);
+        setProductosComplete([...productos, productoCompleto]);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -117,6 +145,7 @@ const Productos: React.FC = () => {
         p.id === updatedProducto.id ? updatedProducto : p
       );
       setProductos(updatedProductos);
+      setProductosComplete(updatedProductos);
     } catch (error) {
       console.log(error);
     }
