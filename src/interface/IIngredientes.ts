@@ -1,7 +1,7 @@
 import { IRubro } from "./IRubro";
 import { IBase } from "./IBase";
 
-export interface IIngredientes extends IBase{
+export interface IIngredientes extends IBase {
   nombre: string;
   stockMinimo: number;
   stockActual: number;
@@ -40,6 +40,9 @@ export interface IAddRubroIngredienteModalProps {
 export interface IEditCompraIngredientesModalProps {
   show: boolean;
   handleClose: () => void;
-  handleIngredientesEdit: (ingredientes: IIngredientes) => void;
-  selectedIngredientes: IIngredientes | null;
+  handleIngredientesEdit: (
+    cantidad: number,
+    ingrediente: IIngredientes
+  ) => Promise<void>;
+  ingredientesBajoStock: IIngredientes[];
 }

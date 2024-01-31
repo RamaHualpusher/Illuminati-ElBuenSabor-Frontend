@@ -1,65 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import axios from 'axios';
 import { IIngredientes, IEditCompraIngredientesModalProps } from '../../../interface/IIngredientes';
 
 const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> = ({
   show,
   handleClose,
   handleIngredientesEdit,
-  selectedIngredientes,
+  ingredientesBajoStock,
 }) => {
-  // Estados locales para almacenar los datos del formulario y los ingredientes
-  const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]);
-  const [nombre, setNombre] = useState('');
-  const [precioCosto, setPrecioCosto] = useState(0);
-  const [activo, setActivo] = useState(true);
+  const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null);
   const [cantidad, setCantidad] = useState(0);
-  const [minStock, setMinStock] = useState(0);
-  const [stockActual, setStockActual] = useState(0);
-  const [selectedIngredienteId, setSelectedIngredienteId] = useState<number | null>(null);
-  const [unidadMedida, setUnidadMedida] = useState('');
-
-  // URL para la carga de datos iniciales
-  const API_URL = "/assets/data/ingredientesEjemplo.json";
-
-  // Efecto para cargar datos iniciales de ingredientes
-  useEffect(() => {
-    axios.get(API_URL)
-      .then(response => {
-        const filteredIngredientes = response.data;
-        setIngredientes(filteredIngredientes);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }, []);
-
-  // Efecto para actualizar campos al seleccionar un ingrediente
-  useEffect(() => {
-    if (selectedIngredientes) {
-      setNombre(selectedIngredientes.nombre ?? '');
-      setPrecioCosto(selectedIngredientes.precioCosto ?? 0);
-      setActivo(selectedIngredientes.activo ?? false);
-      setMinStock(selectedIngredientes.stockMinimo ?? 0);
-      setStockActual(selectedIngredientes.stockActual ?? 0);
-      setUnidadMedida(selectedIngredientes.unidadMedida ?? '');
-      setSelectedIngredienteId(selectedIngredientes.id ?? null);
-    }
-  }, [selectedIngredientes]);
-
-
-  // Restablecer campos del formulario cuando se muestra el modal
-  const resetFormFields = () => {
-    setNombre('');
-    setPrecioCosto(0);
-    setActivo(true);
-    setCantidad(0);
-    setMinStock(0);
-    setStockActual(0);
-    setSelectedIngredienteId(null);
-    setUnidadMedida('');
-  };
+  const [mostrarMensaje, setMostrarMensaje] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -67,52 +18,61 @@ const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> =
     }
   }, [show]);
 
-  // Manejar cambio de ingrediente seleccionado
+  const resetFormFields = () => {
+    setSelectedIngrediente(null);
+    setCantidad(0);
+    setMostrarMensaje(false);
+  };
+
   const handleIngredienteChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedIngrediente = ingredientes.find(ingrediente => ingrediente.id === parseInt(e.target.value));
-    if (selectedIngrediente) {
-      setUnidadMedida(selectedIngrediente.unidadMedida);
-      setPrecioCosto(selectedIngrediente.precioCosto);
-    }
-    setSelectedIngredienteId(parseInt(e.target.value));
+    const ingredienteId = parseInt(e.target.value);
+    const ingredienteSelect = ingredientesBajoStock.find(ingrediente => ingrediente.id === ingredienteId);
+    setSelectedIngrediente(ingredienteSelect || null);
   };
 
-  // Manejar envío del formulario
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (selectedIngredienteId !== null && selectedIngredientes) {
-      // Calcular el nuevo stock actualizado
-      const stockUpdated = stockActual + calculateStockFromAmountAndUnit(cantidad, unidadMedida);
-      // Crear un nuevo objeto de ingredientes con valores modificados
+    if (cantidad <= 0) {
+      setMostrarMensaje(true);
+      return;
+    }
+
+    if (selectedIngrediente) {
+      const stockUpdated = calculateStockFromAmountAndUnit(cantidad, selectedIngrediente.unidadMedida);
       const editedIngredientes: IIngredientes = {
-        ...selectedIngredientes, // Mantenemos los valores existentes
-        stockActual: stockUpdated,
-        precioCosto,
-        activo,
+        ...selectedIngrediente,
+        stockActual: selectedIngrediente.stockActual + stockUpdated,
+        precioCosto: selectedIngrediente.precioCosto,
+        activo: selectedIngrediente.activo,
       };
-      // Llamar a la función para editar ingredientes
-      handleIngredientesEdit(editedIngredientes);
+
+      try {
+        await handleIngredientesEdit(cantidad, editedIngredientes);
+        resetFormFields();
+        handleClose();
+      } catch (error) {
+        console.error('Error al editar ingredientes:', error);
+      }
     }
-    handleClose();  // Cerrar el modal
   };
 
-  // Calcular el stock actualizado basado en la cantidad y la unidad de medida
   const calculateStockFromAmountAndUnit = (amount: number, unit: string): number => {
-    if (unit === 'Kg') {
-      return amount * 1000;
-    } else if (unit === 'g') {
-      return amount;
-    } else if (unit === 'Mg') {
-      return amount / 1000;
-    } else if (unit === 'l') {
-      return amount * 1000;
-    } else if (unit === 'Ml') {
-      return amount;
+    switch (unit) {
+      case 'Kg':
+        return amount * 1000;
+      case 'g':
+        return amount;
+      case 'mg':
+        return amount / 1000;
+      case 'L':
+        return amount * 1000;
+      case 'ml':
+        return amount;
+      default:
+        return 0;
     }
-    return 0;
   };
 
-  // Renderizar el modal y el formulario
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -123,12 +83,12 @@ const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> =
           <Form.Group controlId="formIngrediente">
             <Form.Label>Seleccionar Ingrediente</Form.Label>
             <Form.Select
-              value={selectedIngredienteId || ''}
+              value={selectedIngrediente?.id || ''}
               onChange={handleIngredienteChange}
               required
             >
               <option value="">Seleccione un ingrediente</option>
-              {ingredientes.map(ingrediente => (
+              {ingredientesBajoStock.map(ingrediente => (
                 <option key={ingrediente.id} value={ingrediente.id}>
                   {ingrediente.nombre}
                 </option>
@@ -139,16 +99,15 @@ const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> =
             <Form.Label>Precio de Costo</Form.Label>
             <Form.Control
               type="number"
-              value={precioCosto}
-              onChange={(e) => setPrecioCosto(parseInt(e.target.value))}
+              value={selectedIngrediente?.precioCosto || 0}
+              readOnly
               required
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={activo ? 'alta' : 'baja'}
-              onChange={(event) => setActivo(event.target.value === 'alta')}
+              value={selectedIngrediente?.activo ? 'alta' : 'baja'}
               required
             >
               <option value="alta">Alta</option>
@@ -162,14 +121,19 @@ const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> =
               value={cantidad}
               onChange={(e) => setCantidad(parseInt(e.target.value))}
               required
+              isInvalid={mostrarMensaje}
             />
+            {mostrarMensaje &&
+              <Form.Control.Feedback type='invalid'>
+                La cantidad tiene que ser mayor a Cero
+              </Form.Control.Feedback>}
           </Form.Group>
           <Form.Group controlId="formUM">
             <Form.Label>Unidad de Medida</Form.Label>
             <Form.Control
               plaintext
               readOnly
-              value={unidadMedida}
+              value={selectedIngrediente?.unidadMedida || ''}
             />
           </Form.Group>
         </Modal.Body>

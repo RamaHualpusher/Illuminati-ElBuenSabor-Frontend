@@ -8,8 +8,6 @@ const CompraIngrediente: React.FC = () => {
     const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]);
     const stockMinimoPercentage = 20;
     const [editModalShow, setEditModalShow] = useState(false);
-    const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null);
-    const [ingred, setIngred] = useState<IIngredientes[]>([]);
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
@@ -18,7 +16,6 @@ const CompraIngrediente: React.FC = () => {
             .then((response) => response.json())
             .then((data) => {
                 setIngredientes(data);
-                console.log(data)
             })
             .catch((error) => {
                 console.error("Error fetching ingredientes:", error);
@@ -38,22 +35,21 @@ const CompraIngrediente: React.FC = () => {
 
     // Función para cerrar el modal de edición
     const handleEditModalClose = () => {
-        setSelectedIngrediente(null);
         setEditModalShow(false);
     };
 
     // Función para manejar la edición de ingredientes
-    const handleIngredienteEdit = async (producto: IIngredientes) => {
+    const handleIngredienteEdit = async (cantidad: number, ingrediente: IIngredientes) => {
         try {
             // Realizar una solicitud PUT simulada para actualizar los datos del ingrediente
-            const updatedProducto = await handleRequest('PUT', `${API_URL + "ingrediente"}/${producto.id}`, producto);
+            const updatedIngrediente = await handleRequest('PUT', `${API_URL + "ingrediente"}/${ingrediente.id}/addStock/${cantidad}`);
 
             // Actualizar los datos del ingrediente en el estado
-            const newData = [...ingred];
-            const index = newData.findIndex((item) => item.id === producto.id);
-            newData[index] = updatedProducto;
+            const newData = [...ingredientes];
+            const index = newData.findIndex((item) => item.id === ingrediente.id);
+            newData[index] = updatedIngrediente;
 
-            setIngred(newData); // Actualizar el estado con los nuevos datos
+            setIngredientes(newData); // Actualizar el estado con los nuevos dato
         } catch (error) {
             console.log(error);
         }
@@ -104,7 +100,7 @@ const CompraIngrediente: React.FC = () => {
                 show={editModalShow}
                 handleClose={handleEditModalClose}
                 handleIngredientesEdit={handleIngredienteEdit}
-                selectedIngredientes={selectedIngrediente}
+                ingredientesBajoStock={ingredientes.filter(lowStockFilter)} // Pasa los ingredientes bajos de stock
             />
         </div>
     );
