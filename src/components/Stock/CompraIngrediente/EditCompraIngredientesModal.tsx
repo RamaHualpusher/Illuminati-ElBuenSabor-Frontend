@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import { IIngredientes, IEditCompraIngredientesModalProps } from '../../../interface/IIngredientes';
 
 const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> = ({
@@ -11,7 +11,7 @@ const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> =
   const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null);
   const [cantidad, setCantidad] = useState(0);
   const [mostrarMensaje, setMostrarMensaje] = useState(false);
-
+  
   useEffect(() => {
     if (show) {
       resetFormFields();
@@ -80,62 +80,79 @@ const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> =
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          <Form.Group controlId="formIngrediente">
-            <Form.Label>Seleccionar Ingrediente</Form.Label>
-            <Form.Select
-              value={selectedIngrediente?.id || ''}
-              onChange={handleIngredienteChange}
-              required
-            >
-              <option value="">Seleccione un ingrediente</option>
-              {ingredientesBajoStock.map(ingrediente => (
-                <option key={ingrediente.id} value={ingrediente.id}>
-                  {ingrediente.nombre}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-          <Form.Group controlId="formPrecioCosto">
-            <Form.Label>Precio de Costo</Form.Label>
-            <Form.Control
-              type="number"
-              value={selectedIngrediente?.precioCosto || 0}
-              readOnly
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formEstado">
-            <Form.Label>Estado</Form.Label>
-            <Form.Select
-              value={selectedIngrediente?.activo ? 'alta' : 'baja'}
-              required
-            >
-              <option value="alta">Alta</option>
-              <option value="baja">Baja</option>
-            </Form.Select>
-          </Form.Group>
-          <Form.Group controlId="formCantidad">
-            <Form.Label>Cantidad</Form.Label>
-            <Form.Control
-              type="number"
-              value={cantidad}
-              onChange={(e) => setCantidad(parseInt(e.target.value))}
-              required
-              isInvalid={mostrarMensaje}
-            />
-            {mostrarMensaje &&
-              <Form.Control.Feedback type='invalid'>
-                La cantidad tiene que ser mayor a Cero
-              </Form.Control.Feedback>}
-          </Form.Group>
-          <Form.Group controlId="formUM">
-            <Form.Label>Unidad de Medida</Form.Label>
-            <Form.Control
-              plaintext
-              readOnly
-              value={selectedIngrediente?.unidadMedida || ''}
-            />
-          </Form.Group>
+          <Row>
+            <Col md={7}>
+              <Form.Group controlId="formIngrediente">
+                <Form.Label>Seleccionar Ingrediente</Form.Label>
+                <Form.Select
+                  value={selectedIngrediente?.id || ''}
+                  onChange={handleIngredienteChange}
+                  required
+                >
+                  <option value="">Seleccione un ingrediente</option>
+                  {ingredientesBajoStock.map(ingrediente => (
+                    <option key={ingrediente.id} value={ingrediente.id}>
+                      {ingrediente.nombre}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={3}>
+              <Form.Group className="mb-3" controlId="formEstado">
+                <Form.Label>Estado</Form.Label>
+                <Form.Select
+                  value={selectedIngrediente?.activo ? 'alta' : 'baja'}
+                  required
+                >
+                  <option value="alta">Alta</option>
+                  <option value="baja">Baja</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={5}>
+              <Form.Group controlId="formCantidad">
+                <Form.Label>Cantidad</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={cantidad}
+                  onChange={(e) => setCantidad(parseInt(e.target.value))}
+                  required
+                  isInvalid={mostrarMensaje}
+                />
+                {mostrarMensaje &&
+                  <Form.Control.Feedback type='invalid'>
+                    La cantidad tiene que ser mayor a Cero
+                  </Form.Control.Feedback>}
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <Form.Group controlId="formPrecioCosto">
+                <Form.Label>Precio de Costo</Form.Label>
+                <Form.Control
+                  type="number"
+                  plaintext
+                  value={selectedIngrediente?.precioCosto || 0}
+                  readOnly
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group controlId="formUM">
+                <Form.Label>Unidad de Medida</Form.Label>
+                <Form.Control
+                  plaintext
+                  readOnly
+                  value={selectedIngrediente?.unidadMedida || ''}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { IIngredientes } from '../../../interface/IIngredientes';
 import EditCompraIngredientesModal from './EditCompraIngredientesModal';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
-import { Button, Table } from 'react-bootstrap';
+import { Alert, Button, Col, Row, Table } from 'react-bootstrap';
 
 const CompraIngrediente: React.FC = () => {
     const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]);
     const stockMinimoPercentage = 20;
     const [editModalShow, setEditModalShow] = useState(false);
+    const [cartel, setCartel] = useState(false);
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
@@ -16,6 +17,7 @@ const CompraIngrediente: React.FC = () => {
             .then((response) => response.json())
             .then((data) => {
                 setIngredientes(data);
+                setCartel(data.filter(lowStockFilter).length === 0);
             })
             .catch((error) => {
                 console.error("Error fetching ingredientes:", error);
@@ -49,7 +51,8 @@ const CompraIngrediente: React.FC = () => {
             const index = newData.findIndex((item) => item.id === ingrediente.id);
             newData[index] = updatedIngrediente;
 
-            setIngredientes(newData); // Actualizar el estado con los nuevos dato
+            setIngredientes(newData); // Actualizar el estado con los nuevos datos
+            setCartel(newData.filter(lowStockFilter).length === 0);// Mostrar el cartel si no hay ingredientes bajos de stock
         } catch (error) {
             console.log(error);
         }
@@ -57,17 +60,29 @@ const CompraIngrediente: React.FC = () => {
 
     return (
         <div>
-            <h2 className="display-6 text-center mb-3">Ingredientes Bajos de Stock</h2>
-            <div className="d-flex justify-content-start align-items-center mb-3">
-                {/* Botón para abrir el modal de compra */}
-                <Button
-                    variant="success"
-                    className="me-2"
-                    onClick={openEditModal}
-                >
-                    Comprar <h3 className="mb-0"><i className="bi bi-cart-plus-fill"></i></h3>
-                </Button>
-            </div>
+            <Row>
+                <Col md={4}>
+                    <div className="d-flex justify-content-start align-items-center mb-3">
+                        {/* Botón para abrir el modal de compra */}
+                        <Button
+                            variant="success"
+                            className="me-2"
+                            onClick={openEditModal}
+                        >
+                            Comprar <h3 className="mb-0"><i className="bi bi-cart-plus-fill"></i></h3>
+                        </Button>
+                    </div>
+                </Col>
+                <Col md={4}>
+                    {cartel && (
+                        <div className="d-inline-block text-center alert-container">
+                            <Alert variant="info" className="p-3">
+                                No hay ingredientes bajos de Stock.
+                            </Alert>
+                        </div>
+                    )}
+                </Col>
+            </Row>
             {/* Tabla de ingredientes */}
             <Table responsive className="table">
                 <thead>
