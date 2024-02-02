@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Col, Row, Form } from 'react-bootstrap';
+import { Container, Col, Row, Form, Alert } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { IIngredientes } from '../../../interface/IIngredientes';
@@ -21,6 +21,7 @@ const Ingrediente: React.FC = () => {
   const [filteredIngredientes, setFilteredIngredientes] = useState<IIngredientes[]>([]);
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [filterOption, setFilterOption] = useState<string>("all");
+  const [cartel, setCartel] = useState(false);
 
   // Configuración de acciones y columnas de la tabla
   const actions: IAction = {
@@ -206,12 +207,21 @@ const Ingrediente: React.FC = () => {
   // Mensaje cuando no hay ingredientes con el rubro seleccionado
   const noProductosMessage =
     selectedRubro && filteredIngredientes.length === 0 ? (
-      <p>No hay ingredientes disponibles con el rubro seleccionado.</p>
+      <div className="d-inline-block text-center alert-container">
+        <Alert variant="info" className="p-3">
+          No hay ingredientes disponibles con el rubro seleccionado.
+        </Alert>
+      </div>
     ) : null;
 
   return (
     <div>
       <Container fluid>
+        <Row>
+          <Col>
+            {noProductosMessage}
+          </Col>
+        </Row>
         <Row className="mt-3">
           <Col sm={3} className="mb-3">
             <Form.Group controlId="id">
@@ -247,8 +257,6 @@ const Ingrediente: React.FC = () => {
             </Form.Group>
           </Col>
         </Row>
-
-        {noProductosMessage}
 
         {/* Tabla de ingredientes */}
         <GenericTable
