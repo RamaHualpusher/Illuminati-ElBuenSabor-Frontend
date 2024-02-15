@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { IIngredientes } from '../../../interface/IIngredientes';
 import EditCompraIngredientesModal from './EditCompraIngredientesModal';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
-import { Button, Table } from 'react-bootstrap';
+import { Alert, Button, Col, Row, Table } from 'react-bootstrap';
 
 const CompraIngrediente: React.FC = () => {
     const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]);
     const stockMinimoPercentage = 20;
     const [editModalShow, setEditModalShow] = useState(false);
-    const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null);
-    const [ingred, setIngred] = useState<IIngredientes[]>([]);
+    const [cartel, setCartel] = useState(false);
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
@@ -18,7 +17,7 @@ const CompraIngrediente: React.FC = () => {
             .then((response) => response.json())
             .then((data) => {
                 setIngredientes(data);
-                console.log(data)
+                setCartel(data.filter(lowStockFilter).length === 0);
             })
             .catch((error) => {
                 console.error("Error fetching ingredientes:", error);
@@ -38,22 +37,22 @@ const CompraIngrediente: React.FC = () => {
 
     // Función para cerrar el modal de edición
     const handleEditModalClose = () => {
-        setSelectedIngrediente(null);
         setEditModalShow(false);
     };
 
     // Función para manejar la edición de ingredientes
-    const handleIngredienteEdit = async (producto: IIngredientes) => {
+    const handleIngredienteEdit = async (cantidad: number, ingrediente: IIngredientes) => {
         try {
             // Realizar una solicitud PUT simulada para actualizar los datos del ingrediente
-            const updatedProducto = await handleRequest('PUT', `${API_URL + "ingrediente"}/${producto.id}`, producto);
+            const updatedIngrediente = await handleRequest('PUT', `${API_URL + "ingrediente"}/${ingrediente.id}/addStock/${cantidad}`);
 
             // Actualizar los datos del ingrediente en el estado
-            const newData = [...ingred];
-            const index = newData.findIndex((item) => item.id === producto.id);
-            newData[index] = updatedProducto;
+            const newData = [...ingredientes];
+            const index = newData.findIndex((item) => item.id === ingrediente.id);
+            newData[index] = updatedIngrediente;
 
-            setIngred(newData); // Actualizar el estado con los nuevos datos
+            setIngredientes(newData); // Actualizar el estado con los nuevos datos
+            setCartel(newData.filter(lowStockFilter).length === 0);// Mostrar el cartel si no hay ingredientes bajos de stock
         } catch (error) {
             console.log(error);
         }
@@ -61,17 +60,29 @@ const CompraIngrediente: React.FC = () => {
 
     return (
         <div>
-            <h2 className="display-6 text-center mb-3">Ingredientes Bajos de Stock</h2>
-            <div className="d-flex justify-content-start align-items-center mb-3">
-                {/* Botón para abrir el modal de compra */}
-                <Button
-                    variant="success"
-                    className="me-2"
-                    onClick={openEditModal}
-                >
-                    Comprar <h3 className="mb-0"><i className="bi bi-cart-plus-fill"></i></h3>
-                </Button>
-            </div>
+            <Row>
+                <Col md={4}>
+                    <div className="d-flex justify-content-start align-items-center mb-3">
+                        {/* Botón para abrir el modal de compra */}
+                        <Button
+                            variant="success"
+                            className="me-2"
+                            onClick={openEditModal}
+                        >
+                            Comprar <h3 className="mb-0"><i className="bi bi-cart-plus-fill"></i></h3>
+                        </Button>
+                    </div>
+                </Col>
+                <Col md={4}>
+                    {cartel && (
+                        <div className="d-inline-block text-center alert-container">
+                            <Alert variant="info" className="p-3">
+                                No hay ingredientes bajos de Stock.
+                            </Alert>
+                        </div>
+                    )}
+                </Col>
+            </Row>
             {/* Tabla de ingredientes */}
             <Table responsive className="table">
                 <thead>
@@ -104,7 +115,7 @@ const CompraIngrediente: React.FC = () => {
                 show={editModalShow}
                 handleClose={handleEditModalClose}
                 handleIngredientesEdit={handleIngredienteEdit}
-                selectedIngredientes={selectedIngrediente}
+                ingredientesBajoStock={ingredientes.filter(lowStockFilter)} // Pasa los ingredientes bajos de stock
             />
         </div>
     );
