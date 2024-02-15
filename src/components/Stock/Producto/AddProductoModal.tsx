@@ -64,9 +64,9 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   }, []);
 
   // Función para seleccionar un ingrediente a agregar
-  const selectIngredienteA = (nombre: string) => {
-    if (nombre !== "none") {
-      const selectedIngrediente = ingredientesA.find((ingr) => ingr.nombre === nombre);
+  const selectIngredienteA = (id: number) => {
+    if (id !== 0) {
+      const selectedIngrediente = ingredientesA.find((ingr) => ingr.id === id);
       setIngredienteA(selectedIngrediente || null);
     } else {
       setIngredienteA(null);
@@ -82,7 +82,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
       updatedProduct.productoIngrediente = updatedProduct.productoIngrediente || [];
 
       updatedProduct.productoIngrediente = updatedProduct.productoIngrediente.map((ingr) => {
-        if (ingr.ingredientes.nombre === ingredienteA.nombre) {
+        if (ingr.ingredientes.id === ingredienteA.id) {
           ingr.cantidad += cantIngrediente;
           encontrado = true;
         }
@@ -107,9 +107,9 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   };
 
   // Función para seleccionar un ingrediente existente
-  const selectIngrediente = (nombre: string) => {
-    if (nombre !== "none") {
-      const selectedIngrediente = product.productoIngrediente?.find((ingr) => ingr.ingredientes.nombre === nombre);
+  const selectIngrediente = (id: number) => {
+    if (id !== 0) {
+      const selectedIngrediente = product.productoIngrediente?.find((ingr) => ingr.ingredientes.id === id);
       if (selectedIngrediente) {
         setCosto(costo - (selectedIngrediente.cantidad * selectedIngrediente.ingredientes.precioCosto));
         setIngrediente(selectedIngrediente);
@@ -135,7 +135,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
       const updatedProduct = { ...product };
       updatedProduct.productoIngrediente = updatedProduct.productoIngrediente || [];
       updatedProduct.productoIngrediente = updatedProduct.productoIngrediente.map((ingr) => {
-        if (ingr.ingredientes.nombre === ingrediente.ingredientes.nombre) {
+        if (ingr.ingredientes.id === ingrediente.ingredientes.id) {
           ingr.cantidad = cant;
         }
         return ingr;
@@ -351,13 +351,13 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
               <Form.Group className="mb-3" controlId="formModIngrediente">
                 <Form.Label>Modificar Ingredientes</Form.Label>
                 <Form.Select
-                  value={ingrediente?.ingredientes.nombre || "none"}
-                  onChange={(event) => selectIngrediente(event.target.value)}
+                  value={ingrediente?.ingredientes.id || 0}
+                  onChange={(event) => selectIngrediente(parseInt(event.target.value))}
                   required
                 >
                   <option value="none">Eliminar Ingrediente</option>
                   {product.productoIngrediente?.map((IIngrediente) => (
-                    <option value={IIngrediente.ingredientes.nombre} key={IIngrediente.id}>
+                    <option value={IIngrediente.ingredientes.id} key={IIngrediente.id}>
                       {IIngrediente.ingredientes.nombre}
                     </option>
                   ))}
@@ -381,13 +381,13 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
               <Form.Group className="mb-3" controlId="formModIngrediente">
                 <Form.Label>Agregar Ingredientes</Form.Label>
                 <Form.Select
-                  value={ingredienteA?.nombre || "none"}
-                  onChange={(event) => selectIngredienteA(event.target.value)}
+                  value={ingredienteA?.id || 0}
+                  onChange={(event) => selectIngredienteA(parseInt(event.target.value))}
                   required
                 >
                   <option value="none">Agregar Ingrediente</option>
                   {ingredientesA.map((Ingrediente) => (
-                    <option value={Ingrediente.nombre} key={Ingrediente.id}>
+                    <option value={Ingrediente.id} key={Ingrediente.id}>
                       {Ingrediente.nombre}
                     </option>
                   ))}
