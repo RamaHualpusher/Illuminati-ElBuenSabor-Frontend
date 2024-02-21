@@ -21,73 +21,47 @@ const RankingClientes = () => {
   const API_URL_PEDIDOS = "assets/data/pedidos.json";
   const API_URL_CLIENTES = "assets/data/clienteTabla.json";
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const [clientesResponse, pedidosResponse] = await Promise.all([
-  //         axios.get(API_URL_CLIENTES),
-  //         axios.get(API_URL_PEDIDOS)
-  //       ]);
-
-  //       const clientesData = clientesResponse.data;
-  //       const pedidosData = pedidosResponse.data;
-
-  //       setClientes(clientesData);
-  //       setPedidos(pedidosData);
-  //       setData(clientesData);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [API_URL_CLIENTES, API_URL_PEDIDOS]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const pedidosResponse = await axios.get(`${API_URL}usuario/ranking`);
-        const pedidosData = pedidosResponse.data;
-        console.log(pedidosData)
-        // Ordenar los pedidos por fecha de pedido de manera descendente
-        pedidosData.sort((a: { fechaPedido: string | number | Date; }, b: { fechaPedido: string | number | Date; }) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+        const [clientesResponse, pedidosResponse] = await Promise.all([
+          axios.get<IRankingUsuario[]>(`${API_URL_CLIENTES}`),
+          axios.get<IPedido[]>(`${API_URL_PEDIDOS}`)
+        ]);
 
+        setClientes(clientesResponse.data);
         setPedidos(pedidosResponse.data);
       } catch (error) {
-        console.error('Error al cargar datos:', error);
+        console.error(error);
       }
     };
+
     fetchData();
-  }, []);
+  }, [API_URL]);
 
   useEffect(() => {
     // Aplicar filtrado y ordenación
-    const dataOrdenada = [...data];
+    const dataOrdenada = [...clientes];
 
     if (ordenCampo === "cantidadPedidos") {
-      dataOrdenada.sort((a, b) =>
-        calculateCantidadPedidos(b.id) - calculateCantidadPedidos(a.id)
-      );
+      dataOrdenada.sort((a, b) => calculateCantidadPedidos(b.id) - calculateCantidadPedidos(a.id));
     } else if (ordenCampo === "importeTotal") {
-      dataOrdenada.sort((a, b) =>
-        calculateImporteTotal(b.id) - calculateImporteTotal(a.id)
-      );
+      dataOrdenada.sort((a, b) => calculateImporteTotal(b.id) - calculateImporteTotal(a.id));
     }
 
-    // Si la orden es descendente, invertir el orden
     if (ordenTipo === "descendente") {
       dataOrdenada.reverse();
     }
 
-    // Aplicar búsqueda
     const filteredData = customSearch(searchText, dataOrdenada, calculateCantidadPedidos, calculateImporteTotal);
     setFilteredData(filteredData);
-  }, [ordenCampo, ordenTipo, searchText, data]);
+  }, [ordenCampo, ordenTipo, searchText, clientes]);
+
 
   const columns: IColumn<IRankingUsuario>[] = [
     {
       title: "Fecha del Pedido",
-      field: "telefono",
+      field: "fechaPedido",
       width: 2,
       render: (rowData) => <div>{formatFechaPedido(rowData.id)}</div>
     },
@@ -123,32 +97,15 @@ const RankingClientes = () => {
   };
 
   const calculateImporteTotal = (usuarioId: number | undefined) => {
-    // Filtrar los pedidos correspondientes al usuario con el usuarioId proporcionado
     const pedidosUsuario = pedidos.filter((pedido) => pedido.Usuario.id === usuarioId);
-
-    // Inicializar el total
     let total = 0;
-
-    // Iterar sobre los pedidos del usuario
-    if (pedidosUsuario) {
-      pedidosUsuario.forEach((pedido) => {
-        // Iterar sobre los detalles del pedido
-        if (pedido && pedido.DetallePedido) {
-          pedido.DetallePedido.forEach((detalle) => {
-            // Verificar si detalle.Productos existe y es un array antes de iterar sobre él
-            if (detalle && detalle.Productos && Array.isArray(detalle.Productos)) {
-              detalle.Productos.forEach((producto: IProducto) => {
-                total += producto.precio * detalle.cantidad;
-              });
-            }
-          });
-        }
+    pedidosUsuario.forEach((pedido) => {
+      pedido.DetallePedido.forEach((detalle) => {
+          total += detalle.Productos.precio * detalle.cantidad;
       });
-    }
-    // Retornar el importe total
+    });
     return total;
   };
-
 
   const calculateCantidadPedidos = (usuarioId: number | undefined) => {
     return pedidos.filter((pedido) => pedido.Usuario.id === usuarioId).length;

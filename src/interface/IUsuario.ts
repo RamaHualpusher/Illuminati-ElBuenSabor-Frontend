@@ -88,4 +88,5 @@ export interface IRankingUsuario {
   };
   cantidadPedidos: number;
   estadoPedido: string;
+  fechaPedido: Date;
 }
