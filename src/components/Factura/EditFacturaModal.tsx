@@ -32,7 +32,6 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
       setEsDelivery(selectedFactura.esDelivery);
       setEstadoPedido(selectedFactura.estadoPedido);
       setEsEfectivo(selectedFactura.esEfectivo);
-      setTotalPedido(selectedFactura.totalPedido);
     }
   }, [selectedFactura]);
 
@@ -53,7 +52,6 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
         esDelivery,
         estadoPedido,
         esEfectivo,
-        totalPedido,
       };
       handleFacturaEdit(updatedFactura);
     }

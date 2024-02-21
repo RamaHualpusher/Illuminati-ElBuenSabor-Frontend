@@ -1,29 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { IUsuario } from "../../../interface/IUsuario";
-import { Container, Row, Col } from 'react-bootstrap';
+import { IEditUsuarioFromCliente, IUsuario } from "../../../interface/IUsuario";
+import { Container, Row, Col, Form } from 'react-bootstrap';
 import EditClienteModal from "./EditClienteModal";
-import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 import GenericTable from "../../GenericTable/GenericTable";
 import { IAction, IColumn } from '../../../interface/ICamposTablaGenerica';
+import axios from 'axios';
 
 const Clientes = () => {
     //Estados del componente
     const [clientes, setClientes] = useState<IUsuario[]>([]);
-    const [clientesComplete, setClientesComplete] = useState<IUsuario[]>([]);
     const [editModalShow, setEditModalShow] = useState(false);
-    const [selectedCliente, setSelectedCliente] = useState<IUsuario | null>(null);
-    const API_URL = "assets/data/clienteTabla.json";
+    const [selectedCliente, setSelectedCliente] = useState<IEditUsuarioFromCliente | null>(null);
+    const API_URL = process.env.REACT_APP_API_URL || "";
+    const [filterOption, setFilterOption] = useState<string>("all"); // Puedes inicializarlo con "all"
+
+    //Define que acciones se pueden realizar
+    const actions: IAction = {
+        update: true,
+        delete: true
+    };
 
     // Definición de las columnas de la tabla
     const columns: IColumn<IUsuario>[] = [
-        { title: 'ID Usuario', field: 'id' },
+        { title: 'ID Cliente', field: 'id' },
         { title: 'Nombre', field: 'nombre' },
         { title: 'Apellido', field: 'apellido' },
         { title: 'Email', field: 'email' },
         { title: 'Teléfono', field: 'telefono' },
         {
-            title: 'Domicilio', field: 'domicilio', render: (usuario: IUsuario) =>
-                <span>{`${usuario.domicilio ? usuario.domicilio.calle : ""} ${usuario.domicilio ? usuario.domicilio.numero : ""} ${usuario.domicilio ? usuario.domicilio.localidad : ""}`}</span>
+            title: 'Domicilio',
+            field: 'domicilio',
+            render: (usuario: IUsuario) => (
+                <span>{`${usuario.domicilio ? usuario.domicilio.calle : ""} ${usuario.domicilio ? usuario.domicilio?.numero : 0}, ${usuario.domicilio ? usuario.domicilio?.localidad : ""}`}</span>
+            )
         },
         {
             title: "Estado",
@@ -36,79 +45,73 @@ const Clientes = () => {
         },
     ];
 
-    // Función para busqueda personalizada por ID y nombre
-    const customSearch = (searchText: string): Promise<IUsuario[]> => {
-        return new Promise((resolve) => {
-            // console.log("Clientes en customSearch:", clientes);
-            const normalizedSearchText = normalizeString(searchText);
-
-            const filteredData = clientes.filter((cliente) => {
-                const normalizedIdUsuario = cliente.id ? normalizeString(cliente.id.toString()) : '';
-                const normalizedNombre = normalizeString(cliente.nombre.toString());
-                const normalizedApellido = normalizeString(cliente.apellido.toString());
-
-                // Verifica que cliente.domicilio no sea undefined antes de acceder a las propiedades
-                const domicilioCalle = cliente.domicilio?.calle || "";
-                const domicilioNumero = cliente.domicilio?.numero || "";
-                const domicilioLocalidad = cliente.domicilio?.localidad || "";
-                return (
-                    normalizedIdUsuario.includes(normalizedSearchText) ||
-                    normalizedNombre.includes(normalizedSearchText) ||
-                    normalizedApellido.includes(normalizedSearchText)||
-                    normalizeString(`${domicilioCalle},${domicilioNumero},${domicilioLocalidad}`).includes(normalizedSearchText)
-                );
-            });
-
-            resolve(filteredData);
-        });
-    };
-
-    //Normaliza el texto para que no importe las Mayus, Minus o Tildes
-    const normalizeString = (str: string): string => {
-        return str
-            .toLowerCase()
-            .normalize("NFD") // Eliminar tildes
-            .replace(/[\u0300-\u036f]/g, "");
-    };
-
-    //Llamada a la API para cargar los clientes
     useEffect(() => {
-        fetch(API_URL)
-            .then((response) => response.json())
-            .then((data) => {
-                // console.log("Clientes cargados:", data);
-                setClientes(data);
-                setClientesComplete(data);
-            })
-            .catch((error) => console.log(error));
-    }, []);
+        const fetchData = async () => {
+            let url = API_URL + "usuario/clientes";
 
-    //Define que acciones se pueden realizar
-    const actions: IAction = {
-        update: true,
-        delete: true
-    };
+            try {
+                const response = await axios.get(url);
+                setClientes(response.data);
+                // setClientesComplete(response.data);
+            } catch (error) {
+                console.error('Error al cargar datos de clientes:', error);
+            }
+        };
+
+        fetchData();
+    }, [filterOption]);
+
 
     //Editar un cliente 
-    const handleClienteEdit = async (cliente: IUsuario) => {
-        const updatedCliente = await handleRequest(
-            'PUT',
-            `${API_URL}/${cliente.id}`,
-            cliente
-        );
-        if (updatedCliente) {
-            const newData = clientes.map((item) =>
-                item.id === cliente.id ? updatedCliente : item
-            );
-            setClientes(newData);
+    const handleClienteEdit = async (cliente: IEditUsuarioFromCliente) => {
+        try {
+            // Verificar si el cliente tiene información de domicilio
+            if (cliente.domicilio && cliente.domicilio.id) {
+                // Si el cliente tiene un ID de domicilio existente, actualizar el domicilio
+                const domicilio = {
+                    id: cliente.domicilio.id,
+                    activo: cliente.domicilio.activo,
+                    calle: cliente.domicilio.calle,
+                    numero: cliente.domicilio.numero,
+                    localidad: cliente.domicilio.localidad,
+                };
+
+                const responseDomicilio = await axios.put(`${API_URL}domicilio/${cliente.domicilio.id}`, domicilio);
+
+                if (responseDomicilio.data) {
+                    const updatedCliente = {
+                        ...cliente,
+                        domicilio: { idPut: responseDomicilio.data.id, ...domicilio },
+                    };
+
+                    const responseCliente = await axios.put(`${API_URL}usuario/${cliente.id}`, updatedCliente);
+
+                    if (responseCliente.data) {
+                        const newData = clientes.map((item) =>
+                            item.id === cliente.id ? responseCliente.data : item
+                        );
+                        setClientes(newData);
+                        console.log('Cliente editado:', responseCliente.data);
+                    } else {
+                        console.log('No se pudo editar el cliente');
+                    }
+                } else {
+                    console.log('No se pudo actualizar el domicilio');
+                }
+            } else {
+                console.log('El cliente no tiene información de domicilio para actualizar');
+            }
+        } catch (error) {
+            console.error('Error al editar cliente:', error);
         }
     };
+
 
     //Eliminar un cliente
     const handleClienteDelete = async (item: IUsuario) => {
         const clienteId: number = item.id || 0;
         try {
-            await handleRequest('DELETE', `${API_URL}/${clienteId}`);
+            await axios.delete(`${API_URL}usuario/${clienteId}`);
             setClientes(clientes.filter((item) => item.id !== clienteId));
         } catch (error) {
             console.log(error);
@@ -120,19 +123,26 @@ const Clientes = () => {
         let i: number = 0;
         let x: boolean = true;
         while (x) {
-            if (clientesComplete[i].id === id) {
-                return clientesComplete[i];
+            if (clientes[i].id === id) {
+                let usuarioRe: IEditUsuarioFromCliente = clientes[i];
+                return usuarioRe;
                 x = false;
             }
             i = i + 1;
         }
-        return clientesComplete[0];
+        let usuarioRe: IEditUsuarioFromCliente = clientes[0];
+        return usuarioRe;
     }
 
     // Abrir modal de edición
     const handleEditModalOpen = (item: IUsuario) => {
-        setSelectedCliente(usuarioRow(item.id));
-        setEditModalShow(true);
+        const usuarioSeleccionado = usuarioRow(item.id);
+        if (usuarioSeleccionado) {
+            setSelectedCliente(usuarioSeleccionado);
+            setEditModalShow(true);
+        } else {
+            console.error("No se pudo encontrar el cliente seleccionado.");
+        }
     };
 
     // Cerrar modal de edición
@@ -144,16 +154,31 @@ const Clientes = () => {
     return (
         <div>
             <Container fluid>
+                <Col sm={3} className="mb-3">
+                    <Form.Select
+                        value={filterOption}
+                        onChange={(e) => setFilterOption(e.target.value)}
+                    >
+                        <option value="all">Mostrar Todos</option>
+                        <option value="active">Mostrar solo Activos</option>
+                        <option value="inactive">Mostrar solo Inactivos</option>
+                    </Form.Select>
+                </Col>
                 <Row className="mt-3">
                     <Col>
                         {clientes && clientes.length > 0 ? (
-                            <GenericTable<IUsuario>
-                                data={clientes}
+                            <GenericTable
+                                data={clientes.filter(cliente => {
+                                    return (
+                                        filterOption === "all" ||
+                                        (filterOption === "active" && cliente.activo) ||
+                                        (filterOption === "inactive" && !cliente.activo)
+                                    );
+                                })}
                                 columns={columns}
                                 actions={actions}
                                 onUpdate={handleEditModalOpen}
                                 onDelete={handleClienteDelete}
-                                customSearch={customSearch}                                
                             />
                         ) : (
                             <p>No hay datos de clientes disponibles.</p>

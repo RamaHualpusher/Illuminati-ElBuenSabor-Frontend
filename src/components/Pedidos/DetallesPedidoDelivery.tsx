@@ -58,9 +58,30 @@ const DetallesPedidoDelivery: React.FC = () => {
         window.history.go(-1); // Navega hacia atrás en la historia del navegador
     };
 
-    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido, totalPedido } = pedido;
+    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
 
     const subtotalPedido = obtenerSubtotal(DetallePedido);
+
+    // Función para calcular el total del pedido
+    const calcularTotalPedido = (detallePedido: IDetallePedido[]) => {
+        let total = 0;
+    for (let i = 0; i < detallePedido.length; i++) {
+        const detalle = detallePedido[i];
+        const productos = detalle.Productos;
+        // Verificar si Productos es un array
+        if (Array.isArray(productos)) {
+            for (let j = 0; j < productos.length; j++) {
+                const producto = productos[j];
+                total += producto.precio || 0;
+            }
+        } else {
+            // Si Productos no es un array, asumir que es un solo producto
+            total += productos.precio || 0;
+        }
+    }
+    return total;
+};
+    const totalPedido = calcularTotalPedido(DetallePedido);
 
     return (
         <div className="detalle-page-container d-flex align-items-center" style={{ backgroundImage: `url('/assets/img/fondoMisPedidos.jpg') `, minHeight: '100vh' }}>

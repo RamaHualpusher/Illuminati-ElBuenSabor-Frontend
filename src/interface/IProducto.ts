@@ -2,7 +2,7 @@ import { IRubro } from "./IRubro";
 import { IProductoIngrediente } from "./IProductoIngrediente";
 import { IBase } from "./IBase";
 
-export interface IProducto extends IBase {
+export interface IProducto extends IBase { 
   nombre: string;
   tiempoEstimadoCocina: number;
   denominacion: string;

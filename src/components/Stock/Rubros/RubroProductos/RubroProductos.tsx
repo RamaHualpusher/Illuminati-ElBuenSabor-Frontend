@@ -31,6 +31,10 @@ const RubroProductos: FC = () => {
     };
     buscarRubros();
   }, []);
+  
+  if (!rubros || !rubros.length) {
+    return <p>Cargando...</p>;
+  }
 
   const handleRubroAdd = async (rubro: IRubro) => {
     try {

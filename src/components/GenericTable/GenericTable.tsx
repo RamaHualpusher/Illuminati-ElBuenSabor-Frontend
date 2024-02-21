@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { Button, Table, FormControl, Container, Row, Col } from 'react-bootstrap';
-import { ITableProps } from '../../interface/ICamposTablaGenerica';
+import { ITableProps, IColumn } from '../../interface/ICamposTablaGenerica';
 import DatePicker from 'react-datepicker';
 
 function GenericTable<T>({
@@ -34,7 +34,7 @@ function GenericTable<T>({
         }
       } else {
         setFilteredData(
-          data.filter((item) => defaultSearch(item, searchText))
+          data.filter((item) => defaultSearch(item, searchText, columns))
         );
       }
     };
@@ -44,7 +44,7 @@ function GenericTable<T>({
     return () => {
       isMounted = false;
     };
-  }, [searchText, data, customSearch]);
+  }, [searchText, data, customSearch, columns]);
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
@@ -66,7 +66,8 @@ function GenericTable<T>({
     return str
       .toLowerCase()
       .normalize("NFD") // Eliminar tildes
-      .replace(/[\u0300-\u036f]/g, "");
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
   };
 
   const handleDateSearch = async (e: FormEvent) => {
@@ -87,11 +88,11 @@ function GenericTable<T>({
     }
   };
 
-  const defaultSearch = (item: T, search: string): boolean =>
-    columns.some((column) => {
-      const value = item[column.field];
-      return typeof value === 'string' && value.toLowerCase().includes(search.toLowerCase());
-    });
+  const defaultSearch = (item: T, search: string, columns: IColumn<T>[]): boolean =>
+  columns.some((column) => {
+    const value = item[column.field];
+    return typeof value === 'string' && value.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
     <Container fluid>

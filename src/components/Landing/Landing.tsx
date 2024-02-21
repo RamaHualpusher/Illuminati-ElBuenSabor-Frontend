@@ -56,7 +56,7 @@ export default function Landing() {
   // Filtrar productos por búsqueda
   useEffect(() => {
     const filteredProductos = productos.filter((producto) =>
-      producto.nombre.toLowerCase().includes(searchParam.toLowerCase())
+      producto?.nombre?.toLowerCase().includes(searchParam.toLowerCase())
     );
 
     setFilteredProducts(filteredProductos);

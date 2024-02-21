@@ -34,6 +34,11 @@ const RubroIngrediente: React.FC = () => {
     fetchRubros();
   }, []);
 
+  
+  if (!rubros || !rubros.length) {
+    return <p>Cargando...</p>;
+  }
+  
   // Función para manejar la adición de un rubro
   const handleRubroAdd = async (rubro: IRubro) => {
     try {

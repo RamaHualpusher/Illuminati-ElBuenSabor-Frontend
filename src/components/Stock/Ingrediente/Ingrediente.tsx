@@ -34,8 +34,8 @@ const Ingrediente: React.FC = () => {
     { title: 'Nombre', field: 'nombre' },
     {
       title: 'Rubro', field: 'rubro', render: (ingredientes: IIngredientes) =>
-        <span>{`${ingredientes.rubro.nombre}`}</span>
-    },
+        <span>{`${ingredientes.rubro ? ingredientes.rubro.nombre || "" : ""}`}</span>
+    },    
     { title: 'Precio', field: 'precioCosto' },
     { title: 'Min Stock', field: 'stockMinimo' },
     { title: 'Stock Actual', field: 'stockActual' },
@@ -95,6 +95,10 @@ const Ingrediente: React.FC = () => {
     fetchRubros();
     fetchData();
   }, []);
+
+  if (!ingredComplete || !ingredComplete.length) {
+    return <p>Cargando ingredientes...</p>;
+  }
 
   // Agregar nuevo ingrediente mediante la API
   const handleIngredienteAdd = async (Ingredientes: IIngredientes) => {
@@ -215,7 +219,7 @@ const Ingrediente: React.FC = () => {
               <option value="">Todos los rubros</option>
               {rubros.map((rubro) => (
                 <option key={rubro.id} value={rubro.id}>
-                  {rubro.nombre}
+                  {rubro.nombre || ""}
                 </option>
               ))}
             </select>

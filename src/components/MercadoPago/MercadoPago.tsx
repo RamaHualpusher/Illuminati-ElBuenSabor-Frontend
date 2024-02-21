@@ -3,12 +3,17 @@ import { IPedido } from '../../interface/IPedido';
 import { useAuth0 } from '@auth0/auth0-react';
 import { MercadoPagoConfig } from 'mercadopago';
 
+//entiendo que hay que utilizar axios para plicar este metodo con post en la base de datos
+//una vez que mercado pago apruebe la compra
+const API_URL = process.env.REACT_APP_API_URL || "";
+
 export const MercadoPago = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pedidoCompleto, setPedidoCompleto] = useState<IPedido | null>(null);
   const { getAccessTokenSilently } = useAuth0();
   const [preferenceId, setPreferenceId] = useState(null);
   const token = process.env.REACT_APP_API_MP_TOKEN || "";
+  const url: string = process.env.VITE_BACKEND_API_URL || ""; //(hay que agregar en ENV el link a el backend)
   const client = new MercadoPagoConfig({ accessToken: token });
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
@@ -29,25 +34,28 @@ export const MercadoPago = () => {
           return;
         }
 
-        const response = await fetch('http://localhost:3000/confirmar-pedido', {
+        const response = await fetch('confirmar-pedido', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${accesToken}`,
+            'Authorization': `Bearer ${accesToken}`,
           },
           body: JSON.stringify({
             preference: {
+              email: pedidoCompleto.Usuario.email,
+              nombre: pedidoCompleto.Usuario.nombre,
+              apellido: pedidoCompleto.Usuario.apellido,
               items: pedidoCompleto.DetallePedido.map((detalle) => ({
                 title: detalle.Productos.nombre,
                 quantity: detalle.cantidad,
-                currency_id: detalle.id,
+                currency_id: detalle.id,                
                 unit_price: detalle.Productos.precio,
               })),
               external_reference: pedidoCompleto.numeroPedido.toString(),
               // back_urls: {
-              //   success: 'URL_DE_EXITO',
-              //   failure: 'URL_DE_FRACASO',
-              //   pending: 'URL_PENDIENTE',
+              //   success: 'https://www.success.com',
+              //   failure: 'http://www.failure.com',
+              //   pending: 'http://www.pending.com',
               // },
               auto_return: 'approved',
             },
@@ -70,7 +78,7 @@ export const MercadoPago = () => {
   };
 
   function setShowAlert(arg0: boolean) {
-    throw new Error('Function not implemented.');
+    throw new Error('Funcion no implementada.');
   }
 
   return { handleConfirmarPedido, preferenceId, setPedidoCompleto }

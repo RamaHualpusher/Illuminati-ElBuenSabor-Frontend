@@ -37,10 +37,7 @@ const CocineroPage: FC = () => {
                     </Col>
                 </Row>
                 <div className="mt-4">
-                    {/* Renderizar el componente CocineroPedido si la opción seleccionada es "pedidos" */}
-                    {selectedOption === 'pedidos' && <CocineroPedido />}
-                    {/* Renderizar el componente Stock si la opción seleccionada es "stock" */}
-                    {selectedOption === 'stock' && <Stock />}
+                    {selectedOption === 'pedidos' ? <CocineroPedido /> : <Stock />}
                 </div>
             </Container>
         </div>

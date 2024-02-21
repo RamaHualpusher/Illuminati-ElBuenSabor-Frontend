@@ -12,6 +12,5 @@ export interface IPedido extends IBase {
   fechaPedido: Date;
   Usuario: IUsuario;
   DetallePedido: IDetallePedido[];
-  MercadoPagoDatos?: IMercadoPagoDatos;
-  totalPedido: number; //(esto no va en al base de datos ya que es persistente)
+  MercadoPagoDatos?: IMercadoPagoDatos;  
 }

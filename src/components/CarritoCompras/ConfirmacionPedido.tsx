@@ -147,8 +147,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
             nombreRol: usuario.rol.nombreRol,
           },
         },
-        DetallePedido: cartItems.map(convertirCartItemADetallePedido),
-        totalPedido: nuevoTotalPedido,
+        DetallePedido: cartItems.map(convertirCartItemADetallePedido),        
       };
 
       setTotalPedido(nuevoTotalPedido); // Actualiza el estado del total del pedido

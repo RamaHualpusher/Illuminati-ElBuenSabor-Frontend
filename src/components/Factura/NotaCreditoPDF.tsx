@@ -2,7 +2,7 @@ import { jsPDF } from "jspdf";
 import { IProducto } from "../../interface/IProducto";
 import { IPedido } from "../../interface/IPedido";
 
-const FacturaPDF = ({ pedido }: { pedido: IPedido }) => {
+const NotaCreditoPDF = ({ pedido }: { pedido: IPedido }) => {
   const generatePDF = () => {
     const pdf = new jsPDF();
     let yPosition = 20;
@@ -15,7 +15,7 @@ const FacturaPDF = ({ pedido }: { pedido: IPedido }) => {
     pdf.text("El Buen Sabor", margin, yPosition);
     yPosition += 10;
 
-    pdf.text(`Número de Pedido: ${pedido?.numeroPedido}`, margin, yPosition);
+    pdf.text(`Número de Nota de Crédito: ${pedido?.numeroPedido}`, margin, yPosition);
     yPosition += 10;
     pdf.text(`Fecha: ${new Date(pedido.fechaPedido).toLocaleString()}`, margin, yPosition);
     yPosition += 10;
@@ -52,17 +52,21 @@ const FacturaPDF = ({ pedido }: { pedido: IPedido }) => {
     );
 
     yPosition += 40;
-    pdf.text(`Muchas gracias ${pedido?.Usuario?.nombre} ${pedido?.Usuario?.apellido} por comprar en`, margin, yPosition);
+    pdf.text(`Muchas gracias ${pedido?.Usuario?.nombre} ${pedido?.Usuario?.apellido} por utilizar la Nota de Crédito`, margin, yPosition);
     yPosition += 10;
     pdf.text(`El Buen Sabor`, margin, yPosition);
 
-    pdf.save(`Factura de ${pedido?.Usuario?.nombre} ${pedido?.Usuario?.apellido}-Num. ${pedido?.numeroPedido}.pdf`);
+    pdf.save(`Nota Credito de ${pedido?.Usuario?.nombre} ${pedido?.Usuario?.apellido}-Num. ${pedido?.numeroPedido}.pdf`);
   };
 
-  return generatePDF();
+  // Llama a la función de generación cuando se renderiza el componente
+  generatePDF();
+
+  // Devuelve un componente vacío (puedes personalizar esto según tus necesidades)
+  return null;
 };
 
-export default FacturaPDF;
+export default NotaCreditoPDF;
 
 const getProductInfo = (producto: IProducto | undefined): string => {
   if (!producto) {

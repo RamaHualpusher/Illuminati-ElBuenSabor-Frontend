@@ -4,8 +4,6 @@ import { IProducto } from '../../../interface/IProducto';
 import GenericTable from "../../GenericTable/GenericTable";
 import { IColumn } from "../../../interface/ICamposTablaGenerica";
 import { IPedido } from "../../../interface/IPedido";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 const RankingProductos = () => {
     const [productos, setProductos] = useState<IProducto[]>([]);
@@ -36,31 +34,22 @@ const RankingProductos = () => {
             field: "DetallePedido",
             width: 2,
             render: (rowData) => (
-                <img src={rowData.DetallePedido[0].Productos.imagen} style={{ width: "120px", height: "100px" }} />
+                <img src={rowData.DetallePedido[0]?.Productos?.imagen || ''} style={{ width: "120px", height: "100px" }} />
             ),
         },
-        // aca no se si entrar con un "map" y ver todos losa tributos del detalle pedido y luego en "data" debajo de esta seccion, poner esos 
-        //atributos, o como organizarme para ver esos items.
         {
             title: "Nombre", field: "DetallePedido", width: 3,
             render: (rowData) => (
-                <span>{`${rowData.DetallePedido[0].Productos.nombre}`}</span>
+                <span>{`${rowData.DetallePedido[0]?.Productos?.nombre || ''}`}</span>
             ),
         },
         {
             title: "Ventas por producto", field: "DetallePedido", width: 4,
             render: (rowData: IPedido) =>
-                <div>{calculateCantidadVendido(rowData.DetallePedido[0].cantidad, true)}</div>
-                // el de abajo me muestra la cantidad solo por producto individual, pero no si hay dos productos iguales, la cantidad vendida en total
-                // <ul>
-                //     {rowData.DetallePedido.map((detalle, index) => (
-                //         <li key={index}>
-                //             {detalle.cantidad}
-                //         </li>
-                //     ))}
-                // </ul>
+                <div>{calculateCantidadVendido(rowData.DetallePedido[0]?.Productos?.id || 0, true)}</div>
         },
     ];
+    
 
     const calculateCantidadVendido = (productoId: number, esBebida: boolean | undefined) => {
         return pedidos.reduce((totalCantidad, pedido) => {
@@ -78,40 +67,39 @@ const RankingProductos = () => {
             return totalCantidad + cantidadProductoEnPedido;
         }, 0);
     };
-    
 
-    const handleBuscarClick = () => {
-        if (startDate !== null && endDate !== null) {
-            const pedidosFiltrados = pedidos.filter(pedido => {
-                const fechaPedido = new Date(pedido.fechaPedido);
-                return fechaPedido >= startDate && fechaPedido <= endDate;
-            });
+    // const handleBuscarClick = () => {
+    //     if (startDate !== null && endDate !== null) {
+    //         const pedidosFiltrados = pedidos.filter(pedido => {
+    //             const fechaPedido = new Date(pedido.fechaPedido);
+    //             return fechaPedido >= startDate && fechaPedido <= endDate;
+    //         });
 
-            const ventasPorProducto = pedidosFiltrados.map((pedido) => {
-                const ventas = pedido.DetallePedido.reduce((total, detalle) => {
-                    if (detalle.Productos) {
-                        return total + detalle.cantidad;
-                    }
-                    return total;
-                }, 0);
-                return { ...pedido, ventas };
-            });
+    //         const ventasPorProducto = pedidosFiltrados.map((pedido) => {
+    //             const ventas = pedido.DetallePedido.reduce((total, detalle) => {
+    //                 if (detalle.Productos) {
+    //                     return total + detalle.cantidad;
+    //                 }
+    //                 return total;
+    //             }, 0);
+    //             return { ...pedido, ventas };
+    //         });
 
-            // Filtrar los productos por el texto ingresado
-            const productosFiltrados = ventasPorProducto.filter((pedido) =>
-                pedido.DetallePedido.some((detalle) =>
-                    detalle.Productos.nombre.toLowerCase().includes(searchText.toLowerCase())
-                )
-            );
-            // Ordenar la lista de productos por ventas
-            productosFiltrados.sort((a, b) => b.ventas - a.ventas);
+    //         // Filtrar los productos por el texto ingresado
+    //         const productosFiltrados = ventasPorProducto.filter((pedido) =>
+    //             pedido.DetallePedido.some((detalle) =>
+    //                 detalle.Productos.nombre.toLowerCase().includes(searchText.toLowerCase())
+    //             )
+    //         );
+    //         // Ordenar la lista de productos por ventas
+    //         productosFiltrados.sort((a, b) => b.ventas - a.ventas);
 
-            // Actualizar el estado con los productos filtrados y ordenados
-            setPedidos(productosFiltrados);
-        } else {
-            alert("Por favor, seleccione ambas fechas antes de realizar la búsqueda.");
-        }
-    };
+    //         // Actualizar el estado con los productos filtrados y ordenados
+    //         setPedidos(productosFiltrados);
+    //     } else {
+    //         alert("Por favor, seleccione ambas fechas antes de realizar la búsqueda.");
+    //     }
+    // };
 
     const pedidosBebida = pedidos
         .filter((pedido) => pedido.id !== undefined && pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
@@ -134,7 +122,7 @@ const RankingProductos = () => {
     return (
         <div>
             <Container fluid>
-                <Row className="mt-3">
+                {/* <Row className="mt-3">
                     <Col>
                         <Form>
                             <Col>
@@ -174,7 +162,7 @@ const RankingProductos = () => {
                             </Col>
                         </Form>
                     </Col>
-                </Row>
+                </Row> */}
                 <Row className="mt-3">
                     <Col>
                         <h2>Ranking de Productos</h2>

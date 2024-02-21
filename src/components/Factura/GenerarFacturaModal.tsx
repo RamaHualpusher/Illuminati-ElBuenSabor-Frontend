@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { IPedido } from "../../interface/IPedido";
 import AdminBar from "../NavBar/AdminBar";
-import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useLocation } from "react-router-dom";
 import { Button, Container, Table } from "react-bootstrap";
 import FacturaPDF from "./FacturaPDF";
 import GenerarCreditoModal from "./GenerarCreditoModal";
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
+import { IDetallePedido } from "../../interface/IDetallePedido";
+import { IProducto } from "../../interface/IProducto";
 
 interface GenerarFacturaModalProps {
   closeModal: () => void;
@@ -48,10 +49,38 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
     const dataToExport = pedido?.DetallePedido || [];
 
     // Genera un nombre de archivo basado en el número de pedido
-    const filename = `pedido_${pedido?.numeroPedido}_detalles`;
+    const filename = `Pedido ${pedido?.Usuario?.nombre} ${pedido?.Usuario?.apellido}-Num.${pedido?.numeroPedido}_detalles`;
 
     // Llama a la función para exportar a Excel
     exportTableDataToExcel(dataToExport, filename);
+  };
+
+  // Función para calcular el total del pedido
+  const calcularTotalPedido = (detallePedido: IDetallePedido[]) => {
+    let total = 0;
+    for (let i = 0; i < detallePedido.length; i++) {
+        const detalle = detallePedido[i];
+        const productos = detalle.Productos;
+        // Verificar si Productos es un array
+        if (Array.isArray(productos)) {
+            for (let j = 0; j < productos.length; j++) {
+                const producto = productos[j];
+                total += producto.precio || 0;
+            }
+        } else {
+            // Si Productos no es un array, asumir que es un solo producto
+            total += productos.precio || 0;
+        }
+    }
+    return total;
+};
+
+  const generatePDF = () => {
+    // Lógica de generación del PDF
+    FacturaPDF({ pedido });
+
+    // Cerrar el modal después de generar el PDF
+    closeModal();
   };
 
   return (
@@ -92,14 +121,14 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 <div className="details-container">
                   <h2>DETALLES DEL PEDIDO</h2>
                   <p>Número de Pedido: {getOrDefault(pedido?.numeroPedido, "")}</p>
-                  <p>Fecha: {getOrDefault(pedido?.fechaPedido?.toLocaleString(), "")}</p>
-                  <p>
+                  <p>Fecha: {getOrDefault(new Date(pedido.fechaPedido).toLocaleString(), "")}</p>
+                  {/* <p>
                     Forma de Pago: {pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}
-                  </p>
+                  </p> */}
                 </div>
                 {/* Tabla de detalles del pedido */}
                 <div className="table-container">
-                  <Table className="table">
+                  <Table className="table" style={{ maxWidth: '500px', margin: '0 auto' }}>
                     <thead>
                       <tr>
                         <th>Cantidad</th>
@@ -114,7 +143,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                           <td>
                             <ul>
                               {Array.isArray(detalle?.Productos) && detalle.Productos.map((producto) => (
-                                <li key={producto?.idProducto}>
+                                <li key={producto?.id}>
                                   {getOrDefault(producto?.nombre, "Nombre Desconocido")}
                                 </li>
                               ))}
@@ -123,7 +152,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                           <td>
                             <ul>
                               {Array.isArray(detalle?.Productos) && detalle?.Productos.map((producto) => (
-                                <li key={producto?.idProducto}>
+                                <li key={producto?.id}>
                                   {producto?.precio}
                                 </li>
                               ))}
@@ -135,7 +164,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     <tfoot>
                       <tr>
                         <td colSpan={3} style={{ textAlign: "right" }}>
-                          Total: ${getOrDefault(pedido?.totalPedido, 0)}
+                          <b> Total: ${calcularTotalPedido} </b>
                         </td>
                       </tr>
                     </tfoot>
@@ -143,7 +172,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 </div>
                 {/* Información de pago */}
                 <div className="payment-container">
-                  <div className="left-section" style={{ textAlign: "left" }}>
+                  <div className="left-section" style={{ textAlign: "center" }}>
                     <p>
                       Tipo de Pago: {getOrDefault(pedido?.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
                       <br />
@@ -151,7 +180,6 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                       <br />
                       Envío: {getOrDefault(pedido?.esDelivery ? "Domicilio" : "Retiro local", "")}
                     </p>
-                    <p>Total a pagar: ${getOrDefault(pedido?.totalPedido, 0)}</p>
                   </div>
                   <div className="right-section">
                     <h2>Envío</h2>
@@ -173,22 +201,13 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                 {/* Botones para descargar PDF y generar nota de crédito */}
                 <div className="pdf-container">
                   <div className="pdf-container">
-                    {/* Botón para descargar PDF */}
-                    <PDFDownloadLink
-                      document={<FacturaPDF pedido={pedido} />}
-                      fileName="factura.pdf"
-                    >
-                      {({ loading }) => (
-                        <Button variant="primary">
-                          {loading ? "Cargando..." : "Descargar PDF"}
-                        </Button>
-                      )}
-                    </PDFDownloadLink>
-                    {/* Botón para generar nota de crédito */}
+                    <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => generatePDF()}>
+                      Descargar PDF
+                    </Button>
                     <Button variant="secondary" onClick={openCreditoModal}>
                       Nota de Crédito
                     </Button>
-                    <Button variant="success" onClick={() => exportToExcel(pedido)}>
+                    <Button variant="success" style={{ marginLeft: "10px" }} onClick={() => exportToExcel(pedido)}>
                       Exportar a Excel
                     </Button>
                   </div>

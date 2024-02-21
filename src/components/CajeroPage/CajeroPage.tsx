@@ -64,10 +64,12 @@ const CajeroPage = () => {
     }
   };
 
-  // Manejar el cambio de estado en el filtro
+  //cambio realizado 26/1/2024
+  // Cambiar el estado de un pedido seleccionado
   const handleEstadoFiltroChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFiltroEstado(event.target.value);
     setPedidoSeleccionado(null); // Reiniciar el pedido seleccionado
+    setPedidos(pedidosComplete); // Resetear la lista de pedidos
   };
 
   return (

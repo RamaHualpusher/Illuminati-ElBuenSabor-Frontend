@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { IRol } from "../../../interface/IRol";
-import { IEditUsuarioFromAdmin } from "../../../interface/IUsuario";
-import { IEditEmpleadoModalProps } from "../../../interface/IUsuario";
+import { IEditUsuarioFromAdmin, IEditEmpleadoModalProps } from "../../../interface/IUsuario";
+import axios from "axios";
 
 const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
   show,
@@ -13,11 +13,11 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
   const initializeUsuario = (empleado: IEditUsuarioFromAdmin | null): IEditUsuarioFromAdmin => {
     return empleado || {
       id: 0,
+      activo: true,
       nombre: "",
       apellido: "",
       email: "",
-      telefono: "",
-      activo: true,
+      telefono: "",      
       rol: { id: 0, nombreRol: "" },
       domicilio: {
         id: 0,
@@ -41,13 +41,12 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
       setUsuario(selectedEmpleado);
       setOriginalEmail(selectedEmpleado.email);
     }
-  }, [selectedEmpleado]);
+  }, [selectedEmpleado]);  
 
   useEffect(() => {
-    fetch(API_URL + "rol")
-      .then((response) => response.json())
-      .then((data) => {
-        setRoles(data);
+    axios.get(API_URL + "rol")
+      .then((response) => {
+        setRoles(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -66,14 +65,12 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
     handleClose(); // Cerrar el modal
   }
 
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     // Verificar si el correo electrónico ya está en uso
     try {
-      const response = await fetch(API_URL + "usuario/empleados");
-      const empleados = await response.json();
+      const response = await axios.get(API_URL + "usuario/empleados");
+      const empleados = response.data;
 
       if (usuario.email !== originalEmail) {
         const emailExists = empleados.some((empleado: any) => empleado.email === usuario.email);
@@ -106,6 +103,7 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
     setIsSubmitting(false);
     handleClose();
   };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -133,7 +131,8 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese apellido"
                   value={usuario.apellido}
-                  onChange={(event) => setUsuario({ ...usuario, apellido: event.target.value })}
+                  onChange={(event) => 
+                    setUsuario({ ...usuario, apellido: event.target.value })}
                   required
                 />
               </Form.Group>
@@ -162,7 +161,8 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese teléfono"
                   value={usuario.telefono}
-                  onChange={(event) => setUsuario({ ...usuario, telefono: event.target.value })}
+                  onChange={(event) => 
+                    setUsuario({ ...usuario, telefono: event.target.value })}
                   required
                 />
               </Form.Group>

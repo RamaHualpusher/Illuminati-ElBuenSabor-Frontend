@@ -38,14 +38,8 @@ const IndexRouter = () => {
       <Route path="/pedido/:id" element={<DetallesPedidoDelivery />} />
       <Route path="/cocina/ingredientes" element={<Ingredientes />} />
       <Route path="/cocina/productos" element={<Productos />} />
-
-      {/* Ruta para la generación de factura */}
-      <Route
-        path="/factura/:pedido"
-        element={<GenerarFacturaModal closeModal={closeModal} />}
-      />
-
-      {/* Ruta para página de error 404 */}
+      <Route path="/factura/:pedido" element={<GenerarFacturaModal 
+      closeModal={closeModal} />}/>
       <Route path="*" element={<Page404 />} />
     </Routes>
   );

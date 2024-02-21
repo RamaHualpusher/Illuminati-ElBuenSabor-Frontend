@@ -79,8 +79,12 @@ const Productos: React.FC = () => {
     const fetchProductos = async () => {
       try {
         const responseData = await handleRequest("GET", API_URL + "producto");
-        setProductos(responseData);
-        setProductosComplete(responseData);
+        if (Array.isArray(responseData)) {
+          setProductos(responseData);
+          setProductosComplete(responseData);
+        } else {
+          console.error("La respuesta de la solicitud no es un array:", responseData);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -96,6 +100,10 @@ const Productos: React.FC = () => {
     fetchProductos();
     fetchRubros();
   }, []);
+
+  if (!productos || !rubros || productos.length === 0 || rubros.length === 0) {
+    return <p>Cargando... </p>;
+  }  
 
   // Agregar un producto
   const handleProductoAdd = async (producto: IProducto) => {
@@ -204,13 +212,17 @@ const Productos: React.FC = () => {
             </select>
           </Form.Group>
           {noProductosMessage}
-          <GenericTable
-            data={filteredProductos}
-            columns={columns}
-            actions={actions}
-            onAdd={handleAddModalOpen}
-            onUpdate={handleEditModalOpen}
-          />
+          {Array.isArray(filteredProductos) && filteredProductos.length > 0 ? (
+            <GenericTable
+              data={filteredProductos}
+              columns={columns}
+              actions={actions}
+              onAdd={handleAddModalOpen}
+              onUpdate={handleEditModalOpen}
+            />
+          ) : (
+            <p>No hay productos disponibles.</p>
+          )}
         </div>
       </Row>
       {/* Modales de edición y agregado */}

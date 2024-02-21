@@ -1,33 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
 import { useAuth0 } from '@auth0/auth0-react';
-import { IEditUsuarioFromCliente } from '../../../interface/IUsuario';
+import { IEditUsuarioFromCliente, IUsuario } from '../../../interface/IUsuario';
+import EditPerfil from './EditPerfil';
 
 const MiPerfil: React.FC = () => {
-    // Obtener información de autenticación del usuario
     const { user, isAuthenticated } = useAuth0();
     const defaultImage = process.env.PUBLIC_URL + "/logo512.png";
+    const [selectedCliente, setSelectedCliente] = useState<IUsuario | null>(null);
+    const [editModalShow, setEditModalShow] = useState(false);
 
-    // Verificar si el usuario está autenticado, si no, mostrar mensaje
-    if (!isAuthenticated || !user) {
-        return <p>No estás autenticado. Por favor inicia sesión.</p>;
-    }
-
-    // Obtener el ID del usuario y crear objeto usuario para edición
-    const idUsuario = user.sub ? parseInt(user.sub) : 0;
-    const usuario: IEditUsuarioFromCliente = {
-        id: idUsuario,
-        nombre: user.given_name || '',
-        apellido: user.family_name || '',
-        email: user.email || '',
+    const [usuario, setUsuario] = useState<IEditUsuarioFromCliente>({
+        id: 0,
+        nombre: '',
+        apellido: '',
+        email: '',
         clave: '',
         telefono: '',
+        domicilio:{
+            calle:"",
+            numero: 0,
+            localidad: ""
+          }
+    });
+
+    useEffect(() => {
+        if (user) {
+            const idUsuario = user.sub ? parseInt(user.sub) : 0;
+            const usuarioData: IEditUsuarioFromCliente = {
+                id: idUsuario,
+                nombre: user.given_name || '',
+                apellido: user.family_name || '',
+                email: user.email || '',
+                clave: '',
+                telefono: '',
+                domicilio:{
+                    calle:"",
+                    numero: 0,
+                    localidad: ""
+                  }
+            };
+            setUsuario(usuarioData);
+        }
+    }, [user]);
+
+    const handleEditModalOpen = () => {
+        setEditModalShow(true);
     };
 
-    // Manejar error de carga de imagen por defecto
-    const handleImageError = (
-        e: React.SyntheticEvent<HTMLImageElement, Event>
-    ) => {
-        e.currentTarget.src = defaultImage;
+    const handleEditModalClose = () => {
+        setEditModalShow(false);
     };
 
     return (
@@ -44,7 +66,6 @@ const MiPerfil: React.FC = () => {
                                 className="rounded-circle"
                                 src={user?.picture}
                                 alt={user?.name}
-                                onError={handleImageError}
                                 style={{ width: "100px", height: "100px" }}
                             />
                         </div>
@@ -53,9 +74,19 @@ const MiPerfil: React.FC = () => {
                             <p className="card-text">Nombre: {usuario.nombre} {usuario.apellido}</p>
                             <p className="card-text">Email: {usuario.email}</p>
                         </div>
+                        <Button variant="primary" onClick={handleEditModalOpen} style={{ marginTop: "20px" }}>
+                            Editar datos
+                        </Button>
+                        <EditPerfil
+                            show={editModalShow}
+                            handleClose={handleEditModalClose}
+                            handleClienteEdit={handleEditModalOpen}
+                            selectedCliente={selectedCliente}
+                        />
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };
