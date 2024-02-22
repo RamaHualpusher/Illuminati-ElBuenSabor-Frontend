@@ -86,7 +86,9 @@ export interface IRankingUsuario {
       activo: boolean;
       nombreRol: string;
   };
-  cantidadPedidos: number;
-  estadoPedido: string;
-  fechaPedido: Date;
+  pedidos: {
+      id: number,
+      estadoPedido: string,
+      fechaPedido: Date
+  }[];
 }
