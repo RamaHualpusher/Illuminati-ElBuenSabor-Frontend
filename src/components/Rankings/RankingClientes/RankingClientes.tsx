@@ -12,7 +12,7 @@ const RankingClientes = () => {
   const [filteredClientes, setFilteredClientes] = useState<IRankingUsuario[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
-  const API_URL = "http://localhost:8080/api";
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     const fetchData = async () => {

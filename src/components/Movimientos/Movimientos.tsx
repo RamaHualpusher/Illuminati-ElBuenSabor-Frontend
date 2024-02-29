@@ -17,7 +17,7 @@ const Movimientos = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const pedidosResponse = await axios.get(`http://localhost:8080/api/pedido`);
+        const pedidosResponse = await axios.get(`${API_URL}/pedido`);
         const pedidosData = pedidosResponse.data;
         console.log(pedidosData)
         // Ordenar los pedidos por fecha de pedido de manera descendente
