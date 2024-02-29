@@ -2,22 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import GenericTable from '../GenericTable/GenericTable';
 import { IColumn } from '../../interface/ICamposTablaGenerica';
-import { IPedido } from "../../interface/IPedido";
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 import axios from 'axios';
-import { IDetallePedido } from '../../interface/IDetallePedido';
-import { IProducto } from '../../interface/IProducto';
+import { IDetallePedido, IDetallePedidoDto } from '../../interface/IDetallePedido';
+import { IProducto, IProductoDto } from '../../interface/IProducto';
 import { IIngredientes } from '../../interface/IIngredientes';
+import { IPedidoDto } from '../../interface/IPedido';
 
 const Movimientos = () => {
 
-  const [pedidos, setPedidos] = useState<IPedido[]>([]);  
+  const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);  
   const API_URL = process.env.REACT_APP_API_URL || "";
   
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const pedidosResponse = await axios.get(`${API_URL}pedido`);
+        const pedidosResponse = await axios.get(`http://localhost:8080/api/pedido`);
         const pedidosData = pedidosResponse.data;
         console.log(pedidosData)
         // Ordenar los pedidos por fecha de pedido de manera descendente
@@ -32,75 +32,69 @@ const Movimientos = () => {
     fetchData();
   }, []);
 
-  const columns: IColumn<IPedido>[] = [
+  const columns: IColumn<IPedidoDto>[] = [
     { title: "Fecha de Pedido", field: "fechaPedido", width: 2 },
     { title: "Número de Pedido", field: "numeroPedido", width: 2 },
     {
       title: "Cliente",
-      field: "Usuario",
-      render: (pedido: IPedido) => {
-        const usuario= pedido.Usuario;       
+      field: "usuario",
+      render: (pedido: IPedidoDto) => {
+        const usuario = pedido.usuario;
+        console.log("Usuario desde la carga de columnas: "+usuario);
         return (
-          <span>            
-            {usuario ? `${usuario?.apellido} ${usuario?.nombre}` : 'Usuario no disponible'}
+          <span>
+            {usuario ? `${usuario.apellido} ${usuario.nombre}` : 'Usuario no disponible'}
           </span>
         );
       },
       width: 2
-    },    
+    },   
     {
       title: "Total del Pedido",
       field: "esEfectivo",
-      render: (pedido: IPedido) => {        
+      render: (pedido: IPedidoDto) => {        
         return <div>{calcularTotalPedido(pedido)}</div>;
       },
       width: 2
     },
-    {
-      title: "Precio de Costo",
-      field: "fechaPedido",
-      width: 2,
-      render: (pedido: IPedido) => {       
-        return <div>{calcularPrecioCosto(pedido)}</div>;
-      },
-    },
-    {
-      title: "Ganancia Neta",
-      field: "fechaPedido",
-      width: 2,
-      render: (pedido: IPedido) => {        
-        return <div>{calcularTotalPedido(pedido) - calcularGananciaNeta(pedido)}</div>;
-      },
-    },
+     {
+       title: "Precio de Costo",
+       field: "fechaPedido",
+       width: 2,
+       render: (pedido: IPedidoDto) => {       
+         return <div>{calcularPrecioCosto(pedido)}</div>;
+       },
+     },
+     {
+       title: "Ganancia Neta",
+       field: "fechaPedido",
+       width: 2,
+       render: (pedido: IPedidoDto) => {        
+         return <div>{calcularGananciaNeta(pedido)}</div>;
+       },
+     },
   ];
   
 
-  const calcularGananciaNeta = (pedido: IPedido) => {
-    let costoTotalMovimiento = 0;
-
-    if (pedido && pedido.DetallePedido) { // Verificar si pedido y pedido.DetallePedido están definidos
-      pedido.DetallePedido.forEach((detalle: IDetallePedido) => {
-        const producto: IProducto = detalle.Productos;
-        if (producto.productoIngrediente && producto.productoIngrediente.length > 0) {
-          producto.productoIngrediente.forEach((pi) => {
-            const ingrediente: IIngredientes = pi.ingredientes;
-            costoTotalMovimiento += pi.cantidad * ingrediente.precioCosto;
-          });
-        }
-      });
+  const calcularGananciaNeta = (pedido: IPedidoDto) => {
+    let gananciaNeta = 0;
+  
+    if (pedido && pedido.detallesPedidos) {
+      const totalPedido = calcularTotalPedido(pedido);
+      const precioCosto = calcularPrecioCosto(pedido);
+      gananciaNeta = totalPedido - precioCosto;
     }
-
-    const totalPedido = calcularTotalPedido(pedido);
-    const gananciaNeta = totalPedido - costoTotalMovimiento;
+  
+    
     return gananciaNeta;
   };
 
-  const calcularTotalPedido = (pedido: IPedido) => {
+  const calcularTotalPedido = (pedido: IPedidoDto) => {
     let totalPedido = 0;
 
-    if (pedido && pedido.DetallePedido) { // Verificar si pedido y pedido.DetallePedido están definidos
-      pedido.DetallePedido.forEach((detalle: IDetallePedido) => {
-        const producto: IProducto = detalle.Productos;
+    if (pedido && pedido.detallesPedidos) { // Verificar si pedido y pedido.DetallePedido están definidos
+      pedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+        const producto: IProductoDto = detalle.producto;
         totalPedido += producto.precio * detalle.cantidad;
       });
     }
@@ -108,23 +102,25 @@ const Movimientos = () => {
     return totalPedido;
   };
 
-  const calcularPrecioCosto = (pedido: IPedido) => {
+  const calcularPrecioCosto = (pedido: IPedidoDto) => {
     let costoTotalIngredientes = 0;
-  
-    if (pedido && pedido.DetallePedido) {
-      pedido.DetallePedido.forEach((detalle: IDetallePedido) => {
-        const producto: IProducto = detalle.Productos;
-        if (producto.productoIngrediente && producto.productoIngrediente.length > 0) {
-          producto.productoIngrediente.forEach((pi) => {
-            const ingrediente: IIngredientes = pi.ingredientes;
-            costoTotalIngredientes += pi.cantidad * ingrediente.precioCosto;
+    
+    if (pedido && pedido.detallesPedidos) {
+      pedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+        const producto: IProductoDto = detalle.producto;
+        if (producto && producto.productosIngredientes && producto.productosIngredientes.length > 0) {
+          producto.productosIngredientes.forEach((pi) => {
+            const ingrediente: IIngredientes = pi.ingrediente;
+            const cantidadProducto = detalle.cantidad; // Obtener la cantidad del producto en el detalle del pedido
+            costoTotalIngredientes += pi.cantidad * ingrediente.precioCosto * cantidadProducto; // Multiplicar por la cantidad del producto
           });
         }
       });
     }
-  
+    
     return costoTotalIngredientes;
   };
+  
 
   const exportDataToExcel = () => {
     const dataToExport = pedidos;
@@ -138,7 +134,7 @@ const Movimientos = () => {
         <Row className="mt-3">
           <Col className="d-flex justify-content-center">
             {pedidos && pedidos.length > 0 ? (
-              <GenericTable<IPedido>
+              <GenericTable<IPedidoDto>
                 data={pedidos}
                 columns={columns}
                 actions={{

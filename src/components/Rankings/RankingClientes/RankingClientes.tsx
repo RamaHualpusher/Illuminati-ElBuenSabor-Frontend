@@ -26,6 +26,7 @@ const RankingClientes = () => {
         console.error(error);
       }
     };
+    
 
     fetchData();
   }, [API_URL]);
