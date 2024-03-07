@@ -17,7 +17,7 @@ const RankingClientes = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<IRankingUsuario[]>(`${API_URL}/usuario/ranking`);
+        const response = await axios.get<IRankingUsuario[]>(`${API_URL}usuario/ranking`);
         setClientes(response.data);
         // Filtrar clientes sin pedidos
         const filteredData = response.data.filter(cliente => cliente.pedidos.length > 0 && cliente.pedidos[0].id !== null);
@@ -99,14 +99,6 @@ const RankingClientes = () => {
       <Container fluid>
         <Row className="mt-3">
           <Col>
-            <div className="mb-3 d-flex justify-content-between" style={{ width: "500px", margin: "10px" }}>
-              <input
-                type="text"
-                placeholder="Buscar por nombre o apellido"
-                value={searchText}
-                onChange={handleSearchChange}
-              />
-            </div>
             <GenericTable
               columns={columns}
               data={filteredClientes}

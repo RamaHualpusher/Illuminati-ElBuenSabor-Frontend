@@ -6,11 +6,13 @@ import { IProducto } from "../../interface/IProducto";
 import { SearchContext } from "../Buscador/SearchContext";
 import DondeEstamos from "../DondeEstamos/DondeEstamos";
 import Catalogo from "./Catalogo";
-
+import axios from 'axios';
 /**
  * Componente de la página principal (landing page) de la aplicación.
  */
 export default function Landing() {
+  const API_URL = process.env.REACT_APP_API_URL || "";
+
   // Estado para la categoría seleccionada
   const [selectedCategory, setSelectedCategory] = useState("Todos");
 
@@ -28,10 +30,9 @@ export default function Landing() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('assets/data/productosLanding.json');
-        const data = await response.json();
-        setProductos(data);
-        setFilteredProducts(data);
+        const response = await axios.get(`${API_URL}producto`);
+        setProductos(response.data);
+        setFilteredProducts(response.data);
       } catch (error) {
         console.error(error);
       }

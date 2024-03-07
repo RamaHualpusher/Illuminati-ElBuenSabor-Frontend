@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { IPedido } from "../../interface/IPedido";
+import { IPedidoDto } from "../../interface/IPedido";
 import { IAction, IColumn } from "../../interface/ICamposTablaGenerica";
 import GenericTable from "../GenericTable/GenericTable";
 import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
-import { IDetallePedido } from "../../interface/IDetallePedido";
-import { IProducto } from "../../interface/IProducto";
+import { IDetallePedidoDto } from "../../interface/IDetallePedido";
+import { IProductoDto } from "../../interface/IProducto";
 import axios from "axios";
+import GenerarFacturaModal from "./GenerarFacturaModal";
 
 const Factura = () => {
-  const [facturas, setFacturas] = useState<IPedido[] | null>(null);
-  const [selectedPedido, setSelectedPedido] = useState<IPedido | null>(null);
+  const [facturas, setFacturas] = useState<IPedidoDto[]>();
+  const [selectedPedido, setSelectedPedido] = useState<IPedidoDto>();
   const API_URL = process.env.REACT_APP_API_URL || "";
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const facturasResponse = await axios.get(`${API_URL}pedido`);
         const facturasData = facturasResponse.data;
-        console.log(facturasData)
+        console.log(facturasData);
         // Ordenar los pedidos por fecha de pedido de manera descendente
         facturasData.sort((a: { fechaPedido: string | number | Date; }, b: { fechaPedido: string | number | Date; }) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
 
         setFacturas(facturasResponse.data);
       } catch (error) {
         console.error('Error al cargar datos:', error);
-      }    
+      }
     };
     fetchData();
   }, []);
@@ -33,70 +35,64 @@ const Factura = () => {
   if (!facturas || facturas === null) return <Spinner />;
 
   // Define las columnas para la tabla de facturas
-  const columns: IColumn<IPedido>[] = [
+  const columns: IColumn<IPedidoDto>[] = [
     {
       title: "Numero Factura",
       field: "numeroPedido",
-      render: (pedido: IPedido) => (
-        <span>{pedido.numeroPedido.toString()}</span>
+      render: (facturas: IPedidoDto) => (
+        <span>{facturas.numeroPedido.toString()}</span>
       ),
     },
     {
       title: "Usuario",
-      field: "Usuario",
-      render: (pedido: IPedido) => (
-        <span>{pedido.Usuario ?`${pedido.Usuario?.apellido} ${pedido.Usuario?.nombre}`: ""}</span>
+      field: "usuario",
+      render: (facturas: IPedidoDto) => (
+        <span>{facturas.usuario ? `${facturas.usuario?.apellido} ${facturas.usuario?.nombre}` : ""}</span>
       ),
     },
     {
       title: "Fecha",
       field: "fechaPedido",
-      render: (pedido: IPedido) => <span>{pedido.fechaPedido.toString()}</span>,
+      render: (facturas: IPedidoDto) => <span>{facturas.fechaPedido.toString()}</span>,
     },
     {
       title: "Total del Pedido",
       field: "fechaPedido",
-      render: (pedido: IPedido) => (
-        <div>{calcularTotalPedido(pedido.DetallePedido)}</div>
+      render: (facturas: IPedidoDto) => (
+        <div>{calcularTotalPedido(facturas)}</div>
       ),
       width: 2
     },
   ];
 
   // Función para calcular el total del pedido
-  const calcularTotalPedido = (detallePedido: IDetallePedido[]) => {
-    let total = 0;
-    if (detallePedido) { 
-    detallePedido.forEach((detalle: IDetallePedido) => {
-      if (Array.isArray(detalle.Productos)) { // Verificar si Productos es un array
-        detalle.Productos.forEach((producto: IProducto) => {
-          total += producto.precio || 0;
-        });
-      }
-    });
-  }
-    return total;
-  };
+  const calcularTotalPedido = (facturas: IPedidoDto) => {
+    let totalPedido = 0;
 
+    if (facturas && facturas.detallesPedidos) {
+      facturas?.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+        const producto: IProductoDto = detalle.producto;
+        totalPedido += producto?.precio * detalle?.cantidad;
+      });
+    }
+
+    return totalPedido;
+  };
 
   // Define las acciones disponibles para cada fila de la tabla
   const actions: IAction = {
     view: true, // Acción de ver detalles
   };
 
-  // Función para manejar la acción de "ver detalles"
-  const onView = (pedido: IPedido) => {
-    setSelectedPedido(pedido);
-    const encodedPedido = encodeURIComponent(JSON.stringify(pedido));
-    window.open(`/factura/${encodedPedido}`, "_blank"); // Abre una nueva ventana con los detalles del pedido
+  const onView = (factura: IPedidoDto) => {
+    if (factura) {
+      setSelectedPedido(factura);
+      setShowModal(false); // Muestra el modal de GenerarFacturaModal
+      // Abre una nueva ventana con la ruta adecuada
+      // window.open(`/factura/${factura.numeroPedido}`, "_blank");
+    }
   };
 
-  // Función para cerrar el modal de detalles
-  const closeModal = () => {
-    setSelectedPedido(null);
-  };
-
-  
   return (
     <div>
       <Container fluid>
@@ -107,17 +103,20 @@ const Factura = () => {
         </Row>
         <Row className="mt-3">
           <Col>
-            {/* Renderiza la tabla de facturas */}
-            <GenericTable<IPedido>
+            <GenericTable<IPedidoDto>
               data={facturas}
               columns={columns}
               actions={actions}
-              onView={onView}                         
+              onView={onView}
               showDate={true}
             />
           </Col>
         </Row>
       </Container>
+      <GenerarFacturaModal
+        closeModal={() => setShowModal(true)}
+        factura={selectedPedido}  // Pasa la factura seleccionada como prop
+        />
     </div>
   );
 };

@@ -4,20 +4,19 @@ import GenericTable from '../GenericTable/GenericTable';
 import { IColumn } from '../../interface/ICamposTablaGenerica';
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 import axios from 'axios';
-import { IDetallePedido, IDetallePedidoDto } from '../../interface/IDetallePedido';
-import { IProducto, IProductoDto } from '../../interface/IProducto';
+import { IDetallePedidoDto } from '../../interface/IDetallePedido';
+import { IProductoDto } from '../../interface/IProducto';
 import { IIngredientes } from '../../interface/IIngredientes';
 import { IPedidoDto } from '../../interface/IPedido';
 
 const Movimientos = () => {
-
   const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);  
   const API_URL = process.env.REACT_APP_API_URL || "";
   
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const pedidosResponse = await axios.get(`${API_URL}/pedido`);
+        const pedidosResponse = await axios.get(`${API_URL}pedido`);
         const pedidosData = pedidosResponse.data;
         console.log(pedidosData)
         // Ordenar los pedidos por fecha de pedido de manera descendente
@@ -83,22 +82,26 @@ const Movimientos = () => {
       const totalPedido = calcularTotalPedido(pedido);
       const precioCosto = calcularPrecioCosto(pedido);
       gananciaNeta = totalPedido - precioCosto;
-    }
-  
+    }  
     
     return gananciaNeta;
   };
 
-  const calcularTotalPedido = (pedido: IPedidoDto) => {
+  const calcularTotalPedido = (pedidos: IPedidoDto) => {
     let totalPedido = 0;
-
-    if (pedido && pedido.detallesPedidos) { // Verificar si pedido y pedido.DetallePedido están definidos
-      pedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
-        const producto: IProductoDto = detalle.producto;
-        totalPedido += producto.precio * detalle.cantidad;
-      });
+  
+    if (!pedidos || !pedidos.detallesPedidos) {
+      return totalPedido;
     }
-
+  
+    pedidos.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+      if (!detalle || !detalle.producto || !detalle.producto.precio || !detalle.cantidad) {
+        return;
+      }
+  
+      totalPedido += detalle.producto.precio * detalle.cantidad;
+    });
+  
     return totalPedido;
   };
 
@@ -157,3 +160,4 @@ const Movimientos = () => {
 };
 
 export default Movimientos;
+

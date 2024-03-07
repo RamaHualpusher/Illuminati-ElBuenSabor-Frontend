@@ -10,6 +10,12 @@ export interface IIngredientes extends IBase{
   rubro: IRubro;
 }
 
+export interface IIngredientesDto extends IBase{
+  nombre: string;
+  precioCosto: number;  
+  rubro: IRubro;
+}
+
 export interface IAddIngredienteModalProps {
   show: boolean;
   handleClose: () => void;
