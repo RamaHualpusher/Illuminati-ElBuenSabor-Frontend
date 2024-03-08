@@ -1,8 +1,8 @@
 import { jsPDF } from "jspdf";
-import { IProducto } from "../../interface/IProducto";
-import { IPedido } from "../../interface/IPedido";
+import { IProductoDto } from "../../interface/IProducto";
+import { IPedidoDto } from "../../interface/IPedido";
 
-const FacturaPDF = ({ pedido }: { pedido: IPedido }) => {
+const FacturaPDF = (selectedPedido: IPedidoDto) => {
   const generatePDF = () => {
     const pdf = new jsPDF();
     let yPosition = 20;
@@ -15,48 +15,48 @@ const FacturaPDF = ({ pedido }: { pedido: IPedido }) => {
     pdf.text("El Buen Sabor", margin, yPosition);
     yPosition += 10;
 
-    pdf.text(`Número de Pedido: ${pedido?.numeroPedido}`, margin, yPosition);
+    pdf.text(`Número de Pedido: ${selectedPedido?.numeroPedido}`, margin, yPosition);
     yPosition += 10;
-    pdf.text(`Fecha: ${new Date(pedido.fechaPedido).toLocaleString()}`, margin, yPosition);
+    pdf.text(`Fecha: ${new Date(selectedPedido.fechaPedido).toLocaleString()}`, margin, yPosition);
     yPosition += 10;
 
-    if (pedido?.DetallePedido) {
-      pedido.DetallePedido.forEach((detalle) => {
+    if (selectedPedido?.detallesPedidos) {
+      selectedPedido.detallesPedidos.forEach((detalle) => {
         yPosition += 7;
 
         pdf.text(`Cantidad: ${detalle.cantidad || ""}`, margin, yPosition);
         yPosition += 7;
 
-        if (detalle.Productos) {
-          const productInfo = getProductInfo(detalle.Productos);
+        if (detalle.producto) {
+          const productInfo = getProductInfo(detalle.producto);
           pdf.text(`Producto: ${productInfo || "Nombre Desconocido"}`, margin, yPosition);
           yPosition += 7;          
         }
 
-        pdf.text(`Precio Unit.: ${getProductPrice(detalle.Productos) || "Precio Desconocido"}`, margin, yPosition);
+        pdf.text(`Precio Unit.: ${getProductPrice(detalle.producto) || "Precio Desconocido"}`, margin, yPosition);
         yPosition += 15;
       });
     }
 
-    pdf.text(`Tipo de Pago: ${pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}`, margin, yPosition);
+    pdf.text(`Tipo de Pago: ${selectedPedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}`, margin, yPosition);
     yPosition += 10;
     pdf.text(`Descuento:`, margin, yPosition);
     yPosition += 10;
-    pdf.text(`Envío: ${pedido?.esDelivery ? "Domicilio" : "Retiro local"}`, margin, yPosition);
+    pdf.text(`Envío: ${selectedPedido?.esDelivery ? "Domicilio" : "Retiro local"}`, margin, yPosition);
     yPosition += 10;
     
     pdf.text(
-      `Dirección: ${pedido?.Usuario?.domicilio?.calle  || ""} ${pedido?.Usuario?.domicilio?.numero || 0}, ${pedido?.Usuario?.domicilio?.localidad || ""}`,
+      `Dirección: ${selectedPedido?.usuario?.domicilio?.calle  || ""} ${selectedPedido?.usuario?.domicilio?.numero || 0}, ${selectedPedido?.usuario?.domicilio?.localidad || ""}`,
       margin,
       yPosition
     );
 
     yPosition += 40;
-    pdf.text(`Muchas gracias ${pedido?.Usuario?.nombre} ${pedido?.Usuario?.apellido} por comprar en`, margin, yPosition);
+    pdf.text(`Muchas gracias ${selectedPedido?.usuario?.nombre} ${selectedPedido?.usuario?.apellido} por comprar en`, margin, yPosition);
     yPosition += 10;
     pdf.text(`El Buen Sabor`, margin, yPosition);
 
-    pdf.save(`Factura de ${pedido?.Usuario?.nombre} ${pedido?.Usuario?.apellido}-Num. ${pedido?.numeroPedido}.pdf`);
+    pdf.save(`Factura de ${selectedPedido?.usuario?.nombre} ${selectedPedido?.usuario?.apellido}-Num. ${selectedPedido?.numeroPedido}.pdf`);
   };
 
   return generatePDF();
@@ -64,7 +64,7 @@ const FacturaPDF = ({ pedido }: { pedido: IPedido }) => {
 
 export default FacturaPDF;
 
-const getProductInfo = (producto: IProducto | undefined): string => {
+const getProductInfo = (producto: IProductoDto | undefined): string => {
   if (!producto) {
     return "";
   }
@@ -72,6 +72,6 @@ const getProductInfo = (producto: IProducto | undefined): string => {
   return `${producto.nombre || "Nombre Desconocido"}`;
 };
 
-const getProductPrice = (producto: IProducto | undefined): number | undefined => {
+const getProductPrice = (producto: IProductoDto | undefined): number | undefined => {
   return producto?.precio || 0;
 };

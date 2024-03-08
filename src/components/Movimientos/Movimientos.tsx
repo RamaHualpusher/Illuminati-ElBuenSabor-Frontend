@@ -2,16 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import GenericTable from '../GenericTable/GenericTable';
 import { IColumn } from '../../interface/ICamposTablaGenerica';
-import { IPedido } from "../../interface/IPedido";
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 import axios from 'axios';
-import { IDetallePedido } from '../../interface/IDetallePedido';
-import { IProducto } from '../../interface/IProducto';
+import { IDetallePedidoDto } from '../../interface/IDetallePedido';
+import { IProductoDto } from '../../interface/IProducto';
 import { IIngredientes } from '../../interface/IIngredientes';
+import { IPedidoDto } from '../../interface/IPedido';
 
 const Movimientos = () => {
-
-  const [pedidos, setPedidos] = useState<IPedido[]>([]);  
+  const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);  
   const API_URL = process.env.REACT_APP_API_URL || "";
   
   useEffect(() => {
@@ -32,99 +31,99 @@ const Movimientos = () => {
     fetchData();
   }, []);
 
-  const columns: IColumn<IPedido>[] = [
+  const columns: IColumn<IPedidoDto>[] = [
     { title: "Fecha de Pedido", field: "fechaPedido", width: 2 },
     { title: "Número de Pedido", field: "numeroPedido", width: 2 },
     {
       title: "Cliente",
-      field: "Usuario",
-      render: (pedido: IPedido) => {
-        const usuario= pedido.Usuario;       
+      field: "usuario",
+      render: (pedido: IPedidoDto) => {
+        const usuario = pedido.usuario;
+        console.log("Usuario desde la carga de columnas: "+usuario);
         return (
-          <span>            
-            {usuario ? `${usuario?.apellido} ${usuario?.nombre}` : 'Usuario no disponible'}
+          <span>
+            {usuario ? `${usuario.apellido} ${usuario.nombre}` : 'Usuario no disponible'}
           </span>
         );
       },
       width: 2
-    },    
+    },   
     {
       title: "Total del Pedido",
       field: "esEfectivo",
-      render: (pedido: IPedido) => {        
+      render: (pedido: IPedidoDto) => {        
         return <div>{calcularTotalPedido(pedido)}</div>;
       },
       width: 2
     },
-    {
-      title: "Precio de Costo",
-      field: "fechaPedido",
-      width: 2,
-      render: (pedido: IPedido) => {       
-        return <div>{calcularPrecioCosto(pedido)}</div>;
-      },
-    },
-    {
-      title: "Ganancia Neta",
-      field: "fechaPedido",
-      width: 2,
-      render: (pedido: IPedido) => {        
-        return <div>{calcularTotalPedido(pedido) - calcularGananciaNeta(pedido)}</div>;
-      },
-    },
+     {
+       title: "Precio de Costo",
+       field: "fechaPedido",
+       width: 2,
+       render: (pedido: IPedidoDto) => {       
+         return <div>{calcularPrecioCosto(pedido)}</div>;
+       },
+     },
+     {
+       title: "Ganancia Neta",
+       field: "fechaPedido",
+       width: 2,
+       render: (pedido: IPedidoDto) => {        
+         return <div>{calcularGananciaNeta(pedido)}</div>;
+       },
+     },
   ];
   
 
-  const calcularGananciaNeta = (pedido: IPedido) => {
-    let costoTotalMovimiento = 0;
-
-    if (pedido && pedido.DetallePedido) { // Verificar si pedido y pedido.DetallePedido están definidos
-      pedido.DetallePedido.forEach((detalle: IDetallePedido) => {
-        const producto: IProducto = detalle.Productos;
-        if (producto.productosIngredientes && producto.productosIngredientes.length > 0) {
-          producto.productosIngredientes.forEach((pi) => {
-            const ingrediente: IIngredientes = pi.ingrediente;
-            costoTotalMovimiento += pi.cantidad * ingrediente.precioCosto;
-          });
-        }
-      });
-    }
-
-    const totalPedido = calcularTotalPedido(pedido);
-    const gananciaNeta = totalPedido - costoTotalMovimiento;
+  const calcularGananciaNeta = (pedido: IPedidoDto) => {
+    let gananciaNeta = 0;
+  
+    if (pedido && pedido.detallesPedidos) {
+      const totalPedido = calcularTotalPedido(pedido);
+      const precioCosto = calcularPrecioCosto(pedido);
+      gananciaNeta = totalPedido - precioCosto;
+    }  
+    
     return gananciaNeta;
   };
 
-  const calcularTotalPedido = (pedido: IPedido) => {
+  const calcularTotalPedido = (pedidos: IPedidoDto) => {
     let totalPedido = 0;
-
-    if (pedido && pedido.DetallePedido) { // Verificar si pedido y pedido.DetallePedido están definidos
-      pedido.DetallePedido.forEach((detalle: IDetallePedido) => {
-        const producto: IProducto = detalle.Productos;
-        totalPedido += producto.precio * detalle.cantidad;
-      });
+  
+    if (!pedidos || !pedidos.detallesPedidos) {
+      return totalPedido;
     }
-
+  
+    pedidos.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+      if (!detalle || !detalle.producto || !detalle.producto.precio || !detalle.cantidad) {
+        return;
+      }
+  
+      totalPedido += detalle.producto.precio * detalle.cantidad;
+    });
+  
     return totalPedido;
   };
 
-  const calcularPrecioCosto = (pedido: IPedido) => {
+  const calcularPrecioCosto = (pedido: IPedidoDto) => {
     let costoTotalIngredientes = 0;
-  
-    if (pedido && pedido.DetallePedido) {
-      pedido.DetallePedido.forEach((detalle: IDetallePedido) => {
-        const producto: IProducto = detalle.Productos;
-        if (producto.productosIngredientes && producto.productosIngredientes.length > 0) {
+    
+    if (pedido && pedido.detallesPedidos) {
+      pedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+        const producto: IProductoDto = detalle.producto;
+        if (producto && producto.productosIngredientes && producto.productosIngredientes.length > 0) {
           producto.productosIngredientes.forEach((pi) => {
             const ingrediente: IIngredientes = pi.ingrediente;
-            costoTotalIngredientes += pi.cantidad * ingrediente.precioCosto;
+            const cantidadProducto = detalle.cantidad; // Obtener la cantidad del producto en el detalle del pedido
+            costoTotalIngredientes += pi.cantidad * ingrediente.precioCosto * cantidadProducto; // Multiplicar por la cantidad del producto
           });
         }
       });
     }
-  
+    
     return costoTotalIngredientes;
   };
+  
 
   const exportDataToExcel = () => {
     const dataToExport = pedidos;
@@ -138,7 +137,7 @@ const Movimientos = () => {
         <Row className="mt-3">
           <Col className="d-flex justify-content-center">
             {pedidos && pedidos.length > 0 ? (
-              <GenericTable<IPedido>
+              <GenericTable<IPedidoDto>
                 data={pedidos}
                 columns={columns}
                 actions={{
@@ -161,3 +160,4 @@ const Movimientos = () => {
 };
 
 export default Movimientos;
+

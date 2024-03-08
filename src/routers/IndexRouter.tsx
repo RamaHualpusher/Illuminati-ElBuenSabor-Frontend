@@ -8,7 +8,7 @@ import Delivery from "../screens/Delivery";
 import DetallesPedidoDelivery from "../components/Pedidos/DetallesPedidoDelivery";
 import Page404 from "../components/Page404/Page404";
 import GenerarFacturaModal from "../components/Factura/GenerarFacturaModal";
-import { IPedido } from "../interface/IPedido";
+import { IPedidoDto } from "../interface/IPedido";
 import Productos from "../components/Stock/Producto/Productos";
 import Ingredientes from "../components/Stock/Ingrediente/Ingrediente";
 import DetallesPedidoCocinero from "../components/CocineroPage/DetallePedidoCocinero";
@@ -16,15 +16,13 @@ import DetallesPedidoCajero from "../components/CajeroPage/DetallesPedidoCajero"
 import PedidosID from "../components/Rankings/RankingClientes/PedidosID";
 
 const IndexRouter = () => {
-  const [selectedPedido, setSelectedPedido] = useState<IPedido | null>(null);
+  const [factura, setFactura] = useState<IPedidoDto | null>(null);
 
-  // Función para cerrar el modal de generación de factura
   const closeModal = () => {
-    setSelectedPedido(null);
+    setFactura(null);
   };
 
   return (
-
     <Routes>
       {/* Rutas para las diferentes páginas */}
       <Route path="/*" element={<UserRouter />} />
@@ -38,8 +36,8 @@ const IndexRouter = () => {
       <Route path="/pedido/:id" element={<DetallesPedidoDelivery />} />
       <Route path="/cocina/ingredientes" element={<Ingredientes />} />
       <Route path="/cocina/productos" element={<Productos />} />
-      <Route path="/factura/:pedido" element={<GenerarFacturaModal 
-      closeModal={closeModal} />}/>
+      <Route path="/factura/:numeroPedido" element={<GenerarFacturaModal
+        closeModal={closeModal} factura={factura} />} />
       <Route path="*" element={<Page404 />} />
     </Routes>
   );

@@ -40,6 +40,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const { isAuthenticated, loginWithRedirect } = useAuth0();
   const [showAlert, setShowAlert] = useState(!isAuthenticated);
   const [confirmDisabled, setConfirmDisabled] = useState(!isAuthenticated);
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Almacena la URL actual antes de redirigir
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
@@ -49,7 +50,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
-        const response = await axios.get("/assets/data/clienteTabla.json");
+        const response = await axios.get(`${API_URL}usuario/clientes`);
         const usuarioData = response.data[0];
         setUsuario(usuarioData);
       } catch (error) {
@@ -59,7 +60,8 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
     const fetchProductos = async () => {
       try {
-        const response = await axios.get("/assets/data/productosLanding.json");
+        const response = await axios.get(`${API_URL}producto`);
+        console.log(response)
         setProductos(response.data);
       } catch (error) {
         console.log(error);
@@ -102,19 +104,28 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   };
 
   const convertirCartItemADetallePedido = (cartItem: CartItem): IDetallePedido => {
-    const productoEncontrado = productos?.find(producto => producto.id === cartItem.id);
-
+    // Verificar si productos es null o no está definido
+    if (!productos) {
+        throw new Error("La lista de productos está vacía.");
+    }
+    
+    const productoEncontrado = productos.find(producto => producto.id === cartItem.id);
+    
     if (productoEncontrado) {
+      // Imprimir el producto encontrado para verificar que tenga el id esperado
+      console.log("Producto encontrado:", productoEncontrado);
+      
       const detallePedido: IDetallePedido = {
-        id: 0,
+        id: Math.floor(Math.random()*1000),
         cantidad: cartItem.quantity,
-        Productos: productoEncontrado, // Producto ahora es un solo objeto
+        Productos: productoEncontrado        
       };
+      
       return detallePedido;
     } else {
       throw new Error(`Producto con ID ${cartItem.id} no encontrado.`);
     }
-  };
+};
 
   useEffect(() => {
     if (usuario !== null && cartItems.length > 0) {
@@ -125,7 +136,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         esDelivery ? subTotal + costoDelivery : subTotal - subTotal * descuento;
 
       const nuevoPedidoCompleto: IPedido = {
-        id: 0,
         numeroPedido: 0,
         horaEstimadaFin: new Date(),
         esDelivery: esDelivery,
@@ -202,7 +212,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       // });
 
       try {
-        const response = await axios.post("/api/pedido", pedidoCompleto); //Cambiar la url
+        const response = await axios.post(`${API_URL}pedido`, pedidoCompleto); //Cambiar la url
         console.log("Pedido enviado al servidor:", response.data);
       } catch (error) {
         console.error("Error al enviar el pedido:", error);

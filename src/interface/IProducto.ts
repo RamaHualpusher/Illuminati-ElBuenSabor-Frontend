@@ -1,5 +1,5 @@
 import { IRubro } from "./IRubro";
-import { IProductoIngrediente } from "./IProductoIngrediente";
+import { IProductoIngrediente, IProductoIngredienteDto } from "./IProductoIngrediente";
 import { IBase } from "./IBase";
 
 export interface IProducto extends IBase { 
@@ -14,6 +14,19 @@ export interface IProducto extends IBase {
   esBebida: boolean;
   rubro: IRubro;
   productosIngredientes?: IProductoIngrediente[];
+}
+export interface IProductoDto extends IBase { 
+  nombre: string;
+  tiempoEstimadoCocina: number;
+  denominacion: string;
+  imagen: string;
+  stockMinimo: number;
+  stockActual: number;
+  preparacion: string;
+  precio: number;
+  esBebida: boolean;
+  rubro: IRubro;
+  productosIngredientes?: IProductoIngredienteDto[];
 }
 
 export interface IEditProductoModalProps {

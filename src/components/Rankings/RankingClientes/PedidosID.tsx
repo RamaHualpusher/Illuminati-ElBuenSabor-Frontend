@@ -8,13 +8,13 @@ import AdminBar from '../../NavBar/AdminBar';
 const PedidosID: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [pedidos, setPedidos] = useState<IPedido[]>([]);
-    const API_URL = "/assets/data/pedidos.json";
+    const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
         const fetchPedidos = async () => {
             try {
                 if (id) {
-                    const response = await axios.get(API_URL);
+                    const response = await axios.get(API_URL+'pedido/usuario/'+id);
                     const data = response.data;
                     const pedidosFiltrados = data.filter((pedido: IPedido) => pedido.Usuario.id === parseInt(id));
                     setPedidos(pedidosFiltrados || []);
