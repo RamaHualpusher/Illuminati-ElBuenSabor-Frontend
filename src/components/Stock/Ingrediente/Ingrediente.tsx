@@ -7,6 +7,7 @@ import { handleRequest } from '../../FuncionRequest/FuncionRequest';
 import { IAction, IColumn } from '../../../interface/ICamposTablaGenerica';
 import GenericTable from "../../GenericTable/GenericTable";
 import { IRubro } from "../../../interface/IRubro";
+import axios from 'axios';
 
 const Ingrediente: React.FC = () => {
   // Estados del componente
@@ -19,8 +20,7 @@ const Ingrediente: React.FC = () => {
   const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
   const [selectedRubroName, setSelectedRubroName] = useState<string>("");
   const [filteredIngredientes, setFilteredIngredientes] = useState<IIngredientes[]>([]);
-  const API_URL = "/assets/data/ingredientesEjemplo.json";
-  const API_URL_Rubro = "assets/data/rubrosIngredientesEjemplo.json";
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Configuración de acciones y columnas de la tabla
   const actions: IAction = {
@@ -54,7 +54,6 @@ const Ingrediente: React.FC = () => {
   // Filtrar ingredientes según el rubro seleccionado
   useEffect(() => {
     const filterIngredientes = () => {
-      console.log("selectedRubro", selectedRubro);
       if (selectedRubro) {
         const filtered = ingredComplete.filter(
           (ingrediente) => ingrediente.rubro.id === selectedRubro
@@ -74,10 +73,11 @@ const Ingrediente: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       // Obtener ingredientes desde la API
+      const url = API_URL+"ingrediente";
       try {
-        const responseData = await handleRequest('GET', API_URL);
-        setIngred(responseData);
-        setIngredComplete(responseData);
+        const responseData = await axios.get(url);
+        setIngred(responseData.data);
+        setIngredComplete(responseData.data);
       } catch (error) {
         console.log(error);
       }
@@ -86,8 +86,8 @@ const Ingrediente: React.FC = () => {
     const fetchRubros = async () => {
       // Obtener rubros desde la API
       try {
-        const responseData = await handleRequest("GET", API_URL_Rubro);
-        setRubros(responseData);
+        const responseData = await axios.get(API_URL+"rubro");
+        setRubros(responseData.data);
       } catch (error) {
         console.log(error);
       }
@@ -101,26 +101,47 @@ const Ingrediente: React.FC = () => {
   }
 
   // Agregar nuevo ingrediente mediante la API
-  const handleIngredienteAdd = async (Ingredientes: IIngredientes) => {
+  const handleIngredienteAdd = async (Ingrediente: IIngredientes) => {
     try {
-      const newProducto = await handleRequest('POST', '/assets/data/ingredientesEjemplo.json', Ingredientes);
+      const updatedIngrediente={
+        ...Ingrediente,
+      }
 
-      setIngred([...ingred, newProducto]);
+      const responseIngrediente=await axios.post(`${API_URL}ingrediente`, updatedIngrediente);
+
+      if(responseIngrediente){
+        setIngred([...ingred,responseIngrediente.data]);
+        setIngredComplete([...ingredComplete,responseIngrediente.data]);
+        console.log("se cargo el nuevo Ingrediente: "+updatedIngrediente)
+      }else{
+        console.log("no se pudo cargar el ingrediente")
+      }
+
     } catch (error) {
       console.log(error);
     }
   };
 
   // Editar ingrediente existente mediante la API
-  const handleIngredienteEdit = async (producto: IIngredientes) => {
+  const handleIngredienteEdit = async (ingrediente: IIngredientes) => {
     try {
-      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.id}`, producto);
 
-      const newData = [...ingred];
-      const index = newData.findIndex((item) => item.id === producto.id);
-      newData[index] = updatedProducto;
+      const updatedIngrediente={
+        ...ingrediente,
+      }
 
-      setIngred(newData);
+      const responsengrediente = await axios.put(`${API_URL}ingrediente/${ingrediente.id}`,updatedIngrediente);
+
+      if(responsengrediente.data){
+        const newData= ingred.map((item)=> item.id===ingrediente.id ? responsengrediente.data:item);
+        setIngredComplete(newData);
+        setIngred(newData);
+        console.log("ingrediente actualizado : "+updatedIngrediente);
+      }else{
+        console.log("no se pudo actualizar el ingrediente")
+      }
+
+      
     } catch (error) {
       console.log(error);
     }

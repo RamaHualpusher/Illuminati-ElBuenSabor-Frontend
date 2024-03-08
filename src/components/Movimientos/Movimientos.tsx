@@ -81,9 +81,9 @@ const Movimientos = () => {
     if (pedido && pedido.DetallePedido) { // Verificar si pedido y pedido.DetallePedido están definidos
       pedido.DetallePedido.forEach((detalle: IDetallePedido) => {
         const producto: IProducto = detalle.Productos;
-        if (producto.productoIngrediente && producto.productoIngrediente.length > 0) {
-          producto.productoIngrediente.forEach((pi) => {
-            const ingrediente: IIngredientes = pi.ingredientes;
+        if (producto.productosIngredientes && producto.productosIngredientes.length > 0) {
+          producto.productosIngredientes.forEach((pi) => {
+            const ingrediente: IIngredientes = pi.ingrediente;
             costoTotalMovimiento += pi.cantidad * ingrediente.precioCosto;
           });
         }
@@ -114,9 +114,9 @@ const Movimientos = () => {
     if (pedido && pedido.DetallePedido) {
       pedido.DetallePedido.forEach((detalle: IDetallePedido) => {
         const producto: IProducto = detalle.Productos;
-        if (producto.productoIngrediente && producto.productoIngrediente.length > 0) {
-          producto.productoIngrediente.forEach((pi) => {
-            const ingrediente: IIngredientes = pi.ingredientes;
+        if (producto.productosIngredientes && producto.productosIngredientes.length > 0) {
+          producto.productosIngredientes.forEach((pi) => {
+            const ingrediente: IIngredientes = pi.ingrediente;
             costoTotalIngredientes += pi.cantidad * ingrediente.precioCosto;
           });
         }
