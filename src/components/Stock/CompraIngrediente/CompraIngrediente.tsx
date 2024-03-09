@@ -11,10 +11,10 @@ const CompraIngrediente: React.FC = () => {
   const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null);
   const [ingred, setIngred] = useState<IIngredientes[]>([]);
 
-  const API_URL = "/assets/data/ingredientesEjemplo.json";
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
-    fetch(API_URL)
+    fetch(API_URL+"ingrediente")
       .then((response) => response.json())
       .then((data) => {
         setIngredientes(data);
@@ -40,22 +40,25 @@ const CompraIngrediente: React.FC = () => {
     return difference <= 0 || difference <= stockMinimoPercentage / 100 * item.stockMinimo;
   };
 
+  //Abrir modal de edición
   const openEditModal = () => {
     setEditModalShow(true);
   };
 
+  //Cerrar modal de edición
   const handleEditModalClose = () => {
     setSelectedIngrediente(null);
     setEditModalShow(false);
   };
 
-  const handleIngredienteEdit = async (producto: IIngredientes) => {
+  //Editar ingrediente, se envía a la API y se actualiza el estado del mismo
+  const handleIngredienteEdit = async (ingrediente: IIngredientes) => {
     try {
-      const updatedProducto = await handleRequest('PUT', `/assets/data/ingredientesEjemplo.json/${producto.id}`, producto);
+      const updatedIngrediente = await handleRequest('PUT', `${API_URL}ingrediente/${ingrediente.id}`, ingrediente);
 
       const newData = [...ingred];
-      const index = newData.findIndex((item) => item.id === producto.id);
-      newData[index] = updatedProducto;
+      const index = newData.findIndex((item) => item.id === ingrediente.id);
+      newData[index] = updatedIngrediente;
 
       setIngred(newData);
     } catch (error) {
