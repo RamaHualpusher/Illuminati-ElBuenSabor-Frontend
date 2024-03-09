@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IPedidoDto } from "../../interface/IPedido";
 import AdminBar from "../NavBar/AdminBar";
 import { Button, Container, Table } from "react-bootstrap";
@@ -6,24 +6,21 @@ import FacturaPDF from "./FacturaPDF";
 import GenerarCreditoModal from "./GenerarCreditoModal";
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
-import { IProductoDto } from "../../interface/IProducto";
 
 interface GenerarFacturaModalProps {
   factura?: IPedidoDto | null;
   closeModal: () => void;
 }
 
-const getOrDefault = (value: any, defaultValue: any) => {
-  return value !== null && value !== undefined ? value : defaultValue;
-};
-
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ closeModal, factura }) => {
   const [showCreditoModal, setShowCreditoModal] = useState(false);
-  const [showModal, setShowModal] = useState(true);
 
-  const openCreditoModal = () => {
-    setShowCreditoModal(true);
-    setShowModal(false);
+  const handleCredito  = () => {
+    if (factura) {
+      setShowCreditoModal(true);
+      const url = `/credito/${factura.numeroPedido}`;
+      window.open(url, "_blank");
+    }
   };
 
   const exportToExcel = (factura: IPedidoDto) => {
@@ -32,16 +29,24 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ closeModal, f
     exportTableDataToExcel(dataToExport, filename);
   };
 
+  const getOrDefault = (value: any, defaultValue: any) => {
+    return value !== null && value !== undefined ? value : defaultValue;
+  };
+
   const calcularTotalPedido = (factura: IPedidoDto) => {
     let total = 0;
 
     factura.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
       total += detalle.producto.precio * detalle.cantidad;
     });
-
     return total;
   };
 
+  const calcularDescuento = (factura: IPedidoDto) => {
+    return factura.esEfectivo ? 0.1 : 0;
+  };
+
+  const totalConDescuento = factura ? calcularTotalPedido(factura) * (1 - calcularDescuento(factura)) : 0;
 
   const generatePDF = () => {
     if (!factura) {
@@ -108,10 +113,17 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ closeModal, f
                     <p>
                       Tipo de Pago: {getOrDefault(factura.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
                       <br />
-                      Descuento:
+                      Descuento: {factura.esEfectivo ? "10%" : "0%"}
                       <br />
                       Envío: {getOrDefault(factura.esDelivery ? "Domicilio" : "Retiro local", "")}
                     </p>
+                  </div>                  
+                  <div className="center-section" style={{ textAlign: "center" }}>
+                    {calcularDescuento(factura) === 0.1 && (
+                      <p>
+                        <b> Total con descuento (10%): ${totalConDescuento} </b>
+                      </p>
+                    )}
                   </div>
                   <div className="right-section">
                     <h2>Envío</h2>
@@ -122,6 +134,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ closeModal, f
                     </p>
                   </div>
                 </div>
+
                 <div className="thankyou-container text-center">
                   <p>
                     Muchas gracias {factura.usuario.nombre} {factura.usuario.apellido} por comprar en
@@ -134,7 +147,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ closeModal, f
                     <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => generatePDF()}>
                       Descargar PDF
                     </Button>
-                    <Button variant="secondary" onClick={openCreditoModal}>
+                    <Button variant="secondary" onClick={handleCredito }>
                       Nota de Crédito
                     </Button>
                     <Button variant="success" style={{ marginLeft: "10px" }} onClick={() => exportToExcel(factura)}>
@@ -148,10 +161,13 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ closeModal, f
         </div>
       )}
       {showCreditoModal && (
-        <GenerarCreditoModal closeModal={() => setShowCreditoModal(false)} />
+        <GenerarCreditoModal 
+        closeModal={() => setShowCreditoModal(false)}
+        factura={factura} />
       )}
     </>
   );
 };
 
 export default GenerarFacturaModal;
+

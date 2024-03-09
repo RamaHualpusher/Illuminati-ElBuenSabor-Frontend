@@ -1,8 +1,8 @@
 import { jsPDF } from "jspdf";
-import { IProducto } from "../../interface/IProducto";
-import { IPedido } from "../../interface/IPedido";
+import { IProductoDto } from "../../interface/IProducto";
+import { IPedidoDto } from "../../interface/IPedido";
 
-const NotaCreditoPDF = ({ pedido }: { pedido: IPedido }) => {
+const NotaCreditoPDF = ({ pedido }: { pedido: IPedidoDto }) => {
   const generatePDF = () => {
     const pdf = new jsPDF();
     let yPosition = 20;
@@ -20,20 +20,20 @@ const NotaCreditoPDF = ({ pedido }: { pedido: IPedido }) => {
     pdf.text(`Fecha: ${new Date(pedido.fechaPedido).toLocaleString()}`, margin, yPosition);
     yPosition += 10;
 
-    if (pedido?.DetallePedido) {
-      pedido.DetallePedido.forEach((detalle) => {
+    if (pedido?.detallesPedidos) {
+      pedido.detallesPedidos.forEach((detalle) => {
         yPosition += 7;
 
         pdf.text(`Cantidad: ${detalle.cantidad || ""}`, margin, yPosition);
         yPosition += 7;
 
-        if (detalle.Productos) {
-          const productInfo = getProductInfo(detalle.Productos);
+        if (detalle.producto) {
+          const productInfo = getProductInfo(detalle.producto);
           pdf.text(`Producto: ${productInfo || "Nombre Desconocido"}`, margin, yPosition);
           yPosition += 7;          
         }
 
-        pdf.text(`Precio Unit.: ${getProductPrice(detalle.Productos) || "Precio Desconocido"}`, margin, yPosition);
+        pdf.text(`Precio Unit.: ${getProductPrice(detalle.producto) || "Precio Desconocido"}`, margin, yPosition);
         yPosition += 15;
       });
     }
@@ -46,17 +46,17 @@ const NotaCreditoPDF = ({ pedido }: { pedido: IPedido }) => {
     yPosition += 10;
     
     pdf.text(
-      `Dirección: ${pedido?.Usuario?.domicilio?.calle  || ""} ${pedido?.Usuario?.domicilio?.numero || 0}, ${pedido?.Usuario?.domicilio?.localidad || ""}`,
+      `Dirección: ${pedido?.usuario?.domicilio?.calle  || ""} ${pedido?.usuario?.domicilio?.numero || 0}, ${pedido?.usuario?.domicilio?.localidad || ""}`,
       margin,
       yPosition
     );
 
     yPosition += 40;
-    pdf.text(`Muchas gracias ${pedido?.Usuario?.nombre} ${pedido?.Usuario?.apellido} por utilizar la Nota de Crédito`, margin, yPosition);
+    pdf.text(`Muchas gracias ${pedido?.usuario?.nombre} ${pedido?.usuario?.apellido} por utilizar la Nota de Crédito`, margin, yPosition);
     yPosition += 10;
     pdf.text(`El Buen Sabor`, margin, yPosition);
 
-    pdf.save(`Nota Credito de ${pedido?.Usuario?.nombre} ${pedido?.Usuario?.apellido}-Num. ${pedido?.numeroPedido}.pdf`);
+    pdf.save(`Nota Credito de ${pedido?.usuario?.nombre} ${pedido?.usuario?.apellido}-Num. ${pedido?.numeroPedido}.pdf`);
   };
 
   // Llama a la función de generación cuando se renderiza el componente
@@ -68,7 +68,7 @@ const NotaCreditoPDF = ({ pedido }: { pedido: IPedido }) => {
 
 export default NotaCreditoPDF;
 
-const getProductInfo = (producto: IProducto | undefined): string => {
+const getProductInfo = (producto: IProductoDto | undefined): string => {
   if (!producto) {
     return "";
   }
@@ -76,6 +76,6 @@ const getProductInfo = (producto: IProducto | undefined): string => {
   return `${producto.nombre || "Nombre Desconocido"}`;
 };
 
-const getProductPrice = (producto: IProducto | undefined): number | undefined => {
+const getProductPrice = (producto: IProductoDto | undefined): number | undefined => {
   return producto?.precio || 0;
 };

@@ -14,9 +14,11 @@ import Ingredientes from "../components/Stock/Ingrediente/Ingrediente";
 import DetallesPedidoCocinero from "../components/CocineroPage/DetallePedidoCocinero";
 import DetallesPedidoCajero from "../components/CajeroPage/DetallesPedidoCajero";
 import PedidosID from "../components/Rankings/RankingClientes/PedidosID";
+import GenerarCreditoModal from "../components/Factura/GenerarCreditoModal";
 
 const IndexRouter = () => {
   const [factura, setFactura] = useState<IPedidoDto | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const closeModal = () => {
     setFactura(null);
@@ -37,7 +39,9 @@ const IndexRouter = () => {
       <Route path="/cocina/ingredientes" element={<Ingredientes />} />
       <Route path="/cocina/productos" element={<Productos />} />
       <Route path="/factura/:numeroPedido" element={<GenerarFacturaModal
-        closeModal={closeModal} factura={factura} />} />
+        closeModal={() => setShowModal(true)} factura={factura} />} />
+      <Route path="/credito/:numeroPedido" element={<GenerarCreditoModal
+        closeModal={() => setShowModal(true)} factura={factura} />} />
       <Route path="*" element={<Page404 />} />
     </Routes>
   );

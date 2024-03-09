@@ -87,9 +87,10 @@ const Factura = () => {
   const onView = (factura: IPedidoDto) => {
     if (factura) {
       setSelectedPedido(factura);
+      console.log(factura)
       setShowModal(false); // Muestra el modal de GenerarFacturaModal
       // Abre una nueva ventana con la ruta adecuada
-      // window.open(`/factura/${factura.numeroPedido}`, "_blank");
+      window.open(`/factura/${factura.numeroPedido}`, "_blank");
     }
   };
 
@@ -113,10 +114,11 @@ const Factura = () => {
           </Col>
         </Row>
       </Container>
+      {showModal &&(
       <GenerarFacturaModal
-        closeModal={() => setShowModal(true)}
+        closeModal={() => setShowModal(false)}
         factura={selectedPedido}  // Pasa la factura seleccionada como prop
-        />
+        />)}
     </div>
   );
 };

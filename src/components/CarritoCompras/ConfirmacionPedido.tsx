@@ -10,7 +10,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { IDetallePedido } from "../../interface/IDetallePedido";
 import { Alert, Button } from 'react-bootstrap';
 
-
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
   modificarCantidad: (id: number, cantidad: number) => void;

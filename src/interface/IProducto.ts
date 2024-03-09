@@ -15,6 +15,7 @@ export interface IProducto extends IBase {
   rubro: IRubro;
   productoIngrediente?: IProductoIngrediente[];
 }
+
 export interface IProductoDto extends IBase { 
   nombre: string;
   tiempoEstimadoCocina: number;
