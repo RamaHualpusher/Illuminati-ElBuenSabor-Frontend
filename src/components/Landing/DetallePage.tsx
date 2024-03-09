@@ -57,14 +57,14 @@ const DetallePage = () => {
     return <Spinner />;
   }
 
-  const ingredientesList = producto.productoIngrediente?.map((productoIngrediente, index) => (
+  const ingredientesList = producto.productosIngredientes?.map((productoIngrediente, index) => (
     <span key={productoIngrediente?.id}>
-      {productoIngrediente?.ingredientes?.nombre}
-      {index !== (producto.productoIngrediente?.length ?? 0) - 1 ? ', ' : '.'}
+      {productoIngrediente?.ingrediente?.nombre}
+      {index !== (producto.productosIngredientes?.length ?? 0) - 1 ? ', ' : '.'}
     </span>
   ));
 
-  const ingredientesSection = (producto.productoIngrediente?.length ?? 0) > 0 && (
+  const ingredientesSection = (producto.productosIngredientes?.length ?? 0) > 0 && (
     <p className="card-text">Ingredientes: {ingredientesList}</p>
   );
 

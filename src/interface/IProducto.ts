@@ -13,7 +13,7 @@ export interface IProducto extends IBase {
   precio: number;
   esBebida: boolean;
   rubro: IRubro;
-  productoIngrediente?: IProductoIngrediente[];
+  productosIngredientes?: IProductoIngrediente[];
 }
 
 export interface IProductoDto extends IBase { 

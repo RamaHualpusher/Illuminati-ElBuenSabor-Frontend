@@ -6,6 +6,7 @@ import { IRubro } from '../../../../interface/IRubro';
 import { handleRequest } from '../../../FuncionRequest/FuncionRequest';
 import { IAction, IColumn } from '../../../../interface/ICamposTablaGenerica';
 import GenericTable from "../../../GenericTable/GenericTable";
+import axios from 'axios';
 
 const RubroIngrediente: React.FC = () => {
   // Estados del componente
@@ -25,8 +26,8 @@ const RubroIngrediente: React.FC = () => {
   useEffect(() => {
     const fetchRubros = async () => {
       try {
-        const response = await handleRequest("GET", API_URL);
-        setRubros(response);
+        const response = await axios.get(API_URL);
+        setRubros(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -42,8 +43,8 @@ const RubroIngrediente: React.FC = () => {
   // Función para manejar la adición de un rubro
   const handleRubroAdd = async (rubro: IRubro) => {
     try {
-      const newRubro = await handleRequest('POST', API_URL, rubro);
-      setRubros([...rubros, newRubro]);
+      const newRubro = await axios.post(`${API_URL}rubro`, rubro);
+      setRubros([...rubros, newRubro.data]);
       setAddModalShow(false);
     } catch (error) {
       console.log(error);
@@ -70,10 +71,8 @@ const RubroIngrediente: React.FC = () => {
   // Función para manejar la edición de un rubro
   const handleRubroEdit = async (rubro: IRubro) => {
     try {
-      const updatedRubro = await handleRequest('PUT', `${API_URL}/${rubro.id}`, rubro);
-      const updatedRubros = rubros.map((r) =>
-        r.id === updatedRubro.id ? updatedRubro : r
-      );
+      const updatedRubro = await axios.put(`${API_URL}rubro.id`, rubro);
+      const updatedRubros = rubros.map((r) => r)
       setRubros(updatedRubros);
     } catch (error) {
       console.log(error);

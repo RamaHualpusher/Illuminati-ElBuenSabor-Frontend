@@ -3,6 +3,7 @@ import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import { IIngredientes } from '../../../interface/IIngredientes';
 import { IRubro } from '../../../interface/IRubro';
 import { IEditIngredientesModalProps } from '../../../interface/IIngredientes';
+import axios from 'axios';
 
 const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
   show,
@@ -22,34 +23,30 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
     rubro: { id: 0, nombre: '' },
   });
 
-  const [ingredientes, setIngredientes] = useState<IIngredientes>(initializeIngredientes);
+  const [ingrediente, setIngrediente] = useState<IIngredientes>(initializeIngredientes);
   const [rubros, setRubros] = useState<IRubro[]>([]);
   const unidades = ["Kg", "g", "Mg", "l", "Ml"];
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Cargar los rubros al cargar el componente
   useEffect(() => {
-    fetch('/assets/data/rubrosIngredientesEjemplo.json')
-      .then(response => response.json())
-      .then(data => {
-        setRubros(data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    const fetchRubros=async()=>{
+      let URL=API_URL + "rubro";
+      try{
+        const response= await axios.get(URL);
+        setRubros(response.data);
+      }catch(error){
+        console.error("Error al cargar rubros "+ error);
+      }
+    }
+    fetchRubros();
   }, []);
 
   // Actualizar los campos del formulario al cambiar el ingrediente seleccionado
   useEffect(() => {
     if (selectedIngredientes) {
-      setIngredientes({
-        id: selectedIngredientes.id,
-        nombre: selectedIngredientes.nombre || '',
-        activo: selectedIngredientes.activo || false,
-        stockMinimo: selectedIngredientes.stockMinimo || 0,
-        stockActual: selectedIngredientes.stockActual || 0,
-        precioCosto: selectedIngredientes.precioCosto || 0,
-        unidadMedida: selectedIngredientes.unidadMedida || "Kg",
-        rubro: selectedIngredientes.rubro || { id: 0, nombre: '' },
+      setIngrediente({
+        ...selectedIngredientes,
       });
     }
   }, [selectedIngredientes]);
@@ -58,11 +55,11 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (selectedIngredientes) {
-      const selectedRubro = rubros.find((rubro) => rubro.id === ingredientes.rubro.id);
+      const selectedRubro = rubros.find((rubro) => rubro.id === ingrediente.rubro.id);
 
       // Crear un nuevo objeto Ingredientes con los datos editados
       const updatedIngredientes: IIngredientes = {
-        ...ingredientes,
+        ...ingrediente,
         rubro: selectedRubro || { id: 0, nombre: '' },
       };
       handleIngredientesEdit(updatedIngredientes);
@@ -72,20 +69,20 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
 
   // Función para manejar la conversión de unidades de medida
   const handleUM = (unidad: string) => {
-    setIngredientes({ ...ingredientes, unidadMedida: unidad });
+    setIngrediente({ ...ingrediente, unidadMedida: unidad });
 
     const selectedUnidad = unidades.find((u) => u === unidad);
-    const currentUnidad = unidades.find((u) => u === ingredientes.unidadMedida);
+    const currentUnidad = unidades.find((u) => u === ingrediente.unidadMedida);
 
     if (selectedUnidad && currentUnidad) {
       const selectedFactor = unidades.indexOf(selectedUnidad);
       const currentFactor = unidades.indexOf(currentUnidad);
       const conversionFactor = 10 ** (selectedFactor - currentFactor);
 
-      setIngredientes({
-        ...ingredientes,
-        stockActual: ingredientes.stockActual * conversionFactor,
-        stockMinimo: ingredientes.stockMinimo * conversionFactor,
+      setIngrediente({
+        ...ingrediente,
+        stockActual: ingrediente.stockActual * conversionFactor,
+        stockMinimo: ingrediente.stockMinimo * conversionFactor,
       });
     }
   };
@@ -105,8 +102,8 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
                 <Form.Control
                   type="text"
                   placeholder="Ingrese nombre"
-                  value={ingredientes.nombre}
-                  onChange={(event) => setIngredientes({ ...ingredientes, nombre: event.target.value })}
+                  value={ingrediente.nombre}
+                  onChange={(event) => setIngrediente({ ...ingrediente, nombre: event.target.value })}
                   required
                 />
               </Form.Group>
@@ -115,9 +112,9 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
               <Form.Group className="mb-3" controlId="formRubro">
                 <Form.Label>Rubro</Form.Label>
                 <Form.Select
-                  value={ingredientes.rubro.id || ''}
+                  value={ingrediente.rubro.id}
                   onChange={(event) => {
-                    setIngredientes({ ...ingredientes, rubro: { id: parseInt(event.target.value), nombre: '' } });
+                    setIngrediente({ ...ingrediente, rubro: { id: parseInt(event.target.value), nombre: '' } });
                   }}
                   required
                 >
@@ -126,7 +123,8 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
                     <option
                       key={rubro.id}
                       value={rubro.id}
-                      disabled={!rubro.activo}>
+                      //disabled={!rubro.activo}
+                      >
                       {rubro.nombre}
                     </option>
                   ))}
@@ -141,8 +139,8 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
                 <Form.Control
                   type="number"
                   placeholder="Ingrese stock mínimo"
-                  value={ingredientes.stockMinimo}
-                  onChange={(event) => setIngredientes({ ...ingredientes, stockMinimo: parseInt(event.target.value) })}
+                  value={ingrediente.stockMinimo}
+                  onChange={(event) => setIngrediente({ ...ingrediente, stockMinimo: parseInt(event.target.value) })}
                   required
                 />
               </Form.Group>
@@ -153,8 +151,8 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
                 <Form.Control
                   type="number"
                   placeholder="Ingrese stock actual"
-                  value={ingredientes.stockActual}
-                  onChange={(event) => setIngredientes({ ...ingredientes, stockActual: parseInt(event.target.value) })}
+                  value={ingrediente.stockActual}
+                  onChange={(event) => setIngrediente({ ...ingrediente, stockActual: parseInt(event.target.value) })}
                   required
                 />
               </Form.Group>
@@ -167,8 +165,8 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
                 <Form.Control
                   type="number"
                   placeholder="Ingrese precio Costo"
-                  value={ingredientes.precioCosto}
-                  onChange={(event) => setIngredientes({ ...ingredientes, precioCosto: parseInt(event.target.value) })}
+                  value={ingrediente.precioCosto}
+                  onChange={(event) => setIngrediente({ ...ingrediente, precioCosto: parseInt(event.target.value) })}
                   required
                 />
               </Form.Group>
@@ -177,7 +175,7 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
               <Form.Group className="mb-3" controlId="formUM">
                 <Form.Label>UM</Form.Label>
                 <Form.Select
-                  value={ingredientes.unidadMedida}
+                  value={ingrediente.unidadMedida}
                   onChange={(event) => handleUM(event.target.value)}
                   required
                 >
@@ -191,8 +189,8 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
           <Form.Group className="mb-3" controlId="formEstado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              value={ingredientes.activo ? 'alta' : 'baja'}
-              onChange={(event) => setIngredientes({ ...ingredientes, activo: event.target.value === 'alta' })}
+              value={ingrediente.activo ? 'alta' : 'baja'}
+              onChange={(event) => setIngrediente({ ...ingrediente, activo: event.target.value === 'alta' })}
               required
             >
               <option value="alta">Alta</option>

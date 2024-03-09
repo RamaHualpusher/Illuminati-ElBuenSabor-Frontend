@@ -7,7 +7,7 @@ import { IProducto } from "../../../interface/IProducto";
 import { IAction, IColumn } from "../../../interface/ICamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
 import { IRubro } from "../../../interface/IRubro";
-
+import axios from "axios";
 const Productos: React.FC = () => {
   // Estados del componente
   const [editModalShow, setEditModalShow] = useState(false);
@@ -31,7 +31,7 @@ const Productos: React.FC = () => {
     // Definición de las columnas
     {
       title: "ID", field: "id"
-      
+
     },
     { title: "Nombre", field: "nombre" },
     {
@@ -77,22 +77,20 @@ const Productos: React.FC = () => {
   // Cargar productos y rubros al montar el componente
   useEffect(() => {
     const fetchProductos = async () => {
+      console.log(API_URL);
       try {
-        const responseData = await handleRequest("GET", API_URL + "producto");
-        if (Array.isArray(responseData)) {
-          setProductos(responseData);
-          setProductosComplete(responseData);
-        } else {
-          console.error("La respuesta de la solicitud no es un array:", responseData);
-        }
+        const responseData = await axios.get(API_URL+"producto");
+        setProductos(responseData.data);
+        setFilteredProductos(responseData.data);
+        setProductosComplete(responseData.data);
       } catch (error) {
         console.log(error);
       }
     };
     const fetchRubros = async () => {
       try {
-        const responseData = await handleRequest("GET", API_URL + "rubro");
-        setRubros(responseData);
+        const responseData = await axios.get(API_URL+"rubro");
+        setRubros(responseData.data);
       } catch (error) {
         console.log(error);
       }
@@ -103,13 +101,28 @@ const Productos: React.FC = () => {
 
   if (!productos || !rubros || productos.length === 0 || rubros.length === 0) {
     return <p>Cargando... </p>;
-  }  
+  }
 
   // Agregar un producto
   const handleProductoAdd = async (producto: IProducto) => {
     try {
-      const newProducto = await handleRequest("POST", API_URL + "producto", producto);
-      setProductos([...productos, newProducto]);
+      if (producto) {
+        const updatedProducto = {
+          ...producto,
+        };
+        const responseProducto = await axios.post(`${API_URL}producto`, updatedProducto);
+        if (responseProducto.data) {
+          setProductos([...productos, responseProducto.data]);
+          setFilteredProductos([...productos, responseProducto.data]);
+          setProductosComplete([...productos, responseProducto.data]);
+          console.log("Producto agregado exitosamente" + productos);
+        } else {
+          console.log("no se pudo agregar el producto");
+        }
+      } else {
+        console.log("no se pudo agregar producto");
+      }
+
     } catch (error) {
       console.log(error);
     }
@@ -118,16 +131,20 @@ const Productos: React.FC = () => {
   // Editar un producto
   const handleProductoEdit = async (producto: IProducto) => {
     try {
-      const updatedProducto: IProducto = await handleRequest(
-        "PUT",
-        `${API_URL + "producto"}/${producto.id}`,
-        producto
-      );
+        const updatedProducto={
+          ...producto,
+        }
 
-      const updatedProductos = productos.map((p) =>
-        p.id === updatedProducto.id ? updatedProducto : p
-      );
-      setProductos(updatedProductos);
+
+      const responseProducto=await axios.put(`${API_URL}+producto`,updatedProducto);
+      if(responseProducto.data){
+        const newData=productos.map((item)=>
+          item.id===producto.id ? responseProducto.data : item
+        )
+        setProductos(newData);
+        setProductos(newData)
+      }
+
     } catch (error) {
       console.log(error);
     }
