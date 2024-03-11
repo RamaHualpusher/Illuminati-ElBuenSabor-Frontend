@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Col, Row, Form } from 'react-bootstrap';
+import { Container, Form } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { IIngredientes } from '../../../interface/IIngredientes';
-import { handleRequest } from '../../FuncionRequest/FuncionRequest';
-import { IAction, IColumn } from '../../../interface/ICamposTablaGenerica';
-import GenericTable from "../../GenericTable/GenericTable";
-import { IRubro } from "../../../interface/IRubro";
+import { IRubroNew } from "../../../interface/IRubro";
 import axios from 'axios';
+import GenericTable from "../../GenericTable/GenericTable";
+import { IColumn } from '../../../interface/ICamposTablaGenerica';
 
 const Ingrediente: React.FC = () => {
   // Estados del componente
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedIngrediente, setSelectedIngrediente] = useState<IIngredientes | null>(null);
-  const [ingred, setIngred] = useState<IIngredientes[]>([]);
   const [ingredComplete, setIngredComplete] = useState<IIngredientes[]>([]);
-  const [rubros, setRubros] = useState<IRubro[]>([]);
+  const [rubros, setRubros] = useState<IRubroNew[]>([]);
   const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
-  const [selectedRubroName, setSelectedRubroName] = useState<string>("");
   const [filteredIngredientes, setFilteredIngredientes] = useState<IIngredientes[]>([]);
   const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Configuración de acciones y columnas de la tabla
-  const actions: IAction = {
+  const actions = {
     create: true,
     update: true
   };
@@ -73,10 +70,9 @@ const Ingrediente: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       // Obtener ingredientes desde la API
-      const url = API_URL+"ingrediente";
+      const url = API_URL + "ingrediente";
       try {
         const responseData = await axios.get(url);
-        setIngred(responseData.data);
         setIngredComplete(responseData.data);
       } catch (error) {
         console.log(error);
@@ -84,98 +80,50 @@ const Ingrediente: React.FC = () => {
     };
 
     const fetchRubros = async () => {
-      // Obtener rubros desde la API
       try {
-        const responseData = await axios.get(API_URL+"rubro");
-        setRubros(responseData.data);
+        const responseData = await axios.get<IRubroNew[]>(API_URL + "rubro");
+        const filteredRubros = responseData.data.filter(rubro => rubro.ingredientOwner);
+        setRubros(filteredRubros);
       } catch (error) {
         console.log(error);
       }
     };
     fetchRubros();
     fetchData();
-  }, []);
-
-  if (!ingredComplete || !ingredComplete.length) {
-    return <p>Cargando ingredientes...</p>;
-  }
+  }, [API_URL]);
 
   // Agregar nuevo ingrediente mediante la API
-  const handleIngredienteAdd = async (Ingrediente: IIngredientes) => {
+  const handleIngredienteAdd = async (newIngrediente: IIngredientes) => {
     try {
-      const updatedIngrediente={
-        ...Ingrediente,
+      const response = await axios.post(`${API_URL}ingrediente`, newIngrediente);
+      if (response.data) {
+        setIngredComplete([...ingredComplete, response.data]);
+        setFilteredIngredientes([...filteredIngredientes, response.data]);
       }
-
-      const responseIngrediente=await axios.post(`${API_URL}ingrediente`, updatedIngrediente);
-
-      if(responseIngrediente){
-        setIngred([...ingred,responseIngrediente.data]);
-        setIngredComplete([...ingredComplete,responseIngrediente.data]);
-        console.log("se cargo el nuevo Ingrediente: "+updatedIngrediente)
-      }else{
-        console.log("no se pudo cargar el ingrediente")
-      }
-
     } catch (error) {
       console.log(error);
     }
   };
 
   // Editar ingrediente existente mediante la API
-  const handleIngredienteEdit = async (ingrediente: IIngredientes) => {
+  const handleIngredienteEdit = async (updatedIngrediente: IIngredientes) => {
     try {
-
-      const updatedIngrediente={
-        ...ingrediente,
+      const response = await axios.put(`${API_URL}ingrediente/${updatedIngrediente.id}`, updatedIngrediente);
+      if (response.data) {
+        const updatedIngreds = ingredComplete.map(item => (item.id === updatedIngrediente.id ? response.data : item));
+        setIngredComplete(updatedIngreds);
+        setFilteredIngredientes(updatedIngreds);
       }
-
-      const responsengrediente = await axios.put(`${API_URL}ingrediente/${ingrediente.id}`,updatedIngrediente);
-
-      if(responsengrediente.data){
-        const newData= ingred.map((item)=> item.id===ingrediente.id ? responsengrediente.data:item);
-        setIngredComplete(newData);
-        setIngred(newData);
-        console.log("ingrediente actualizado : "+updatedIngrediente);
-      }else{
-        console.log("no se pudo actualizar el ingrediente")
-      }
-
-      
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Función para obtener un ingrediente por ID
-  const ingredienteGeneric = (id: number) => {
-    // Obtener un ingrediente por ID
-    let i: number = 0;
-    let x: boolean = true;
-    while (x) {
-      if (i >= ingredComplete.length) {
-        // No se encontró el ingrediente, salir del ciclo
-        x = false;
-      } else if (ingredComplete[i].id === +id) {
-        // Ingrediente encontrado
-        return ingredComplete[i];
-      }
-      i = i + 1;
-    }
-    return ingredComplete[0];
-  };
-
   // Abrir modal de edición con los datos del ingrediente
   const handleEditModalOpen = (item: IIngredientes) => {
-    if (item.id !== undefined) {
-      setSelectedIngrediente(ingredienteGeneric(item.id));
-      setEditModalShow(true);
-    } else {
-      console.error("ID del ingrediente es undefined");
-      // Otra lógica de manejo de errores o mensajes que desees agregar
-    }
+    setSelectedIngrediente(item);
+    setEditModalShow(true);
   };
-
 
   // Cerrar modal de edición
   const handleEditModalClose = () => {
@@ -193,29 +141,11 @@ const Ingrediente: React.FC = () => {
     setAddModalShow(false);
   };
 
-  // Eliminar ingrediente mediante la API (esta por las dudas pero no tiene funcion)
-  const handleIngredienteDelete = (rowData: string[], e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const ingredienteId: number = +rowData[0];
-    fetch(`${"/assets/data/ingredientesEjemplo.json"}/${ingredienteId}`, {
-      method: 'DELETE',
-    })
-      .then(response => {
-        setIngred(ingred.filter(item => item.id !== ingredienteId));
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
   // Manejar cambio de selección de rubro
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
-    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
     const selectedRubroId = parseInt(value);
-    const selectedRubro = rubros.find((rubro) => rubro.id === selectedRubroId);
     setSelectedRubro(selectedRubroId ? selectedRubroId : null);
-    setSelectedRubroName(selectedOption.text);
   };
 
   // Mensaje cuando no hay ingredientes con el rubro seleccionado

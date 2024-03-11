@@ -21,7 +21,7 @@ const EditCompraIngredientesModal: React.FC<IEditCompraIngredientesModalProps> =
   const [unidadMedida, setUnidadMedida] = useState('');
 
   // URL para la carga de datos iniciales
-  const API_URL = "/assets/data/ingredientesEjemplo.json";
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Efecto para cargar datos iniciales de ingredientes
   useEffect(() => {

@@ -25,7 +25,7 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
 
   const [ingrediente, setIngrediente] = useState<IIngredientes>(initializeIngredientes);
   const [rubros, setRubros] = useState<IRubro[]>([]);
-  const unidades = ["Kg", "g", "Mg", "l", "Ml"];
+  const unidades = ["Kg", "g", "Mg", "l", "Ml","U"];
   const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Cargar los rubros al cargar el componente
