@@ -58,7 +58,7 @@ const DetallesPedidoDelivery: React.FC = () => {
         window.history.go(-1); // Navega hacia atrás en la historia del navegador
     };
 
-    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
+    const { Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
 
     const subtotalPedido = obtenerSubtotal(DetallePedido);
 
@@ -91,7 +91,7 @@ const DetallesPedidoDelivery: React.FC = () => {
                         <div className="card">
                             <div className="card-header"><h1 className="display-5">Detalles del Pedido</h1></div>
                             <div className="card-body">
-                                <h5 className="card-title">Número de Pedido: {numeroPedido}</h5>
+                                <h5 className="card-title">Número de Pedido: {id}</h5>
                                 <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario.nombre} {Usuario.apellido}</p>
                                 <p className="card-text"><strong>Teléfono:</strong> {Usuario.telefono}</p>
                                 <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario.domicilio.calle}, {Usuario.domicilio.localidad}, {Usuario.domicilio.numero}</p>

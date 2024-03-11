@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { CartContext } from '../../context/cart/CartProvider';
 import ConfirmacionPedido from './ConfirmacionPedido';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const CarritoConConfirmacion: React.FC = () => {
   // Obtener el contexto del carrito
   const { cartItems, removeFromCart, incrementItem, decrementItem, clearCart } = useContext(CartContext);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Navegación
   const navigate = useNavigate();
@@ -46,7 +47,8 @@ const CarritoConConfirmacion: React.FC = () => {
         }}
         onCancel={onCancel}
         onContinue={onContinue}
-        isCartEmpty={isCartEmpty} />
+        isCartEmpty={isCartEmpty}
+        isAuthenticated={isAuthenticated} />
     </>
   );
 }

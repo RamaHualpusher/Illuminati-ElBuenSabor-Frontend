@@ -4,10 +4,10 @@ import { IAction, IColumn } from "../../interface/ICamposTablaGenerica";
 import GenericTable from "../GenericTable/GenericTable";
 import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
+import GenerarFacturaModal from "./GenerarFacturaModal";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
 import { IProductoDto } from "../../interface/IProducto";
 import axios from "axios";
-import GenerarFacturaModal from "./GenerarFacturaModal";
 
 const Factura = () => {
   const [facturas, setFacturas] = useState<IPedidoDto[]>();
@@ -38,9 +38,9 @@ const Factura = () => {
   const columns: IColumn<IPedidoDto>[] = [
     {
       title: "Numero Factura",
-      field: "numeroPedido",
+      field: "id",
       render: (facturas: IPedidoDto) => (
-        <span>{facturas.numeroPedido.toString()}</span>
+        <span>{facturas.id?.toString() ?? 0}</span>
       ),
     },
     {
@@ -87,10 +87,7 @@ const Factura = () => {
   const onView = (factura: IPedidoDto) => {
     if (factura) {
       setSelectedPedido(factura);
-      console.log(factura)
-      setShowModal(false); // Muestra el modal de GenerarFacturaModal
-      // Abre una nueva ventana con la ruta adecuada
-      window.open(`/factura/${factura.numeroPedido}`, "_blank");
+      setShowModal(true); // Muestra el modal de GenerarFacturaModal
     }
   };
 
@@ -114,11 +111,13 @@ const Factura = () => {
           </Col>
         </Row>
       </Container>
-      {showModal &&(
-      <GenerarFacturaModal
+      
+      {/* Modal para mostrar detalles de la factura */}
+      <GenerarFacturaModal 
+        factura={selectedPedido}
         closeModal={() => setShowModal(false)}
-        factura={selectedPedido}  // Pasa la factura seleccionada como prop
-        />)}
+        show={showModal}
+      />
     </div>
   );
 };

@@ -152,7 +152,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
       <Card.Body>
         <Row>
           <Col sm={4}>
-            <Card.Text>Pedido Número: {pedido.numeroPedido}</Card.Text>
+            <Card.Text>Pedido Número: {pedido.id}</Card.Text>
             <Card.Text>
               <i className="bi bi-clock"></i>{' '}
               {pedido.horaEstimadaFin ? new Date(pedido.horaEstimadaFin).toLocaleTimeString('es-AR') : ''} - {pedido.esDelivery ? 'Delivery' : 'Retiro Local'}
