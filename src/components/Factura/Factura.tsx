@@ -38,9 +38,9 @@ const Factura = () => {
   const columns: IColumn<IPedidoDto>[] = [
     {
       title: "Numero Factura",
-      field: "numeroPedido",
+      field: "id",
       render: (facturas: IPedidoDto) => (
-        <span>{facturas.numeroPedido.toString()}</span>
+        <span>{facturas.id?.toString() ?? 0}</span>
       ),
     },
     {

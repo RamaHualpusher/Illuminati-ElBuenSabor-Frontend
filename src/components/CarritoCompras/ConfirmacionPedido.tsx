@@ -3,10 +3,10 @@ import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
 import { CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
-import { IPedido } from "../../interface/IPedido";
+import { IPedido, IPedidoDto } from "../../interface/IPedido";
 import { IProducto, IProductoDto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
-import { IDetallePedido } from "../../interface/IDetallePedido";
+import { IDetallePedidoDto } from "../../interface/IDetallePedido";
 import { Alert, Button } from 'react-bootstrap';
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -31,24 +31,25 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const [usuario, setUsuario] = useState<IUsuario | null>(null);
   const [productos, setProductos] = useState<IProducto[] | null>(null);
   const [subTotal, setSubTotal] = useState(0);
-  const [pedidoCompleto, setPedidoCompleto] = useState<IPedido | null>(null);
+  const [pedidoCompleto, setPedidoCompleto] = useState<IPedidoDto | null>(null);
   const [esDelivery, setEsDelivery] = useState(true);
   const [esEfectivo, setEsEfectivo] = useState(true);
   const [id, setId] = useState(0);
   const [totalPedido, setTotalPedido] = useState(0);
   const descuento = 0.1; // Descuento del 10% (0.1)
   const costoDelivery = 500;
-  const { isAuthenticated, loginWithRedirect } = useAuth0();
-  const [showAlert, setShowAlert] = useState(!isAuthenticated);
-  const [confirmDisabled, setConfirmDisabled] = useState(!isAuthenticated);
+  const { isAuthenticated, loginWithRedirect, getAccessTokenSilently, user } = useAuth0();
+   const [showAlert, setShowAlert] = useState(!isAuthenticated);
+  //const [confirmDisabled, setConfirmDisabled] = useState(!isAuthenticated);
   const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Almacena la URL actual antes de redirigir
-  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+  //const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   // Variable de estado para almacenar la URL anterior
   const [returnUrl, setReturnUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    verificarUsuario();
     const fetchUsuario = async () => {
       try {
         const response = await axios.get(`${API_URL}usuario/clientes`);
@@ -90,6 +91,36 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }, [isAuthenticated, returnUrl]);
 
 
+
+
+  const verificarUsuario = async () => {
+    if (isAuthenticated) {
+      const accessToken = await getAccessTokenSilently();
+      try {
+        const response = await axios.get(`${API_URL}usuario/${user?.sub}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const usuarioEncontrado = response.data;
+        if (usuarioEncontrado) {
+          // El usuario autenticado existe en tu base de datos
+          setUsuario(usuarioEncontrado);
+        } else {
+          // El usuario autenticado no existe en tu base de datos
+          console.error("El usuario autenticado no existe en tu base de datos.");
+        }
+      } catch (error) {
+        console.error("Error al verificar el usuario autenticado:", error);
+      }
+    } else {
+      console.error("El usuario no ha iniciado sesión.");
+    }
+  };
+
+
+
+
   //Almacena la URL actual antes de redirigir
   const handleLoginRedirect = () => {
     setReturnUrl(window.location.href);
@@ -105,7 +136,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     setEsDelivery(esDelivery);
   };
 
-  const convertirCartItemADetallePedido = (cartItem: CartItem, productos: IProductoDto[]): IDetallePedido => {
+  const convertirCartItemADetallePedido = (cartItem: CartItem, productos: IProductoDto[]): IDetallePedidoDto => {
     // Verificar si productos es null o no está definido
     if (!productos) {
       throw new Error("La lista de productos está vacía.");
@@ -117,10 +148,10 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       // Imprimir el producto encontrado para verificar que tenga el id esperado
       console.log("Producto encontrado:", productoEncontrado);
 
-      const detallePedido: IDetallePedido = {
+      const detallePedido: IDetallePedidoDto = {
         id: Math.floor(Math.random() * 1000),
         cantidad: cartItem.quantity,
-        Productos: productoEncontrado
+        producto: productoEncontrado
       };
 
       return detallePedido;
@@ -131,7 +162,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
   useEffect(() => {
     if (usuario !== null && cartItems.length > 0 && productos !== null) {
-      const detallesPedido: IDetallePedido[] = [];
+      const detallesPedido: IDetallePedidoDto[] = [];
 
       cartItems.forEach((cartItem) => {
         const detallePedido = convertirCartItemADetallePedido(cartItem, productos);
@@ -141,28 +172,27 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       const nuevoTotalPedido =
         esDelivery ? subTotal + costoDelivery : subTotal - subTotal * descuento;
 
-      const nuevoPedidoCompleto: IPedido = {
-        id: id,
+      const nuevoPedidoCompleto: IPedidoDto = {
+        // id: id,
         activo: true,
         horaEstimadaFin: new Date(),
         esDelivery: esDelivery,
         esEfectivo: esEfectivo,
         estadoPedido: "A confirmar",
         fechaPedido: new Date(),
-        Usuario: usuario,
-        DetallePedido: detallesPedido,
+        usuario: usuario,        
+        detallesPedidos: detallesPedido,
       };
-
-      setTotalPedido(nuevoTotalPedido);
-      setPedidoCompleto(nuevoPedidoCompleto);
-      console.log("Se cargó el Pedido");
+      setTotalPedido(nuevoTotalPedido)
+      console.log(nuevoPedidoCompleto)
+      setPedidoCompleto(nuevoPedidoCompleto);      
     }
   }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]);
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isAuthenticated || usuario === null) {
+    if (!isAuthenticated ) {
       // El usuario no ha iniciado sesión, muestra un mensaje de alerta.
       setShowAlert(true);
       return;
@@ -174,42 +204,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
 
     if (pedidoCompleto !== null) {
-
-      // pedidoCompleto?.DetallePedido.forEach((detalle, index) => {
-      //   console.log(`Detalle ${index + 1}:`);
-      //   console.log("---------------------------------");
-      //   console.log("Pedido:");
-      //   console.log("Es delivery:", pedidoCompleto.esDelivery);
-      //   console.log("Es efectivo:", pedidoCompleto.esEfectivo);
-      //   console.log("Fecha Pedido:", pedidoCompleto.fechaPedido);
-      //   console.log("Estado Pedido:", pedidoCompleto.estadoPedido);
-      //   console.log("Total Pedido:", pedidoCompleto.totalPedido);
-      //   console.log("---------------------------------");
-      //   console.log("Productos:");
-      //   console.log("Cantidad del Producto:", detalle.cantidad);
-      //   console.log("Producto:", detalle.Productos.nombre);
-      //   console.log("Tiempo Producto:", detalle.Productos.tiempoEstimadoCocina);
-      //   console.log("Imagen Producto:", detalle.Productos.imagen);
-      //   console.log("Precio individual Producto", detalle.Productos.precio);
-      //   console.log("Preparacion Producto", detalle.Productos.preparacion);
-      //   console.log("Es bebida Producto", detalle.Productos.esBebida);
-      //   console.log("Estado Producto", detalle.Productos.estado);
-      //   console.log("Rubro Producto", detalle.Productos.Rubro.nombre);
-      //   console.log("---------------------------------");
-      //   console.log("ProductosIngredientes:");
-      //   detalle.Productos.ProductoIngrediente?.forEach((prodIng, prodIngIndex) => {
-      //     console.log(`ProductoIngrediente ${prodIngIndex + 1}:`);
-      //     console.log("Cantidad:", prodIng.cantidad);
-      //     console.log("Nombre Ingrediente:", prodIng.Ingredientes.nombre);
-      //     console.log("Precio Costo Ingrediente:", prodIng.Ingredientes.precioCosto);
-      //     console.log("Unidad Medida Ingrediente:", prodIng.Ingredientes.unidadMedida);
-      //      console.log("Rubro Ingrediente:", prodIng.Ingredientes.Rubro.nombre);
-      //   });
-
-      // });
-
       try {
-        const response = await axios.post(`${API_URL}pedido`, pedidoCompleto); //Cambiar la url
+        const response = await axios.post(`${API_URL}pedido`, pedidoCompleto); 
+        console.log(pedidoCompleto)
         console.log("Pedido enviado al servidor:", response.data);
       } catch (error) {
         console.error("Error al enviar el pedido:", error);

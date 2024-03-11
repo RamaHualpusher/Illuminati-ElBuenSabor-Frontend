@@ -19,7 +19,7 @@ const FacturaPDF = (selectedPedido: IPedidoDto) => {
     // Detalles del pedido
     pdf.text(`DETALLES DEL PEDIDO`, margin, yPosition);
     yPosition += 10;
-    pdf.text(`Número de Pedido: ${selectedPedido.numeroPedido}`, margin, yPosition);
+    pdf.text(`Número de Pedido: ${selectedPedido.id}`, margin, yPosition);
     yPosition += 7;
     pdf.text(`Fecha: ${new Date(selectedPedido.fechaPedido).toLocaleString()}`, margin, yPosition);
     yPosition += 10;
@@ -66,7 +66,7 @@ const FacturaPDF = (selectedPedido: IPedidoDto) => {
     pdf.text(`El Buen Sabor`, margin, yPosition);
 
     // Guardar el PDF
-    pdf.save(`Factura de ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido}-Num. ${selectedPedido.numeroPedido}.pdf`);
+    pdf.save(`Factura de ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido}-Num. ${selectedPedido.id}.pdf`);
   };
 
   return generatePDF();

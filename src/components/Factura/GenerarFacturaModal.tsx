@@ -28,7 +28,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
 
   const exportToExcel = (factura: IPedidoDto) => {
     const dataToExport = factura?.detallesPedidos || [];
-    const filename = `Pedido ${factura?.usuario?.nombre} ${factura?.usuario?.apellido}-Num.${factura?.numeroPedido}_detalles`;
+    const filename = `Pedido ${factura?.usuario?.nombre} ${factura?.usuario?.apellido}-Num.${factura?.id}_detalles`;
     exportTableDataToExcel(dataToExport, filename);
   };
 
@@ -81,7 +81,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                 </div>
                 <div className="details-container">
                   <h2>DETALLES DEL PEDIDO</h2>
-                  <p>Número de Pedido: {getOrDefault(selectedPedido.numeroPedido, "")}</p>
+                  <p>Número de Pedido: {getOrDefault(selectedPedido.id, "")}</p>
                   <p>Fecha: {getOrDefault(new Date(selectedPedido.fechaPedido).toLocaleString(), "")}</p>
                 </div>
                 <div className="table-container">

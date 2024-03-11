@@ -101,7 +101,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                         </div>
                         <div className="details-container">
                             <h2>DETALLES DE FACTURA</h2>
-                            <p>Número de factura: {getOrDefault(factura?.numeroPedido, "")}</p>
+                            <p>Número de factura: {getOrDefault(factura?.id, "")}</p>
                             <p>Fecha Factura: {getOrDefault(factura?.fechaPedido?.toLocaleString(), "")}</p>
 
                             {fechaAnulacion && (
@@ -166,7 +166,7 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                         </div>
                         <div className="thankyou-container" style={{ textAlign: "center" }}>
                             <p>
-                                Anulación de FACTURA Num: {getOrDefault(factura?.numeroPedido, "")} a nombre de {getOrDefault(factura?.usuario?.nombre, "")} {getOrDefault(factura?.usuario?.apellido, "")}
+                                Anulación de FACTURA Num: {getOrDefault(factura?.id, "")} a nombre de {getOrDefault(factura?.usuario?.nombre, "")} {getOrDefault(factura?.usuario?.apellido, "")}
                             </p>
                         </div>
                         <div className="pdf-container">

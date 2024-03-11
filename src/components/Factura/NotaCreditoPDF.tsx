@@ -18,7 +18,7 @@ const NotaCreditoPDF = ({ pedido }: { pedido: IPedidoDto }) => {
     pdf.text("El Buen Sabor", margin, yPosition);
     yPosition += 10;
 
-    pdf.text(`Número de Nota de Crédito: ${pedido?.numeroPedido}`, margin, yPosition);
+    pdf.text(`Número de Nota de Crédito: ${pedido?.id}`, margin, yPosition);
     yPosition += 10;
     pdf.text(`Fecha: ${new Date(pedido.fechaPedido).toLocaleString()}`, margin, yPosition);
     yPosition += 10;
@@ -56,7 +56,7 @@ const NotaCreditoPDF = ({ pedido }: { pedido: IPedidoDto }) => {
     yPosition += 10;
     pdf.text(`El Buen Sabor`, margin, yPosition);
 
-    pdf.save(`Nota Credito de ${pedido?.usuario?.nombre} ${pedido?.usuario?.apellido}-Num. ${pedido?.numeroPedido}.pdf`);
+    pdf.save(`Nota Credito de ${pedido?.usuario?.nombre} ${pedido?.usuario?.apellido}-Num. ${pedido?.id}.pdf`);
   };
 
   // Llama a la función de generación cuando se renderiza el componente

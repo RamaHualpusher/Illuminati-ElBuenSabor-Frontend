@@ -15,7 +15,6 @@ export interface IPedido extends IBase {
 }
 
 export interface IPedidoDto extends IBase {
-  numeroPedido: number;
   horaEstimadaFin: Date;
   esDelivery: boolean;
   esEfectivo: boolean;

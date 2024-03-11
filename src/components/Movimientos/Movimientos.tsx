@@ -33,7 +33,7 @@ const Movimientos = () => {
 
   const columns: IColumn<IPedidoDto>[] = [
     { title: "Fecha de Pedido", field: "fechaPedido", width: 2 },
-    { title: "Número de Pedido", field: "numeroPedido", width: 2 },
+    { title: "Número de Pedido", field: "id", width: 2 },
     {
       title: "Cliente",
       field: "usuario",
