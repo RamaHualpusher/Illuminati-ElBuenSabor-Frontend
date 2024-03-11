@@ -33,7 +33,7 @@ export const MercadoPago = () => {
                 currency_id: detalle.id,                
                 unit_price: detalle.Productos.precio,
               })),
-              external_reference: pedidoCompleto.numeroPedido.toString(),
+             // external_reference: pedidoCompleto.id.toString(),
               // back_urls: {
               //   success: 'https://www.success.com',
               //   failure: 'http://www.failure.com',

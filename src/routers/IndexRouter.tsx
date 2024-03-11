@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import UserRouter from "./UserRouter";
 import Admin from "../screens/Admin";
 import Cocinero from "../screens/Cocinero";
@@ -7,22 +7,13 @@ import Cajero from "../screens/Cajero";
 import Delivery from "../screens/Delivery";
 import DetallesPedidoDelivery from "../components/Pedidos/DetallesPedidoDelivery";
 import Page404 from "../components/Page404/Page404";
-import GenerarFacturaModal from "../components/Factura/GenerarFacturaModal";
-import { IPedidoDto } from "../interface/IPedido";
 import Productos from "../components/Stock/Producto/Productos";
 import Ingredientes from "../components/Stock/Ingrediente/Ingrediente";
 import DetallesPedidoCocinero from "../components/CocineroPage/DetallePedidoCocinero";
 import DetallesPedidoCajero from "../components/CajeroPage/DetallesPedidoCajero";
 import PedidosID from "../components/Rankings/RankingClientes/PedidosID";
-import GenerarCreditoModal from "../components/Factura/GenerarCreditoModal";
 
 const IndexRouter = () => {
-  const [factura, setFactura] = useState<IPedidoDto | null>(null);
-  const [showModal, setShowModal] = useState(false);
-
-  const closeModal = () => {
-    setFactura(null);
-  };
 
   return (
     <Routes>
@@ -37,11 +28,7 @@ const IndexRouter = () => {
       <Route path="/delivery" element={<Delivery />} />
       <Route path="/pedido/:id" element={<DetallesPedidoDelivery />} />
       <Route path="/cocina/ingredientes" element={<Ingredientes />} />
-      <Route path="/cocina/productos" element={<Productos />} />
-      <Route path="/factura/:numeroPedido" element={<GenerarFacturaModal
-        closeModal={() => setShowModal(true)} factura={factura} />} />
-      <Route path="/credito/:numeroPedido" element={<GenerarCreditoModal
-        closeModal={() => setShowModal(true)} factura={factura} />} />
+      <Route path="/cocina/productos" element={<Productos />} />      
       <Route path="*" element={<Page404 />} />
     </Routes>
   );

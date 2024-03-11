@@ -63,7 +63,7 @@ const RankingProductos = () => {
                 }
                 return cantidad;
             }, 0);
-            console.log(`Pedido ${pedido.numeroPedido}, Cantidad: ${cantidadProductoEnPedido}`);
+            console.log(`Pedido ${pedido.id}, Cantidad: ${cantidadProductoEnPedido}`);
             return totalCantidad + cantidadProductoEnPedido;
         }, 0);
     };

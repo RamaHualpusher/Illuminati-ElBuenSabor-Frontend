@@ -82,7 +82,7 @@ const DetallesPedidoCajero: React.FC = () => {
         return <Spinner />;
     }
 
-    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
+    const { Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
 
     const goBack = () => {
         window.history.go(-1);
@@ -121,7 +121,7 @@ const DetallesPedidoCajero: React.FC = () => {
                         <div className="card mb-5 mt-3">
                             <div className="card-header text-center"><h1 className="display-5">Detalles del Pedido</h1></div>
                             <div className="card-body text-center">
-                                <h5 className="card-title"> Número de Pedido: {numeroPedido || 0}</h5>
+                                <h5 className="card-title"> Número de Pedido: {id || 0}</h5>
                                 <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario?.nombre || ""} {Usuario?.apellido || ""}</p>
                                 <p className="card-text"><strong>Teléfono:</strong> {Usuario?.telefono}</p>
                                 {!esDelivery ? (

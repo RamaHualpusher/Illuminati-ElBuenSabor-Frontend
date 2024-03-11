@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
-import { IProductoDto } from "../../interface/IProducto";
 import { IPedidoDto } from "../../interface/IPedido";
+import { IDetallePedidoDto } from "../../interface/IDetallePedido";
+import { IProductoDto } from "../../interface/IProducto";
 
 const FacturaPDF = (selectedPedido: IPedidoDto) => {
   const generatePDF = () => {
@@ -8,70 +9,67 @@ const FacturaPDF = (selectedPedido: IPedidoDto) => {
     let yPosition = 20;
     const margin = 10;
 
+    // Logo y nombre de la empresa
     pdf.addImage("/assets/img/logo-grupo-illuminati.jpg", "JPEG", margin, yPosition, 50, 50);
     yPosition += 60;
-
     pdf.setFontSize(12);
     pdf.text("El Buen Sabor", margin, yPosition);
     yPosition += 10;
 
-    pdf.text(`Número de Pedido: ${selectedPedido?.numeroPedido}`, margin, yPosition);
+    // Detalles del pedido
+    pdf.text(`DETALLES DEL PEDIDO`, margin, yPosition);
     yPosition += 10;
+    pdf.text(`Número de Pedido: ${selectedPedido.numeroPedido}`, margin, yPosition);
+    yPosition += 7;
     pdf.text(`Fecha: ${new Date(selectedPedido.fechaPedido).toLocaleString()}`, margin, yPosition);
     yPosition += 10;
 
-    if (selectedPedido?.detallesPedidos) {
-      selectedPedido.detallesPedidos.forEach((detalle) => {
-        yPosition += 7;
+    // Tabla de productos
+    const tableHeaders = ["Cantidad", "Detalle Producto", "Precio Unit."];
+    const tableData = selectedPedido.detallesPedidos.map((detalle: IDetallePedidoDto) => {
+      const producto = detalle.producto as IProductoDto;
+      return [detalle.cantidad || "", producto.nombre || "", producto.precio || ""];
+    });
+    const columnWidths = [30, 80, 40]; // Ancho de las columnas
+    const rowHeight = 7; // Altura de las filas
+    const cellMargin = 2; // Margen interno de las celdas
+    tableData.unshift(tableHeaders); // Agregar encabezados
+    for (let i = 0; i < tableData.length; i++) {
+      for (let j = 0; j < tableData[i].length; j++) {
+        pdf.text(String(tableData[i][j]), margin + j * columnWidths[j] + cellMargin, yPosition + (i + 1) * rowHeight);
 
-        pdf.text(`Cantidad: ${detalle.cantidad || ""}`, margin, yPosition);
-        yPosition += 7;
-
-        if (detalle.producto) {
-          const productInfo = getProductInfo(detalle.producto);
-          pdf.text(`Producto: ${productInfo || "Nombre Desconocido"}`, margin, yPosition);
-          yPosition += 7;          
-        }
-
-        pdf.text(`Precio Unit.: ${getProductPrice(detalle.producto) || "Precio Desconocido"}`, margin, yPosition);
-        yPosition += 15;
-      });
+      }
     }
+    yPosition += (tableData.length + 1) * rowHeight + 10;
 
-    pdf.text(`Tipo de Pago: ${selectedPedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}`, margin, yPosition);
+    // Información de pago y envío
+    const tipoPago = selectedPedido.esEfectivo ? "Efectivo" : "Mercado Pago";
+    const descuento = selectedPedido.esEfectivo ? "10%" : "0%";
+    const tipoEnvio = selectedPedido.esDelivery ? "Domicilio" : "Retiro local";
+    pdf.text(`Tipo de Pago: ${tipoPago}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Descuento: ${descuento}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Envío: ${tipoEnvio}`, margin, yPosition);
     yPosition += 10;
-    pdf.text(`Descuento:`, margin, yPosition);
-    yPosition += 10;
-    pdf.text(`Envío: ${selectedPedido?.esDelivery ? "Domicilio" : "Retiro local"}`, margin, yPosition);
-    yPosition += 10;
-    
-    pdf.text(
-      `Dirección: ${selectedPedido?.usuario?.domicilio?.calle  || ""} ${selectedPedido?.usuario?.domicilio?.numero || 0}, ${selectedPedido?.usuario?.domicilio?.localidad || ""}`,
-      margin,
-      yPosition
-    );
 
+    // Dirección de envío
+    const direccion = selectedPedido.usuario?.domicilio ? 
+      `${selectedPedido.usuario.domicilio.calle || ""} ${selectedPedido.usuario.domicilio.numero || ""}, ${selectedPedido.usuario.domicilio.localidad || ""}` :
+      "";
+    pdf.text(`Dirección: ${direccion}`, margin, yPosition);
+
+    // Agradecimiento
     yPosition += 40;
-    pdf.text(`Muchas gracias ${selectedPedido?.usuario?.nombre} ${selectedPedido?.usuario?.apellido} por comprar en`, margin, yPosition);
+    pdf.text(`Muchas gracias ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido} por comprar en`, margin, yPosition);
     yPosition += 10;
     pdf.text(`El Buen Sabor`, margin, yPosition);
 
-    pdf.save(`Factura de ${selectedPedido?.usuario?.nombre} ${selectedPedido?.usuario?.apellido}-Num. ${selectedPedido?.numeroPedido}.pdf`);
+    // Guardar el PDF
+    pdf.save(`Factura de ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido}-Num. ${selectedPedido.numeroPedido}.pdf`);
   };
 
   return generatePDF();
 };
 
 export default FacturaPDF;
-
-const getProductInfo = (producto: IProductoDto | undefined): string => {
-  if (!producto) {
-    return "";
-  }
-
-  return `${producto.nombre || "Nombre Desconocido"}`;
-};
-
-const getProductPrice = (producto: IProductoDto | undefined): number | undefined => {
-  return producto?.precio || 0;
-};

@@ -20,16 +20,25 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   subTotal,
   totalPedido,
 }) => {
-  const descuento = 0.1; // Descuento del 10% (0.1)
   const costoDelivery = 500;
+  const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo
 
-  // Manejar la selección de "Delivery" y "Mercado Pago" al cargar el componente
   useEffect(() => {
     if (esDelivery) {
       // Cuando se selecciona Delivery, automáticamente selecciona Mercado Pago
       handleEsEfectivo(false);
     }
   }, [esDelivery, handleEsEfectivo]);
+
+  const calcularTotalPedido = () => {
+    let total = subTotal;
+    if (esDelivery) {
+      total += costoDelivery;
+    } else if (esEfectivo) {
+      total -= subTotal * descuentoEfectivo; // Aplicar descuento del 10% para pago en efectivo
+    }
+    return total;
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center mb-4">
@@ -84,29 +93,29 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                   </p>
                 )}
               </p>
-
               <div className="mb-0">
-                <p className="lead">
-                  <strong>SubTotal: </strong>${subTotal}
-                </p>
+                {esEfectivo && (
+                  <p className="lead">
+                    <strong>SubTotal: </strong>${subTotal}
+                  </p>
+                )}
                 {esDelivery && (
                   <p className="lead">
                     <strong>Costo del Delivery: </strong>${costoDelivery}
                   </p>
                 )}
-                {!esDelivery && (
+                {(!esDelivery && esEfectivo) && (
                   <p className="lead">
-                    <strong>Descuento:</strong> {descuento * 100}%
+                    <strong>Descuento:</strong> {descuentoEfectivo * 100}%
                   </p>
                 )}
                 <p className="lead">
-                  <strong>Total: </strong>${totalPedido}
+                  <strong>Total: </strong>${calcularTotalPedido()}
                 </p>
               </div>
             </div>
           </div>
         </div>
-
         <div className="card-footer">
           <div className="container-fluid">
             <div className="d-flex flex-column align-items-center">
@@ -130,7 +139,6 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                     </label>
                   </>
                 )}
-
                 <input
                   type="radio"
                   className="btn-check"

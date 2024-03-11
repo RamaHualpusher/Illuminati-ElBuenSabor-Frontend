@@ -64,7 +64,7 @@ const DetallesPedidoUsuario: React.FC = () => {
     }
 
     // Obtener propiedades del pedido
-    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
+    const { Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
 
     // Función para regresar a la página anterior
     const goBack = () => {
@@ -107,7 +107,7 @@ const DetallesPedidoUsuario: React.FC = () => {
                         <div className="card mb-5 mt-3">
                             <div className="card-header text-center"><h1 className="display-5">Detalles del Pedido</h1></div>
                             <div className="card-body text-center">
-                                <h5 className="card-title"> Número de Pedido: {numeroPedido}</h5>
+                                <h5 className="card-title"> Número de Pedido: {id}</h5>
                                 <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario.nombre} {Usuario.apellido}</p>
                                 <p className="card-text"><strong>Teléfono:</strong> {Usuario.telefono}</p>
                                 {!esDelivery ? (

@@ -4,7 +4,6 @@ import { IDetallePedido, IDetallePedidoDto } from "./IDetallePedido";
 import { IBase } from "./IBase";
 
 export interface IPedido extends IBase {
-  numeroPedido: number;
   horaEstimadaFin: Date;
   esDelivery: boolean;
   esEfectivo: boolean;

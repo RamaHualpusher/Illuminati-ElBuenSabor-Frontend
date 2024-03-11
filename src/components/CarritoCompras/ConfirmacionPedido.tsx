@@ -4,11 +4,11 @@ import CartTarjeta from "./CartTarjeta";
 import { CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
 import { IPedido } from "../../interface/IPedido";
-import { IProducto } from "../../interface/IProducto";
+import { IProducto, IProductoDto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
-import { useAuth0 } from "@auth0/auth0-react";
 import { IDetallePedido } from "../../interface/IDetallePedido";
 import { Alert, Button } from 'react-bootstrap';
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -16,7 +16,8 @@ interface ConfirmacionPedidoProps {
   eliminarDetallePedido: (id: number) => void;
   onCancel: () => void;
   onContinue: () => void;
-  isCartEmpty: boolean; // Recibe la prop isCartEmpty
+  isCartEmpty: boolean;
+  isAuthenticated: boolean;
 }
 
 const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
@@ -25,7 +26,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   eliminarDetallePedido,
   onCancel,
   onContinue,
-  isCartEmpty, // Usa la prop isCartEmpty
+  isCartEmpty,
 }) => {
   const [usuario, setUsuario] = useState<IUsuario | null>(null);
   const [productos, setProductos] = useState<IProducto[] | null>(null);
@@ -33,6 +34,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const [pedidoCompleto, setPedidoCompleto] = useState<IPedido | null>(null);
   const [esDelivery, setEsDelivery] = useState(true);
   const [esEfectivo, setEsEfectivo] = useState(true);
+  const [id, setId] = useState(0);
   const [totalPedido, setTotalPedido] = useState(0);
   const descuento = 0.1; // Descuento del 10% (0.1)
   const costoDelivery = 500;
@@ -60,6 +62,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     const fetchProductos = async () => {
       try {
         const response = await axios.get(`${API_URL}producto`);
+        console.log("producto")
         console.log(response)
         setProductos(response.data);
       } catch (error) {
@@ -87,7 +90,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }, [isAuthenticated, returnUrl]);
 
 
-  // Almacena la URL actual antes de redirigir
+  //Almacena la URL actual antes de redirigir
   const handleLoginRedirect = () => {
     setReturnUrl(window.location.href);
     loginWithRedirect();
@@ -102,78 +105,73 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     setEsDelivery(esDelivery);
   };
 
-  const convertirCartItemADetallePedido = (cartItem: CartItem): IDetallePedido => {
+  const convertirCartItemADetallePedido = (cartItem: CartItem, productos: IProductoDto[]): IDetallePedido => {
     // Verificar si productos es null o no está definido
     if (!productos) {
-        throw new Error("La lista de productos está vacía.");
+      throw new Error("La lista de productos está vacía.");
     }
-    
+
     const productoEncontrado = productos.find(producto => producto.id === cartItem.id);
-    
+
     if (productoEncontrado) {
       // Imprimir el producto encontrado para verificar que tenga el id esperado
       console.log("Producto encontrado:", productoEncontrado);
-      
+
       const detallePedido: IDetallePedido = {
-        id: Math.floor(Math.random()*1000),
+        id: Math.floor(Math.random() * 1000),
         cantidad: cartItem.quantity,
-        Productos: productoEncontrado        
+        Productos: productoEncontrado
       };
-      
+
       return detallePedido;
     } else {
       throw new Error(`Producto con ID ${cartItem.id} no encontrado.`);
     }
-};
+  };
 
   useEffect(() => {
-    if (usuario !== null && cartItems.length > 0) {
-      const domicilioUsuario = usuario.domicilio;
+    if (usuario !== null && cartItems.length > 0 && productos !== null) {
+      const detallesPedido: IDetallePedido[] = [];
 
-      // Calcula el total del pedido aquí
+      cartItems.forEach((cartItem) => {
+        const detallePedido = convertirCartItemADetallePedido(cartItem, productos);
+        detallesPedido.push(detallePedido);
+      });
+
       const nuevoTotalPedido =
         esDelivery ? subTotal + costoDelivery : subTotal - subTotal * descuento;
 
       const nuevoPedidoCompleto: IPedido = {
-        numeroPedido: 0,
+        id: id,
+        activo: true,
         horaEstimadaFin: new Date(),
         esDelivery: esDelivery,
         esEfectivo: esEfectivo,
         estadoPedido: "A confirmar",
         fechaPedido: new Date(),
-        Usuario: {
-          id: usuario.id,
-          nombre: usuario.nombre,
-          apellido: usuario.apellido,
-          email: usuario.email,
-          clave: usuario.clave,
-          claveConfirm: usuario.claveConfirm,
-          telefono: usuario.telefono,
-          activo: usuario.activo,
-          domicilio: domicilioUsuario,
-          rol: {
-            id: usuario.rol.id,
-            nombreRol: usuario.rol.nombreRol,
-          },
-        },
-        DetallePedido: cartItems.map(convertirCartItemADetallePedido),        
+        Usuario: usuario,
+        DetallePedido: detallesPedido,
       };
 
-      setTotalPedido(nuevoTotalPedido); // Actualiza el estado del total del pedido
+      setTotalPedido(nuevoTotalPedido);
       setPedidoCompleto(nuevoPedidoCompleto);
       console.log("Se cargó el Pedido");
     }
-  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo]);
+  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]);
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated || usuario === null) {
       // El usuario no ha iniciado sesión, muestra un mensaje de alerta.
       setShowAlert(true);
       return;
     }
 
+    if (usuario === null) {
+      console.error("El usuario no está cargado. No se puede confirmar el pedido.");
+      return;
+    }
 
     if (pedidoCompleto !== null) {
 
@@ -264,7 +262,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         <div className="d-flex justify-content-center align-items-center mb-4">
           <button type="submit"
             className="btn btn-primary me-2"
-            disabled={confirmDisabled || isCartEmpty}>
+            disabled={isCartEmpty || !isAuthenticated}>
             Confirmar Pedido
           </button>
           <button
@@ -287,18 +285,19 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </Alert>
         </div>
       )}
-
-      <div className="container mt-3">
-        <Alert show={showAlert} variant="danger">
-          Por favor, inicie sesión para confirmar el pedido.    <br />
-          <div className="mt-1">
-            <Button variant="primary" onClick={handleLoginRedirect}>
-              Iniciar Sesión
-            </Button>
-          </div>
-
-        </Alert>
-      </div>
+      {!isAuthenticated && (
+        <div className="container mt-3">
+          {/* aca elimine showAlert porque se validaba con auth0, estaba dentro de Alert */}
+          <Alert variant="danger" show={showAlert}>
+            Por favor, inicie sesión para confirmar el pedido.    <br />
+            <div className="mt-1">
+              <Button variant="primary" onClick={handleLoginRedirect}>
+                Iniciar Sesión
+              </Button>
+            </div>
+          </Alert>
+        </div>
+      )}
     </div>
   );
 };

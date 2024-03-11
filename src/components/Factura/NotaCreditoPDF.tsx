@@ -1,6 +1,9 @@
 import { jsPDF } from "jspdf";
 import { IProductoDto } from "../../interface/IProducto";
 import { IPedidoDto } from "../../interface/IPedido";
+import { IDetallePedidoDto } from "../../interface/IDetallePedido";
+import { IUsuario } from "../../interface/IUsuario";
+import { IDomicilio } from "../../interface/IDomicilio";
 
 const NotaCreditoPDF = ({ pedido }: { pedido: IPedidoDto }) => {
   const generatePDF = () => {
@@ -21,7 +24,7 @@ const NotaCreditoPDF = ({ pedido }: { pedido: IPedidoDto }) => {
     yPosition += 10;
 
     if (pedido?.detallesPedidos) {
-      pedido.detallesPedidos.forEach((detalle) => {
+      pedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
         yPosition += 7;
 
         pdf.text(`Cantidad: ${detalle.cantidad || ""}`, margin, yPosition);
@@ -30,7 +33,7 @@ const NotaCreditoPDF = ({ pedido }: { pedido: IPedidoDto }) => {
         if (detalle.producto) {
           const productInfo = getProductInfo(detalle.producto);
           pdf.text(`Producto: ${productInfo || "Nombre Desconocido"}`, margin, yPosition);
-          yPosition += 7;          
+          yPosition += 7;
         }
 
         pdf.text(`Precio Unit.: ${getProductPrice(detalle.producto) || "Precio Desconocido"}`, margin, yPosition);
@@ -44,12 +47,9 @@ const NotaCreditoPDF = ({ pedido }: { pedido: IPedidoDto }) => {
     yPosition += 10;
     pdf.text(`Envío: ${pedido?.esDelivery ? "Domicilio" : "Retiro local"}`, margin, yPosition);
     yPosition += 10;
-    
-    pdf.text(
-      `Dirección: ${pedido?.usuario?.domicilio?.calle  || ""} ${pedido?.usuario?.domicilio?.numero || 0}, ${pedido?.usuario?.domicilio?.localidad || ""}`,
-      margin,
-      yPosition
-    );
+
+    const direccion = getDireccionUsuario(pedido.usuario);
+    pdf.text(`Dirección: ${direccion}`, margin, yPosition);
 
     yPosition += 40;
     pdf.text(`Muchas gracias ${pedido?.usuario?.nombre} ${pedido?.usuario?.apellido} por utilizar la Nota de Crédito`, margin, yPosition);
@@ -78,4 +78,10 @@ const getProductInfo = (producto: IProductoDto | undefined): string => {
 
 const getProductPrice = (producto: IProductoDto | undefined): number | undefined => {
   return producto?.precio || 0;
+};
+
+const getDireccionUsuario = (usuario: IUsuario): string => {
+  if (!usuario || !usuario.domicilio) return "";
+  const domicilio: IDomicilio = usuario.domicilio;
+  return `${domicilio.calle || ""} ${domicilio.numero || ""}, ${domicilio.localidad || ""}`;
 };
