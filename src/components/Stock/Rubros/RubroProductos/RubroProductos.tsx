@@ -2,17 +2,17 @@ import React, { FC, useState, useEffect } from 'react';
 import { Container, Row } from 'react-bootstrap';
 import EditRubroProductoModal from './EditRubroProductoModal';
 import AddRubroProductoModal from './AddRubroProductoModal';
-import { IRubro } from '../../../../interface/IRubro';
+import { IRubroNew } from '../../../../interface/IRubro';
 import { IAction, IColumn } from '../../../../interface/ICamposTablaGenerica';
 import GenericTable from '../../../GenericTable/GenericTable';
 import Axios from 'axios';
 import { handleRequest } from '../../../FuncionRequest/FuncionRequest';
 
 const RubroProductos: FC = () => {
-  const [rubros, setRubros] = useState<IRubro[]>([]);
+  const [rubros, setRubros] = useState<IRubroNew[]>([]);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
-  const [selectedRubroProducto, setSelectedRubroProducto] = useState<IRubro | null>(null);
+  const [selectedRubroProducto, setSelectedRubroProducto] = useState<IRubroNew | null>(null);
   const API_URL = '/assets/data/rubrosProductosEjemplo.json';
 
   const actions: IAction = {
@@ -36,26 +36,26 @@ const RubroProductos: FC = () => {
     return <p>Cargando...</p>;
   }
 
-  const handleRubroAdd = async (rubro: IRubro) => {
+  const handleRubroAdd = async (rubro: IRubroNew) => {
     try {
-      const newRubroProducto = await handleRequest('POST', API_URL, rubro); // Hacer una solicitud POST con la función de manejo de solicitudes
-      setRubros(newRubroProducto); // Actualizar el estado con los datos de respuesta
+      const newRubroProducto = await handleRequest('POST', API_URL, rubro);
+      setRubros(newRubroProducto);
       setAddModalShow(false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const columns: IColumn<IRubro>[] = [
+  const columns: IColumn<IRubroNew>[] = [
     // { title: 'ID', field: 'idRubro' },
     {
       title: 'Nombre', field: 'nombre',
-      render: (rubro: IRubro) => <span>{rubro.nombre}</span>,
+      render: (rubro: IRubroNew) => <span>{rubro.nombre}</span>,
     },
     {
       title: "Estado",
       field: "activo",
-      render: (rubro: IRubro) => (
+      render: (rubro: IRubroNew) => (
         <span className={`${rubro.activo ? "text-success" : "text-danger"}`}>
           {rubro.activo ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
         </span>
@@ -64,33 +64,31 @@ const RubroProductos: FC = () => {
   ];
 
   // Función no implementada, puedes eliminarla si no es necesaria
-  function updateJsonData(updatedRubros: IRubro[]) {
+  function updateJsonData(updatedRubros: IRubroNew[]) {
     throw new Error('Function not implemented.');
   }
 
-  const handleRubroEdit = async (rubro: IRubro) => {
+  const handleRubroEdit = async (rubro: IRubroNew) => {
     try {
-      const response = await Axios.put(`${API_URL}/${rubro.id}`, rubro); // Hacer una solicitud PUT con Axios
-      const updatedRubro: IRubro = response.data; // Actualizar con los datos de respuesta
+      const response = await Axios.put(`${API_URL}/${rubro.id}`, rubro);
+      const updatedRubro: IRubroNew = response.data;
       const updatedRubros = rubros.map((r) =>
         r.id === updatedRubro.id ? updatedRubro : r
       );
       setRubros(updatedRubros);
-      console.log(updatedRubros);
-      updateJsonData(updatedRubros); // Actualizar el JSON con los rubros modificados (si es necesario)
     } catch (error) {
       console.log(error);
     }
   };
 
-  const rubroRow = (id?: number): IRubro | undefined => {
+  const rubroRow = (id?: number): IRubroNew | undefined => {
     if (id === undefined) {
       return undefined;
     }
     return rubros.find((rubro) => rubro.id === id);
   };
 
-  const handleEditModalOpen = (item: IRubro) => {
+  const handleEditModalOpen = (item: IRubroNew) => {
     const selected = rubroRow(item.id);
     if (selected) {
       setSelectedRubroProducto(selected);

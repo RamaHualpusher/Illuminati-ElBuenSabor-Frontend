@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { IRubro } from '../../../../interface/IRubro';
+import { IRubroNew } from '../../../../interface/IRubro';
 import { IAddRubroIngredienteModalProps } from '../../../../interface/IIngredientes';
 
 const AddRubroIngredienteModal: React.FC<IAddRubroIngredienteModalProps> = ({
@@ -11,8 +11,8 @@ const AddRubroIngredienteModal: React.FC<IAddRubroIngredienteModalProps> = ({
   // Estados del componente
   const [nombre, setNombre] = useState('');
   const [activo, setActivo] = useState(true);
-  const [rubros, setRubros] = useState<IRubro[]>([]);
-  const [filteredRubros, setFilteredRubros] = useState<IRubro[] | null>(null);
+  const [rubros, setRubros] = useState<IRubroNew[]>([]);
+  const [filteredRubros, setFilteredRubros] = useState<IRubroNew[] | null>(null);
 
   // Cargar los rubros al montar el componente
   useEffect(() => {
@@ -36,11 +36,12 @@ const AddRubroIngredienteModal: React.FC<IAddRubroIngredienteModalProps> = ({
       return;
     }
 
-    const newRubroIngrediente: IRubro = {
+    const newRubroIngrediente: IRubroNew = {
       id: 0,
       nombre: trimmedNombre,
       activo: activo,
-      idRubroPadre: undefined,
+      rubroPadre: undefined,
+      ingredientOwner: true,
     };
 
     handleRubroAdd(newRubroIngrediente);  // Se pasa el objeto rubroData directamente a handleRubroAdd

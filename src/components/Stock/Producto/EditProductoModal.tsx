@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Col, Row } from "react-bootstrap";
 import { IProducto } from "../../../interface/IProducto";
-import { IRubro } from "../../../interface/IRubro";
+import { IRubroNew } from "../../../interface/IRubro";
 import { IEditProductoModalProps } from "../../../interface/IProducto";
 import { IIngredientes } from "../../../interface/IIngredientes";
 import { IProductoIngrediente } from "../../../interface/IProductoIngrediente";
@@ -15,8 +15,8 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
 }) => {
   // Estados del componente
   
-  const [rubros, setRubros] = useState<IRubro[]>([]);
-  const [selectedRubro, setSelectedRubro] = useState<IRubro | null>(null);
+  const [rubros, setRubros] = useState<IRubroNew[]>([]);
+  const [selectedRubro, setSelectedRubro] = useState<IRubroNew | null>(null);
   const [cantidad, setCantidad] = useState(0);
   const [ingredientesA, setIngredientesA] = useState<IIngredientes[]>([]);
   const [cantIngrediente, setCantIngrediente] = useState<number>(0);
@@ -25,9 +25,12 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
   const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Definición de objetos por defecto
-  const rubro: IRubro = {
+  const rubro: IRubroNew = {
     id: 0,
     nombre: "",
+    //agregue aca rami
+    // rubroPadre: rubroPadre,
+    ingredientOwner: false,
   };
 
 

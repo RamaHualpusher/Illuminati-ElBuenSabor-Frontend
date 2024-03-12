@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { IRubro } from '../../../../interface/IRubro';
+import { IRubroNew } from '../../../../interface/IRubro';
 import { IEditRubroIngredientesModalProps } from '../../../../interface/IIngredientes';
 
 const EditRubroIngredientesModal: React.FC<IEditRubroIngredientesModalProps> = ({
@@ -12,14 +12,14 @@ const EditRubroIngredientesModal: React.FC<IEditRubroIngredientesModalProps> = (
   // Estados del componente
   const [nombre, setNombre] = useState('');
   const [activo, setActivo] = useState(false);
-  const [idRubroPadre, setIdRubroPadre] = useState<IRubro | undefined>(undefined);
+  const [rubroPadre, setRubroPadre] = useState<IRubroNew | undefined>(undefined);
 
   // Cargar los valores del rubro seleccionado al montar el componente
   useEffect(() => {
     if (selectedRubro) {
       setNombre(selectedRubro.nombre);
-      setActivo(selectedRubro.activo || false);
-      setIdRubroPadre(selectedRubro.idRubroPadre);
+      setActivo(selectedRubro.ingredientOwner || false);
+      setRubroPadre(selectedRubro.rubroPadre);
     }
   }, [selectedRubro]);
 
@@ -34,11 +34,11 @@ const EditRubroIngredientesModal: React.FC<IEditRubroIngredientesModalProps> = (
     }
 
     if (selectedRubro) {
-      const updatedRubro: IRubro = {
+      const updatedRubro: IRubroNew = {
         ...selectedRubro,
         nombre,
-        activo,
-        idRubroPadre,
+        ingredientOwner: activo,
+        rubroPadre,
       };
       handleRubroEdit(updatedRubro);
     }

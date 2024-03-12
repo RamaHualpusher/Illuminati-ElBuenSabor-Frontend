@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import { IIngredientes } from '../../../interface/IIngredientes';
-import { IRubro, IRubroNew } from '../../../interface/IRubro';
+import { IRubroNew } from '../../../interface/IRubro';
 import { IEditIngredientesModalProps } from '../../../interface/IIngredientes';
 import axios from 'axios';
 
@@ -12,7 +12,7 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
   selectedIngredientes,
 }) => {
   const [ingrediente, setIngrediente] = useState<IIngredientes | null>(null);
-  const [rubros, setRubros] = useState<IRubro[]>([]);
+  const [rubros, setRubros] = useState<IRubroNew[]>([]);
   const unidades = ["Kg", "g", "Mg", "l", "Ml","U"];
   const API_URL = process.env.REACT_APP_API_URL || "";
 
@@ -79,7 +79,7 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
     if (ingrediente) {
       setIngrediente({
         ...ingrediente,
-        rubro: { id: parseInt(event.target.value), nombre: '' }
+        rubro: { id: parseInt(event.target.value), nombre: '',  ingredientOwner: true }
       });
     }
   };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import { IIngredientes } from '../../../interface/IIngredientes';
-import { IRubro, IRubroNew } from '../../../interface/IRubro';
+import { IRubroNew } from '../../../interface/IRubro';
 import { IAddIngredienteModalProps } from '../../../interface/IIngredientes';
 import axios from 'axios';
 
@@ -17,11 +17,11 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
     stockMinimo: 0,
     stockActual: 0,
     precioCosto: 0,
-    rubro: { id: 0, nombre: '', activo: false },
+    rubro: { id: 0, nombre: '', ingredientOwner: false }, // Ajuste aquí
     unidadMedida: '',
   });
-  const [rubros, setRubros] = useState<IRubro[]>([]);
-  const unidades = ["Kg", "g", "Mg", "l", "Ml","U"];
+  const [rubros, setRubros] = useState<IRubroNew[]>([]);
+  const unidades = ["Kg", "g", "Mg", "l", "Ml", "U"];
   const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
@@ -57,12 +57,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
       return;
     }
 
-    const updatedIngrediente: IIngredientes = {
-      ...newIngrediente,
-      rubro: { id: newIngrediente.rubro.id, nombre: newIngrediente.rubro.nombre },
-    };
-
-    handleIngredienteAdd(updatedIngrediente);
+    handleIngredienteAdd(newIngrediente);
     handleClose();
   };
 
@@ -74,7 +69,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
       stockMinimo: 0,
       stockActual: 0,
       precioCosto: 0,
-      rubro: { id: 0, nombre: '', activo: false },
+      rubro: { id: 0, nombre: '', ingredientOwner: false }, // Ajuste aquí
       unidadMedida: '',
     });
     handleClose();

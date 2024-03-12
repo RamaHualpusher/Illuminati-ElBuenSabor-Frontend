@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Col, Row } from "react-bootstrap";
 import axios from "axios";
 import { IProducto } from "../../../interface/IProducto";
-import { IRubro } from "../../../interface/IRubro";
+import { IRubroNew } from "../../../interface/IRubro";
 import { IAddProductoModalProps } from "../../../interface/IProducto";
 import { IIngredientes } from "../../../interface/IIngredientes";
 import { IProductoIngrediente } from "../../../interface/IProductoIngrediente";
@@ -26,13 +26,13 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
       precio: 0,
       esBebida: false,
       activo: true,
-      rubro: { id: 0, nombre: "", activo: true },
+      rubro: { id: 0, nombre: "", activo: true, ingredientOwner: true },
       productosIngredientes: [],
     };
   };
 
   const [product, setProduct] = useState<IProducto>(initializeProduct);
-  const [rubros, setRubros] = useState<IRubro[]>([]);
+  const [rubros, setRubros] = useState<IRubroNew[]>([]);
   const [ingredientesA, setIngredientesA] = useState<IIngredientes[]>([]);
   const [ingredienteA, setIngredienteA] = useState<IIngredientes | null>(null);
   const [cantIngrediente, setCantIngrediente] = useState<number>(0);
@@ -45,7 +45,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   // Cargar rubros y productos al montar el componente
   useEffect(() => {
     axios
-      .get<IRubro[]>(API_URL + "rubro")
+      .get<IRubroNew[]>(API_URL + "rubro")
       .then((response) => {
         setRubros(response.data);
       })
