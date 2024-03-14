@@ -24,3 +24,15 @@ export interface IPedidoDto extends IBase {
   detallesPedidos: IDetallePedidoDto[];
   mercadoPagoDatos?: IMercadoPagoDatos;  
 }
+export interface IPedidoFull extends IBase {
+  numeroPedido: number;
+  horaEstimadaFin: Date;
+  esDelivery: boolean;
+  esEfectivo: boolean;
+  estadoPedido: string;
+  fechaPedido: Date;
+  total: number;
+  usuario: IUsuario;
+  detallesPedidos: IDetallePedidoDto[];
+  mercadoPagoDatos?: IMercadoPagoDatos;  
+}
