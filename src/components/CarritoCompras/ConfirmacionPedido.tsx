@@ -3,7 +3,7 @@ import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
 import { CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
-import { IPedido, IPedidoDto } from "../../interface/IPedido";
+import { IPedido, IPedidoDto, IPedidoFull } from "../../interface/IPedido";
 import { IProducto, IProductoDto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
@@ -63,8 +63,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     const fetchProductos = async () => {
       try {
         const response = await axios.get(`${API_URL}producto`);
-        console.log("producto")
-        console.log(response)
         setProductos(response.data);
       } catch (error) {
         console.log(error);
@@ -84,14 +82,10 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }, [cartItems]);
 
   useEffect(() => {
-    // Después del inicio de sesión, redirige al usuario de vuelta a la página original
     if (isAuthenticated && returnUrl) {
       window.location.href = returnUrl;
     }
   }, [isAuthenticated, returnUrl]);
-
-
-
 
   const verificarUsuario = async () => {
     if (isAuthenticated) {
@@ -104,10 +98,8 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         });
         const usuarioEncontrado = response.data;
         if (usuarioEncontrado) {
-          // El usuario autenticado existe en tu base de datos
           setUsuario(usuarioEncontrado);
         } else {
-          // El usuario autenticado no existe en tu base de datos
           console.error("El usuario autenticado no existe en tu base de datos.");
         }
       } catch (error) {
@@ -118,10 +110,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
   };
 
-
-
-
-  //Almacena la URL actual antes de redirigir
   const handleLoginRedirect = () => {
     setReturnUrl(window.location.href);
     loginWithRedirect();
@@ -131,13 +119,11 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     setEsEfectivo(esEfectivo);
   };
 
-  // Cambia el nombre de la función y la prop de tipoEnvio a esDelivery
   const handleEsDelivery = (esDelivery: boolean) => {
     setEsDelivery(esDelivery);
   };
 
   const convertirCartItemADetallePedido = (cartItem: CartItem, productos: IProductoDto[]): IDetallePedidoDto => {
-    // Verificar si productos es null o no está definido
     if (!productos) {
       throw new Error("La lista de productos está vacía.");
     }
@@ -145,9 +131,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     const productoEncontrado = productos.find(producto => producto.id === cartItem.id);
 
     if (productoEncontrado) {
-      // Imprimir el producto encontrado para verificar que tenga el id esperado
-      console.log("Producto encontrado:", productoEncontrado);
-
       const detallePedido: IDetallePedidoDto = {
         id: Math.floor(Math.random() * 1000),
         cantidad: cartItem.quantity,
@@ -166,34 +149,36 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
       cartItems.forEach((cartItem) => {
         const detallePedido = convertirCartItemADetallePedido(cartItem, productos);
+        // Eliminar la propiedad 'id' del objeto DetallePedido antes de agregarlo a la lista
+        delete detallePedido.id;
         detallesPedido.push(detallePedido);
       });
 
       const nuevoTotalPedido =
         esDelivery ? subTotal + costoDelivery : subTotal - subTotal * descuento;
 
-      const nuevoPedidoCompleto: IPedidoDto = {
-        // id: id,
+      const nuevoPedidoCompleto: IPedidoFull = {
         activo: true,
+        numeroPedido: 123456789,
         horaEstimadaFin: new Date(),
         esDelivery: esDelivery,
         esEfectivo: esEfectivo,
         estadoPedido: "A confirmar",
         fechaPedido: new Date(),
-        usuario: usuario,        
+        usuario: usuario,
         detallesPedidos: detallesPedido,
+        total: nuevoTotalPedido
       };
       setTotalPedido(nuevoTotalPedido)
-      console.log(nuevoPedidoCompleto)
       setPedidoCompleto(nuevoPedidoCompleto);      
     }
   }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]);
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    // También, puedes mostrar el pedido completo en formato JSON para facilitar su lectura.
+  console.log("Pedido completo (JSON):", JSON.stringify(pedidoCompleto, null, 2));
     if (!isAuthenticated ) {
-      // El usuario no ha iniciado sesión, muestra un mensaje de alerta.
       setShowAlert(true);
       return;
     }
@@ -206,7 +191,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     if (pedidoCompleto !== null) {
       try {
         const response = await axios.post(`${API_URL}pedido`, pedidoCompleto); 
-        console.log(pedidoCompleto)
         console.log("Pedido enviado al servidor:", response.data);
       } catch (error) {
         console.error("Error al enviar el pedido:", error);
