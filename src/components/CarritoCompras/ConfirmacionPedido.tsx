@@ -3,12 +3,14 @@ import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
 import { CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
-import { IPedido, IPedidoDto } from "../../interface/IPedido";
+import { IPedidoDto } from "../../interface/IPedido";
 import { IProducto, IProductoDto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
 import { Alert, Button } from 'react-bootstrap';
 import { useAuth0 } from "@auth0/auth0-react";
+import GenerarFacturaModal from "../Factura/GenerarFacturaModal";
+import { MercadoPago } from "../MercadoPago/MercadoPago";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -27,11 +29,12 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   onCancel,
   onContinue,
   isCartEmpty,
+  // isAuthenticated,
 }) => {
   const [usuario, setUsuario] = useState<IUsuario | null>(null);
   const [productos, setProductos] = useState<IProducto[] | null>(null);
   const [subTotal, setSubTotal] = useState(0);
-  const [pedidoCompleto, setPedidoCompleto] = useState<IPedidoDto | null>(null);
+  const [pedidoCompleto, setPedidoCompleto] = useState<IPedidoDto | undefined>(undefined);
   const [esDelivery, setEsDelivery] = useState(true);
   const [esEfectivo, setEsEfectivo] = useState(true);
   const [id, setId] = useState(0);
@@ -39,9 +42,11 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const descuento = 0.1; // Descuento del 10% (0.1)
   const costoDelivery = 500;
   const { isAuthenticated, loginWithRedirect, getAccessTokenSilently, user } = useAuth0();
-   const [showAlert, setShowAlert] = useState(!isAuthenticated);
+  const [showAlert, setShowAlert] = useState(!isAuthenticated);
   //const [confirmDisabled, setConfirmDisabled] = useState(!isAuthenticated);
+  const [showFacturaModal, setShowFacturaModal] = useState(false);
   const API_URL = process.env.REACT_APP_API_URL || "";
+  const [preferenceId, setPreferenceId] = useState<number | null>(null);
 
   // Almacena la URL actual antes de redirigir
   //const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
@@ -54,6 +59,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       try {
         const response = await axios.get(`${API_URL}usuario/clientes`);
         const usuarioData = response.data[0];
+        console.log(response)
         setUsuario(usuarioData);
       } catch (error) {
         console.log(error);
@@ -63,7 +69,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     const fetchProductos = async () => {
       try {
         const response = await axios.get(`${API_URL}producto`);
-        console.log("producto")
         console.log(response)
         setProductos(response.data);
       } catch (error) {
@@ -91,8 +96,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }, [isAuthenticated, returnUrl]);
 
 
-
-
   const verificarUsuario = async () => {
     if (isAuthenticated) {
       const accessToken = await getAccessTokenSilently();
@@ -118,9 +121,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
   };
 
-
-
-
   //Almacena la URL actual antes de redirigir
   const handleLoginRedirect = () => {
     setReturnUrl(window.location.href);
@@ -134,11 +134,23 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   // Cambia el nombre de la función y la prop de tipoEnvio a esDelivery
   const handleEsDelivery = (esDelivery: boolean) => {
     setEsDelivery(esDelivery);
+
+    if (!esDelivery) {
+      // Si se selecciona "Retiro en el Local", actualiza el domicilio en el pedido
+      setUsuario((prevUsuario) => ({
+        ...prevUsuario!,
+        domicilio: {
+          calle: "Retiro en el Local",
+          numero: 0,
+          localidad: "",
+        },
+      }));
+    }
   };
 
   const convertirCartItemADetallePedido = (cartItem: CartItem, productos: IProductoDto[]): IDetallePedidoDto => {
     // Verificar si productos es null o no está definido
-    if (!productos) {
+    if (!productos || productos.length === 0) {
       throw new Error("La lista de productos está vacía.");
     }
 
@@ -149,7 +161,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       console.log("Producto encontrado:", productoEncontrado);
 
       const detallePedido: IDetallePedidoDto = {
-        id: Math.floor(Math.random() * 1000),
+        id: 1,
         cantidad: cartItem.quantity,
         producto: productoEncontrado
       };
@@ -173,26 +185,26 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         esDelivery ? subTotal + costoDelivery : subTotal - subTotal * descuento;
 
       const nuevoPedidoCompleto: IPedidoDto = {
-        // id: id,
+        id: id,
         activo: true,
         horaEstimadaFin: new Date(),
         esDelivery: esDelivery,
         esEfectivo: esEfectivo,
         estadoPedido: "A confirmar",
         fechaPedido: new Date(),
-        usuario: usuario,        
+        usuario: usuario,
         detallesPedidos: detallesPedido,
       };
       setTotalPedido(nuevoTotalPedido)
       console.log(nuevoPedidoCompleto)
-      setPedidoCompleto(nuevoPedidoCompleto);      
+      setPedidoCompleto(nuevoPedidoCompleto);
     }
   }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]);
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isAuthenticated ) {
+    if (!isAuthenticated) {
       // El usuario no ha iniciado sesión, muestra un mensaje de alerta.
       setShowAlert(true);
       return;
@@ -205,11 +217,25 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
     if (pedidoCompleto !== null) {
       try {
-        const response = await axios.post(`${API_URL}pedido`, pedidoCompleto); 
-        console.log(pedidoCompleto)
+        const response = await axios.post(`${API_URL}pedido`, {
+          ...pedidoCompleto,
+          usuario: usuario,
+        });
         console.log("Pedido enviado al servidor:", response.data);
       } catch (error) {
         console.error("Error al enviar el pedido:", error);
+      }
+    }
+    setShowFacturaModal(true);
+  };
+
+  const handleMercadoPagoClick = async () => {
+    if (pedidoCompleto) {
+      const { preferenceId } = await MercadoPago(pedidoCompleto);
+      if (preferenceId !== null) {
+        setPreferenceId(preferenceId);
+      } else {
+        console.error('Error: ID de preferencia de pago es null');
       }
     }
   };
@@ -250,7 +276,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               handleEsEfectivo={handleEsEfectivo}
               domicilio={usuario ? usuario.domicilio : null}
               subTotal={subTotal}
-              totalPedido={totalPedido} />
+              totalPedido={totalPedido}
+              handleMercadoPagoClick={handleMercadoPagoClick}
+            />
           </div>
         </div>
       </div>
@@ -274,6 +302,11 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </button>
         </div>
       </form>
+      <GenerarFacturaModal
+        factura={pedidoCompleto} // Puedes pasar aquí el objeto de pedido completo
+        closeModal={() => setShowFacturaModal(false)}
+        show={showFacturaModal}
+      />
       {/* Mostrar el Alert cuando el carrito esté vacío */}
       {isCartEmpty && (
         <div className="container mt-3">
@@ -296,6 +329,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         </div>
       )}
     </div>
+
   );
 };
 

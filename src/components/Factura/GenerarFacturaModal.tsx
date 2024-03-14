@@ -14,7 +14,7 @@ interface GenerarFacturaModalProps {
 
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, closeModal, show }) => {
   const [showCreditoModal, setShowCreditoModal] = useState(false);
-  const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | undefined>();
+  const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>();
 
   useEffect(() => {
     setSelectedPedido(factura);
