@@ -9,6 +9,8 @@ import { IUsuario } from "../../interface/IUsuario";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
 import { Alert, Button } from 'react-bootstrap';
 import { useAuth0 } from "@auth0/auth0-react";
+import { IIngredientes } from "../../interface/IIngredientes";
+import { IProductoIngrediente } from "../../interface/IProductoIngrediente";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -39,6 +41,11 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const [totalPedido, setTotalPedido] = useState(0);
   const { loginWithRedirect, user, isAuthenticated } = useAuth0();
   const [showAlert, setShowAlert] = useState(!isAuthenticated);
+  const [insufficientStock, setInsufficientStock] = useState<{
+    isInsufficient: boolean;
+    productName: string;
+  }[]>([]); // Use an array to store multiple insufficient stock errors
+
   const API_URL = process.env.REACT_APP_API_URL || "";
 
 
@@ -167,36 +174,63 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!isAuthenticated) {
       setShowAlert(true);
       return;
     }
-
+  
     if (usuario === null) {
       console.error("El usuario no está cargado. No se puede confirmar el pedido.");
       return;
     }
-
+  
     if (pedidoCompleto !== null) {
       try {
-        const response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
-        console.log("Pedido enviado al servidor:", response.data);
-
-        // Mostrar la alerta con el número de pedido generado
-        if (response.data) {
-          setPedidoCompleto(response.data);
-          setPedidoConfirmado(true);
-          clearCart();
-          
+        // Validar el stock de ingredientes antes de confirmar el pedido
+        const validationPromises = pedidoCompleto.detallesPedidos.map(async (detallePedido) => {
+          try {
+            // Limpiar el array de errores antes de la validación
+            setInsufficientStock([]);
+            const response = await axios.get(`${API_URL}producto/${detallePedido.producto.id}`);
+            const producto = response.data;
+            const ingredientesSuficientes = producto.productosIngredientes.every(
+              (productoIngrediente:IProductoIngrediente) =>
+                productoIngrediente.ingrediente.stockActual >= productoIngrediente.cantidad * detallePedido.cantidad
+            );
+            if (!ingredientesSuficientes) {
+              setInsufficientStock(prevState => [...prevState, { isInsufficient: true, productName: detallePedido.producto.nombre }]);
+              console.error(`No hay suficiente stock para ${detallePedido.producto.nombre}`);
+              return false;
+            }
+            return true;
+          } catch (error) {
+            console.error("Error al validar el stock:", error);
+            return false;
+          }
+        });
+  
+        const validationResults = await Promise.all(validationPromises);
+  
+        if (validationResults.every((result) => result)) {
+          // Todos los productos tienen suficiente stock, proceder con el pedido
+          const response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
+          console.log("Pedido enviado al servidor:", response.data);
+  
+          // Mostrar la alerta con el número de pedido generado
+          if (response.data) {
+            setPedidoCompleto(response.data);
+            setPedidoConfirmado(true);
+            clearCart();
+          }
         }
-
-
       } catch (error) {
         console.error("Error al enviar el pedido:", error);
       }
     }
   };
+  
+  
 
   const handleLoginRedirect = () => {
     loginWithRedirect();
@@ -289,6 +323,14 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </Alert>
         </div>
       )}
+      {/* Mostrar el mensaje de error de stock insuficiente */}
+      {insufficientStock.map((error, index) => (
+        <div className="container mt-3" key={index}>
+          <Alert variant="danger" onClose={() => setInsufficientStock(prevState => prevState.filter((_, i) => i !== index))} dismissible>
+            No hay suficiente stock para el producto: {error.productName}
+          </Alert>
+        </div>
+      ))}
       {!isAuthenticated && (
         <div className="container mt-3">
           <Alert variant="danger" show={showAlert}>
