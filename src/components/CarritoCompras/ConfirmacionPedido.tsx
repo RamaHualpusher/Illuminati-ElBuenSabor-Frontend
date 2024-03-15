@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
-import { CartItem } from "../../context/cart/CartProvider";
+import { CartContext, CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
 import { IPedidoDto, IPedidoFull } from "../../interface/IPedido";
 import { IProducto, IProductoDto } from "../../interface/IProducto";
@@ -28,10 +28,12 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   onContinue,
   isCartEmpty,
 }) => {
+  const { clearCart } = useContext(CartContext);
   const [usuario, setUsuario] = useState<IUsuario | null>(null);
   const [productos, setProductos] = useState<IProducto[] | null>(null);
   const [subTotal, setSubTotal] = useState(0);
   const [pedidoCompleto, setPedidoCompleto] = useState<IPedidoDto | null>(null);
+  const [pedidoConfirmado, setPedidoConfirmado] = useState<Boolean>(false);
   const [esDelivery, setEsDelivery] = useState(true);
   const [esEfectivo, setEsEfectivo] = useState(true);
   const [totalPedido, setTotalPedido] = useState(0);
@@ -180,6 +182,16 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       try {
         const response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
         console.log("Pedido enviado al servidor:", response.data);
+
+        // Mostrar la alerta con el número de pedido generado
+        if (response.data) {
+          setPedidoCompleto(response.data);
+          setPedidoConfirmado(true);
+          clearCart();
+          
+        }
+
+
       } catch (error) {
         console.error("Error al enviar el pedido:", error);
       }
@@ -200,6 +212,17 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
   return (
     <div style={{ marginTop: "90px" }}>
+      {/* Mostrar la alerta con el número de pedido */}
+      {pedidoConfirmado && (
+        <div className="container mt-3">
+          <Alert variant="success">
+            ¡Pedido realizado con éxito! Número de pedido: {pedidoCompleto?.id}
+            <Button variant="primary" onClick={onContinue} className="ms-3">
+              Continuar
+            </Button>
+          </Alert>
+        </div>
+      )}
       <div className="justify-content-center">
         <h1 className="display-4">Carrito de Compras</h1>
       </div>
