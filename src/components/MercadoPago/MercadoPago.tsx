@@ -3,21 +3,21 @@ import { IPedidoDto } from '../../interface/IPedido';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || "";
-const MP_ACCESS_TOKEN = process.env.REACT_APP_MP_ACCESS_TOKEN || ""; // Tu Access Token de Mercado Pago
+const MP_ACCESS_TOKEN = process.env.REACT_APP_MP_ACCESS_TOKEN || ""; 
 
-export const MercadoPago = (pedidoCompleto: IPedidoDto) => {
+const MercadoPago = (pedidoCompleto: IPedidoDto) => {
   const [preferenceId, setPreferenceId] = useState<number | null>(null);
 
   const handleConfirmarPedido = async () => {
     if (pedidoCompleto !== null) {
       try {        
-        const response = await axios.post(`${API_URL}/mercado-pago-preference`, {
+        const response = await axios.post(`${API_URL}mercado-pago-dato`, {
           pedido: pedidoCompleto,
           preference: {
             items: pedidoCompleto.detallesPedidos.map((detalle) => ({
               title: detalle.producto.nombre,
               quantity: detalle.cantidad,
-              currency_id: 'ARS', // Moneda (en este caso, pesos argentinos)
+              currency_id: 'ARS',
               unit_price: detalle.producto.precio,
             })),
             back_urls: {
@@ -26,9 +26,8 @@ export const MercadoPago = (pedidoCompleto: IPedidoDto) => {
               pending: 'http://localhost:3000/pago-pendiente',
             },
             auto_return: 'approved',
-            // notification_url: 'https://tu-sitio.com/mercado-pago-notificaciones', // URL para recibir notificaciones de Mercado Pago
-            notification_url: 'http://localhost:3000/mercado-pago-notificaciones',
-            external_reference: 'tu-id-de-usuario', // ID de usuario para identificar la transacción
+            notification_url: 'http://localhost:8080/api/mercado-pago-dato',
+            external_reference: '77314873',
           },
         }, {
           headers: {
@@ -40,7 +39,6 @@ export const MercadoPago = (pedidoCompleto: IPedidoDto) => {
           const data = response.data;
           if (data.id) {
             setPreferenceId(data.id);
-            // Redireccionar al usuario a la página de pago de Mercado Pago
             window.location.href = data.init_point;
           } else {
             console.error('Error: ID de preferencia de pago es undefined');
@@ -54,5 +52,7 @@ export const MercadoPago = (pedidoCompleto: IPedidoDto) => {
     }
   };
 
-  return { handleConfirmarPedido, preferenceId: preferenceId || null };
+  return { handleConfirmarPedido, preferenceId };
 };
+
+export default MercadoPago;

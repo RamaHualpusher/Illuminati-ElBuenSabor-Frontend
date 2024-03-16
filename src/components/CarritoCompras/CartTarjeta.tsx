@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { IDomicilio } from "../../interface/IDomicilio";
-import { IPedidoDto } from '../../interface/IPedido';
-import { MercadoPago } from "../MercadoPago/MercadoPago";
 
 interface CartTarjetaProps {
   esDelivery: boolean;
@@ -11,7 +9,6 @@ interface CartTarjetaProps {
   domicilio: IDomicilio | null;
   subTotal: number;
   totalPedido: number;
-  handleMercadoPagoClick: () => void;
 }
 
 const CartTarjeta: React.FC<CartTarjetaProps> = ({
@@ -22,49 +19,17 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   domicilio,
   subTotal,
   totalPedido,
-  handleMercadoPagoClick
 }) => {
+  const descuento = 0.1; // Descuento del 10% (0.1)
   const costoDelivery = 500;
-  const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo
-  const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(
-    domicilio
-      ? {
-        calle: "Retiro en el local",
-        numero: 0,
-        localidad: "",
-      }
-      : null
-  );
-  const [preferenceId, setPreferenceId] = useState<string | null>(null);
 
+  // Manejar la selección de "Delivery" y "Mercado Pago" al cargar el componente
   useEffect(() => {
     if (esDelivery) {
       // Cuando se selecciona Delivery, automáticamente selecciona Mercado Pago
       handleEsEfectivo(false);
     }
-
-    if (!esDelivery) {
-      setNuevoDomicilio(domicilio);
-    }
-  }, [esDelivery, handleEsEfectivo, domicilio, nuevoDomicilio]);
-
-  useEffect(() => {
-    // Aquí redirige al usuario a la página de Mercado Pago cuando se obtiene el preferenceId
-    if (preferenceId) {
-      window.location.href = `https://www.mercadopago.com/checkout/v1/redirect?preference_id=${preferenceId}`;
-    }
-  }, [preferenceId]);
-
-  const calcularTotalPedido = () => {
-    let total = subTotal;
-    if (esDelivery) {
-      total += costoDelivery;
-    } else if (esEfectivo) {
-      total -= subTotal * descuentoEfectivo; // Aplicar descuento del 10% para pago en efectivo
-    }
-    return total;
-  };
-
+  }, [esDelivery, handleEsEfectivo]);
 
   return (
     <div className="d-flex justify-content-center align-items-center mb-4">
@@ -80,30 +45,28 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
               type="radio"
               className="btn-check"
               id="delivery-outlined"
-              value="delivery"
               autoComplete="off"
               checked={esDelivery}
-              onChange={() => {
-                handleEsDelivery(true);
-                handleEsEfectivo(false);
-              }}
+              onChange={() => handleEsDelivery(true)}
             />
-            <label className="btn btn-outline-danger" htmlFor="delivery-outlined">
+            <label
+              className="btn btn-outline-danger"
+              htmlFor="delivery-outlined"
+            >
               Delivery
             </label>
             <input
               type="radio"
               className="btn-check"
               id="retiroLocal-outlined"
-              value="retiroLocal"
               autoComplete="off"
               checked={!esDelivery}
-              onChange={() => {
-                handleEsDelivery(false);
-                handleEsEfectivo(false);
-              }}
+              onChange={() => handleEsDelivery(false)}
             />
-            <label className="btn btn-outline-danger" htmlFor="retiroLocal-outlined">
+            <label
+              className="btn btn-outline-danger"
+              htmlFor="retiroLocal-outlined"
+            >
               Retiro en el Local
             </label>
           </div>
@@ -114,53 +77,36 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
               <h1 className="display-6">Detalle del Pedido</h1>
               <p className="lead mb-0">
                 <strong>Dirección:</strong>
-                {esDelivery ? (
-                  // Si es delivery, mostrar la dirección habitual del usuario
-                  domicilio ? (
-                    <p>
-                      {domicilio.calle}, {domicilio.numero},{" "}
-                      {domicilio.localidad}
-                    </p>
-                  ) : (
-                    // Si no hay dirección habitual, mostrar un mensaje indicando que no está disponible
-                    <p>Dirección no disponible</p>
-                  )
-                ) : (
-                  // Si no es delivery, mostrar la nueva dirección solo si está definida
-                  nuevoDomicilio ? (
-                    <p>
-                      {nuevoDomicilio.calle}, {nuevoDomicilio.numero},{" "}
-                      {nuevoDomicilio.localidad}
-                    </p>
-                  ) : (
-                    // Si no hay nueva dirección, mostrar un mensaje de "Retiro en el Local"
-                    <p>Retiro en el Local</p>
-                  )
-                )}
-              </p>
-              <div className="mb-0">
-                {esEfectivo && (
-                  <p className="lead">
-                    <strong>SubTotal: </strong>${subTotal}
+                {domicilio && (
+                  <p>
+                    {domicilio.calle}, {domicilio.numero},{" "}
+                    {domicilio.localidad}
                   </p>
                 )}
+              </p>
+
+              <div className="mb-0">
+                <p className="lead">
+                  <strong>SubTotal: </strong>${subTotal}
+                </p>
                 {esDelivery && (
                   <p className="lead">
                     <strong>Costo del Delivery: </strong>${costoDelivery}
                   </p>
                 )}
-                {!esDelivery && esEfectivo && (
+                {!esDelivery && (
                   <p className="lead">
-                    <strong>Descuento:</strong> {descuentoEfectivo * 100}%
+                    <strong>Descuento:</strong> {descuento * 100}%
                   </p>
                 )}
                 <p className="lead">
-                  <strong>Total: </strong>${calcularTotalPedido()}
+                  <strong>Total: </strong>${totalPedido}
                 </p>
               </div>
             </div>
           </div>
         </div>
+
         <div className="card-footer">
           <div className="container-fluid">
             <div className="d-flex flex-column align-items-center">
@@ -171,22 +117,20 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                     <input
                       type="radio"
                       className="btn-check"
-                      id="mercadoPago-outlined"
+                      id="efectivo-outlined"
                       autoComplete="off"
-                      checked={!esEfectivo}
-                      onChange={() => {
-                        handleEsEfectivo(false);
-                        handleMercadoPagoClick();
-                      }}
+                      checked={esEfectivo}
+                      onChange={() => handleEsEfectivo(true)}
                     />
                     <label
-                      className="btn btn-outline-primary mx-2"
-                      htmlFor="mercadoPago-outlined"
+                      className="btn btn-outline-primary mx-1"
+                      htmlFor="efectivo-outlined"
                     >
-                      Mercado Pago
+                      Efectivo
                     </label>
                   </>
                 )}
+
                 <input
                   type="radio"
                   className="btn-check"

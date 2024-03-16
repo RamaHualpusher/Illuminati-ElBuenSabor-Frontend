@@ -114,7 +114,7 @@ const Factura = () => {
       
       {/* Modal para mostrar detalles de la factura */}
       <GenerarFacturaModal 
-        factura={selectedPedido}
+        factura={selectedPedido ?? null}
         closeModal={() => setShowModal(false)}
         show={showModal}
       />
