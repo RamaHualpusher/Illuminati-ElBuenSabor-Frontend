@@ -3,14 +3,13 @@ import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
 import { CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
-import { IPedidoDto } from "../../interface/IPedido";
-import { IProducto, IProductoDto } from "../../interface/IProducto";
+import { IPedido } from "../../interface/IPedido";
+import { IProducto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
-import { IDetallePedidoDto } from "../../interface/IDetallePedido";
-import { Alert, Button } from 'react-bootstrap';
 import { useAuth0 } from "@auth0/auth0-react";
-import GenerarFacturaModal from "../Factura/GenerarFacturaModal";
-import { MercadoPago } from "../MercadoPago/MercadoPago";
+import { IDetallePedido } from "../../interface/IDetallePedido";
+import { Alert, Button } from 'react-bootstrap';
+
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -18,8 +17,7 @@ interface ConfirmacionPedidoProps {
   eliminarDetallePedido: (id: number) => void;
   onCancel: () => void;
   onContinue: () => void;
-  isCartEmpty: boolean;
-  isAuthenticated: boolean;
+  isCartEmpty: boolean; // Recibe la prop isCartEmpty
 }
 
 const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
@@ -28,38 +26,31 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   eliminarDetallePedido,
   onCancel,
   onContinue,
-  isCartEmpty,
-  // isAuthenticated,
+  isCartEmpty, // Usa la prop isCartEmpty
 }) => {
   const [usuario, setUsuario] = useState<IUsuario | null>(null);
   const [productos, setProductos] = useState<IProducto[] | null>(null);
   const [subTotal, setSubTotal] = useState(0);
-  const [pedidoCompleto, setPedidoCompleto] = useState<IPedidoDto | undefined>(undefined);
+  const [pedidoCompleto, setPedidoCompleto] = useState<IPedido | null>(null);
   const [esDelivery, setEsDelivery] = useState(true);
   const [esEfectivo, setEsEfectivo] = useState(true);
-  const [id, setId] = useState(0);
   const [totalPedido, setTotalPedido] = useState(0);
   const descuento = 0.1; // Descuento del 10% (0.1)
   const costoDelivery = 500;
-  const { isAuthenticated, loginWithRedirect, getAccessTokenSilently, user } = useAuth0();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const [showAlert, setShowAlert] = useState(!isAuthenticated);
-  //const [confirmDisabled, setConfirmDisabled] = useState(!isAuthenticated);
-  const [showFacturaModal, setShowFacturaModal] = useState(false);
-  const API_URL = process.env.REACT_APP_API_URL || "";
-  const [preferenceId, setPreferenceId] = useState<number | null>(null);
+  const [confirmDisabled, setConfirmDisabled] = useState(!isAuthenticated);
 
   // Almacena la URL actual antes de redirigir
-  //const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   // Variable de estado para almacenar la URL anterior
   const [returnUrl, setReturnUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    verificarUsuario();
     const fetchUsuario = async () => {
       try {
-        const response = await axios.get(`${API_URL}usuario/clientes`);
+        const response = await axios.get("/assets/data/clienteTabla.json");
         const usuarioData = response.data[0];
-        console.log(response)
         setUsuario(usuarioData);
       } catch (error) {
         console.log(error);
@@ -68,8 +59,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
     const fetchProductos = async () => {
       try {
-        const response = await axios.get(`${API_URL}producto`);
-        console.log(response)
+        const response = await axios.get("/assets/data/productosLanding.json");
         setProductos(response.data);
       } catch (error) {
         console.log(error);
@@ -96,32 +86,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }, [isAuthenticated, returnUrl]);
 
 
-  const verificarUsuario = async () => {
-    if (isAuthenticated) {
-      const accessToken = await getAccessTokenSilently();
-      try {
-        const response = await axios.get(`${API_URL}usuario/${user?.sub}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const usuarioEncontrado = response.data;
-        if (usuarioEncontrado) {
-          // El usuario autenticado existe en tu base de datos
-          setUsuario(usuarioEncontrado);
-        } else {
-          // El usuario autenticado no existe en tu base de datos
-          console.error("El usuario autenticado no existe en tu base de datos.");
-        }
-      } catch (error) {
-        console.error("Error al verificar el usuario autenticado:", error);
-      }
-    } else {
-      console.error("El usuario no ha iniciado sesión.");
-    }
-  };
-
-  //Almacena la URL actual antes de redirigir
+  // Almacena la URL actual antes de redirigir
   const handleLoginRedirect = () => {
     setReturnUrl(window.location.href);
     loginWithRedirect();
@@ -134,38 +99,17 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   // Cambia el nombre de la función y la prop de tipoEnvio a esDelivery
   const handleEsDelivery = (esDelivery: boolean) => {
     setEsDelivery(esDelivery);
-
-    if (!esDelivery) {
-      // Si se selecciona "Retiro en el Local", actualiza el domicilio en el pedido
-      setUsuario((prevUsuario) => ({
-        ...prevUsuario!,
-        domicilio: {
-          calle: "Retiro en el Local",
-          numero: 0,
-          localidad: "",
-        },
-      }));
-    }
   };
 
-  const convertirCartItemADetallePedido = (cartItem: CartItem, productos: IProductoDto[]): IDetallePedidoDto => {
-    // Verificar si productos es null o no está definido
-    if (!productos || productos.length === 0) {
-      throw new Error("La lista de productos está vacía.");
-    }
-
-    const productoEncontrado = productos.find(producto => producto.id === cartItem.id);
+  const convertirCartItemADetallePedido = (cartItem: CartItem): IDetallePedido => {
+    const productoEncontrado = productos?.find(producto => producto.id === cartItem.id);
 
     if (productoEncontrado) {
-      // Imprimir el producto encontrado para verificar que tenga el id esperado
-      console.log("Producto encontrado:", productoEncontrado);
-
-      const detallePedido: IDetallePedidoDto = {
-        id: 1,
+      const detallePedido: IDetallePedido = {
+        id: 0,
         cantidad: cartItem.quantity,
-        producto: productoEncontrado
+        Productos: productoEncontrado, // Producto ahora es un solo objeto
       };
-
       return detallePedido;
     } else {
       throw new Error(`Producto con ID ${cartItem.id} no encontrado.`);
@@ -173,33 +117,45 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   };
 
   useEffect(() => {
-    if (usuario !== null && cartItems.length > 0 && productos !== null) {
-      const detallesPedido: IDetallePedidoDto[] = [];
+    if (usuario !== null && cartItems.length > 0) {
+      const domicilioUsuario = usuario.domicilio;
 
-      cartItems.forEach((cartItem) => {
-        const detallePedido = convertirCartItemADetallePedido(cartItem, productos);
-        detallesPedido.push(detallePedido);
-      });
-
+      // Calcula el total del pedido aquí
       const nuevoTotalPedido =
         esDelivery ? subTotal + costoDelivery : subTotal - subTotal * descuento;
 
-      const nuevoPedidoCompleto: IPedidoDto = {
-        id: id,
-        activo: true,
+      const nuevoPedidoCompleto: IPedido = {
+        id: 0,
+        numeroPedido: 0,
         horaEstimadaFin: new Date(),
         esDelivery: esDelivery,
         esEfectivo: esEfectivo,
         estadoPedido: "A confirmar",
         fechaPedido: new Date(),
-        usuario: usuario,
-        detallesPedidos: detallesPedido,
+        Usuario: {
+          id: usuario.id,
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          email: usuario.email,
+          clave: usuario.clave,
+          claveConfirm: usuario.claveConfirm,
+          telefono: usuario.telefono,
+          activo: usuario.activo,
+          domicilio: domicilioUsuario,
+          rol: {
+            id: usuario.rol.id,
+            nombreRol: usuario.rol.nombreRol,
+          },
+        },
+        DetallePedido: cartItems.map(convertirCartItemADetallePedido),
+        totalPedido: nuevoTotalPedido,
       };
-      setTotalPedido(nuevoTotalPedido)
-      console.log(nuevoPedidoCompleto)
+
+      setTotalPedido(nuevoTotalPedido); // Actualiza el estado del total del pedido
       setPedidoCompleto(nuevoPedidoCompleto);
+      console.log("Se cargó el Pedido");
     }
-  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]);
+  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo]);
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -210,32 +166,47 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       return;
     }
 
-    if (usuario === null) {
-      console.error("El usuario no está cargado. No se puede confirmar el pedido.");
-      return;
-    }
 
     if (pedidoCompleto !== null) {
+
+      // pedidoCompleto?.DetallePedido.forEach((detalle, index) => {
+      //   console.log(`Detalle ${index + 1}:`);
+      //   console.log("---------------------------------");
+      //   console.log("Pedido:");
+      //   console.log("Es delivery:", pedidoCompleto.esDelivery);
+      //   console.log("Es efectivo:", pedidoCompleto.esEfectivo);
+      //   console.log("Fecha Pedido:", pedidoCompleto.fechaPedido);
+      //   console.log("Estado Pedido:", pedidoCompleto.estadoPedido);
+      //   console.log("Total Pedido:", pedidoCompleto.totalPedido);
+      //   console.log("---------------------------------");
+      //   console.log("Productos:");
+      //   console.log("Cantidad del Producto:", detalle.cantidad);
+      //   console.log("Producto:", detalle.Productos.nombre);
+      //   console.log("Tiempo Producto:", detalle.Productos.tiempoEstimadoCocina);
+      //   console.log("Imagen Producto:", detalle.Productos.imagen);
+      //   console.log("Precio individual Producto", detalle.Productos.precio);
+      //   console.log("Preparacion Producto", detalle.Productos.preparacion);
+      //   console.log("Es bebida Producto", detalle.Productos.esBebida);
+      //   console.log("Estado Producto", detalle.Productos.estado);
+      //   console.log("Rubro Producto", detalle.Productos.Rubro.nombre);
+      //   console.log("---------------------------------");
+      //   console.log("ProductosIngredientes:");
+      //   detalle.Productos.ProductoIngrediente?.forEach((prodIng, prodIngIndex) => {
+      //     console.log(`ProductoIngrediente ${prodIngIndex + 1}:`);
+      //     console.log("Cantidad:", prodIng.cantidad);
+      //     console.log("Nombre Ingrediente:", prodIng.Ingredientes.nombre);
+      //     console.log("Precio Costo Ingrediente:", prodIng.Ingredientes.precioCosto);
+      //     console.log("Unidad Medida Ingrediente:", prodIng.Ingredientes.unidadMedida);
+      //      console.log("Rubro Ingrediente:", prodIng.Ingredientes.Rubro.nombre);
+      //   });
+
+      // });
+
       try {
-        const response = await axios.post(`${API_URL}pedido`, {
-          ...pedidoCompleto,
-          usuario: usuario,
-        });
+        const response = await axios.post("/api/pedido", pedidoCompleto); //Cambiar la url
         console.log("Pedido enviado al servidor:", response.data);
       } catch (error) {
         console.error("Error al enviar el pedido:", error);
-      }
-    }
-    setShowFacturaModal(true);
-  };
-
-  const handleMercadoPagoClick = async () => {
-    if (pedidoCompleto) {
-      const { preferenceId } = await MercadoPago(pedidoCompleto);
-      if (preferenceId !== null) {
-        setPreferenceId(preferenceId);
-      } else {
-        console.error('Error: ID de preferencia de pago es null');
       }
     }
   };
@@ -276,9 +247,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               handleEsEfectivo={handleEsEfectivo}
               domicilio={usuario ? usuario.domicilio : null}
               subTotal={subTotal}
-              totalPedido={totalPedido}
-              handleMercadoPagoClick={handleMercadoPagoClick}
-            />
+              totalPedido={totalPedido} />
           </div>
         </div>
       </div>
@@ -287,7 +256,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         <div className="d-flex justify-content-center align-items-center mb-4">
           <button type="submit"
             className="btn btn-primary me-2"
-            disabled={isCartEmpty || !isAuthenticated}>
+            disabled={confirmDisabled || isCartEmpty}>
             Confirmar Pedido
           </button>
           <button
@@ -302,11 +271,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </button>
         </div>
       </form>
-      <GenerarFacturaModal
-        factura={pedidoCompleto} // Puedes pasar aquí el objeto de pedido completo
-        closeModal={() => setShowFacturaModal(false)}
-        show={showFacturaModal}
-      />
       {/* Mostrar el Alert cuando el carrito esté vacío */}
       {isCartEmpty && (
         <div className="container mt-3">
@@ -315,21 +279,19 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </Alert>
         </div>
       )}
-      {!isAuthenticated && (
-        <div className="container mt-3">
-          {/* aca elimine showAlert porque se validaba con auth0, estaba dentro de Alert */}
-          <Alert variant="danger" show={showAlert}>
-            Por favor, inicie sesión para confirmar el pedido.    <br />
-            <div className="mt-1">
-              <Button variant="primary" onClick={handleLoginRedirect}>
-                Iniciar Sesión
-              </Button>
-            </div>
-          </Alert>
-        </div>
-      )}
-    </div>
 
+      <div className="container mt-3">
+        <Alert show={showAlert} variant="danger">
+          Por favor, inicie sesión para confirmar el pedido.    <br />
+          <div className="mt-1">
+            <Button variant="primary" onClick={handleLoginRedirect}>
+              Iniciar Sesión
+            </Button>
+          </div>
+
+        </Alert>
+      </div>
+    </div>
   );
 };
 
