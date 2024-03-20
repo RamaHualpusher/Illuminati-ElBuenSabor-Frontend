@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { IUsuario } from "../../../interface/IUsuario";
-import { IEditUsuarioFromAdmin } from "../../../interface/IUsuario";
+import { IEditUsuarioFromAdmin, IUsuario } from "../../../interface/IUsuario";
 import { IAction, IColumn } from '../../../interface/ICamposTablaGenerica';
 import GenericTable from "../../GenericTable/GenericTable";
 import { Container, Row, Col, Form } from 'react-bootstrap';
 import EditEmpleadoModal from "./EditEmpleadoModal";
 import AddEmpleadoModal from "./AddEmpleadoModal";
-import { handleRequest } from "../../FuncionRequest/FuncionRequest";
+import axios from 'axios';
 
 const Empleados = () => {
     //Estados del componente
@@ -14,8 +13,8 @@ const Empleados = () => {
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
     const [selectedUsuario, setSelectedUsuario] = useState<IEditUsuarioFromAdmin | null>(null);
-    const API_URL = process.env.REACT_APP_API_URL || "";    
-    const [filterOption, setFilterOption] = useState<string>("all"); // Puedes inicializarlo con "all"
+    const API_URL = process.env.REACT_APP_API_URL || "";
+    const [filterOption, setFilterOption] = useState<string>("all");
 
     //Acciones que se pueden realizar
     const actions: IAction = {
@@ -46,58 +45,24 @@ const Empleados = () => {
 
     ];
 
-    // Función para busqueda personalizada por ID y nombre
-    const customSearch = (searchText: string): Promise<IUsuario[]> => {
-        return new Promise((resolve) => {
-            const normalizedSearchText = normalizeString(searchText);
-
-            const filteredData = empleados.filter((empleado) => {
-                const normalizedIdUsuario = empleado.id ? normalizeString(empleado.id.toString()) : '';
-                const normalizedNombre = normalizeString(empleado.nombre.toString());
-                const normalizedApellido = normalizeString(empleado.apellido.toString());
-
-                 return (
-                    (filterOption === "all" || (filterOption === "active" && empleado.activo)
-                        || (filterOption === "inactive" && !empleado.activo)) &&
-                    (normalizedIdUsuario.includes(normalizedSearchText) ||
-                        normalizedNombre.includes(normalizedSearchText) ||
-                        normalizedApellido.includes(normalizedSearchText))                       
-                );
-            });
-
-            resolve(filteredData);
-        });
-    };
-
-    //Normaliza el texto para que no importe las Mayus, Minus o Tildes
-    const normalizeString = (str: string): string => {
-        return str
-            .toLowerCase()
-            .normalize("NFD") // Eliminar tildes
-            .replace(/[\u0300-\u036f]/g, "");
-    };
-
     // Cargar datos de empleados al montar el componente
     useEffect(() => {
-        let url = API_URL + "usuario/empleados";
+        const fetchData = async () => {
+            let url = API_URL + "usuario/empleados";
+            try {
+                const response = await axios.get(url);
+                setEmpleados(response.data);
+            } catch (error) {
+                console.error('Error al cargar datos de empleados:', error);
+            }
+        };
 
-        if (filterOption === "active") {
-            url = API_URL + "usuario/empleados/active";
-        } else if (filterOption === "inactive") {
-            url = API_URL + "usuario/empleados/inactive";
-        }
+        fetchData();
+    }, [filterOption]); // Agrega filterOption como dependencia aquí
 
-        fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-                setEmpleados(data);
-            })
-            .catch((error) => console.log(error));
-    }, [filterOption]);
 
     const handleEmpleadoAdd = async (empleado: IUsuario) => {
         try {
-            // Primero, crear el domicilio
             const domicilio = {
                 activo: empleado.domicilio.activo,
                 calle: empleado.domicilio.calle,
@@ -105,21 +70,19 @@ const Empleados = () => {
                 localidad: empleado.domicilio.localidad,
             };
 
-            const newDomicilio = await handleRequest('POST', `${API_URL}domicilio`, domicilio);
+            const responseDomicilio = await axios.post(`${API_URL}domicilio`, domicilio);
 
-            if (newDomicilio) {
-                // Si se crea correctamente el domicilio, entonces agregar el empleado
+            if (responseDomicilio.data) {
                 const updatedEmpleado = {
                     ...empleado,
-                    domicilio: { id: newDomicilio.id, ...domicilio }, // Asociar el ID del domicilio al empleado
+                    domicilio: { id: responseDomicilio.data.id, ...domicilio },
                 };
 
-                const newEmpleado = await handleRequest('POST', `${API_URL}usuario`, updatedEmpleado);
+                const responseEmpleado = await axios.post(`${API_URL}usuario`, updatedEmpleado);
 
-                if (newEmpleado) {
-                    // Si se agrega correctamente el empleado, actualizar la lista de empleados
-                    setEmpleados([...empleados, newEmpleado]);
-                    console.log('Empleado agregado:', newEmpleado);
+                if (responseEmpleado.data) {
+                    setEmpleados([...empleados, responseEmpleado.data]);
+                    console.log('Empleado agregado:', responseEmpleado.data);
                 } else {
                     console.log('No se pudo agregar el empleado');
                 }
@@ -134,9 +97,7 @@ const Empleados = () => {
     // Manejar la edición de un empleado
     const handleEmpleadoEdit = async (empleado: IEditUsuarioFromAdmin) => {
         try {
-            // Verificar si el domicilio existe
             if (empleado.domicilio && empleado.domicilio.id) {
-                // Si ya tiene un ID de domicilio, actualizar el existente
                 const domicilio = {
                     id: empleado.domicilio.id,
                     activo: empleado.domicilio.activo,
@@ -145,32 +106,22 @@ const Empleados = () => {
                     localidad: empleado.domicilio.localidad,
                 };
 
-                const updatedDomicilio = await handleRequest(
-                    'PUT',
-                    `${API_URL}domicilio/${empleado.domicilio.id}`,
-                    domicilio
-                );
+                const responseDomicilio = await axios.put(`${API_URL}domicilio/${empleado.domicilio.id}`, domicilio);
 
-                if (updatedDomicilio) {
-                    // Actualizar el empleado con el ID del domicilio actualizado
+                if (responseDomicilio.data) {
                     const updatedEmpleado = {
                         ...empleado,
-                        domicilio: { idPut: updatedDomicilio.id, ...domicilio },
+                        domicilio: { idPut: responseDomicilio.data.id, ...domicilio },
                     };
 
-                    const updatedData = await handleRequest(
-                        'PUT',
-                        `${API_URL}usuario/${empleado.id}`,
-                        updatedEmpleado
-                    );
+                    const responseEmpleado = await axios.put(`${API_URL}usuario/${empleado.id}`, updatedEmpleado);
 
-                    if (updatedData) {
-                        // Actualizar la lista de empleados con el empleado editado
+                    if (responseEmpleado.data) {
                         const newData = empleados.map((item) =>
-                            item.id === empleado.id ? updatedData : item
+                            item.id === empleado.id ? responseEmpleado.data : item
                         );
                         setEmpleados(newData);
-                        console.log('Empleado editado:', updatedData);
+                        console.log('Empleado editado:', responseEmpleado.data);
                     } else {
                         console.log('No se pudo editar el empleado');
                     }
@@ -191,7 +142,7 @@ const Empleados = () => {
         const usuarioId: number = item.id || 0;
 
         try {
-            await handleRequest('DELETE', `${API_URL + "usuario"}/${usuarioId}`);
+            await axios.delete(`${API_URL + "usuario"}/${usuarioId}`);
             setEmpleados(empleados.filter((item) => item.id !== usuarioId));
             console.log("Empleado eliminado correctamente");
         } catch (error) {
@@ -259,19 +210,24 @@ const Empleados = () => {
                         </Form.Select>
                     </Col>
                     <Col sm={12}>
-                    {empleados && empleados.length > 0 ? (
-                        <GenericTable
-                            data={empleados}
-                            columns={columns}
-                            actions={actions}
-                            onAdd={handleAddModalOpen}
-                            onUpdate={handleEditModalOpen}
-                            onDelete={handleEmpleadoDelete}
-                            customSearch={customSearch}
-                        />
-                    ) : (
-                        <p>No hay datos de empleados disponibles.</p>
-                    )}
+                        {empleados && empleados.length > 0 ? (
+                            <GenericTable
+                                data={empleados.filter(empleado => {
+                                    return (
+                                        filterOption === "all" ||
+                                        (filterOption === "active" && empleado.activo) ||
+                                        (filterOption === "inactive" && !empleado.activo)
+                                    );
+                                })}
+                                columns={columns}
+                                actions={actions}
+                                onAdd={handleAddModalOpen}
+                                onUpdate={handleEditModalOpen}
+                                onDelete={handleEmpleadoDelete}
+                            />
+                        ) : (
+                            <p>No hay datos de empleados disponibles.</p>
+                        )}
                     </Col>
                 </Row>
                 <AddEmpleadoModal

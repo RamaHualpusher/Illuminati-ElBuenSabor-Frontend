@@ -15,7 +15,7 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
   handleFacturaEdit,
   selectedFactura,
 }) => {
-  const [numeroPedido, setNumeroPedido] = useState(0);
+  const [id, setId] = useState(0);
   const [fechaPedido, setFechaPedido] = useState('');
   const [horaEstimadaFin, setHoraEstimadaFin] = useState('');
   const [esDelivery, setEsDelivery] = useState(false);
@@ -26,13 +26,12 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
 
   useEffect(() => {
     if (selectedFactura) {
-      setNumeroPedido(selectedFactura.numeroPedido);
+      setId(selectedFactura.id ?? 0);
       setFechaPedido(selectedFactura.fechaPedido instanceof Date ? selectedFactura.fechaPedido.toISOString().split('T')[0] : '');
       setHoraEstimadaFin(selectedFactura.horaEstimadaFin instanceof Date ? selectedFactura.horaEstimadaFin.toISOString().split('T')[1].substring(0, 5) : '');
       setEsDelivery(selectedFactura.esDelivery);
       setEstadoPedido(selectedFactura.estadoPedido);
       setEsEfectivo(selectedFactura.esEfectivo);
-      setTotalPedido(selectedFactura.totalPedido);
     }
   }, [selectedFactura]);
 
@@ -47,13 +46,12 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
 
       const updatedFactura: IPedido = {
         ...selectedFactura,
-        numeroPedido,
+        id,
         fechaPedido: new Date(fechaPedido),
         horaEstimadaFin: new Date(`2000-01-01T${horaEstimadaFin}:00Z`), // Agregar una fecha ficticia para el tiempo
         esDelivery,
         estadoPedido,
         esEfectivo,
-        totalPedido,
       };
       handleFacturaEdit(updatedFactura);
     }
@@ -62,7 +60,7 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
 
   const isValidForm = () => {
     return (
-      numeroPedido > 0 &&
+      id > 0 &&
       fechaPedido !== '' &&
       horaEstimadaFin !== '' &&
       estadoPedido !== '' &&
@@ -83,8 +81,8 @@ const EditFacturaModal: React.FC<EditFacturaModalProps> = ({
             <Form.Control
               type="number"
               placeholder="Ingrese número de pedido"
-              value={numeroPedido}
-              onChange={(event) => setNumeroPedido(parseInt(event.target.value))}
+              value={id}
+              onChange={(event) => setId(parseInt(event.target.value))}
               required
             />
           </Form.Group>

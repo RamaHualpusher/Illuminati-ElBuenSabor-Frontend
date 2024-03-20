@@ -9,11 +9,12 @@ const CajeroPage = () => {
   const [pedidosComplete, setPedidosComplete] = useState<IPedido[]>([]);
   const [filtroEstado, setFiltroEstado] = useState<string>("");
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedido | null>(null);
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const response = await fetch("assets/data/pedidos.json");
+        const response = await fetch(API_URL + "pedido");
         const data = await response.json();
         setPedidos(data);
         setPedidosComplete(data);
@@ -64,10 +65,12 @@ const CajeroPage = () => {
     }
   };
 
-  // Manejar el cambio de estado en el filtro
+  //cambio realizado 26/1/2024
+  // Cambiar el estado de un pedido seleccionado
   const handleEstadoFiltroChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFiltroEstado(event.target.value);
     setPedidoSeleccionado(null); // Reiniciar el pedido seleccionado
+    setPedidos(pedidosComplete); // Resetear la lista de pedidos
   };
 
   return (

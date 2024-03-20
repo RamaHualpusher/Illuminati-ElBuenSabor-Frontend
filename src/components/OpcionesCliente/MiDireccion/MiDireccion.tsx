@@ -116,7 +116,6 @@ const Direccion: FC = () => {
                     handleClose={handleAddModalClose}
                     handleDireccionAdd={handleDomicilioAdd}
                 />
-
                 <EditDireccionModal
                     show={editModalShow}
                     handleClose={handleEditModalClose}

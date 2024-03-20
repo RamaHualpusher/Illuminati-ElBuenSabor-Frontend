@@ -4,5 +4,8 @@ export interface IRubro extends IBase {
   nombre: string;
   idRubroPadre?: IRubro;
 }
-
-//el simbolo ? indica que el id puede no traer informacion
+export interface IRubroNew extends IBase{
+  nombre: string;
+  rubroPadre?: IRubroNew;
+  ingredientOwner: boolean;
+}

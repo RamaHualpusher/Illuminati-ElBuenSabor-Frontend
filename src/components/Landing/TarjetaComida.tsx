@@ -18,7 +18,9 @@ const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText, showButton 
       const detallePedido: IDetallePedido = {
         id: 0,
         cantidad: 1,
-        Productos: producto,
+        subTotal: 0,
+        producto: producto,
+        maxCantidadProducto: 0,
       };
 
       // Crear un objeto CartItem para agregar al carrito

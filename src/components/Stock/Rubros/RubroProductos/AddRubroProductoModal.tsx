@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { IAddRubroProductoModalProps } from '../../../../interface/IProducto';
-import { IRubro } from '../../../../interface/IRubro';
+import { IRubroNew } from '../../../../interface/IRubro';
 
 const AddRubroProductoModal: React.FC<IAddRubroProductoModalProps> = ({
   show,
@@ -22,11 +22,12 @@ const AddRubroProductoModal: React.FC<IAddRubroProductoModalProps> = ({
       return;
     }
 
-    const newRubroProducto: IRubro = {
+    const newRubroProducto: IRubroNew = {
       id: 0,
       nombre: trimmedNombre,
       activo,
-      idRubroPadre: undefined,
+      rubroPadre: undefined,
+      ingredientOwner: false
     };
     handleRubroAdd(newRubroProducto); // Pasar el objeto rubroData directamente a handleRubroAdd
     handleClose();

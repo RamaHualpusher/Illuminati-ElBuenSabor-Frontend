@@ -29,8 +29,8 @@ const DetallesPedidoDelivery: React.FC = () => {
     const obtenerSubtotal = (detallePedido: IDetallePedido[]) => {
         let subtotal = 0;
         detallePedido.forEach((detalle: IDetallePedido) => {
-            if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-                detalle.Productos.forEach((producto: IProducto) => {
+            if (detalle.producto && Array.isArray(detalle.producto) && detalle.producto.length > 0) {
+                detalle.producto.forEach((producto: IProducto) => {
                     subtotal += producto.precio;
                 });
             }
@@ -39,13 +39,13 @@ const DetallesPedidoDelivery: React.FC = () => {
     };
 
     const renderProductos = (detalle: IDetallePedido) => { //Renderiza todos los productos que hay en el pedido
-        if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) { //Si no encuentra muestra un mensaje
+        if (!detalle.producto || !Array.isArray(detalle.producto) || detalle.producto.length === 0) { //Si no encuentra muestra un mensaje
             return <p>Productos no disponibles</p>;
         }
 
         return (
             <ul>
-                {detalle.Productos.map((producto: IProducto) => (
+                {detalle.producto.map((producto: IProducto) => (
                     <li key={producto.id}>
                         <strong>{producto.nombre}</strong>: ${producto.precio}
                     </li>
@@ -58,9 +58,30 @@ const DetallesPedidoDelivery: React.FC = () => {
         window.history.go(-1); // Navega hacia atrás en la historia del navegador
     };
 
-    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido, totalPedido } = pedido;
+    const { Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
 
     const subtotalPedido = obtenerSubtotal(DetallePedido);
+
+    // Función para calcular el total del pedido
+    const calcularTotalPedido = (detallePedido: IDetallePedido[]) => {
+        let total = 0;
+    for (let i = 0; i < detallePedido.length; i++) {
+        const detalle = detallePedido[i];
+        const productos = detalle.producto;
+        // Verificar si Productos es un array
+        if (Array.isArray(productos)) {
+            for (let j = 0; j < productos.length; j++) {
+                const producto = productos[j];
+                total += producto.precio || 0;
+            }
+        } else {
+            // Si Productos no es un array, asumir que es un solo producto
+            total += productos.precio || 0;
+        }
+    }
+    return total;
+};
+    const totalPedido = calcularTotalPedido(DetallePedido);
 
     return (
         <div className="detalle-page-container d-flex align-items-center" style={{ backgroundImage: `url('/assets/img/fondoMisPedidos.jpg') `, minHeight: '100vh' }}>
@@ -70,7 +91,7 @@ const DetallesPedidoDelivery: React.FC = () => {
                         <div className="card">
                             <div className="card-header"><h1 className="display-5">Detalles del Pedido</h1></div>
                             <div className="card-body">
-                                <h5 className="card-title">Número de Pedido: {numeroPedido}</h5>
+                                <h5 className="card-title">Número de Pedido: {id}</h5>
                                 <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario.nombre} {Usuario.apellido}</p>
                                 <p className="card-text"><strong>Teléfono:</strong> {Usuario.telefono}</p>
                                 <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario.domicilio.calle}, {Usuario.domicilio.localidad}, {Usuario.domicilio.numero}</p>

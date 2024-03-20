@@ -144,6 +144,9 @@ const Navbar: FC = () => {
                       }}
                     />
                     {user?.name}
+                    {/* aca deberia mostrarse el ROL del usuario  ya que Adminsitrador/Clente/Cocinero/Delivery
+                    creo que deberia ser con user?.rol */}
+                    {}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item as={Link} to="/mi-direccion">

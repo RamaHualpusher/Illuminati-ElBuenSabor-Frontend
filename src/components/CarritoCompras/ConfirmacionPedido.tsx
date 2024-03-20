@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
-import { CartItem } from "../../context/cart/CartProvider";
+import { CartContext, CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
-import { IPedido } from "../../interface/IPedido";
-import { IProducto } from "../../interface/IProducto";
+import { IPedidoDto, IPedidoFull } from "../../interface/IPedido";
+import { IProducto, IProductoDto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
-import { useAuth0 } from "@auth0/auth0-react";
-import { IDetallePedido } from "../../interface/IDetallePedido";
+import { IDetallePedidoDto } from "../../interface/IDetallePedido";
 import { Alert, Button } from 'react-bootstrap';
-
+import { useAuth0 } from "@auth0/auth0-react";
+import { IIngredientes } from "../../interface/IIngredientes";
+import { IProductoIngrediente } from "../../interface/IProductoIngrediente";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -17,7 +18,8 @@ interface ConfirmacionPedidoProps {
   eliminarDetallePedido: (id: number) => void;
   onCancel: () => void;
   onContinue: () => void;
-  isCartEmpty: boolean; // Recibe la prop isCartEmpty
+  isCartEmpty: boolean;
+  isAuthenticated: boolean;
 }
 
 const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
@@ -26,69 +28,211 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   eliminarDetallePedido,
   onCancel,
   onContinue,
-  isCartEmpty, // Usa la prop isCartEmpty
+  isCartEmpty,
 }) => {
+  const { clearCart } = useContext(CartContext);
   const [usuario, setUsuario] = useState<IUsuario | null>(null);
   const [productos, setProductos] = useState<IProducto[] | null>(null);
   const [subTotal, setSubTotal] = useState(0);
-  const [pedidoCompleto, setPedidoCompleto] = useState<IPedido | null>(null);
+  const [pedidoCompleto, setPedidoCompleto] = useState<IPedidoDto | null>(null);
+  const [pedidoConfirmado, setPedidoConfirmado] = useState<Boolean>(false);
   const [esDelivery, setEsDelivery] = useState(true);
   const [esEfectivo, setEsEfectivo] = useState(true);
   const [totalPedido, setTotalPedido] = useState(0);
-  const descuento = 0.1; // Descuento del 10% (0.1)
-  const costoDelivery = 500;
-  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const { loginWithRedirect, user, isAuthenticated } = useAuth0();
   const [showAlert, setShowAlert] = useState(!isAuthenticated);
-  const [confirmDisabled, setConfirmDisabled] = useState(!isAuthenticated);
+  const [insufficientStock, setInsufficientStock] = useState<{
+    isInsufficient: boolean;
+    productName: string;
+  }[]>([]); // Use an array to store multiple insufficient stock errors
 
-  // Almacena la URL actual antes de redirigir
-  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
-  // Variable de estado para almacenar la URL anterior
-  const [returnUrl, setReturnUrl] = useState<string | null>(null);
+  const API_URL = process.env.REACT_APP_API_URL || "";
+
+
+  // Función para crear un nuevo cliente en el servidor
+  const crearNuevoCliente = async () => {
+    try {
+      if(user && isAuthenticated){
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}usuario/clientes`, {
+          nombre: user.given_name,
+          apellido: user.family_name,
+          email: user.email,
+          clave: null, // No tenemos la contraseña aquí
+          telefono: "", // No tenemos el teléfono aquí
+          idDomicilio: 0, // No tenemos el id de domicilio aquí
+          calle: "", // No tenemos la calle aquí
+          numero: 0, // No tenemos el número aquí
+          localidad: "", // No tenemos la localidad aquí
+          idRol: 0, // No tenemos el id de rol aquí
+          nombreRol: "" // No tenemos el nombre de rol aquí
+        });
+        console.log("Respuesta al crear nuevo cliente:", JSON.stringify(response.data));
+        // Si se crea exitosamente el nuevo cliente, lo establecemos en el estado
+        setUsuario(response.data);
+      }
+    } catch (error) {
+      console.error("Error al crear el nuevo cliente:", error);
+      // Aquí puedes manejar el error de forma adecuada, por ejemplo, mostrar un mensaje al usuario
+    }
+  };
 
   useEffect(() => {
-    const fetchUsuario = async () => {
-      try {
-        const response = await axios.get("/assets/data/clienteTabla.json");
-        const usuarioData = response.data[0];
-        setUsuario(usuarioData);
-      } catch (error) {
-        console.log(error);
+    const verificarUsuarioExistente = async () => {
+      if (isAuthenticated && user) {
+        try {
+          const response = await axios.post(`${process.env.REACT_APP_API_URL}usuario/clientes/email`, {
+            nombre: user.given_name,
+            apellido: user.family_name,
+            email: user.email,
+            clave: null, // No tenemos la contraseña aquí
+            telefono: "", // No tenemos el teléfono aquí
+            idDomicilio: 0, // No tenemos el id de domicilio aquí
+            calle: "", // No tenemos la calle aquí
+            numero: 0, // No tenemos el número aquí
+            localidad: "", // No tenemos la localidad aquí
+            idRol: 0, // No tenemos el id de rol aquí
+            nombreRol: "" // No tenemos el nombre de rol aquí
+          });
+          console.log("Respuesta al verificar usuario existente:", JSON.stringify(response.data));
+          // Si el usuario existe, lo establecemos en el estado
+          setUsuario(response.data);
+        } catch (error:any) {
+          // Si el usuario no existe, intentamos crearlo
+          if (error.response && error.response.status === 404) {
+            console.log("El usuario no existe, creándolo...");
+            crearNuevoCliente(); // Llamamos a la función para crear un nuevo cliente
+          } else {
+            console.error("Error al verificar el usuario:", error);
+          }
+        }
       }
     };
 
-    const fetchProductos = async () => {
-      try {
-        const response = await axios.get("/assets/data/productosLanding.json");
-        setProductos(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    verificarUsuarioExistente();
+  }, [isAuthenticated, user]);
 
-    fetchProductos();
-    fetchUsuario();
-  }, []);
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchProductos = async () => {
+        try {
+          const response = await axios.get(`${API_URL}producto`);
+          setProductos(response.data);
+        } catch (error) {
+          console.error("Error al obtener productos:", error);
+        }
+      };
+
+      fetchProductos();
+    }
+  }, [isAuthenticated]);
+
 
   useEffect(() => {
     const totalProducto = cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     );
+    console.log("Subtotal del pedido:", totalProducto);
     setSubTotal(totalProducto);
   }, [cartItems]);
 
   useEffect(() => {
-    // Después del inicio de sesión, redirige al usuario de vuelta a la página original
-    if (isAuthenticated && returnUrl) {
-      window.location.href = returnUrl;
+    if (usuario !== null && cartItems.length > 0 && productos !== null) {
+      const detallesPedido: IDetallePedidoDto[] = [];
+
+      cartItems.forEach((cartItem) => {
+        const productoEncontrado = productos.find(producto => producto.id === cartItem.id);
+        if (productoEncontrado) {
+          const detallePedido: IDetallePedidoDto = {
+            cantidad: cartItem.quantity,
+            producto: productoEncontrado
+          };
+          detallesPedido.push(detallePedido);
+        }
+      });
+
+      const nuevoTotalPedido =
+        esDelivery ? subTotal + 500 : subTotal * 0.9;
+
+      const nuevoPedidoCompleto: IPedidoFull = {
+        activo: true,
+        numeroPedido: 123456789,
+        horaEstimadaFin: new Date(),
+        esDelivery: esDelivery,
+        esEfectivo: esEfectivo,
+        estadoPedido: "A confirmar",
+        fechaPedido: new Date(),
+        usuario: usuario!,
+        detallesPedidos: detallesPedido,
+        total: nuevoTotalPedido
+      };
+      console.log("Pedido completo:", JSON.stringify(nuevoPedidoCompleto));
+      setTotalPedido(nuevoTotalPedido);
+      setPedidoCompleto(nuevoPedidoCompleto);
     }
-  }, [isAuthenticated, returnUrl]);
+  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]);
 
+  const handleConfirmarPedido = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    if (!isAuthenticated) {
+      setShowAlert(true);
+      return;
+    }
+  
+    if (usuario === null) {
+      console.error("El usuario no está cargado. No se puede confirmar el pedido.");
+      return;
+    }
+  
+    if (pedidoCompleto !== null) {
+      try {
+        // Validar el stock de ingredientes antes de confirmar el pedido
+        const validationPromises = pedidoCompleto.detallesPedidos.map(async (detallePedido) => {
+          try {
+            // Limpiar el array de errores antes de la validación
+            setInsufficientStock([]);
+            const response = await axios.get(`${API_URL}producto/${detallePedido.producto.id}`);
+            const producto = response.data;
+            const ingredientesSuficientes = producto.productosIngredientes.every(
+              (productoIngrediente:IProductoIngrediente) =>
+                productoIngrediente.ingrediente.stockActual >= productoIngrediente.cantidad * detallePedido.cantidad
+            );
+            if (!ingredientesSuficientes) {
+              setInsufficientStock(prevState => [...prevState, { isInsufficient: true, productName: detallePedido.producto.nombre }]);
+              console.error(`No hay suficiente stock para ${detallePedido.producto.nombre}`);
+              return false;
+            }
+            return true;
+          } catch (error) {
+            console.error("Error al validar el stock:", error);
+            return false;
+          }
+        });
+  
+        const validationResults = await Promise.all(validationPromises);
+  
+        if (validationResults.every((result) => result)) {
+          // Todos los productos tienen suficiente stock, proceder con el pedido
+          const response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
+          console.log("Pedido enviado al servidor:", response.data);
+  
+          // Mostrar la alerta con el número de pedido generado
+          if (response.data) {
+            setPedidoCompleto(response.data);
+            setPedidoConfirmado(true);
+            clearCart();
+          }
+        }
+      } catch (error) {
+        console.error("Error al enviar el pedido:", error);
+      }
+    }
+  };
+  
+  
 
-  // Almacena la URL actual antes de redirigir
   const handleLoginRedirect = () => {
-    setReturnUrl(window.location.href);
     loginWithRedirect();
   };
 
@@ -96,123 +240,23 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     setEsEfectivo(esEfectivo);
   };
 
-  // Cambia el nombre de la función y la prop de tipoEnvio a esDelivery
   const handleEsDelivery = (esDelivery: boolean) => {
     setEsDelivery(esDelivery);
   };
 
-  const convertirCartItemADetallePedido = (cartItem: CartItem): IDetallePedido => {
-    const productoEncontrado = productos?.find(producto => producto.id === cartItem.id);
-
-    if (productoEncontrado) {
-      const detallePedido: IDetallePedido = {
-        id: 0,
-        cantidad: cartItem.quantity,
-        Productos: productoEncontrado, // Producto ahora es un solo objeto
-      };
-      return detallePedido;
-    } else {
-      throw new Error(`Producto con ID ${cartItem.id} no encontrado.`);
-    }
-  };
-
-  useEffect(() => {
-    if (usuario !== null && cartItems.length > 0) {
-      const domicilioUsuario = usuario.domicilio;
-
-      // Calcula el total del pedido aquí
-      const nuevoTotalPedido =
-        esDelivery ? subTotal + costoDelivery : subTotal - subTotal * descuento;
-
-      const nuevoPedidoCompleto: IPedido = {
-        id: 0,
-        numeroPedido: 0,
-        horaEstimadaFin: new Date(),
-        esDelivery: esDelivery,
-        esEfectivo: esEfectivo,
-        estadoPedido: "A confirmar",
-        fechaPedido: new Date(),
-        Usuario: {
-          id: usuario.id,
-          nombre: usuario.nombre,
-          apellido: usuario.apellido,
-          email: usuario.email,
-          clave: usuario.clave,
-          claveConfirm: usuario.claveConfirm,
-          telefono: usuario.telefono,
-          activo: usuario.activo,
-          domicilio: domicilioUsuario,
-          rol: {
-            id: usuario.rol.id,
-            nombreRol: usuario.rol.nombreRol,
-          },
-        },
-        DetallePedido: cartItems.map(convertirCartItemADetallePedido),
-        totalPedido: nuevoTotalPedido,
-      };
-
-      setTotalPedido(nuevoTotalPedido); // Actualiza el estado del total del pedido
-      setPedidoCompleto(nuevoPedidoCompleto);
-      console.log("Se cargó el Pedido");
-    }
-  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo]);
-
-  const handleConfirmarPedido = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!isAuthenticated) {
-      // El usuario no ha iniciado sesión, muestra un mensaje de alerta.
-      setShowAlert(true);
-      return;
-    }
-
-
-    if (pedidoCompleto !== null) {
-
-      // pedidoCompleto?.DetallePedido.forEach((detalle, index) => {
-      //   console.log(`Detalle ${index + 1}:`);
-      //   console.log("---------------------------------");
-      //   console.log("Pedido:");
-      //   console.log("Es delivery:", pedidoCompleto.esDelivery);
-      //   console.log("Es efectivo:", pedidoCompleto.esEfectivo);
-      //   console.log("Fecha Pedido:", pedidoCompleto.fechaPedido);
-      //   console.log("Estado Pedido:", pedidoCompleto.estadoPedido);
-      //   console.log("Total Pedido:", pedidoCompleto.totalPedido);
-      //   console.log("---------------------------------");
-      //   console.log("Productos:");
-      //   console.log("Cantidad del Producto:", detalle.cantidad);
-      //   console.log("Producto:", detalle.Productos.nombre);
-      //   console.log("Tiempo Producto:", detalle.Productos.tiempoEstimadoCocina);
-      //   console.log("Imagen Producto:", detalle.Productos.imagen);
-      //   console.log("Precio individual Producto", detalle.Productos.precio);
-      //   console.log("Preparacion Producto", detalle.Productos.preparacion);
-      //   console.log("Es bebida Producto", detalle.Productos.esBebida);
-      //   console.log("Estado Producto", detalle.Productos.estado);
-      //   console.log("Rubro Producto", detalle.Productos.Rubro.nombre);
-      //   console.log("---------------------------------");
-      //   console.log("ProductosIngredientes:");
-      //   detalle.Productos.ProductoIngrediente?.forEach((prodIng, prodIngIndex) => {
-      //     console.log(`ProductoIngrediente ${prodIngIndex + 1}:`);
-      //     console.log("Cantidad:", prodIng.cantidad);
-      //     console.log("Nombre Ingrediente:", prodIng.Ingredientes.nombre);
-      //     console.log("Precio Costo Ingrediente:", prodIng.Ingredientes.precioCosto);
-      //     console.log("Unidad Medida Ingrediente:", prodIng.Ingredientes.unidadMedida);
-      //      console.log("Rubro Ingrediente:", prodIng.Ingredientes.Rubro.nombre);
-      //   });
-
-      // });
-
-      try {
-        const response = await axios.post("/api/pedido", pedidoCompleto); //Cambiar la url
-        console.log("Pedido enviado al servidor:", response.data);
-      } catch (error) {
-        console.error("Error al enviar el pedido:", error);
-      }
-    }
-  };
-
   return (
     <div style={{ marginTop: "90px" }}>
+      {/* Mostrar la alerta con el número de pedido */}
+      {pedidoConfirmado && (
+        <div className="container mt-3">
+          <Alert variant="success">
+            ¡Pedido realizado con éxito! Número de pedido: {pedidoCompleto?.id}
+            <Button variant="primary" onClick={onContinue} className="ms-3">
+              Continuar
+            </Button>
+          </Alert>
+        </div>
+      )}
       <div className="justify-content-center">
         <h1 className="display-4">Carrito de Compras</h1>
       </div>
@@ -256,7 +300,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         <div className="d-flex justify-content-center align-items-center mb-4">
           <button type="submit"
             className="btn btn-primary me-2"
-            disabled={confirmDisabled || isCartEmpty}>
+            disabled={isCartEmpty || !isAuthenticated}>
             Confirmar Pedido
           </button>
           <button
@@ -279,18 +323,26 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </Alert>
         </div>
       )}
-
-      <div className="container mt-3">
-        <Alert show={showAlert} variant="danger">
-          Por favor, inicie sesión para confirmar el pedido.    <br />
-          <div className="mt-1">
-            <Button variant="primary" onClick={handleLoginRedirect}>
-              Iniciar Sesión
-            </Button>
-          </div>
-
-        </Alert>
-      </div>
+      {/* Mostrar el mensaje de error de stock insuficiente */}
+      {insufficientStock.map((error, index) => (
+        <div className="container mt-3" key={index}>
+          <Alert variant="danger" onClose={() => setInsufficientStock(prevState => prevState.filter((_, i) => i !== index))} dismissible>
+            No hay suficiente stock para el producto: {error.productName}
+          </Alert>
+        </div>
+      ))}
+      {!isAuthenticated && (
+        <div className="container mt-3">
+          <Alert variant="danger" show={showAlert}>
+            Por favor, inicie sesión para confirmar el pedido.    <br />
+            <div className="mt-1">
+              <Button variant="primary" onClick={handleLoginRedirect}>
+                Iniciar Sesión
+              </Button>
+            </div>
+          </Alert>
+        </div>
+      )}
     </div>
   );
 };

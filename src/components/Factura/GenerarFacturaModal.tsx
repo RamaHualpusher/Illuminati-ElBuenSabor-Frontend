@@ -1,85 +1,76 @@
 import React, { useEffect, useState } from "react";
-import { IPedido } from "../../interface/IPedido";
-import AdminBar from "../NavBar/AdminBar";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import { useLocation } from "react-router-dom";
-import { Button, Container, Table } from "react-bootstrap";
+import { IPedidoDto } from "../../interface/IPedido";
+import { Button, Container, Modal, Table } from "react-bootstrap";
 import FacturaPDF from "./FacturaPDF";
 import GenerarCreditoModal from "./GenerarCreditoModal";
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
+import { IDetallePedidoDto } from "../../interface/IDetallePedido";
 
-interface GenerarFacturaModalProps {
+interface GenerarFacturaModalProps {  
+  factura: IPedidoDto | null,
   closeModal: () => void;
+  show: boolean; 
 }
 
-// Función para verificar si un valor está presente o proporcionar un valor predeterminado
-const getOrDefault = (value: any, defaultValue: any) => {
-  return value !== null && value !== undefined ? value : defaultValue;
-};
-
-const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
-  closeModal,
-}) => {
-  const [pedido, setPedido] = useState<IPedido | null>(null);
-  const location = useLocation();
-  const pedidoParam = location.pathname.split("/factura/")[1];
-  const parsedPedido = pedidoParam ? JSON.parse(decodeURIComponent(pedidoParam)) : "";
+const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, closeModal, show }) => {
   const [showCreditoModal, setShowCreditoModal] = useState(false);
-  const [showModal, setShowModal] = useState(true);
-
-  const openCreditoModal = () => {
-    setShowCreditoModal(true);
-    setShowModal(false);
-  };
+  const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>();
 
   useEffect(() => {
-    if (parsedPedido) {
-      setPedido(parsedPedido);
+    setSelectedPedido(factura);
+  }, [factura]);
+  
+  const handleCredito  = () => {
+    if (selectedPedido && window.confirm("¿Estás seguro de generar la Nota de Crédito?")) {
+      setShowCreditoModal(true);
     }
-  }, []);
+  };
 
-  // Si no se encuentra un pedido, muestra un mensaje de error
-  if (!pedido) {
-    return <div>Error: Pedido no encontrado</div>;
-  }
-
-  const exportToExcel = (pedido: IPedido) => {
-    // Define los datos que deseas exportar a Excel, en este caso, los detalles del pedido
-    const dataToExport = pedido?.DetallePedido || [];
-
-    // Genera un nombre de archivo basado en el número de pedido
-    const filename = `pedido_${pedido?.numeroPedido}_detalles`;
-
-    // Llama a la función para exportar a Excel
+  const exportToExcel = (factura: IPedidoDto) => {
+    const dataToExport = factura?.detallesPedidos || [];
+    const filename = `Pedido ${factura?.usuario?.nombre} ${factura?.usuario?.apellido}-Num.${factura?.id}_detalles`;
     exportTableDataToExcel(dataToExport, filename);
+  };
+
+  const getOrDefault = (value: any, defaultValue: any) => {
+    return value !== null && value !== undefined ? value : defaultValue;
+  };
+
+  const calcularTotalPedido = (selectedPedido: IPedidoDto) => {
+    let total = 0;
+
+    selectedPedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+      total += detalle.producto.precio * detalle.cantidad;
+    });
+    return total;
+  };
+
+  const calcularDescuento = (selectedPedido: IPedidoDto) => {
+    return selectedPedido.esEfectivo ? 0.1 : 0;
+  };
+
+  const totalConDescuento = selectedPedido ? calcularTotalPedido(selectedPedido) * (1 - calcularDescuento(selectedPedido)) : 0;
+
+  const generatePDF = () => {
+    if (!selectedPedido) {
+      return;
+    }
+    FacturaPDF(selectedPedido);
+    closeModal();
   };
 
   return (
     <>
-      {/* Barra de administrador */}
-      <AdminBar />
-
-      {/* Espacio en blanco */}
-      <div style={{ marginTop: "50px" }}></div>
-
-      {/* Muestra el modal si showModal es verdadero */}
-      {showModal && (
+      <Modal show={show} onHide={closeModal} size="lg">      
+      <Modal.Body>
+      {selectedPedido && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div
-            className="modal-container border-black"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="modal-container border-black" onClick={(e) => e.stopPropagation()}>
             <Container fluid>
               <div className="border p-4 bg-white">
-                {/* Logo */}
                 <div className="logo-container">
-                  <img
-                    src="/assets/img/logo-grupo-illuminati.jpg"
-                    alt="Logo de la empresa"
-                    width={100}
-                  />
+                  <img src="/assets/img/logo-grupo-illuminati.jpg" alt="Logo de la empresa" width={100} />
                 </div>
-                {/* Información del restaurante */}
                 <div className="info-container">
                   <h2>El Buen Sabor</h2>
                   <p>
@@ -88,18 +79,13 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                     CUIT: 12-5541252-8
                   </p>
                 </div>
-                {/* Detalles del pedido */}
                 <div className="details-container">
                   <h2>DETALLES DEL PEDIDO</h2>
-                  <p>Número de Pedido: {getOrDefault(pedido?.numeroPedido, "")}</p>
-                  <p>Fecha: {getOrDefault(pedido?.fechaPedido?.toLocaleString(), "")}</p>
-                  <p>
-                    Forma de Pago: {pedido?.esEfectivo ? "Efectivo" : "Mercado Pago"}
-                  </p>
+                  <p>Número de Pedido: {getOrDefault(selectedPedido.id, "")}</p>
+                  <p>Fecha: {getOrDefault(new Date(selectedPedido.fechaPedido).toLocaleString(), "")}</p>
                 </div>
-                {/* Tabla de detalles del pedido */}
                 <div className="table-container">
-                  <Table className="table">
+                  <Table className="table" style={{ maxWidth: '500px', margin: '0 auto' }}>
                     <thead>
                       <tr>
                         <th>Cantidad</th>
@@ -108,87 +94,66 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {pedido?.DetallePedido?.map((detalle) => (
-                        <tr key={detalle?.id}>
-                          <td>{getOrDefault(detalle?.cantidad, "")}</td>
-                          <td>
-                            <ul>
-                              {Array.isArray(detalle?.Productos) && detalle.Productos.map((producto) => (
-                                <li key={producto?.idProducto}>
-                                  {getOrDefault(producto?.nombre, "Nombre Desconocido")}
-                                </li>
-                              ))}
-                            </ul>
-                          </td>
-                          <td>
-                            <ul>
-                              {Array.isArray(detalle?.Productos) && detalle?.Productos.map((producto) => (
-                                <li key={producto?.idProducto}>
-                                  {producto?.precio}
-                                </li>
-                              ))}
-                            </ul>
-                          </td>
+                      {selectedPedido?.detallesPedidos.map((detalle, index) => (
+                        <tr key={index}>
+                          <td>{getOrDefault(detalle.cantidad, "")}</td>
+                          <td>{detalle.producto.nombre}</td>
+                          <td>{detalle.producto.precio}</td>
                         </tr>
                       ))}
                     </tbody>
                     <tfoot>
                       <tr>
                         <td colSpan={3} style={{ textAlign: "right" }}>
-                          Total: ${getOrDefault(pedido?.totalPedido, 0)}
+                          <b> Total: ${calcularTotalPedido(selectedPedido)} </b>
                         </td>
                       </tr>
                     </tfoot>
                   </Table>
                 </div>
-                {/* Información de pago */}
                 <div className="payment-container">
-                  <div className="left-section" style={{ textAlign: "left" }}>
+                  <div className="left-section" style={{ textAlign: "center" }}>
                     <p>
-                      Tipo de Pago: {getOrDefault(pedido?.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
+                      Tipo de Pago: {getOrDefault(selectedPedido.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
                       <br />
-                      Descuento:
+                      Descuento: {selectedPedido.esEfectivo ? "10%" : "0%"}
                       <br />
-                      Envío: {getOrDefault(pedido?.esDelivery ? "Domicilio" : "Retiro local", "")}
+                      Envío: {getOrDefault(selectedPedido.esDelivery ? "Domicilio" : "Retiro local", "")}
                     </p>
-                    <p>Total a pagar: ${getOrDefault(pedido?.totalPedido, 0)}</p>
+                  </div>                  
+                  <div className="center-section" style={{ textAlign: "center" }}>
+                    {calcularDescuento(selectedPedido) === 0.1 && (
+                      <p>
+                        <b> Total con descuento (10%): ${totalConDescuento} </b>
+                      </p>
+                    )}
                   </div>
                   <div className="right-section">
                     <h2>Envío</h2>
                     <p>
-                      Dirección: {getOrDefault(pedido?.Usuario?.domicilio?.calle, "")} {getOrDefault(pedido?.Usuario?.domicilio?.numero, "")},
+                      Dirección: {getOrDefault(selectedPedido.usuario.domicilio?.calle, "")} {getOrDefault(selectedPedido.usuario.domicilio?.numero, "")},
                       <br />
-                      {getOrDefault(pedido?.Usuario?.domicilio?.localidad, "")}
+                      {getOrDefault(selectedPedido.usuario.domicilio?.localidad, "")}
                     </p>
                   </div>
                 </div>
-                {/* Mensaje de agradecimiento */}
+
                 <div className="thankyou-container text-center">
                   <p>
-                    Muchas gracias {pedido?.Usuario?.nombre} {pedido?.Usuario?.apellido} por comprar en
+                    Muchas gracias {selectedPedido.usuario.nombre} {selectedPedido.usuario.apellido} por comprar en
                     <br />
                     El Buen Sabor
                   </p>
                 </div>
-                {/* Botones para descargar PDF y generar nota de crédito */}
                 <div className="pdf-container">
                   <div className="pdf-container">
-                    {/* Botón para descargar PDF */}
-                    <PDFDownloadLink
-                      document={<FacturaPDF pedido={pedido} />}
-                      fileName="factura.pdf"
-                    >
-                      {({ loading }) => (
-                        <Button variant="primary">
-                          {loading ? "Cargando..." : "Descargar PDF"}
-                        </Button>
-                      )}
-                    </PDFDownloadLink>
-                    {/* Botón para generar nota de crédito */}
-                    <Button variant="secondary" onClick={openCreditoModal}>
+                    <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => generatePDF()}>
+                      Descargar PDF
+                    </Button>
+                    <Button variant="secondary" onClick={handleCredito }>
                       Nota de Crédito
                     </Button>
-                    <Button variant="success" onClick={() => exportToExcel(pedido)}>
+                    <Button variant="success" style={{ marginLeft: "10px" }} onClick={() => exportToExcel(selectedPedido)}>
                       Exportar a Excel
                     </Button>
                   </div>
@@ -198,10 +163,14 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({
           </div>
         </div>
       )}
-      {/* Muestra el modal de Nota de Crédito si showCreditoModal es verdadero */}
       {showCreditoModal && (
-        <GenerarCreditoModal closeModal={() => setShowCreditoModal(false)} />
+        <GenerarCreditoModal 
+        closeModal={() => setShowCreditoModal(false)}
+        factura={selectedPedido}
+        show={show} />
       )}
+      </Modal.Body>
+      </Modal>
     </>
   );
 };

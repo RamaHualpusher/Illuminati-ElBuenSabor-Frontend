@@ -14,7 +14,6 @@ const DetallesPedidoCocinero: React.FC = () => {
     const API_URL = "/assets/data/pedidos.json";
     const API_URL_BACKEND = "https://example.com/api/pedidos";
 
-
     useEffect(() => {
         const fetchPedido = async () => {
             try {
@@ -36,7 +35,7 @@ const DetallesPedidoCocinero: React.FC = () => {
         return <Spinner />;
     }
 
-    const { numeroPedido, Usuario, fechaPedido, esEfectivo, esDelivery, totalPedido, DetallePedido } = pedido;
+    const { Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
 
     // Volver a la página anterior
     const goBack = () => {
@@ -45,13 +44,13 @@ const DetallesPedidoCocinero: React.FC = () => {
 
     // Renderizar la lista de productos del detalle
     const renderProductos = (detalle: IDetallePedido) => {
-        if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) {
+        if (!detalle.producto || !Array.isArray(detalle.producto) || detalle.producto.length === 0) {
             return <p>Productos no disponibles</p>;
         }
 
         return (
             <ul>
-                {detalle.Productos.map((producto: IProducto) => (
+                {detalle.producto.map((producto: IProducto) => (
                     <li key={producto.id}>
                         <strong>{producto.nombre}</strong>: ${producto.precio} - <i className="bi bi-clock-fill"></i> {producto.tiempoEstimadoCocina}Min
                         {!producto.esBebida && producto.preparacion && <p> <strong>Preparación:</strong> <br /> {producto.preparacion}</p>}
@@ -71,8 +70,8 @@ const DetallesPedidoCocinero: React.FC = () => {
         let maxTiempoEstimadoCocina = 0;
 
         detallePedido.forEach((detalle: IDetallePedido) => {
-            if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-                detalle.Productos.forEach((producto: IProducto) => {
+            if (detalle.producto && Array.isArray(detalle.producto) && detalle.producto.length > 0) {
+                detalle.producto.forEach((producto: IProducto) => {
                     if (producto.tiempoEstimadoCocina > maxTiempoEstimadoCocina) {
                         maxTiempoEstimadoCocina = producto.tiempoEstimadoCocina;
                     }
@@ -128,6 +127,27 @@ const DetallesPedidoCocinero: React.FC = () => {
         setTiempoEditado(tiempoIngresado);
     };
 
+       // Función para calcular el total del pedido
+       const calcularTotalPedido = (detallePedido: IDetallePedido[]) => {
+        let total = 0;
+    for (let i = 0; i < detallePedido.length; i++) {
+        const detalle = detallePedido[i];
+        const productos = detalle.producto;
+        // Verificar si Productos es un array
+        if (Array.isArray(productos)) {
+            for (let j = 0; j < productos.length; j++) {
+                const producto = productos[j];
+                total += producto.precio || 0;
+            }
+        } else {
+            // Si Productos no es un array, asumir que es un solo producto
+            total += productos.precio || 0;
+        }
+    }
+    return total;
+};
+    const totalPedido = calcularTotalPedido(DetallePedido);
+
     return (
         <div className="detalle-page-container d-flex align-items-center justify-content-center" style={{ backgroundImage: `url('/assets/img/fondoMisPedidos.jpg') `, minHeight: '100vh' }}>
             <div className="container">
@@ -136,14 +156,14 @@ const DetallesPedidoCocinero: React.FC = () => {
                         <div className="card mt-4 mb-4">
                             <div className="card-header text-center"><h1 className="display-5">Detalles del Pedido</h1></div>
                             <div className="card-body text-center">
-                                <h5 className="card-title"> Número de Pedido: {numeroPedido}</h5>
-                                <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario.nombre} {Usuario.apellido}</p>
-                                <p className="card-text"><strong>Teléfono:</strong> {Usuario.telefono}</p>
+                                <h5 className="card-title"> Número de Pedido: {id}</h5>
+                                <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario?.nombre || ""} {Usuario?.apellido || ""}</p>
+                                <p className="card-text"><strong>Teléfono:</strong> {Usuario?.telefono}</p>
                                 {!esDelivery ? (
-                                    <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario.domicilio.calle}, {Usuario.domicilio.localidad}, {Usuario.domicilio.numero}</p>
+                                    <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario?.domicilio?.calle || ""}, {Usuario?.domicilio?.localidad || ""}, {Usuario?.domicilio?.numero || 0}</p>
                                 ) :
                                     (
-                                        <p className="card-text"><strong> Dirección de Entrega:</strong> {Usuario.domicilio.calle}, {Usuario.domicilio.localidad}, {Usuario.domicilio.numero}</p>
+                                        <p className="card-text"><strong> Dirección de Entrega:</strong> {Usuario?.domicilio?.calle || ""}, {Usuario?.domicilio?.localidad || ""}, {Usuario?.domicilio?.numero || 0}</p>
                                     )}
                                 <p className="card-text"><strong>Fecha:</strong> {formatDate(fechaPedido)}</p>
                                 <p className="card-text"><strong>Método de Pago:</strong> {esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
@@ -177,7 +197,7 @@ const DetallesPedidoCocinero: React.FC = () => {
                                         </>
                                     )}
                                 </p>
-                                <h4 className="card-text"><strong>Total:</strong> ${totalPedido}</h4>
+                                <h4 className="card-text"><strong>Total:</strong> ${totalPedido || 0}</h4>
                             </div>
                             <div className="card-footer d-flex justify-content-center">
                                 <button className="btn btn-primary" onClick={goBack}>

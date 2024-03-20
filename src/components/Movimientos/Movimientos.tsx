@@ -1,240 +1,156 @@
-import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
-import { Button, Container, Row, Col, Form } from 'react-bootstrap';
-//import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import React, { useEffect, useState } from 'react';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 import GenericTable from '../GenericTable/GenericTable';
 import { IColumn } from '../../interface/ICamposTablaGenerica';
-import { IPedido } from "../../interface/IPedido";
-import { IIngredientes } from '../../interface/IIngredientes';
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
+import axios from 'axios';
+import { IDetallePedidoDto } from '../../interface/IDetallePedido';
+import { IProductoDto } from '../../interface/IProducto';
+import { IIngredientes } from '../../interface/IIngredientes';
+import { IPedidoDto } from '../../interface/IPedido';
 
 const Movimientos = () => {
-  const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [costoTotal, setCostoTotal] = useState<number | null>(null);
-  const [addModalShow, setAddModalShow] = useState(false);
-  const [ingresoTotal, setIngresoTotal] = useState<number | null>(null);
-  const [gananciaTotal, setGananciaTotal] = useState<number | null>(null);
-  const [pedidos, setPedidos] = useState<IPedido[]>([]);
-  const [movimientos, setMovimientos] = useState<IPedido[]>([]);
-  const [filteredMovimientos, setFilteredMovimientos] = useState<IPedido[]>([]);
-  const [movimientosConGananciaNeta, setMovimientosConGananciaNeta] = useState<IPedido[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-
+  const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);  
+  const API_URL = process.env.REACT_APP_API_URL || "";
+  
   useEffect(() => {
-    const API_URL = "assets/data/ingredientesEjemplo.json";
-    const API_URL_pedido = "assets/data/pedidos.json";
+    const fetchData = async () => {
+      try {
+        const pedidosResponse = await axios.get(`${API_URL}pedido`);
+        const pedidosData = pedidosResponse.data;
+        console.log(pedidosData)
+        // Ordenar los pedidos por fecha de pedido de manera descendente
+        pedidosData.sort((a: { fechaPedido: string | number | Date; }, b: { fechaPedido: string | number | Date; }) => 
+          new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
 
-    Promise.all([
-      fetch(API_URL).then(response => response.json()),
-      fetch(API_URL_pedido).then(response => response.json())
-    ])
-      .then(([ingredientesData, pedidosData]) => {
-        setIngredientes(ingredientesData);
-        setPedidos(pedidosData);
-        const movimientosCalculados = calcularGananciaNeta(pedidosData, ingredientesData);
-        setMovimientosConGananciaNeta(movimientosCalculados);
-        setMovimientos(movimientosCalculados);
-        setFilteredMovimientos(movimientosCalculados);
-      })
-      .catch((error) => console.log(error));
+        setPedidos(pedidosResponse.data);        
+      } catch (error) {
+        console.error('Error al cargar datos:', error);
+      }    
+    };
+    fetchData();
   }, []);
 
-  const handleDateChangeStart = (date: Date | null) => {
-    setStartDate(date);
-    handleDateChange();
-  };
-
-  const handleDateChangeEnd = (date: Date | null) => {
-    setEndDate(date);
-    handleDateChange();
-  };
-
-  const handleDateChange = () => {
-    if (startDate !== null && endDate !== null) {
-      const movimientosFiltrados = movimientosConGananciaNeta.filter((movimiento) => {
-        const fechaPedido = new Date(movimiento.fechaPedido);
-        return fechaPedido >= startDate && fechaPedido <= endDate;
-      });
-
-      setFilteredMovimientos(movimientosFiltrados);
-    }
-  };
-
-  const calcularGananciaNeta = (movimientosData: IPedido[], ingredientesData: IIngredientes[]) => {
-    return movimientosData.map((movimiento: IPedido) => {
-      let costoTotalMovimiento = 0;
-      movimiento.DetallePedido.forEach((detalle) => {
-        if (Array.isArray(detalle.Productos)) {
-          detalle.Productos.forEach((producto) => {
-            if (Array.isArray(producto.ProductoIngrediente)) {
-              producto.ProductoIngrediente.forEach((pi: { Ingredientes: { id: number; }; cantidad: number; }) => {
-                return ingredientesData.map((ingrediente: IIngredientes) => {
-                  const ingredienteBusqueda = ingredientes.find(ing => ing.id === pi.Ingredientes.id);
-                  if (ingrediente == ingredienteBusqueda) {
-                    costoTotalMovimiento += pi.cantidad * ingredienteBusqueda.precioCosto;
-                  }
-                })
-              });
-            }
-          });
-        }
-      });
-      const gananciaNeta = movimiento.totalPedido - costoTotalMovimiento;
-      return {
-        ...movimiento,
-        ...ingredientes,
-        gananciaNeta: gananciaNeta,
-      };
-    });
-  };
-
-  const movimientosCalculados = calcularGananciaNeta(pedidos, ingredientes);
-
-  const calcularCostoTotalPedidos = (movimientosData: IPedido[], ingredientesData: IIngredientes[]) => {
-    let costoTotal = 0;
-    movimientosData.forEach((movimiento: IPedido) => {
-      movimiento.DetallePedido.forEach((detalle) => {
-        if (Array.isArray(detalle.Productos)) {
-          detalle.Productos.forEach((producto) => {
-            if (Array.isArray(producto.ProductoIngrediente)) {
-              producto.ProductoIngrediente.forEach((pi: { Ingredientes: { id: number; }; cantidad: number; }) => {
-                ingredientesData.forEach((ingrediente: IIngredientes) => {
-                  const ingredienteBusqueda = ingredientesData.find(ing => ing.id === pi.Ingredientes.id);
-                  if (ingredienteBusqueda) {
-                    costoTotal += pi.cantidad * ingredienteBusqueda.precioCosto;
-                  }
-                });
-              });
-            }
-          });
-        }
-      });
-    });
-    return costoTotal;
-  };
-
-  const columns: IColumn<IPedido>[] = [
+  const columns: IColumn<IPedidoDto>[] = [
     { title: "Fecha de Pedido", field: "fechaPedido", width: 2 },
-    { title: "Número de Pedido", field: "numeroPedido", width: 2 },
+    { title: "Número de Pedido", field: "id", width: 2 },
     {
-      title: "Cliente", field: "Usuario",
-      render: (pedido: IPedido) => (
-        <span>{`${pedido.Usuario.apellido} ${pedido.Usuario.nombre}`}</span>
-      ),
+      title: "Cliente",
+      field: "usuario",
+      render: (pedido: IPedidoDto) => {
+        const usuario = pedido.usuario;
+        console.log("Usuario desde la carga de columnas: "+usuario);
+        return (
+          <span>
+            {usuario ? `${usuario.apellido} ${usuario.nombre}` : 'Usuario no disponible'}
+          </span>
+        );
+      },
+      width: 2
+    },   
+    {
+      title: "Total del Pedido",
+      field: "esEfectivo",
+      render: (pedido: IPedidoDto) => {        
+        return <div>{calcularTotalPedido(pedido)}</div>;
+      },
       width: 2
     },
-    { title: "Total del Pedido", field: "totalPedido", width: 2 },
-    {
-      title: "Precio de Costo",
-      field: "esEfectivo",
-      width: 2,
-      render: (rowData) => {
-        return <div>{calcularCostoTotalPedidos([rowData], ingredientes)}</div>;
-      },
-    },
-    {
-      title: "Ganancia Neta",
-      field: "esEfectivo",
-      width: 2,
-      render: (rowData) => {
-        const gananciaNeta = calcularGananciaNeta([rowData], ingredientes)[0].gananciaNeta;
-        return <div>{gananciaNeta}</div>;
-      },
-    },
+     {
+       title: "Precio de Costo",
+       field: "fechaPedido",
+       width: 2,
+       render: (pedido: IPedidoDto) => {       
+         return <div>{calcularPrecioCosto(pedido)}</div>;
+       },
+     },
+     {
+       title: "Ganancia Neta",
+       field: "fechaPedido",
+       width: 2,
+       render: (pedido: IPedidoDto) => {        
+         return <div>{calcularGananciaNeta(pedido)}</div>;
+       },
+     },
   ];
+  
 
-  const calcularIngresoTotalPedidos = (pedidosFiltrados: IPedido[]) => {
-    return pedidosFiltrados.reduce((total, pedido) => total + pedido.totalPedido, 0);
+  const calcularGananciaNeta = (pedido: IPedidoDto) => {
+    let gananciaNeta = 0;
+  
+    if (pedido && pedido.detallesPedidos) {
+      const totalPedido = calcularTotalPedido(pedido);
+      const precioCosto = calcularPrecioCosto(pedido);
+      gananciaNeta = totalPedido - precioCosto;
+    }  
+    
+    return gananciaNeta;
   };
 
-  const handleAddModalOpen = () => {
-    setAddModalShow(true);
-  };
-
-  const handleAddModalClose = () => {
-    setAddModalShow(false);
-  };
-
-  const handleBuscarClick = () => {
-    if (startDate !== null && endDate !== null) {
-      const pedidosFiltrados = pedidos.filter((pedido) => {
-        const fechaPedido = new Date(pedido.fechaPedido);
-        const searchTermLowerCase = searchTerm.toLowerCase();
-        const nombreUsuario = pedido.Usuario.nombre.toLowerCase();
-        const apellidoUsuario = pedido.Usuario.apellido.toLowerCase();
-
-        return (
-          (fechaPedido >= startDate && fechaPedido <= endDate) &&
-          (pedido.numeroPedido.toString().includes(searchTermLowerCase) ||
-            nombreUsuario.includes(searchTermLowerCase) ||
-            apellidoUsuario.includes(searchTermLowerCase))
-        );
-      });
-
-      const movimientosFiltrados = movimientosCalculados.filter((movimiento) => {
-        const fechaPedido = new Date(movimiento.fechaPedido);
-        return fechaPedido >= startDate && fechaPedido <= endDate;
-      });
-
-      pedidosFiltrados.sort((a, b) => b.totalPedido - a.totalPedido);
-
-      const costoTotalFiltrado = pedidosFiltrados.reduce((total, pedido) => total + calcularCostoTotalPedidos([pedido], ingredientes), 0);
-      const ingresoTotalFiltrado = calcularIngresoTotalPedidos(pedidosFiltrados);
-      const gananciaTotalFiltrada = ingresoTotalFiltrado - costoTotalFiltrado;
-
-      setCostoTotal(costoTotalFiltrado);
-      setIngresoTotal(ingresoTotalFiltrado);
-      setGananciaTotal(gananciaTotalFiltrada);
-
-      setFilteredMovimientos(movimientosFiltrados);
-    } else {
-      alert("Por favor, seleccione ambas fechas antes de realizar la búsqueda.");
+  const calcularTotalPedido = (pedidos: IPedidoDto) => {
+    let totalPedido = 0;
+  
+    if (!pedidos || !pedidos.detallesPedidos) {
+      return totalPedido;
     }
+  
+    pedidos.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+      if (!detalle || !detalle.producto || !detalle.producto.precio || !detalle.cantidad) {
+        return;
+      }
+  
+      totalPedido += detalle.producto.precio * detalle.cantidad;
+    });
+  
+    return totalPedido;
   };
+
+  const calcularPrecioCosto = (pedido: IPedidoDto) => {
+    let costoTotalIngredientes = 0;
+    
+    if (pedido && pedido.detallesPedidos) {
+      pedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+        const producto: IProductoDto = detalle.producto;
+        if (producto && producto.productosIngredientes && producto.productosIngredientes.length > 0) {
+          producto.productosIngredientes.forEach((pi) => {
+            const ingrediente: IIngredientes = pi.ingrediente;
+            const cantidadProducto = detalle.cantidad; // Obtener la cantidad del producto en el detalle del pedido
+            costoTotalIngredientes += pi.cantidad * ingrediente.precioCosto * cantidadProducto; // Multiplicar por la cantidad del producto
+          });
+        }
+      });
+    }
+    
+    return costoTotalIngredientes;
+  };
+  
 
   const exportDataToExcel = () => {
-    const dataToExport = movimientosCalculados;
+    const dataToExport = pedidos;
     const filename = "movimientos_excel";
     exportTableDataToExcel(dataToExport, filename);
   };
-
-  // Función para la búsqueda personalizada por número de factura
-  const customDate = (firstDate: Date | null, secondDate: Date | null): Promise<IPedido[]> => {
-    return new Promise((resolve) => {
-
-      const filtrar = movimientos;
-      let filtrados: IPedido[] = [];
-      filtrar.map((factura) => {
-        const fecha = new Date(factura.fechaPedido);
-        console.log(fecha);
-        if ((firstDate === null || fecha >= firstDate) && (secondDate === null || fecha <= secondDate)) {
-          filtrados.push(factura);
-        }
-      })
-      resolve(filtrados);
-    })
-  }
 
   return (
     <div>
       <Container fluid>
         <Row className="mt-3">
           <Col className="d-flex justify-content-center">
-            <GenericTable<IPedido>
-              data={filteredMovimientos.sort((a, b) => b.totalPedido - a.totalPedido)}
-              columns={columns}
-              actions={{
-                create: false,
-                update: false,
-                delete: false,
-                view: false
-              }}
-              onAdd={handleAddModalOpen}
-              customDate={customDate}
-              showDate={true}
-            />
+            {pedidos && pedidos.length > 0 ? (
+              <GenericTable<IPedidoDto>
+                data={pedidos}
+                columns={columns}
+                actions={{
+                  create: false,
+                  update: false,
+                  delete: false,
+                  view: false,
+                }}
+                showDate={true}
+              />
+            ) : (
+              <p>No hay datos de pedidos disponibles.</p>
+            )}
           </Col>
         </Row>
         <Button variant="success" onClick={() => exportDataToExcel()}>Exportar a Excel</Button>
@@ -244,3 +160,4 @@ const Movimientos = () => {
 };
 
 export default Movimientos;
+

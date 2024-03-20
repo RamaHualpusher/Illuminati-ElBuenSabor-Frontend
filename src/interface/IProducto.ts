@@ -1,8 +1,8 @@
-import { IRubro } from "./IRubro";
-import { IProductoIngrediente } from "./IProductoIngrediente";
+import { IRubroNew } from "./IRubro";
+import { IProductoIngrediente, IProductoIngredienteDto } from "./IProductoIngrediente";
 import { IBase } from "./IBase";
 
-export interface IProducto extends IBase {
+export interface IProducto extends IBase { 
   nombre: string;
   tiempoEstimadoCocina: number;
   denominacion: string;
@@ -12,8 +12,22 @@ export interface IProducto extends IBase {
   preparacion: string;
   precio: number;
   esBebida: boolean;
-  rubro: IRubro;
-  productoIngrediente?: IProductoIngrediente[];
+  rubro: IRubroNew;
+  productosIngredientes?: IProductoIngrediente[];
+}
+
+export interface IProductoDto extends IBase { 
+  nombre: string;
+  tiempoEstimadoCocina: number;
+  denominacion: string;
+  imagen: string;
+  stockMinimo: number;
+  stockActual: number;
+  preparacion: string;
+  precio: number;
+  esBebida: boolean;
+  rubro: IRubroNew;
+  productosIngredientes?: IProductoIngredienteDto[];
 }
 
 export interface IEditProductoModalProps {
@@ -33,12 +47,12 @@ export interface IAddProductoModalProps {
 export interface IEditRubroProductoModalProps {
   show: boolean;
   handleClose: () => void;
-  handleRubroEdit: (rubro: IRubro) => void;
-  selectedRubro: IRubro | null;
+  handleRubroEdit: (rubro: IRubroNew) => void;
+  selectedRubro: IRubroNew | null;
 }
 
 export interface IAddRubroProductoModalProps {
   show: boolean;
   handleClose: () => void;
-  handleRubroAdd: (rubro: IRubro) => void;
+  handleRubroAdd: (rubro: IRubroNew) => void;
 }

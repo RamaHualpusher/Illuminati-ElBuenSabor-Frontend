@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { IRubro } from '../../../../interface/IRubro';
+import { IRubroNew } from '../../../../interface/IRubro';
 import { IEditRubroProductoModalProps } from '../../../../interface/IProducto';
 
 const EditRubroProductoModal: React.FC<IEditRubroProductoModalProps> = ({
@@ -33,12 +33,12 @@ const EditRubroProductoModal: React.FC<IEditRubroProductoModalProps> = ({
     }
 
     if (selectedRubro) {
-      const updatedRubro: IRubro = {
+      const updatedRubro: IRubroNew = {
         ...selectedRubro,
         id: selectedRubro.id || 0,
         nombre,
-        activo,
-        // idRubroPadre, (No se utiliza en este componente)
+        activo,        
+        ingredientOwner: true
       };
       handleRubroEdit(updatedRubro);
     }

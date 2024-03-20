@@ -19,7 +19,7 @@ export interface IEditUsuarioFromCliente extends IBase {
   email: string;
   clave: string;
   telefono: string;
-  Domicilio?: IDomicilio;
+  domicilio: IDomicilio;
 }
 
 export interface IEditUsuarioFromAdmin extends IBase {
@@ -56,4 +56,39 @@ export interface IEditEmpleadoModalProps {
   handleClose: () => void;
   handleEmpleadoEdit: (empleado: IEditUsuarioFromAdmin) => void;
   selectedEmpleado: IEditUsuarioFromAdmin | null;
+}
+
+export interface IEditClienteModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleClienteEdit: (cliente: IEditUsuarioFromCliente) => void;
+  selectedCliente: IEditUsuarioFromCliente | null;
+}
+
+export interface IRankingUsuario {
+  id: number;
+  activo: boolean;
+  nombre: string;
+  apellido: string;
+  email: string;
+  clave: string;
+  telefono: string;
+  domicilioId: number;
+  domicilio: {
+      id: number;
+      activo: boolean;
+      calle: string;
+      numero: number;
+      localidad: string;
+  };
+  rol: {
+      id: number;
+      activo: boolean;
+      nombreRol: string;
+  };
+  pedidos: {
+      id: number,
+      estadoPedido: string,
+      fechaPedido: Date
+  }[];
 }

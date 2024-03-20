@@ -1,10 +1,9 @@
 import { IMercadoPagoDatos } from "./IMercadoPagoDatos";
 import { IUsuario } from "./IUsuario";
-import { IDetallePedido } from "./IDetallePedido";
+import { IDetallePedido, IDetallePedidoDto } from "./IDetallePedido";
 import { IBase } from "./IBase";
 
 export interface IPedido extends IBase {
-  numeroPedido: number;
   horaEstimadaFin: Date;
   esDelivery: boolean;
   esEfectivo: boolean;
@@ -12,6 +11,17 @@ export interface IPedido extends IBase {
   fechaPedido: Date;
   Usuario: IUsuario;
   DetallePedido: IDetallePedido[];
-  MercadoPagoDatos?: IMercadoPagoDatos;
-  totalPedido: number; //(esto no va en al base de datos ya que es persistente)
+  MercadoPagoDatos?: IMercadoPagoDatos;  
+}
+
+export interface IPedidoDto extends IBase {
+  horaEstimadaFin: Date;
+  esDelivery: boolean;
+  esEfectivo: boolean;
+  estadoPedido: string;
+  fechaPedido: Date;
+  usuario: IUsuario;
+  total: number; // este no deberia ir
+  detallesPedidos: IDetallePedidoDto[];
+  mercadoPagoDatos?: IMercadoPagoDatos;  
 }

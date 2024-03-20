@@ -1,110 +1,95 @@
 import React, { useState, useEffect } from "react";
-import { IPedido } from "../../interface/IPedido";
-import { useNavigate, useParams } from "react-router-dom";
+import { IPedidoDto } from "../../interface/IPedido";
 import { IAction, IColumn } from "../../interface/ICamposTablaGenerica";
 import GenericTable from "../GenericTable/GenericTable";
 import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
+import GenerarFacturaModal from "./GenerarFacturaModal";
+import { IDetallePedidoDto } from "../../interface/IDetallePedido";
+import { IProductoDto } from "../../interface/IProducto";
+import axios from "axios";
 
 const Factura = () => {
-  const [facturas, setFacturas] = useState<IPedido[] | null>(null);
-  const [selectedPedido, setSelectedPedido] = useState<IPedido | null>(null);
-  const navigate = useNavigate();
-  const API_URL = "assets/data/pedidos.json";
-  const params = useParams<{ pedido: string }>();
+  const [facturas, setFacturas] = useState<IPedidoDto[]>();
+  const [selectedPedido, setSelectedPedido] = useState<IPedidoDto>();
+  const API_URL = process.env.REACT_APP_API_URL || "";
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    fetch(API_URL)
-      .then((response) => response.json())
-      .then((data) => {
-        setFacturas(data);
-        const selectedPedido = data.find(
-          (pedido: IPedido) => pedido.numeroPedido.toString() === params.pedido
-        ); // Buscar el pedido correspondiente
-        setSelectedPedido(selectedPedido || null);
-      })
-      .catch((error) => {
-        console.log(error);
-        setFacturas([]); // Si ocurre un error, establece el estado en un array vacío en lugar de null
-      });
-  }, [params.pedido]);
+    const fetchData = async () => {
+      try {
+        const facturasResponse = await axios.get(`${API_URL}pedido`);
+        const facturasData = facturasResponse.data;
+        console.log(facturasData);
+        // Ordenar los pedidos por fecha de pedido de manera descendente
+        facturasData.sort((a: { fechaPedido: string | number | Date; }, b: { fechaPedido: string | number | Date; }) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+
+        setFacturas(facturasResponse.data);
+      } catch (error) {
+        console.error('Error al cargar datos:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   if (!facturas || facturas === null) return <Spinner />;
 
   // Define las columnas para la tabla de facturas
-  const columns: IColumn<IPedido>[] = [
+  const columns: IColumn<IPedidoDto>[] = [
     {
       title: "Numero Factura",
-      field: "numeroPedido",
-      render: (pedido: IPedido) => (
-        <span>{pedido.numeroPedido.toString()}</span>
+      field: "id",
+      render: (facturas: IPedidoDto) => (
+        <span>{facturas.id?.toString() ?? 0}</span>
       ),
     },
     {
       title: "Usuario",
-      field: "Usuario",
-      render: (pedido: IPedido) => (
-        <span>{`${pedido.Usuario.apellido} ${pedido.Usuario.nombre}`}</span>
+      field: "usuario",
+      render: (facturas: IPedidoDto) => (
+        <span>{facturas.usuario ? `${facturas.usuario?.apellido} ${facturas.usuario?.nombre}` : ""}</span>
       ),
     },
     {
       title: "Fecha",
       field: "fechaPedido",
-      render: (pedido: IPedido) => <span>{pedido.fechaPedido.toString()}</span>,
+      render: (facturas: IPedidoDto) => <span>{facturas.fechaPedido.toString()}</span>,
     },
     {
-      title: "Total",
-      field: "totalPedido",
-      render: (pedido: IPedido) => <span>{pedido.totalPedido.toString()}</span>,
+      title: "Total del Pedido",
+      field: "fechaPedido",
+      render: (facturas: IPedidoDto) => (
+        <div>{calcularTotalPedido(facturas)}</div>
+      ),
+      width: 2
     },
   ];
+
+  // Función para calcular el total del pedido
+  const calcularTotalPedido = (facturas: IPedidoDto) => {
+    let totalPedido = 0;
+
+    if (facturas && facturas.detallesPedidos) {
+      facturas?.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+        const producto: IProductoDto = detalle.producto;
+        totalPedido += producto?.precio * detalle?.cantidad;
+      });
+    }
+
+    return totalPedido;
+  };
 
   // Define las acciones disponibles para cada fila de la tabla
   const actions: IAction = {
     view: true, // Acción de ver detalles
   };
 
-  // Función para manejar la acción de "ver detalles"
-  const onView = (pedido: IPedido) => {
-    setSelectedPedido(pedido);
-    const encodedPedido = encodeURIComponent(JSON.stringify(pedido));
-    window.open(`/factura/${encodedPedido}`, "_blank"); // Abre una nueva ventana con los detalles del pedido
+  const onView = (factura: IPedidoDto) => {
+    if (factura) {
+      setSelectedPedido(factura);
+      setShowModal(true); // Muestra el modal de GenerarFacturaModal
+    }
   };
-
-  // Función para cerrar el modal de detalles
-  const closeModal = () => {
-    setSelectedPedido(null);
-  };
-
-  // Función para búsqueda personalizada por número de factura
-  const customSearch = (searchText: string): Promise<IPedido[]> => {
-    return new Promise((resolve) => {
-      const filteredData = facturas?.filter((factura) =>
-        factura.numeroPedido.toString().includes(searchText) ||
-        factura.Usuario.nombre.toLowerCase().toString().includes(searchText) ||
-        factura.Usuario.apellido.toLowerCase().toString().includes(searchText)
-      );
-      resolve(filteredData);
-    });
-  };
-
-  // Función para la búsqueda personalizada por número de factura
-  const customDate=(firstDate:Date|null, secondDate:Date|null):Promise<IPedido[]>=>{
-    return new Promise((resolve)=>{
-      
-      const filtrar=facturas;
-      let filtrados:IPedido[]=[];
-      filtrar.map((factura)=>{
-        const fecha=new Date(factura.fechaPedido);
-        console.log(fecha);
-        if((firstDate===null || fecha>=firstDate) && (secondDate===null || fecha<= secondDate)){
-          filtrados.push(factura);
-        }
-      })
-      resolve(filtrados);
-    })
-  };
-
 
   return (
     <div>
@@ -116,19 +101,23 @@ const Factura = () => {
         </Row>
         <Row className="mt-3">
           <Col>
-            {/* Renderiza la tabla de facturas */}
-            <GenericTable<IPedido>
+            <GenericTable<IPedidoDto>
               data={facturas}
               columns={columns}
               actions={actions}
               onView={onView}
-              customSearch={customSearch}
-              customDate={customDate}
               showDate={true}
             />
           </Col>
         </Row>
       </Container>
+      
+      {/* Modal para mostrar detalles de la factura */}
+      <GenerarFacturaModal 
+        factura={selectedPedido ?? null}
+        closeModal={() => setShowModal(false)}
+        show={showModal}
+      />
     </div>
   );
 };

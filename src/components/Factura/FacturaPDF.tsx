@@ -1,142 +1,75 @@
-import React from "react";
-import { IPedido } from "../../interface/IPedido";
-import { Container, Table } from "react-bootstrap";
+import { jsPDF } from "jspdf";
+import { IPedidoDto } from "../../interface/IPedido";
+import { IDetallePedidoDto } from "../../interface/IDetallePedido";
+import { IProductoDto } from "../../interface/IProducto";
 
-interface FacturaPDFProps {
-  pedido: IPedido | null;
-}
+const FacturaPDF = (selectedPedido: IPedidoDto) => {
+  const generatePDF = () => {
+    const pdf = new jsPDF();
+    let yPosition = 20;
+    const margin = 10;
 
-const FacturaPDF: React.FC<FacturaPDFProps> = ({ pedido }) => {
+    // Logo y nombre de la empresa
+    pdf.addImage("/assets/img/logo-grupo-illuminati.jpg", "JPEG", margin, yPosition, 50, 50);
+    yPosition += 60;
+    pdf.setFontSize(12);
+    pdf.text("El Buen Sabor", margin, yPosition);
+    yPosition += 10;
 
-  console.log("DetallePedido en Factura PDF:", pedido?.DetallePedido);
-  console.log("Pedido en Factura PDF:", pedido);
+    // Detalles del pedido
+    pdf.text(`DETALLES DEL PEDIDO`, margin, yPosition);
+    yPosition += 10;
+    pdf.text(`Número de Pedido: ${selectedPedido.id}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Fecha: ${new Date(selectedPedido.fechaPedido).toLocaleString()}`, margin, yPosition);
+    yPosition += 10;
 
-  if (!pedido) {
-    return <div>Error: Pedido no encontrado</div>; // Agrega una verificación si pedido es null o undefined
-  }
+    // Tabla de productos
+    const tableHeaders = ["Cantidad", "Detalle Producto", "Precio Unit."];
+    const tableData = selectedPedido.detallesPedidos.map((detalle: IDetallePedidoDto) => {
+      const producto = detalle.producto as IProductoDto;
+      return [detalle.cantidad || "", producto.nombre || "", producto.precio || ""];
+    });
+    const columnWidths = [30, 80, 40]; // Ancho de las columnas
+    const rowHeight = 7; // Altura de las filas
+    const cellMargin = 2; // Margen interno de las celdas
+    tableData.unshift(tableHeaders); // Agregar encabezados
+    for (let i = 0; i < tableData.length; i++) {
+      for (let j = 0; j < tableData[i].length; j++) {
+        pdf.text(String(tableData[i][j]), margin + j * columnWidths[j] + cellMargin, yPosition + (i + 1) * rowHeight);
 
-  const {
-    numeroPedido,
-    fechaPedido,
-    esEfectivo,
-    totalPedido,
-    Usuario,
-    DetallePedido,
-  } = pedido;
+      }
+    }
+    yPosition += (tableData.length + 1) * rowHeight + 10;
 
-  // Función para verificar si un valor está presente o proporcionar un valor predeterminado
-  const getOrDefault = (value: any, defaultValue: any) => {
-    return value !== null && value !== undefined ? value : defaultValue;
+    // Información de pago y envío
+    const tipoPago = selectedPedido.esEfectivo ? "Efectivo" : "Mercado Pago";
+    const descuento = selectedPedido.esEfectivo ? "10%" : "0%";
+    const tipoEnvio = selectedPedido.esDelivery ? "Domicilio" : "Retiro local";
+    pdf.text(`Tipo de Pago: ${tipoPago}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Descuento: ${descuento}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Envío: ${tipoEnvio}`, margin, yPosition);
+    yPosition += 10;
+
+    // Dirección de envío
+    const direccion = selectedPedido.usuario?.domicilio ? 
+      `${selectedPedido.usuario.domicilio.calle || ""} ${selectedPedido.usuario.domicilio.numero || ""}, ${selectedPedido.usuario.domicilio.localidad || ""}` :
+      "";
+    pdf.text(`Dirección: ${direccion}`, margin, yPosition);
+
+    // Agradecimiento
+    yPosition += 40;
+    pdf.text(`Muchas gracias ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido} por comprar en`, margin, yPosition);
+    yPosition += 10;
+    pdf.text(`El Buen Sabor`, margin, yPosition);
+
+    // Guardar el PDF
+    pdf.save(`Factura de ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido}-Num. ${selectedPedido.id}.pdf`);
   };
 
-  return (
-    <div className="mt-5">
-      <Container fluid>
-        <div className="border p-4 bg-white">
-          <div className="row">
-            {/* Logo */}
-            <div className="col-md-3">
-              <img
-                src="/assets/img/logo-grupo-illuminati.jpg"
-                alt="Logo"
-                className="img-fluid"
-              />
-            </div>
-            {/* Detalles del Restaurante */}
-            <div className="col-md-6 text-center">
-              <h3 className="mb-0">El Buen Sabor</h3>
-              <p className="mb-0">Dirección: Aristides villanueva 356, Ciudad</p>
-              <p className="mb-0">CUIT: 12-5541252-8</p>
-            </div>
-            {/* Detalles del Pedido */}
-            <div className="col-md-3">
-              <div className="text-end">
-                <h5 className="mb-0">DETALLES DEL PEDIDO</h5>
-                <p className="mb-0">Número de Pedido: {getOrDefault(numeroPedido, "")}</p>
-                <p className="mb-0">Fecha: {getOrDefault(new Date(fechaPedido).toLocaleString(), "")}</p>
-                <p className="mb-0">Forma de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}</p>
-              </div>
-            </div>
-          </div>
-          {/* Detalles del Pedido */}
-          <div className="table-container">
-            <Table striped bordered>
-              <thead>
-                <tr>
-                  <th>Cantidad</th>
-                  <th>Detalle Producto</th>
-                  <th>Precio Unit.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {DetallePedido && DetallePedido.length > 0 && DetallePedido.map((detalle) => (
-                  <tr key={detalle?.id}>
-                    <td>{getOrDefault(detalle?.cantidad, "")}</td>
-                    <td>
-                      <ul>
-                        {Array.isArray(detalle?.Productos) ? detalle?.Productos?.map((producto) => (
-                          <li key={producto?.idProducto}>
-                            {getOrDefault(producto?.nombre, "")}
-                          </li>
-                        )) : ""}
-                      </ul>
-                    </td>
-                    <td>
-                      <ul>
-                        {Array.isArray(detalle?.Productos) ? detalle?.Productos.map((producto) => (
-                          <li key={producto?.idProducto}>
-                            {getOrDefault(producto?.precio, "")}
-                          </li>
-                        )) : ""}
-                      </ul>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan={3} style={{ textAlign: "right" }}>
-                    Total: ${getOrDefault(totalPedido, "No disponible")}
-                  </td>
-                </tr>
-              </tfoot>
-            </Table>
-          </div>
-          {/* Detalles del Pago y Envío */}
-          <div className="payment-container">
-            <div className="left-section" style={{ textAlign: "left" }}>
-              <div>
-                Tipo de Pago: {esEfectivo ? "Efectivo" : "Mercado Pago"}
-                <br />
-                Descuento:
-                <br />
-                Envío: {pedido.esDelivery ? "Envío domicilio" : "Retiro local"}
-              </div>
-              <div>Total a pagar: ${getOrDefault(totalPedido, "")}</div>
-            </div>
-            <div className="right-section">
-              <div>Envío</div>
-              <div>
-                <p>
-                  Dirección: {getOrDefault(Usuario?.domicilio?.calle, "")} {getOrDefault(Usuario?.domicilio?.numero, "")},
-                  <br />
-                  {getOrDefault(Usuario?.domicilio?.localidad, "")}
-                </p>
-              </div>
-            </div>
-          </div>
-          {/* Mensaje de Agradecimiento */}
-          <div className="thankyou-container" style={{ textAlign: "center" }}>
-            <p>
-              Muchas gracias {getOrDefault(Usuario?.nombre, "")} {getOrDefault(Usuario?.apellido, "")} por comprar en
-              <br />
-              El Buen Sabor
-            </p>
-          </div>
-        </div>
-      </Container>
-    </div>
-  );
+  return generatePDF();
 };
 
 export default FacturaPDF;

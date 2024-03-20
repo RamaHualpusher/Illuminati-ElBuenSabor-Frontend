@@ -12,11 +12,19 @@ const RankingVentas = () => {
         { title: "ID", field: "id", width: 2 },
         { title: "Nombre", field: "nombre", width: 3 },
         { title: "Apellido", field: "apellido", width: 3 },
-        { title: "Cantidad de Pedidos", field: "telefono", width: 2 },
-    ];
+        {
+          title: "Cantidad de Pedidos", field: "telefono", width: 2,
+          render: (rowData) =>
+            <div>{calculateCantidadPedidosPorCliente(rowData.id)}</div>
+        },
+      ];
 
+      const calculateCantidadPedidosPorCliente = (clienteId: number | undefined) => {
+        return clientes.filter((cliente) => cliente.id === clienteId).length;
+      };
+      
     useEffect(() => {
-        const API_URL = "assets/data/clienteTabla.json"; // Poner la URL correspondiente
+        const API_URL = "assets/data/pedidos.json"; // Poner la URL correspondiente
         fetch(API_URL)
             .then((response) => response.json())
             .then((data) => {

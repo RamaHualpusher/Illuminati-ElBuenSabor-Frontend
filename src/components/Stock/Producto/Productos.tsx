@@ -1,60 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Form } from "react-bootstrap";
-import { handleRequest } from "../../FuncionRequest/FuncionRequest";
 import EditProductoModal from "./EditProductoModal";
 import AddProductoModal from "./AddProductoModal";
-import { IProducto } from "../../../interface/IProducto";
-import { IAction, IColumn } from "../../../interface/ICamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
-import { IRubro } from "../../../interface/IRubro";
+import axios from "axios";
+import { IProducto } from "../../../interface/IProducto";
+import { IColumn } from "../../../interface/ICamposTablaGenerica";
+import { IRubroNew } from "../../../interface/IRubro";
 
 const Productos: React.FC = () => {
-  // Estados del componente
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedProducto, setSelectedProducto] = useState<IProducto | null>(null);
   const [productos, setProductos] = useState<IProducto[]>([]);
   const [productosComplete, setProductosComplete] = useState<IProducto[]>([]);
-  const [rubros, setRubros] = useState<IRubro[]>([]);
+  const [rubros, setRubros] = useState<IRubroNew[]>([]);
   const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
   const [selectedRubroName, setSelectedRubroName] = useState<string>("");
   const [filteredProductos, setFilteredProductos] = useState<IProducto[]>([]);
-  const API_URL = process.env.REACT_APP_API_URL || "";
 
-  // Configuración de acciones y columnas para la tabla
-  const actions: IAction = {
-    create: true,
-    update: true,
-  };
-
-  const columns: IColumn<IProducto>[] = [
-    // Definición de las columnas
-    {
-      title: "ID", field: "id"
-      
-    },
-    { title: "Nombre", field: "nombre" },
-    {
-      title: "Imagen", field: "imagen", width: 2,
-      render: (rowData) => <img src={rowData.imagen} alt="Producto" style={{ width: "150px", height: "100px" }} />
-    },
-    {
-      title: "Rubro",
-      field: "rubro",
-      render: (producto: IProducto) => <span>{`${producto.rubro.nombre}`}</span>,
-    },
-    { title: "Tiempo en Cocina", field: "tiempoEstimadoCocina" },
-    { title: "Precio", field: "precio" },
-    {
-      title: "Estado",
-      field: "activo",
-      render: (producto: IProducto) => (
-        <span className={`${producto.activo ? "text-success" : "text-danger"}`}>
-          {producto.activo ? <h2><i className="bi bi-unlock-fill "></i></h2> : <h2><i className="bi bi-lock-fill"></i></h2>}
-        </span>
-      ),
-    },
-  ];
+  // Cargar productos y rubros al montar el componente
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [productosResponse, rubrosResponse] = await Promise.all([
+          axios.get<IProducto[]>(process.env.REACT_APP_API_URL + "producto"),
+          axios.get<IRubroNew[]>(process.env.REACT_APP_API_URL + "rubro"),
+        ]);
+        setProductos(productosResponse.data);
+        setProductosComplete(productosResponse.data);
+        setFilteredProductos(productosResponse.data);
+        const filteredRubros = rubrosResponse.data.filter(rubro => !rubro.ingredientOwner);
+        setRubros(filteredRubros);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   // Filtrar productos según el rubro seleccionado
   useEffect(() => {
@@ -73,63 +56,18 @@ const Productos: React.FC = () => {
     }
   }, [selectedRubro, productosComplete]);
 
-  // Cargar productos y rubros al montar el componente
-  useEffect(() => {
-    const fetchProductos = async () => {
-      try {
-        const responseData = await handleRequest("GET", API_URL + "producto");
-        setProductos(responseData);
-        setProductosComplete(responseData);
-        console.log(responseData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    const fetchRubros = async () => {
-      try {
-        const responseData = await handleRequest("GET", API_URL + "rubro");
-        setRubros(responseData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchProductos();
-    fetchRubros();
-  }, []);
+  if (!productos.length || !rubros.length) {
+    return <p>Cargando...</p>;
+  }
 
   // Agregar un producto
   const handleProductoAdd = async (producto: IProducto) => {
     try {
-      // Primero, agrega el producto sin los ingredientes
-      const newProducto = await handleRequest("POST", API_URL + "producto", producto);
-
-      // Luego, agrega ProductoIngrediente
-      const ingredientesPromises = producto.productoIngrediente?.map(async (productoIngrediente) => {
-        const nuevoProductoIngrediente = {
-          ...productoIngrediente,
-          producto: { id: newProducto.id },
-          ingrediente: { id: productoIngrediente.ingredientes.id },
-          activo: true, 
-        };
-        console.log(productoIngrediente);
-        console.log(nuevoProductoIngrediente);
-        return await handleRequest("POST", API_URL + "producto-ingrediente", nuevoProductoIngrediente);
-      });
-
-      // Verifica que haya elementos antes de llamar a Promise.all
-      if (ingredientesPromises && ingredientesPromises.length > 0) {
-        // Espera a que se completen todas las promesas de los ingredientes
-        const nuevosIngredientes = await Promise.all(ingredientesPromises);
-
-        // Actualiza el estado con el producto completo
-        const productoCompleto: IProducto = {
-          ...newProducto,
-          productoIngrediente: nuevosIngredientes,
-        };
-
-        setProductos([...productos, productoCompleto]);
-        setProductosComplete([...productos, productoCompleto]);
-      }
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}producto`, producto);
+      const newProducto = response.data;
+      setProductos([...productos, newProducto]);
+      setProductosComplete([...productos, newProducto]);
+      setFilteredProductos([...productos, newProducto]);
     } catch (error) {
       console.log(error);
     }
@@ -138,89 +76,109 @@ const Productos: React.FC = () => {
   // Editar un producto
   const handleProductoEdit = async (producto: IProducto) => {
     try {
-      const updatedProducto: IProducto = await handleRequest(
-        "PUT",
-        `${API_URL + "producto"}/${producto.id}`,
-        producto
-      );
-
-      const updatedProductos = productos.map((p) =>
-        p.id === updatedProducto.id ? updatedProducto : p
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}producto`, producto);
+      const updatedProducto = response.data;
+      const updatedProductos = productos.map((item) =>
+        item.id === updatedProducto.id ? updatedProducto : item
       );
       setProductos(updatedProductos);
       setProductosComplete(updatedProductos);
+      setFilteredProductos(updatedProductos);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Eliminar un producto
-  const handleProductoDelete = async (
-    rowData: string[],
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    e.preventDefault();
-    const productoId: number = +rowData[0];
+  // Función para cargar productos y rubros
+  const fetchProductos = async () => {
     try {
-      await handleRequest("DELETE", `${API_URL + "producto"}/${productoId}`);
-      const updatedProductos = productos.filter((p) => p.id !== productoId);
-      setProductos(updatedProductos);
+      const [productosResponse, rubrosResponse] = await Promise.all([
+        axios.get<IProducto[]>(process.env.REACT_APP_API_URL + "producto"),
+        axios.get<IRubroNew[]>(process.env.REACT_APP_API_URL + "rubro"),
+      ]);
+      setProductos(productosResponse.data);
+      setProductosComplete(productosResponse.data);
+      setFilteredProductos(productosResponse.data);
+      const filteredRubros = rubrosResponse.data.filter(rubro => !rubro.ingredientOwner);
+      setRubros(filteredRubros);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Abrir modal de edición
-  const handleEditModalOpen = (item: IProducto) => {
-    const selected = productosComplete.find((producto) => producto.id === item.id);
-    if (selected) {
-      setSelectedProducto(selected);
-      setEditModalShow(true);
+  // Manejar la eliminación del producto
+  const handleProductoDelete = async (productoId: number) => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_API_URL}producto/${productoId}`);
+      fetchProductos(); // Volver a cargar los productos desde el backend
+      setEditModalShow(false); // Cerrar el modal de edición si está abierto
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  // Cerrar modal de edición
-  const handleEditModalClose = () => {
-    setSelectedProducto(null);
-    setEditModalShow(false);
+
+  // Manejar la confirmación de eliminación del producto
+  const handleDeleteConfirmation = (producto: IProducto) => {
+    const productoId: number = producto.id || 0; // Obtener el ID del producto seleccionado
+    if (window.confirm("¿Estás seguro de eliminar este producto "+producto.nombre+"?")) {
+      handleProductoDelete(productoId);
+    }
   };
 
-  // Abrir modal de agregar
-  const handleAddModalOpen = () => {
-    setAddModalShow(true);
-  };
-
-  // Cerrar modal de agregar
-  const handleAddModalClose = () => {
-    setAddModalShow(false);
-  };
 
   // Manejar cambio de selección de rubro
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
-    const selectedOption = event.currentTarget.options[event.currentTarget.selectedIndex];
     const selectedRubroId = parseInt(value);
-    const selectedRubro = rubros.find((rubro) => rubro.id === selectedRubroId);
-    setSelectedRubro(selectedRubroId ? selectedRubroId : null);
-    setSelectedRubroName(selectedOption.text);
+    setSelectedRubro(selectedRubroId || null);
+    setSelectedRubroName(event.currentTarget.options[event.currentTarget.selectedIndex].text);
   };
 
-  // Mensaje de no productos disponibles
-  const noProductosMessage =
-    selectedRubro && filteredProductos.length === 0 ? (
-      <p>No hay productos disponibles con el rubro seleccionado.</p>
-    ) : null;
+  // Calcular costo del producto
+  const calcularCostoProducto = (producto: IProducto): number => {
+    let costoTotal = 0;
+    producto.productosIngredientes?.forEach((ingrediente) => {
+      costoTotal += ingrediente.ingrediente.precioCosto * ingrediente.cantidad;
+    });
+    return costoTotal;
+  };
+
+  const columns: IColumn<IProducto>[] = [
+    { title: "ID", field: "id" },
+    { title: "Nombre", field: "nombre" },
+    {
+      title: "Rubro",
+      field: "rubro",
+      render: (producto: IProducto) => <span>{producto.rubro.nombre}</span>,
+    },
+    { title: "Tiempo en Cocina", field: "tiempoEstimadoCocina" },
+    { title: "Precio", field: "precio" },
+    {
+      title: "Costo",
+      field: "precio",
+      render: (producto: IProducto) => <span>{calcularCostoProducto(producto)}</span>,
+    },
+    {
+      title: "Estado",
+      field: "activo",
+      render: (producto: IProducto) => (
+        <span className={`text-${producto.activo ? "success" : "danger"}`}>
+          {producto.activo ? <i className="bi bi-unlock-fill"></i> : <i className="bi bi-lock-fill"></i>}
+        </span>
+      ),
+    },
+  ];
 
   return (
     <Container fluid>
       <Row>
-        {/* Estructura del componente */}
         <div>
           <Form.Group controlId="id">
             <select
               className="form-select"
               name="id"
-              value={selectedRubro ? selectedRubro : ""}
+              value={selectedRubro || ""}
               onChange={handleSelectChange}
               style={{ width: "250px", margin: "10px" }}
             >
@@ -232,25 +190,30 @@ const Productos: React.FC = () => {
               ))}
             </select>
           </Form.Group>
-          {noProductosMessage}
+          {selectedRubro && filteredProductos.length === 0 && (
+            <p>No hay productos disponibles con el rubro seleccionado.</p>
+          )}
           <GenericTable
             data={filteredProductos}
             columns={columns}
-            actions={actions}
-            onAdd={handleAddModalOpen}
-            onUpdate={handleEditModalOpen}
+            actions={{ create: true, update: true, delete: true }}
+            onAdd={() => setAddModalShow(true)}
+            onUpdate={(producto) => {
+              setSelectedProducto(producto);
+              setEditModalShow(true);
+            }}
+            onDelete={(producto) => handleDeleteConfirmation(producto)}
           />
         </div>
       </Row>
-      {/* Modales de edición y agregado */}
       <AddProductoModal
         show={addModalShow}
-        handleClose={handleAddModalClose}
+        handleClose={() => setAddModalShow(false)}
         handleProductoAdd={handleProductoAdd}
       />
       <EditProductoModal
         show={editModalShow}
-        handleClose={handleEditModalClose}
+        handleClose={() => setEditModalShow(false)}
         handleProductoEdit={handleProductoEdit}
         selectedProducto={selectedProducto}
       />
