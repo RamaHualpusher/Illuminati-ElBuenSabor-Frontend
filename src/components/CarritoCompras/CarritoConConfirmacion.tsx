@@ -46,7 +46,7 @@ const CarritoConConfirmacion: React.FC = () => {
         }}
         onCancel={onCancel}
         onContinue={onContinue}
-        isCartEmpty={isCartEmpty} />
+        isCartEmpty={isCartEmpty}/>
     </>
   );
 }
