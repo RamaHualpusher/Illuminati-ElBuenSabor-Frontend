@@ -5,6 +5,5 @@ export interface IMercadoPagoDatos extends IBase {
   fechaCreacion: Date;
   fechaAprobacion: Date;
   formaPago: string;
-  metodoPago: string;
-  numTarjeta: string;
+  metodoPago: string;  
 }

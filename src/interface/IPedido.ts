@@ -21,6 +21,7 @@ export interface IPedidoDto extends IBase {
   estadoPedido: string;
   fechaPedido: Date;
   usuario: IUsuario;
+  total: number; // este no deberia ir
   detallesPedidos: IDetallePedidoDto[];
   mercadoPagoDatos?: IMercadoPagoDatos;  
 }

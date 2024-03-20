@@ -7,14 +7,14 @@ import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
 
 interface GenerarFacturaModalProps {  
-  factura: IPedidoDto | undefined,
+  factura: IPedidoDto | null,
   closeModal: () => void;
   show: boolean; 
 }
 
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, closeModal, show }) => {
   const [showCreditoModal, setShowCreditoModal] = useState(false);
-  const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | undefined>();
+  const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>();
 
   useEffect(() => {
     setSelectedPedido(factura);
@@ -131,9 +131,9 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                   <div className="right-section">
                     <h2>Envío</h2>
                     <p>
-                      Dirección: {getOrDefault(selectedPedido.usuario.domicilio.calle, "")} {getOrDefault(selectedPedido.usuario.domicilio.numero, "")},
+                      Dirección: {getOrDefault(selectedPedido.usuario.domicilio?.calle, "")} {getOrDefault(selectedPedido.usuario.domicilio?.numero, "")},
                       <br />
-                      {getOrDefault(selectedPedido.usuario.domicilio.localidad, "")}
+                      {getOrDefault(selectedPedido.usuario.domicilio?.localidad, "")}
                     </p>
                   </div>
                 </div>

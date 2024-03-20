@@ -1,68 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { IPedido } from '../../interface/IPedido';
-import { MercadoPagoConfig } from 'mercadopago';
+import { useState } from 'react';
+import { IPedidoDto } from '../../interface/IPedido';
+import axios from 'axios';
 
-//entiendo que hay que utilizar axios para plicar este metodo con post en la base de datos
-//una vez que mercado pago apruebe la compra
 const API_URL = process.env.REACT_APP_API_URL || "";
+const MP_ACCESS_TOKEN = process.env.REACT_APP_MP_ACCESS_TOKEN || ""; 
 
-export const MercadoPago = () => {
-  const [pedidoCompleto, setPedidoCompleto] = useState<IPedido | null>(null);
-  const [preferenceId, setPreferenceId] = useState(null);
-  const token = process.env.REACT_APP_API_MP_TOKEN || "";
-  const url: string = process.env.VITE_BACKEND_API_URL || ""; //(hay que agregar en ENV el link a el backend)
-  const client = new MercadoPagoConfig({ accessToken: token });
+const MercadoPago = (pedidoCompleto: IPedidoDto) => {
+  const [preferenceId, setPreferenceId] = useState<number | null>(null);
 
-  const handleConfirmarPedido = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-
+  const handleConfirmarPedido = async () => {
     if (pedidoCompleto !== null) {
       try {        
-
-        const response = await fetch('confirmar-pedido', {
-          method: 'POST',         
-          body: JSON.stringify({
-            preference: {
-              email: pedidoCompleto.Usuario.email,
-              nombre: pedidoCompleto.Usuario.nombre,
-              apellido: pedidoCompleto.Usuario.apellido,
-              items: pedidoCompleto.DetallePedido.map((detalle) => ({
-                title: detalle.producto.nombre,
-                quantity: detalle.cantidad,
-                currency_id: detalle.id,                
-                unit_price: detalle.producto.precio,
-              })),
-             // external_reference: pedidoCompleto.id.toString(),
-              // back_urls: {
-              //   success: 'https://www.success.com',
-              //   failure: 'http://www.failure.com',
-              //   pending: 'http://www.pending.com',
-              // },
-              auto_return: 'approved',
+        const response = await axios.post(`${API_URL}mercado-pago-dato`, {
+          pedido: pedidoCompleto,
+          preference: {
+            items: pedidoCompleto.detallesPedidos.map((detalle) => ({
+              title: detalle.producto.nombre,
+              quantity: detalle.cantidad,
+              currency_id: 'ARS',
+              unit_price: detalle.producto.precio,
+            })),
+            back_urls: {
+              success: 'http://localhost:3000/pago-exitoso',
+              failure: 'http://localhost:3000/pago-fallido',
+              pending: 'http://localhost:3000/pago-pendiente',
             },
-            pedidoCompleto,
-          }),
+            auto_return: 'approved',
+            notification_url: 'http://localhost:8080/api/mercado-pago-dato',
+            external_reference: '77314873',
+          },
+        }, {
+          headers: {
+            Authorization: `Bearer ${MP_ACCESS_TOKEN}`,
+          },
         });
 
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(`Error al generar la preferencia: ${response.statusText}. Body: ${text}`);
+        if (response.status === 201) {
+          const data = response.data;
+          if (data.id) {
+            setPreferenceId(data.id);
+            window.location.href = data.init_point;
+          } else {
+            console.error('Error: ID de preferencia de pago es undefined');
+          }
+        } else {
+          console.error('Error al crear preferencia de pago en Mercado Pago:', response.statusText);
         }
-
-        const data = await response.json();
-        setPreferenceId(data.id);
-
       } catch (error) {
-        console.error('Error al crear preferencia:', error);
+        console.error('Error al crear preferencia de pago en Mercado Pago:', error);
       }
     }
   };
 
-  function setShowAlert(arg0: boolean) {
-    throw new Error('Funcion no implementada.');
-  }
-
-  return { handleConfirmarPedido, preferenceId, setPedidoCompleto }
+  return { handleConfirmarPedido, preferenceId };
 };
 
+export default MercadoPago;
