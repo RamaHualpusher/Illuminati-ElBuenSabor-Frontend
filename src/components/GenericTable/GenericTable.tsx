@@ -143,7 +143,7 @@ function GenericTable<T>({
           
         </Col>
       </Row>
-      <Table responsive>
+      <Table responsive className="table table-bordered mt-2">
         <thead>
           <tr>
             {columns.map((column, index) => (

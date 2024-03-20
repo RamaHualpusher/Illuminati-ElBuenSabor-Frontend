@@ -28,10 +28,10 @@ export const MercadoPago = () => {
               nombre: pedidoCompleto.Usuario.nombre,
               apellido: pedidoCompleto.Usuario.apellido,
               items: pedidoCompleto.DetallePedido.map((detalle) => ({
-                title: detalle.Productos.nombre,
+                title: detalle.producto.nombre,
                 quantity: detalle.cantidad,
                 currency_id: detalle.id,                
-                unit_price: detalle.Productos.precio,
+                unit_price: detalle.producto.precio,
               })),
              // external_reference: pedidoCompleto.id.toString(),
               // back_urls: {

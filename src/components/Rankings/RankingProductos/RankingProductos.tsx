@@ -34,19 +34,19 @@ const RankingProductos = () => {
             field: "DetallePedido",
             width: 2,
             render: (rowData) => (
-                <img src={rowData.DetallePedido[0]?.Productos?.imagen || ''} style={{ width: "120px", height: "100px" }} />
+                <img src={rowData.DetallePedido[0]?.producto?.imagen || ''} style={{ width: "120px", height: "100px" }} />
             ),
         },
         {
             title: "Nombre", field: "DetallePedido", width: 3,
             render: (rowData) => (
-                <span>{`${rowData.DetallePedido[0]?.Productos?.nombre || ''}`}</span>
+                <span>{`${rowData.DetallePedido[0]?.producto?.nombre || ''}`}</span>
             ),
         },
         {
             title: "Ventas por producto", field: "DetallePedido", width: 4,
             render: (rowData: IPedido) =>
-                <div>{calculateCantidadVendido(rowData.DetallePedido[0]?.Productos?.id || 0, true)}</div>
+                <div>{calculateCantidadVendido(rowData.DetallePedido[0]?.producto?.id || 0, true)}</div>
         },
     ];
     
@@ -55,9 +55,9 @@ const RankingProductos = () => {
         return pedidos.reduce((totalCantidad, pedido) => {
             const cantidadProductoEnPedido = pedido.DetallePedido.reduce((cantidad, detalle) => {
                 if (
-                    detalle.Productos &&
-                    detalle.Productos.id === productoId &&
-                    (esBebida === undefined || detalle.Productos.esBebida === esBebida)
+                    detalle.producto &&
+                    detalle.producto.id === productoId &&
+                    (esBebida === undefined || detalle.producto.esBebida === esBebida)
                 ) {
                     cantidad += detalle.cantidad;
                 }
@@ -102,7 +102,7 @@ const RankingProductos = () => {
     // };
 
     const pedidosBebida = pedidos
-        .filter((pedido) => pedido.id !== undefined && pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
+        .filter((pedido) => pedido.id !== undefined && pedido.DetallePedido.some((detalle) => detalle.producto.esBebida))
         .map((pedido) => ({
             ...pedido,
             ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
@@ -110,7 +110,7 @@ const RankingProductos = () => {
         }));
        
     const pedidosNoBebida = pedidos
-        .filter((pedido) => pedido.id !== undefined && !pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
+        .filter((pedido) => pedido.id !== undefined && !pedido.DetallePedido.some((detalle) => detalle.producto.esBebida))
         .map((pedido) => ({
             ...pedido,
             ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,

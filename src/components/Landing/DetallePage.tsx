@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
 import { CartContext, CartItem } from '../../context/cart/CartProvider';
 import { IProducto } from '../../interface/IProducto';
+import { IDetallePedido } from '../../interface/IDetallePedido';
 
 const DetallePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,10 +34,12 @@ const DetallePage = () => {
 
   const handleAddToCart = () => {
     if (producto && producto.stockActual > 0) {
-      const detallePedido = {
+      const detallePedido: IDetallePedido = {
         id: 0,
         cantidad: 0,
-        Productos: producto,
+        subTotal: 0,
+        producto: producto,
+        maxCantidadProducto: 0,
       };
 
       const item: CartItem = {

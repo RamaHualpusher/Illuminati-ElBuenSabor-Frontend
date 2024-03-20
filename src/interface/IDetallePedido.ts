@@ -3,7 +3,9 @@ import { IProducto, IProductoDto } from "./IProducto";
 
 export interface IDetallePedido extends IBase {
   cantidad: number;
-  Productos: IProducto;
+  subTotal: number;
+  producto: IProducto;
+  maxCantidadProducto: number;
 }
 export interface IDetallePedidoDto extends IBase {
   cantidad: number;

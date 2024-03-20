@@ -9,11 +9,12 @@ const CajeroPage = () => {
   const [pedidosComplete, setPedidosComplete] = useState<IPedido[]>([]);
   const [filtroEstado, setFiltroEstado] = useState<string>("");
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedido | null>(null);
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const response = await fetch("assets/data/pedidos.json");
+        const response = await fetch(API_URL + "pedido");
         const data = await response.json();
         setPedidos(data);
         setPedidosComplete(data);
