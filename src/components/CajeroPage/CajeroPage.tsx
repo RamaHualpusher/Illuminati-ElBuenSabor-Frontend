@@ -11,6 +11,7 @@ const CajeroPage = () => {
   const [filtroEstado, setFiltroEstado] = useState<string>("");
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedido | null>(null);
   const API_URL = process.env.REACT_APP_API_URL || "";
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Cargar los pedidos desde una fuente de datos al cargar el componente
   useEffect(() => {

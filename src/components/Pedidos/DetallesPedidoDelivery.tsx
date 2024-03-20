@@ -29,8 +29,8 @@ const DetallesPedidoDelivery: React.FC = () => {
     const obtenerSubtotal = (detallePedido: IDetallePedido[]) => {
         let subtotal = 0;
         detallePedido.forEach((detalle: IDetallePedido) => {
-            if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-                detalle.Productos.forEach((producto: IProducto) => {
+            if (detalle.producto && Array.isArray(detalle.producto) && detalle.producto.length > 0) {
+                detalle.producto.forEach((producto: IProducto) => {
                     subtotal += producto.precio;
                 });
             }
@@ -39,13 +39,13 @@ const DetallesPedidoDelivery: React.FC = () => {
     };
 
     const renderProductos = (detalle: IDetallePedido) => { //Renderiza todos los productos que hay en el pedido
-        if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) { //Si no encuentra muestra un mensaje
+        if (!detalle.producto || !Array.isArray(detalle.producto) || detalle.producto.length === 0) { //Si no encuentra muestra un mensaje
             return <p>Productos no disponibles</p>;
         }
 
         return (
             <ul>
-                {detalle.Productos.map((producto: IProducto) => (
+                {detalle.producto.map((producto: IProducto) => (
                     <li key={producto.id}>
                         <strong>{producto.nombre}</strong>: ${producto.precio}
                     </li>
@@ -67,7 +67,7 @@ const DetallesPedidoDelivery: React.FC = () => {
         let total = 0;
     for (let i = 0; i < detallePedido.length; i++) {
         const detalle = detallePedido[i];
-        const productos = detalle.Productos;
+        const productos = detalle.producto;
         // Verificar si Productos es un array
         if (Array.isArray(productos)) {
             for (let j = 0; j < productos.length; j++) {

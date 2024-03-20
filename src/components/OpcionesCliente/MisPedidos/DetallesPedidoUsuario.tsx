@@ -10,8 +10,8 @@ const calcularTiempoEstimadoFinalizacion = (detallePedido: IDetallePedido[], esD
     const obtenerTiempoEstimadoMaximo = (detallePedido: IDetallePedido[]) => {
         let maxTiempoEstimadoCocina = 0;
         detallePedido.forEach((detalle: IDetallePedido) => {
-            if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-                detalle.Productos.forEach((producto: IProducto) => {
+            if (detalle.producto && Array.isArray(detalle.producto) && detalle.producto.length > 0) {
+                detalle.producto.forEach((producto: IProducto) => {
                     if (producto.tiempoEstimadoCocina > maxTiempoEstimadoCocina) {
                         maxTiempoEstimadoCocina = producto.tiempoEstimadoCocina;
                     }
@@ -29,8 +29,8 @@ const calcularTiempoEstimadoFinalizacion = (detallePedido: IDetallePedido[], esD
 const obtenerSubtotal = (detallePedido: IDetallePedido[]) => {
     let subtotal = 0;
     detallePedido.forEach((detalle: IDetallePedido) => {
-        if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-            detalle.Productos.forEach((producto: IProducto) => {
+        if (detalle.producto && Array.isArray(detalle.producto) && detalle.producto.length > 0) {
+            detalle.producto.forEach((producto: IProducto) => {
                 subtotal += producto.precio;
             });
         }
@@ -73,13 +73,13 @@ const DetallesPedidoUsuario: React.FC = () => {
 
     // Función para renderizar los productos del detalleF
     const renderProductos = (detalle: IDetallePedido) => {
-        if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) {
+        if (!detalle.producto || !Array.isArray(detalle.producto) || detalle.producto.length === 0) {
             return <p>Productos no disponibles</p>;
         }
 
         return (
             <ul>
-                {detalle.Productos.map((producto: IProducto) => (
+                {detalle.producto.map((producto: IProducto) => (
                     <li key={producto.id}>
                         <strong>{producto.nombre}</strong>: ${producto.precio} - <i className="bi bi-clock-fill"></i> {producto.tiempoEstimadoCocina}Min
                         {!producto.esBebida && producto.preparacion && <p> <strong>Preparación:</strong> <br /> {producto.preparacion}</p>}

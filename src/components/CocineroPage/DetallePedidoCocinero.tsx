@@ -44,13 +44,13 @@ const DetallesPedidoCocinero: React.FC = () => {
 
     // Renderizar la lista de productos del detalle
     const renderProductos = (detalle: IDetallePedido) => {
-        if (!detalle.Productos || !Array.isArray(detalle.Productos) || detalle.Productos.length === 0) {
+        if (!detalle.producto || !Array.isArray(detalle.producto) || detalle.producto.length === 0) {
             return <p>Productos no disponibles</p>;
         }
 
         return (
             <ul>
-                {detalle.Productos.map((producto: IProducto) => (
+                {detalle.producto.map((producto: IProducto) => (
                     <li key={producto.id}>
                         <strong>{producto.nombre}</strong>: ${producto.precio} - <i className="bi bi-clock-fill"></i> {producto.tiempoEstimadoCocina}Min
                         {!producto.esBebida && producto.preparacion && <p> <strong>Preparación:</strong> <br /> {producto.preparacion}</p>}
@@ -70,8 +70,8 @@ const DetallesPedidoCocinero: React.FC = () => {
         let maxTiempoEstimadoCocina = 0;
 
         detallePedido.forEach((detalle: IDetallePedido) => {
-            if (detalle.Productos && Array.isArray(detalle.Productos) && detalle.Productos.length > 0) {
-                detalle.Productos.forEach((producto: IProducto) => {
+            if (detalle.producto && Array.isArray(detalle.producto) && detalle.producto.length > 0) {
+                detalle.producto.forEach((producto: IProducto) => {
                     if (producto.tiempoEstimadoCocina > maxTiempoEstimadoCocina) {
                         maxTiempoEstimadoCocina = producto.tiempoEstimadoCocina;
                     }
@@ -132,7 +132,7 @@ const DetallesPedidoCocinero: React.FC = () => {
         let total = 0;
     for (let i = 0; i < detallePedido.length; i++) {
         const detalle = detallePedido[i];
-        const productos = detalle.Productos;
+        const productos = detalle.producto;
         // Verificar si Productos es un array
         if (Array.isArray(productos)) {
             for (let j = 0; j < productos.length; j++) {
