@@ -3,26 +3,28 @@ import { Form, Row, Col } from "react-bootstrap";
 import { IPedido } from "../../interface/IPedido";
 import Buscador from "../Buscador/Buscador";
 import PedidoList from "../Pedidos/PedidoList";
+import axios from "axios";
 
 const CajeroPage = () => {
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
   const [pedidosComplete, setPedidosComplete] = useState<IPedido[]>([]);
   const [filtroEstado, setFiltroEstado] = useState<string>("");
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedido | null>(null);
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
+  // Cargar los pedidos desde una fuente de datos al cargar el componente
   useEffect(() => {
-    const fetchPedidos = async () => {
-      try {
-        const response = await fetch("assets/data/pedidos.json");
-        const data = await response.json();
-        setPedidos(data);
-        setPedidosComplete(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchPedidos();
+      const fetchPedidos = async () => {
+          try {
+              const response = await axios.get(`${API_URL}pedido`); // Llama al endpoint de pedidos
+              console.log('Response from API:', response); // Log del response de la API
+              setPedidos(response.data);
+          } catch (error) {
+              console.log('Error fetching pedidos:', error); // Log del error al obtener pedidos
+          }
+      };
+  
+      fetchPedidos();
   }, []);
 
   // Filtrar los pedidos según el estado seleccionado

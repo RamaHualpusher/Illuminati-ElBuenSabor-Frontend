@@ -12,8 +12,9 @@ interface PedidoCardAdminProps {
 
 const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstadoPedido }) => {
   const [urlDetallePedido, setUrlDetallePedido] = useState(``);
+  const [actualizarUI, setActualizarUI] = useState(false);
   const location = useLocation();
-
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     let newUrlDetallePedido = '';
@@ -32,50 +33,46 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
     }
     setUrlDetallePedido(newUrlDetallePedido);
   }, [location.pathname, pedido.id]);
+  useEffect(() => {
+    // Lógica para cargar el estado actualizado del pedido desde el servidor
+    const fetchPedidoActualizado = async () => {
+      try {
+        const response = await axios.get(`${API_URL}pedido/${pedido.id}`);
+        cambiarEstadoPedido(response.data.estadoPedido);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    if (actualizarUI) {
+      fetchPedidoActualizado();
+      setActualizarUI(false); // Restablecer el estado de actualización de la UI
+    }
+  }, [actualizarUI, pedido.id]);
+  
 
   const handleEstadoPedidoChange = async (nuevoEstado: string) => {
-    // Lógica para cambiar el estado del pedido y actualizarlo en la base de datos
-    if (pedido.esDelivery) {
-      console.log("validando..");
-      const validChanges =
-        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'En cocina') ||
-        (pedido.estadoPedido === 'En cocina' && nuevoEstado === 'Listo') ||
-        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'Listo') ||
-        (pedido.estadoPedido === 'Listo' && nuevoEstado === 'En delivery') ||
-        (pedido.estadoPedido === 'En delivery' && nuevoEstado === 'Entregado');
-      if (validChanges) {
-        console.log("Válido");
-        try {
-          console.log('envio put al back'); //prueba de envio
-          const response = await axios.put(`/api/pedidos/${pedido.id}`, { estadoPedido: nuevoEstado });
-          cambiarEstadoPedido(response.data.estadoPedido);
-        } catch (error) {
-          console.error(error);
+    const confirmacion = window.confirm(`¿Está seguro de que desea cambiar el estado del pedido a "${nuevoEstado}"?`);
+    if (confirmacion) {
+      try {
+        console.log("Pedido a actualizar: ");
+        console.log(JSON.stringify(pedido));
+        console.log("Nuevo estado pedido: "+nuevoEstado);
+        console.log("Estado actual del pedido: "+pedido.estadoPedido);
+        if(pedido.estadoPedido !== nuevoEstado && nuevoEstado != null){
+          pedido.estadoPedido = nuevoEstado;
         }
-      }
-    } else {
-      console.log("validando 2..")
-      console.log(location.pathname);
-      const validChanges =
-        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'En cocina') ||
-        (pedido.estadoPedido === 'En cocina' && nuevoEstado === 'Listo') ||
-        (pedido.estadoPedido === 'A confirmar' && nuevoEstado === 'Listo') ||
-        (pedido.estadoPedido === 'Listo' && nuevoEstado === 'Entregado');
-      if (validChanges) {
-        console.log("Válido");
-        try {
-          console.log('envio put al back 2'); //prueba de envio
-          const response = await axios.put(`/api/pedidos/${pedido.id}`, { estadoPedido: nuevoEstado });
-          cambiarEstadoPedido(response.data.estadoPedido);
-        } catch (error) {
-          console.error(error);
-        }
+        console.log("Pedido a actualizado antes del PUT: ");
+        console.log(JSON.stringify(pedido));
+        const response = await axios.put(`${API_URL}pedido/${pedido.id}`, pedido);
+        cambiarEstadoPedido(response.data.estadoPedido);
+        setActualizarUI(true); // Actualizar la UI después de la solicitud PUT
+      } catch (error) {
+        console.error(error);
       }
     }
   };
-
   const renderActionButtons = () => {
-    // Definir los botones y su comportamiento según el estado del pedido
     switch (pedido.estadoPedido) {
       case 'A confirmar':
         return (
@@ -124,8 +121,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             </Link>
           </>
         );
-
-      case 'En cocina':
+      case 'En cocina': // Nuevo caso añadido basado en el componente CajeroPage
         return (
           <>
             <Link to={urlDetallePedido} className="btn btn-primary me-2">
@@ -146,18 +142,14 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
         );
     }
   };
-
+  
   return (
     <Card className="pedido-card mb-2">
       <Card.Body>
         <Row>
           <Col sm={4}>
             <Card.Text>Pedido Número: {pedido.id}</Card.Text>
-            <Card.Text>
-              <i className="bi bi-clock"></i>{' '}
-              {pedido.horaEstimadaFin ? new Date(pedido.horaEstimadaFin).toLocaleTimeString('es-AR') : ''} - {pedido.esDelivery ? 'Delivery' : 'Retiro Local'}
-            </Card.Text>
-            <Card.Text>{new Date(pedido.fechaPedido).toLocaleDateString('es-AR')}</Card.Text>
+            {/* Otros detalles del pedido */}
           </Col>
           <Col sm={8}>
             <div className="d-flex align-items-center justify-content-end">

@@ -3,7 +3,7 @@ import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
 import { CartContext, CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
-import { IPedidoDto, IPedidoFull } from "../../interface/IPedido";
+import { IPedidoDto } from "../../interface/IPedido";
 import { IProducto, IProductoDto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
@@ -19,7 +19,6 @@ interface ConfirmacionPedidoProps {
   onCancel: () => void;
   onContinue: () => void;
   isCartEmpty: boolean;
-  isAuthenticated: boolean;
 }
 
 const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
@@ -53,7 +52,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const crearNuevoCliente = async () => {
     try {
       if(user && isAuthenticated){
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}usuario/clientes`, {
+        const response = await axios.post(`${API_URL}usuario/clientes`, {
           nombre: user.given_name,
           apellido: user.family_name,
           email: user.email,
@@ -154,9 +153,8 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       const nuevoTotalPedido =
         esDelivery ? subTotal + 500 : subTotal * 0.9;
 
-      const nuevoPedidoCompleto: IPedidoFull = {
+      const nuevoPedidoCompleto: IPedidoDto = {
         activo: true,
-        numeroPedido: 123456789,
         horaEstimadaFin: new Date(),
         esDelivery: esDelivery,
         esEfectivo: esEfectivo,
