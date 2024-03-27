@@ -8,28 +8,28 @@ import { IDetallePedido, IDetallePedidoDto } from "../../../interface/IDetallePe
 import axios from "axios";
 import { spawn } from "child_process";
 
-const RankingProductos = () => {
-    const [productoAlimentos,setProductoAlimentos]=useState<IDetallePedido[]>([]);
+const RankingAlimento = () => {
+    const [productoAlimentos, setProductoAlimentos] = useState<IDetallePedido[]>([]);
     const [detallePedidos, setDetallesPedidos] = useState<IDetallePedido[]>([]);
     const [searchText, setSearchText] = useState<string>('');
     const [startDate, setStartDate] = useState<Date | null>(new Date());
     const [endDate, setEndDate] = useState<Date | null>(new Date());
 
     useEffect(() => {
-        const fetchData=async()=>{
+        const fetchData = async () => {
             try {
-                const detallePedidoResponse=await axios.get(process.env.REACT_APP_API_URL + "detalle-pedido");
+                const detallePedidoResponse = await axios.get(process.env.REACT_APP_API_URL + "detalle-pedido");
                 setDetallesPedidos(detallePedidoResponse.data);
-                detallePedidos.map((detalle)=>{
-                    if(detalle.Productos.esBebida!){
-                        productoAlimentos.map((ali)=>{
-                            if (ali.Productos.id===detalle.Productos.id){
-                                ali={
+                detallePedidos.map((detalle) => {
+                    if (detalle.producto.esBebida!) {
+                        productoAlimentos.map((ali) => {
+                            if (ali.producto.id === detalle.producto.id) {
+                                ali = {
                                     ...ali,
-                                    cantidad:ali.cantidad+detalle.cantidad,
+                                    cantidad: ali.cantidad + detalle.cantidad,
                                 }
-                            }else{
-                                setProductoAlimentos([...productoAlimentos,detalle]);
+                            } else {
+                                setProductoAlimentos([...productoAlimentos, detalle]);
                             }
                         });
                     }
@@ -44,14 +44,16 @@ const RankingProductos = () => {
     }, []);
 
     const columns: IColumn<IDetallePedido>[] = [
-        {title:"Nombre",
-        field:"Productos",
-        render:(detalle:IDetallePedido)=><span>{detalle.Productos.nombre}</span>},
-        {title:"Activo",field:"activo"},
-        {title:"Imagen",field:"Productos",render:(detalle:IDetallePedido)=><span>{detalle.Productos.imagen}</span>},
-        {title:"Cantidad",field:"cantidad"},
+        {
+            title: "Nombre",
+            field: "producto",
+            render: (detalle: IDetallePedido) => <span>{detalle.producto.nombre}</span>
+        },
+        { title: "Activo", field: "activo" },
+        { title: "Imagen", field: "producto", render: (detalle: IDetallePedido) => <span>{detalle.producto.imagen}</span> },
+        { title: "Cantidad", field: "cantidad" },
     ];
-    
+
 
     /*const calculateCantidadVendido = (productoId: number, esBebida: boolean | undefined) => {
         return pedidos.reduce((totalCantidad, pedido) => {
@@ -103,24 +105,24 @@ const RankingProductos = () => {
     //     }
     // };
 
-   /* const pedidosBebida = pedidos
-        .filter((pedido) => pedido.id !== undefined && pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
-        .map((pedido) => ({
-            ...pedido,
-            ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
-            ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
-        }));
-       
-    const pedidosNoBebida = pedidos
-        .filter((pedido) => pedido.id !== undefined && !pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
-        .map((pedido) => ({
-            ...pedido,
-            ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
-            ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
-        }));
-
-    const mergedProducts = [...pedidosBebida, ...pedidosNoBebida];
-*/
+    /* const pedidosBebida = pedidos
+         .filter((pedido) => pedido.id !== undefined && pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
+         .map((pedido) => ({
+             ...pedido,
+             ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
+             ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
+         }));
+        
+     const pedidosNoBebida = pedidos
+         .filter((pedido) => pedido.id !== undefined && !pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
+         .map((pedido) => ({
+             ...pedido,
+             ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
+             ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
+         }));
+ 
+     const mergedProducts = [...pedidosBebida, ...pedidosNoBebida];
+ */
     return (
         <div>
             <Container fluid>
@@ -186,4 +188,4 @@ const RankingProductos = () => {
     );
 };
 
-export default RankingProductos;
+export default RankingAlimento;

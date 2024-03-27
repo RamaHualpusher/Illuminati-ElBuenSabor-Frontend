@@ -1,13 +1,13 @@
 import React, { FC, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import RankingClientes from './RankingClientes/RankingClientes';
-import RankingProductos from './RankingProductos/RankingProductos';
+import RankingAlimento from './RankingProductos/RankingAlimento';
 import RankingVentas from './RankingVentas/RankingVentas';
 
 const Rankings: FC = () => {
-    const [selectedOption, setSelectedOption] = useState<"clientes" | "productos" | "ventas">("clientes");
+    const [selectedOption, setSelectedOption] = useState<"clientes" | "alimentos" | "ventas">("clientes");
 
-    const handleOptionChange = (option: "clientes" | "productos" | "ventas") => {
+    const handleOptionChange = (option: "clientes" | "alimentos" | "ventas") => {
         setSelectedOption(option);
     };
 
@@ -27,10 +27,10 @@ const Rankings: FC = () => {
                         </Col>
                         <Col xs={12} md={6} lg={4} className="mx-auto mb-2">
                             <Button
-                                className={`btn btn-primary rounded w-100 ${selectedOption === 'productos' ? 'btn-dark' : 'btn-secondary'}`}
-                                onClick={() => handleOptionChange('productos')}
+                                className={`btn btn-primary rounded w-100 ${selectedOption === 'alimentos' ? 'btn-dark' : 'btn-secondary'}`}
+                                onClick={() => handleOptionChange('alimentos')}
                             >
-                                Productos
+                                Alimentos
                             </Button>
                         </Col>
                         <Col xs={12} md={6} lg={4} className="mx-auto mb-2">
@@ -46,7 +46,7 @@ const Rankings: FC = () => {
 
                 <div className="mt-4">
                     {selectedOption === 'clientes' && <RankingClientes />}
-                    {selectedOption === 'productos' && <RankingProductos />}
+                    {selectedOption === 'alimentos' && <RankingAlimento />}
                     {selectedOption === 'ventas' && <RankingVentas />}
                 </div>
 
