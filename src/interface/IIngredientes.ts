@@ -10,9 +10,9 @@ export interface IIngredientes extends IBase {
   rubro: IRubroNew;
 }
 
-export interface IIngredientesDto extends IBase{
+export interface IIngredientesDto extends IBase {
   nombre: string;
-  precioCosto: number;  
+  precioCosto: number;
   rubro: IRubroNew;
 }
 
@@ -46,9 +46,6 @@ export interface IAddRubroIngredienteModalProps {
 export interface IEditCompraIngredientesModalProps {
   show: boolean;
   handleClose: () => void;
-  handleIngredientesEdit: (
-    cantidad: number,
-    ingrediente: IIngredientes
-  ) => Promise<void>;
-  ingredientesBajoStock: IIngredientes[];
+  handleIngredientesEdit: (ingredientes: IIngredientes) => void;
+  selectedIngredientes: IIngredientes | null;
 }
