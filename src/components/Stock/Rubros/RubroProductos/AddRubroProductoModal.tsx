@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { IAddRubroProductoModalProps } from '../../../../interface/IProducto';
 import { IRubroNew } from '../../../../interface/IRubro';
+
+interface IAddRubroProductoModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleRubroAdd: (rubro: IRubroNew) => void;
+  categorias: IRubroNew[];
+}
 
 const AddRubroProductoModal: React.FC<IAddRubroProductoModalProps> = ({
   show,
   handleClose,
   handleRubroAdd,
+  categorias,
 }) => {
-  // Estados del componente
   const [nombre, setNombre] = useState('');
-  const [activo, setActivo] = useState(true);
+  const [esCategoria, setEsCategoria] = useState(false);
+  const [rubroPadreId, setRubroPadreId] = useState<number>(0); 
 
-  // Función para manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -22,58 +28,72 @@ const AddRubroProductoModal: React.FC<IAddRubroProductoModalProps> = ({
       return;
     }
 
+    const rubroPadre = esCategoria ? undefined : categorias.find(rubro => rubro.id === rubroPadreId);
+
     const newRubroProducto: IRubroNew = {
       id: 0,
       nombre: trimmedNombre,
-      activo,
-      rubroPadre: undefined,
-      ingredientOwner: false
+      activo: true,
+      rubroPadre,
+      ingredientOwner: false,
     };
-    handleRubroAdd(newRubroProducto); // Pasar el objeto rubroData directamente a handleRubroAdd
+    handleRubroAdd(newRubroProducto);
     handleClose();
   };
 
-  // Función para cambiar el estado
-  const handleStatusChange = (isActive: boolean) => {
-    setActivo(isActive);
+  const handleEsCategoriaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEsCategoria(event.target.checked);
+    // Limpiar el campo de rubroPadreId cuando se marca/desmarca el checkbox
+    setRubroPadreId(0);
   };
 
+  const handleRubroPadreChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setRubroPadreId(parseInt(event.target.value));
+  };
 
   const handleCancelar = () => {
-    setNombre("");
-    setActivo(true);
+    setNombre('');
+    setEsCategoria(false);
+    setRubroPadreId(0);
     handleClose();
-  }
+  };
 
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar rubro de producto</Modal.Title>
+        <Modal.Title>Agregar Rubro de Producto</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
           <Form.Group className="mb-3" controlId="formNombre">
             <Form.Label>Nombre</Form.Label>
             <Form.Control
-              type="text"
+              as="textarea"
               placeholder="Ingrese nombre"
-              name="nombre"
               value={nombre}
               onChange={(event) => setNombre(event.target.value)}
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formEstado">
-            <Form.Label>Estado</Form.Label>
-            <Form.Select
-              value={activo ? 'alta' : 'baja'}
-              onChange={(event) => setActivo(event.target.value === 'alta')}
-              required
-            >
-              <option value="alta">Alta</option>
-              <option value="baja">Baja</option>
-            </Form.Select>
+          <Form.Group className="mb-3" controlId="formEsCategoria">
+            <Form.Check
+              type="checkbox"
+              label="Es categoría"
+              checked={esCategoria}
+              onChange={handleEsCategoriaChange}
+            />
           </Form.Group>
+          {!esCategoria && (
+            <Form.Group className="mb-3" controlId="formRubroPadre">
+              <Form.Label>Rubro Padre</Form.Label>
+              <Form.Select value={rubroPadreId} onChange={handleRubroPadreChange}>
+                <option value={0}>Seleccionar</option>
+                {categorias.map(rubro => (
+                  <option key={rubro.id} value={rubro.id}>{rubro.nombre}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCancelar}>

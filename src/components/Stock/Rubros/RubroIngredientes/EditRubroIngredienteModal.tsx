@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { IRubroNew } from '../../../../interface/IRubro';
-import { IEditRubroIngredientesModalProps } from '../../../../interface/IIngredientes';
+
+interface IEditRubroIngredientesModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleRubroEdit: (rubro: IRubroNew) => void;
+  selectedRubro: IRubroNew | null;
+  categorias: IRubroNew[];
+}
 
 const EditRubroIngredientesModal: React.FC<IEditRubroIngredientesModalProps> = ({
   show,
   handleClose,
   handleRubroEdit,
   selectedRubro,
+  categorias,
 }) => {
   // Estados del componente
   const [nombre, setNombre] = useState('');
   const [activo, setActivo] = useState(false);
-  const [rubroPadre, setRubroPadre] = useState<IRubroNew | undefined>(undefined);
+  const [rubroPadreId, setRubroPadreId] = useState<number | undefined>(0);
 
-  // Cargar los valores del rubro seleccionado al montar el componente
+  // Actualizar estados cuando se selecciona un rubro
   useEffect(() => {
     if (selectedRubro) {
       setNombre(selectedRubro.nombre);
       setActivo(selectedRubro.ingredientOwner || false);
-      setRubroPadre(selectedRubro.rubroPadre);
+      setRubroPadreId(selectedRubro.rubroPadre ? selectedRubro.rubroPadre.id : undefined);
     }
   }, [selectedRubro]);
 
-  // Manejar el envío del formulario
+  // Función para manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -33,19 +41,23 @@ const EditRubroIngredientesModal: React.FC<IEditRubroIngredientesModalProps> = (
       return;
     }
 
+    const rubroPadre = categorias.find(rubro => rubro.id === rubroPadreId);
+
     if (selectedRubro) {
       const updatedRubro: IRubroNew = {
         ...selectedRubro,
+        id: selectedRubro.id || 0,
         nombre,
-        ingredientOwner: activo,
+        activo,
         rubroPadre,
+        ingredientOwner: true, // Para rubros de ingredientes, siempre es true
       };
       handleRubroEdit(updatedRubro);
     }
     handleClose();
   };
 
-  // Cambiar el estado del rubro
+  // Función para cambiar el estado
   const handleStatusChange = (isActive: boolean) => {
     setActivo(isActive);
   };
@@ -53,15 +65,16 @@ const EditRubroIngredientesModal: React.FC<IEditRubroIngredientesModalProps> = (
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Editar Rubro</Modal.Title>
+        <Modal.Title>Editar rubro de ingredientes</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          <Form.Group className="mb-3" controlId="formNombre">
+          <Form.Group className="mb-3" controlId="nombre">
             <Form.Label>Nombre</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ingrese nombre"
+              name="nombre"
               value={nombre}
               onChange={(event) => setNombre(event.target.value)}
               required
@@ -71,13 +84,20 @@ const EditRubroIngredientesModal: React.FC<IEditRubroIngredientesModalProps> = (
             <Form.Label>Estado</Form.Label>
             <Form.Select
               value={activo ? 'alta' : 'baja'}
-              onChange={(event) =>
-                setActivo(event.target.value === 'alta')
-              }
+              onChange={(event) => setActivo(event.target.value === 'alta')}
               required
             >
               <option value="alta">Alta</option>
               <option value="baja">Baja</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formRubroPadre">
+            <Form.Label>Categoría</Form.Label>
+            <Form.Select value={rubroPadreId || 0} onChange={(event) => setRubroPadreId(parseInt(event.target.value))}>
+              <option value={0}>Seleccionar</option>
+              {categorias.map(rubro => (
+                <option key={rubro.id} value={rubro.id}>{rubro.nombre}</option>
+              ))}
             </Form.Select>
           </Form.Group>
         </Modal.Body>
