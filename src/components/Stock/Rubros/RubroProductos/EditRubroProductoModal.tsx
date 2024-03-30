@@ -1,26 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { IRubroNew } from '../../../../interface/IRubro';
-import { IEditRubroProductoModalProps } from '../../../../interface/IProducto';
+
+interface IEditRubroProductoModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleRubroEdit: (rubro: IRubroNew) => void;
+  selectedRubro: IRubroNew | null;
+  categorias: IRubroNew[];
+}
 
 const EditRubroProductoModal: React.FC<IEditRubroProductoModalProps> = ({
   show,
   handleClose,
   handleRubroEdit,
   selectedRubro,
+  categorias,
 }) => {
   // Estados del componente
   const [nombre, setNombre] = useState('');
   const [activo, setActivo] = useState(false);
+  const [ingredientOwner, setIngredientOwner] = useState(false);
+  const [rubroPadreId, setRubroPadreId] = useState<number|undefined>(0);
 
   // Actualizar estados cuando se selecciona un rubro
-  useEffect(() => {
-    if (selectedRubro) {
-      setNombre(selectedRubro.nombre);
-      setActivo(selectedRubro.activo || false);
-      // setIdRubroPadre(selectedRubro.idRubroPadre); (No se utiliza en este componente)
-    }
-  }, [selectedRubro]);
+useEffect(() => {
+  if (selectedRubro) {
+    setNombre(selectedRubro.nombre);
+    setActivo(selectedRubro.activo || false);
+    setIngredientOwner(selectedRubro.ingredientOwner || false);
+    setRubroPadreId(selectedRubro.rubroPadre ? selectedRubro.rubroPadre.id : 0);
+  }
+}, [selectedRubro]);
+
 
   // Función para manejar el envío del formulario
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -32,13 +44,16 @@ const EditRubroProductoModal: React.FC<IEditRubroProductoModalProps> = ({
       return;
     }
 
+    const rubroPadre = categorias.find(rubro => rubro.id === rubroPadreId);
+
     if (selectedRubro) {
       const updatedRubro: IRubroNew = {
         ...selectedRubro,
         id: selectedRubro.id || 0,
         nombre,
-        activo,        
-        ingredientOwner: true
+        activo,
+        rubroPadre,
+        ingredientOwner,
       };
       handleRubroEdit(updatedRubro);
     }
@@ -79,6 +94,32 @@ const EditRubroProductoModal: React.FC<IEditRubroProductoModalProps> = ({
               <option value="baja">Baja</option>
             </Form.Select>
           </Form.Group>
+          <Form.Group className="mb-3" controlId="formIngredientOwner">
+            <Form.Label>Rubro corresponde a</Form.Label>
+            <Form.Check
+              type="radio"
+              label="Producto"
+              checked={!ingredientOwner}
+              onChange={() => setIngredientOwner(false)}
+            />
+            <Form.Check
+              type="radio"
+              label="Ingrediente"
+              checked={ingredientOwner}
+              onChange={() => setIngredientOwner(true)}
+            />
+          </Form.Group>
+          {!ingredientOwner && (
+            <Form.Group className="mb-3" controlId="formRubroPadre">
+              <Form.Label>Categoría</Form.Label>
+              <Form.Select value={rubroPadreId} onChange={(event) => setRubroPadreId(parseInt(event.target.value))}>
+                <option value={0}>Seleccionar</option>
+                {categorias.map(rubro => (
+                  <option key={rubro.id} value={rubro.id}>{rubro.nombre}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

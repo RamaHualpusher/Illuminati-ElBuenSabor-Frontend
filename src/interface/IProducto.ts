@@ -44,15 +44,5 @@ export interface IAddProductoModalProps {
 
 ///Rubros
 
-export interface IEditRubroProductoModalProps {
-  show: boolean;
-  handleClose: () => void;
-  handleRubroEdit: (rubro: IRubroNew) => void;
-  selectedRubro: IRubroNew | null;
-}
 
-export interface IAddRubroProductoModalProps {
-  show: boolean;
-  handleClose: () => void;
-  handleRubroAdd: (rubro: IRubroNew) => void;
-}
+

@@ -37,11 +37,7 @@ export interface IEditRubroIngredientesModalProps {
   selectedRubro: IRubroNew | null;
 }
 
-export interface IAddRubroIngredienteModalProps {
-  show: boolean;
-  handleClose: () => void;
-  handleRubroAdd: (rubro: IRubroNew) => void;
-}
+
 
 export interface IEditCompraIngredientesModalProps {
   show: boolean;

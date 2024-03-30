@@ -1,36 +1,28 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState } from 'react';
 import { Container, Row } from 'react-bootstrap';
 import EditRubroProductoModal from './EditRubroProductoModal';
 import AddRubroProductoModal from './AddRubroProductoModal';
 import { IRubroNew } from '../../../../interface/IRubro';
 import { IAction, IColumn } from '../../../../interface/ICamposTablaGenerica';
 import GenericTable from '../../../GenericTable/GenericTable';
-import Axios from 'axios';
-import { handleRequest } from '../../../FuncionRequest/FuncionRequest';
+import axios from 'axios';
 
-const RubroProductos: FC = () => {
-  const [rubros, setRubros] = useState<IRubroNew[]>([]);
+interface RubroProductosProps {
+  categorias: IRubroNew[];
+  rubros: IRubroNew[];
+  onRubroChange: () => void;
+}
+
+const RubroProductos: FC<RubroProductosProps> = ({ categorias, rubros, onRubroChange  }) => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedRubroProducto, setSelectedRubroProducto] = useState<IRubroNew | null>(null);
-  const API_URL = '/assets/data/rubrosProductosEjemplo.json';
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   const actions: IAction = {
     create: true,
     update: true,
   };
-
-  useEffect(() => {
-    const buscarRubros = async () => {
-      try {
-        const response = await Axios.get(API_URL); // Hacer una solicitud GET con Axios
-        setRubros(response.data); // Actualizar el estado con los datos de respuesta
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    buscarRubros();
-  }, []);
   
   if (!rubros || !rubros.length) {
     return <p>Cargando...</p>;
@@ -38,19 +30,37 @@ const RubroProductos: FC = () => {
 
   const handleRubroAdd = async (rubro: IRubroNew) => {
     try {
-      const newRubroProducto = await handleRequest('POST', API_URL, rubro);
-      setRubros(newRubroProducto);
-      setAddModalShow(false);
+      console.log("Rubro de producto enviado para POST");
+      console.log(rubro);
+      const response = await axios.post<IRubroNew[]>(`${API_URL}rubro`,rubro);
+      if(response){
+        onRubroChange();
+      }
     } catch (error) {
       console.log(error);
     }
+    setAddModalShow(false);
   };
-
+  const handleRubroEdit = async (rubro: IRubroNew) => {
+      try {
+        const response = await axios.put(`${API_URL}rubro/${rubro.id}`, rubro);
+        const updatedRubro: IRubroNew = response.data;
+        if(updatedRubro){
+          onRubroChange();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      setEditModalShow(false);
+    };
   const columns: IColumn<IRubroNew>[] = [
-    // { title: 'ID', field: 'idRubro' },
     {
       title: 'Nombre', field: 'nombre',
       render: (rubro: IRubroNew) => <span>{rubro.nombre}</span>,
+    },
+    {
+      title: 'Categoría', field: 'rubroPadre',
+      render: (rubro: IRubroNew) => <span>{rubro.rubroPadre?.nombre}</span>,
     },
     {
       title: "Estado",
@@ -63,23 +73,8 @@ const RubroProductos: FC = () => {
     },
   ];
 
-  // Función no implementada, puedes eliminarla si no es necesaria
-  function updateJsonData(updatedRubros: IRubroNew[]) {
-    throw new Error('Function not implemented.');
-  }
 
-  const handleRubroEdit = async (rubro: IRubroNew) => {
-    try {
-      const response = await Axios.put(`${API_URL}/${rubro.id}`, rubro);
-      const updatedRubro: IRubroNew = response.data;
-      const updatedRubros = rubros.map((r) =>
-        r.id === updatedRubro.id ? updatedRubro : r
-      );
-      setRubros(updatedRubros);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   const rubroRow = (id?: number): IRubroNew | undefined => {
     if (id === undefined) {
@@ -126,12 +121,14 @@ const RubroProductos: FC = () => {
         show={addModalShow}
         handleClose={handleAddModalClose}
         handleRubroAdd={handleRubroAdd}
+        categorias={categorias}
       />
       <EditRubroProductoModal
         show={editModalShow}
         handleClose={handleEditModalClose}
         handleRubroEdit={handleRubroEdit}
         selectedRubro={selectedRubroProducto}
+        categorias={categorias}
       />
     </Container>
   );
