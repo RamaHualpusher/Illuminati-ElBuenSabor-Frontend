@@ -1,9 +1,9 @@
 import React from "react";
-import { IPedido } from "../../interface/IPedido";
+import { IPedidoDto } from "../../interface/IPedido";
 import PedidoCardAdmin from "./PedidoCardAdmin";
 
 interface PedidoListProps {
-    pedidos: IPedido[];
+    pedidos: IPedidoDto[];
     cambiarEstadoPedido: (nuevoEstado: string) => void;
 }
 

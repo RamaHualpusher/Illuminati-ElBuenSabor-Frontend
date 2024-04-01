@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col } from 'react-bootstrap';
-import { IPedido } from '../../interface/IPedido';
+import { Card, Row, Col, Button } from 'react-bootstrap';
+import { IPedidoDto } from '../../interface/IPedido';
 import { Link, useLocation } from 'react-router-dom';
 import EstadoPedidoCard from './EstadoPedidoCard';
 import axios from 'axios';
+import ModalDetallePedido from './ModalDetallePedido';
 
 interface PedidoCardAdminProps {
-  pedido: IPedido;
+  pedido: IPedidoDto;
   cambiarEstadoPedido: (nuevoEstado: string) => void;
 }
 
 const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstadoPedido }) => {
   const [urlDetallePedido, setUrlDetallePedido] = useState(``);
   const [actualizarUI, setActualizarUI] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const location = useLocation();
   const API_URL = process.env.REACT_APP_API_URL || "";
 
@@ -49,7 +51,13 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
       setActualizarUI(false); // Restablecer el estado de actualización de la UI
     }
   }, [actualizarUI, pedido.id]);
-  
+  const handleMostrarDetalles = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const handleEstadoPedidoChange = async (nuevoEstado: string) => {
     const confirmacion = window.confirm(`¿Está seguro de que desea cambiar el estado del pedido a "${nuevoEstado}"?`);
@@ -77,9 +85,9 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
       case 'A confirmar':
         return (
           <>
-            <Link to={urlDetallePedido} className="btn btn-primary me-2">
+            <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
-            </Link>
+            </Button>
             <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('A cocina')} disabled={!pedido.esDelivery}>
               A cocina
             </button>
@@ -91,9 +99,9 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
       case 'Listo':
         return (
           <>
-            <Link to={urlDetallePedido} className="btn btn-primary me-2">
+            <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
-            </Link>
+            </Button>
             <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En delivery')} disabled={!pedido.esDelivery || pedido.esEfectivo}>
               En delivery
             </button>
@@ -105,9 +113,9 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
       case 'En delivery':
         return (
           <>
-            <Link to={urlDetallePedido} className="btn btn-primary me-2">
+            <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
-            </Link>
+            </Button>
             <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Entregado')} disabled={pedido.esEfectivo}>
               Entregado
             </button>
@@ -116,17 +124,17 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
       case 'Entregado':
         return (
           <>
-            <Link to={urlDetallePedido} className="btn btn-primary me-2">
+            <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
-            </Link>
+            </Button>
           </>
         );
       case 'En cocina': // Nuevo caso añadido basado en el componente CajeroPage
         return (
           <>
-            <Link to={urlDetallePedido} className="btn btn-primary me-2">
+            <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
-            </Link>
+            </Button>
             <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
               Listo
             </button>
@@ -135,31 +143,35 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
       default:
         return (
           <>
-            <Link to={urlDetallePedido} className="btn btn-primary me-2">
+            <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
-            </Link>
+            </Button>
           </>
         );
     }
   };
   
   return (
-    <Card className="pedido-card mb-2">
-      <Card.Body>
-        <Row>
-          <Col sm={4}>
-            <Card.Text>Pedido Número: {pedido.id}</Card.Text>
-            {/* Otros detalles del pedido */}
-          </Col>
-          <Col sm={8}>
-            <div className="d-flex align-items-center justify-content-end">
-              <EstadoPedidoCard estado={pedido.estadoPedido} />
-            </div>
-            <div className="d-flex justify-content-end mt-3">{renderActionButtons()}</div>
-          </Col>
-        </Row>
-      </Card.Body>
-    </Card>
+    <>
+      <Card className="pedido-card mb-2">
+        <Card.Body>
+          <Row>
+            <Col sm={4}>
+              <Card.Text>Pedido Número: {pedido.id}</Card.Text>
+              {/* Otros detalles del pedido */}
+            </Col>
+            <Col sm={8}>
+              <div className="d-flex align-items-center justify-content-end">
+                <EstadoPedidoCard estado={pedido.estadoPedido} />
+              </div>
+              <div className="d-flex justify-content-end mt-3">{renderActionButtons()}</div>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+      {/* Modal para mostrar detalles del pedido */}
+      <ModalDetallePedido pedido={pedido} onHide={handleCloseModal} show={showModal} />
+    </>
   );
 };
 

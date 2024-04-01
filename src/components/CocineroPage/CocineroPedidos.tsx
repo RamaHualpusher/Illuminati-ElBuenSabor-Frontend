@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PedidoList from '../Pedidos/PedidoList';
 import NoHayPedidos from '../Page404/NoHayPedidos';
-import { IPedido } from '../../interface/IPedido';
+import { IPedidoDto } from '../../interface/IPedido';
 
 const CocineroPedido: React.FC = () => {
-  const [pedidos, setPedidos] = useState<IPedido[]>([]);
-  const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedido | null>(null);
+  const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);
+  const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedidoDto | null>(null);
   const API_URL = process.env.REACT_APP_API_URL || '';
 
   useEffect(() => {
