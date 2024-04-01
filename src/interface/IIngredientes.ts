@@ -29,16 +29,6 @@ export interface IEditIngredientesModalProps {
   selectedIngredientes: IIngredientes | null;
 }
 
-///Rubros
-export interface IEditRubroIngredientesModalProps {
-  show: boolean;
-  handleClose: () => void;
-  handleRubroEdit: (rubro: IRubroNew) => void;
-  selectedRubro: IRubroNew | null;
-}
-
-
-
 export interface IEditCompraIngredientesModalProps {
   show: boolean;
   handleClose: () => void;

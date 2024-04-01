@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Form, Row, Col } from "react-bootstrap";
-import { IPedido } from "../../interface/IPedido";
+import { IPedidoDto } from "../../interface/IPedido";
 import Buscador from "../Buscador/Buscador";
 import PedidoList from "../Pedidos/PedidoList";
 import axios from "axios";
 
 const CajeroPage = () => {
-  const [pedidos, setPedidos] = useState<IPedido[]>([]);
-  const [pedidosComplete, setPedidosComplete] = useState<IPedido[]>([]);
+  const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);
+  const [pedidosComplete, setPedidosComplete] = useState<IPedidoDto[]>([]);
   const [filtroEstado, setFiltroEstado] = useState<string>("");
-  const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedido | null>(null);
+  const [pedidoSeleccionado, setPedidoSeleccionado] = useState<IPedidoDto | null>(null);
   const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Cargar los pedidos desde una fuente de datos al cargar el componente
@@ -38,7 +38,7 @@ const CajeroPage = () => {
 
   // Filtrar pedidos completos en función de un parámetro de búsqueda
   const filter = (searchParam: string) => {
-    const searchResult = pedidosComplete.filter((pedido: IPedido) =>
+    const searchResult = pedidosComplete.filter((pedido: IPedidoDto) =>
       pedido.id && pedido.id.toString().toLowerCase().includes(searchParam.toLowerCase())
     );
     setPedidos(searchResult);
