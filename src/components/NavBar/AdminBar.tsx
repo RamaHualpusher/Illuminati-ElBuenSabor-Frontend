@@ -2,7 +2,10 @@ import React, { FC, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
-import BackButton from "../BackButtom/BackButtom";//Arreglen su BackButtom, Pongan la B mayuscula no va con b.
+import BackButton from "../BackButtom/BackButtom"; //Arreglen su BackButtom, Pongan la B mayuscula no va con b.
+import { Dropdown } from "react-bootstrap";
+import CustomDropdown from "./CustomDropdown/CustomDropdown";
+import OpcionesUsuario from "./OpcionesUsuario/OpcionesUsuario";
 
 /**
  * Barra de navegación para el administrador.
@@ -25,11 +28,18 @@ const AdminBar: FC = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style={{ height: "4rem" }}>
+    <nav
+      className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
+      style={{ height: "4rem" }}
+    >
       <div className="container">
         <BackButton />
         <div className="d-flex align-items-center">
-          <a href="/" className="logo-iluminatti-1 me-2" style={{ marginLeft: "30px" }}>
+          <a
+            href="/"
+            className="logo-iluminatti-1 me-2"
+            style={{ marginLeft: "30px" }}
+          >
             <img
               className="logo-iluminatti-1 me-2"
               src="/assets/img/logo-grupo-illuminati.jpg"
@@ -51,25 +61,22 @@ const AdminBar: FC = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         {/* Menú desplegable */}
-        <div className={`collapse navbar-collapse justify-content-end ${navbarOpen ? "show" : ""}`}>
+        <div
+          className={`collapse navbar-collapse justify-content-end ${
+            navbarOpen ? "show" : ""
+          }`}
+        >
           <ul className="navbar-nav align-items-center">
             {/* Mostrar información del usuario autenticado */}
             {isAuthenticated && (
-              <li className="nav-item d-flex align-items-center">
-                <p className="nav-link mb-0">
-                  {user?.name && getFirstName(user.name)}
-                </p>
-                <img
-                  src={user?.picture}
-                  alt="imagen usuario"
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "50%",
-                    marginRight: "10px",
-                  }}
-                />
-              </li>
+              <>
+                <li className="nav-item d-flex align-items-center mx-2">
+                  <Dropdown>
+                    <CustomDropdown />
+                    <OpcionesUsuario />
+                  </Dropdown>
+                </li>
+              </>
             )}
             {/* Mostrar botón de inicio de sesión o cierre de sesión según el estado de autenticación */}
             <li className="nav-item">
