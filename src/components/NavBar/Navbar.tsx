@@ -8,6 +8,7 @@ import CartItem from "../CarritoCompras/CartItem";
 import { IProducto } from "../../interface/IProducto";
 import { SearchContext } from "../Buscador/SearchContext";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 /**
  * Barra de navegación con opciones de autenticación, carrito y búsqueda.
@@ -23,6 +24,7 @@ const Navbar: FC = () => {
   const [producComplete, setProducComplete] = useState<IProducto[]>([]); // Estado para almacenar productos completos
   const { setSearchParam } = useContext(SearchContext); // Obtener función para establecer parámetros de búsqueda
   const cartVacio = cartItems.length === 0; // Verificar si el carrito está vacío
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   //Esta función cambia el estado de navbarOpen entre true y false
   const toggleNavbar = () => {
@@ -45,17 +47,17 @@ const Navbar: FC = () => {
 
   //Hace la solicitud al BackEnd para traer datos del Producto
   useEffect(() => {
-    const fetchData = async () => {
+    const GetData = async () => {
       try {
-        const response = await fetch("assets/data/productosLanding.json");
-        const data = await response.json();
+        const response = await axios.get(API_URL + "producto");
+        const data = response.data;
         setProduc(data);
         setProducComplete(data);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData();
+    GetData();
   }, []);
 
   //Esta función se utiliza para actualizar el parámetro de búsqueda en el contexto de búsqueda.
