@@ -9,7 +9,6 @@ import DetallesPedidoDelivery from "../components/Pedidos/DetallesPedidoDelivery
 import Page404 from "../components/Page404/Page404";
 import Productos from "../components/Stock/Producto/Productos";
 import Ingredientes from "../components/Stock/Ingrediente/Ingrediente";
-import DetallesPedidoCocinero from "../components/CocineroPage/DetallePedidoCocinero";
 import DetallesPedidoCajero from "../components/CajeroPage/DetallesPedidoCajero";
 import PedidosID from "../components/Rankings/RankingClientes/PedidosID";
 
@@ -22,7 +21,6 @@ const IndexRouter = () => {
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/ranking-pedidos/:id" element={<PedidosID />} />
       <Route path="/cocinero" element={<Cocinero />} />
-      <Route path="/cocinero/pedido/:id" element={<DetallesPedidoCocinero />} />
       <Route path="/cajero" element={<Cajero />} />
       <Route path="/cajero/pedido/:id" element={<DetallesPedidoCajero />} />
       <Route path="/delivery" element={<Delivery />} />
