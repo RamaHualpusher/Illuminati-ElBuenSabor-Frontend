@@ -3,6 +3,7 @@ import { IIngredientes } from '../../../interface/IIngredientes';
 import EditCompraIngredientesModal from './EditCompraIngredientesModal';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
 import { Button, Table } from 'react-bootstrap';
+import axios from 'axios';
 
 const CompraIngrediente: React.FC = () => {
     const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]);
@@ -14,14 +15,18 @@ const CompraIngrediente: React.FC = () => {
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
-        fetch(API_URL + "ingrediente")
-            .then((response) => response.json())
-            .then((data) => {
-                setIngredientes(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching ingredientes:", error);
-            });
+        const fetchData = async () => {
+            // Obtener ingredientes desde la API
+            const url = API_URL + "ingrediente";
+            try {
+                const responseData = await axios.get(url);
+                setIngredientes(responseData.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
     }, []);
 
     // Verificar bajo stock después de cada actualización
