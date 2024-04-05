@@ -3,6 +3,7 @@ import { IIngredientes } from '../../../interface/IIngredientes';
 import EditCompraIngredientesModal from './EditCompraIngredientesModal';
 import { handleRequest } from '../../FuncionRequest/FuncionRequest';
 import { Button, Table } from 'react-bootstrap';
+import axios from 'axios';
 
 const CompraIngrediente: React.FC = () => {
     const [ingredientes, setIngredientes] = useState<IIngredientes[]>([]);
@@ -14,25 +15,35 @@ const CompraIngrediente: React.FC = () => {
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
-        fetch(API_URL + "ingrediente")
-            .then((response) => response.json())
-            .then((data) => {
-                setIngredientes(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching ingredientes:", error);
-            });
+        const fetchData = async () => {
+            // Obtener ingredientes desde la API
+            const url = API_URL + "ingrediente";
+            try {
+                const responseData = await axios.get(url);
+                setIngredientes(responseData.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchData();
     }, []);
 
     // Verificar bajo stock después de cada actualización
     useEffect(() => {
+        let todosConMasStock=false
+        let bucle=false
         ingredientes.forEach((item) => {
+            bucle=true
             const difference = item.stockActual - item.stockMinimo;
             if (difference <= 0 || difference <= stockMinimoPercentage / 100 * item.stockMinimo) {
+                todosConMasStock=true;
                 window.alert(`${item.nombre} está bajo en stock o por llegar al minimo!`);
                 return; // Salir del bucle si se muestra una alerta
             }
         });
+        if (!todosConMasStock && bucle) {
+            window.alert('¡Todos los productos tienen suficiente stock!');
+        }
     }, [ingredientes, stockMinimoPercentage]);
 
     const lowStockFilter = (item: IIngredientes) => {
