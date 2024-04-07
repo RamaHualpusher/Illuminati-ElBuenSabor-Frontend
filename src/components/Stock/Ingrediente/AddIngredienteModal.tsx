@@ -28,7 +28,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
     const fetchRubros = async () => {
       try {
         const responseData = await axios.get<IRubroNew[]>(API_URL + "rubro");
-        const filteredRubros = responseData.data.filter(rubro => rubro.ingredientOwner);
+        const filteredRubros = responseData.data.filter(rubro => rubro.ingredientOwner && rubro.rubroPadre !== null);
         setRubros(filteredRubros);
       } catch (error) {
         console.log(error);
@@ -36,6 +36,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
     };
     fetchRubros();
   }, [API_URL]);
+  
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

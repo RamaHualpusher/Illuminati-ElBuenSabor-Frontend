@@ -18,14 +18,15 @@ const Productos: React.FC = () => {
   const [selectedRubro, setSelectedRubro] = useState<number | null>(null);
   const [selectedRubroName, setSelectedRubroName] = useState<string>("");
   const [filteredProductos, setFilteredProductos] = useState<IProducto[]>([]);
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   // Cargar productos y rubros al montar el componente
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [productosResponse, rubrosResponse] = await Promise.all([
-          axios.get<IProducto[]>(process.env.REACT_APP_API_URL + "producto"),
-          axios.get<IRubroNew[]>(process.env.REACT_APP_API_URL + "rubro"),
+          axios.get<IProducto[]>(API_URL + "producto"),
+          axios.get<IRubroNew[]>(API_URL + "rubro"),
         ]);
         setProductos(productosResponse.data);
         setProductosComplete(productosResponse.data);
@@ -75,8 +76,9 @@ const Productos: React.FC = () => {
 
   // Editar un producto
   const handleProductoEdit = async (producto: IProducto) => {
+    console.log("Producto enviado a PUT: ", producto);
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}producto`, producto);
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}producto/${producto.id}`, producto);
       const updatedProducto = response.data;
       const updatedProductos = productos.map((item) =>
         item.id === updatedProducto.id ? updatedProducto : item
@@ -93,8 +95,8 @@ const Productos: React.FC = () => {
   const fetchProductos = async () => {
     try {
       const [productosResponse, rubrosResponse] = await Promise.all([
-        axios.get<IProducto[]>(process.env.REACT_APP_API_URL + "producto"),
-        axios.get<IRubroNew[]>(process.env.REACT_APP_API_URL + "rubro"),
+        axios.get<IProducto[]>(API_URL + "producto"),
+        axios.get<IRubroNew[]>(API_URL + "rubro"),
       ]);
       setProductos(productosResponse.data);
       setProductosComplete(productosResponse.data);
@@ -109,7 +111,7 @@ const Productos: React.FC = () => {
   // Manejar la eliminación del producto
   const handleProductoDelete = async (productoId: number) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}producto/${productoId}`);
+      await axios.delete(`${API_URL}producto/${productoId}`);
       fetchProductos(); // Volver a cargar los productos desde el backend
       setEditModalShow(false); // Cerrar el modal de edición si está abierto
     } catch (error) {
