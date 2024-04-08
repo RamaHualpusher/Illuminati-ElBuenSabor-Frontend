@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
-import { IPedidoDto } from "../../interface/IPedido";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
-import { IProductoDto } from "../../interface/IProducto";
+import { IProducto } from "../../interface/IProducto";
+import { IPedidoDto } from "../../interface/IPedido";
 
 const FacturaPDF = (selectedPedido: IPedidoDto) => {
   const generatePDF = () => {
@@ -27,7 +27,7 @@ const FacturaPDF = (selectedPedido: IPedidoDto) => {
     // Tabla de productos
     const tableHeaders = ["Cantidad", "Detalle Producto", "Precio Unit."];
     const tableData = selectedPedido.detallesPedidos.map((detalle: IDetallePedidoDto) => {
-      const producto = detalle.producto as IProductoDto;
+      const producto = detalle.producto as IProducto;
       return [detalle.cantidad || "", producto.nombre || "", producto.precio || ""];
     });
     const columnWidths = [30, 80, 40]; // Ancho de las columnas
@@ -66,7 +66,11 @@ const FacturaPDF = (selectedPedido: IPedidoDto) => {
     pdf.text(`El Buen Sabor`, margin, yPosition);
 
     // Guardar el PDF
-    pdf.save(`Factura de ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido}-Num. ${selectedPedido.id}.pdf`);
+    const pdfFileName = `Factura de ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido}-Num. ${selectedPedido.id}.pdf`;
+    pdf.save(pdfFileName);
+    
+    // Devolver el contenido del PDF como un Buffer (necesario para enviar por correo electrónico)
+    return pdf.output('arraybuffer');  
   };
 
   return generatePDF();

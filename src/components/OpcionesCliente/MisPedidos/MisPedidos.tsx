@@ -3,7 +3,12 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import Pasados from './Pasados';
 import Pendientes from './Pendientes';
 
-const MisPedidos: FC = () => {
+interface MisPedidosProps {
+    closeModal?: () => void; // Prop para cerrar el modal
+    show?: boolean; // Prop para controlar la visibilidad del modal
+}
+
+const MisPedidos:  FC<MisPedidosProps>  = () => {
     // Estado para controlar la opción seleccionada (pendientes o pasados)
     const [selectedOption, setSelectedOption] = useState<"pedidosPendientes" | "pedidosPasados">("pedidosPendientes");
 

@@ -12,8 +12,7 @@ import MisPedidos from "../components/OpcionesCliente/MisPedidos/MisPedidos";
 import DetallesPedidoUsuario from "../components/OpcionesCliente/MisPedidos/DetallesPedidoUsuario";
 import MiPerfil from "../components/OpcionesCliente/MiPerfil/MiPerfil";
 
-const UserRouter = () => {
-
+const UserRouter = () => { 
   return (
     <div>
       {/* Barra de navegación */}

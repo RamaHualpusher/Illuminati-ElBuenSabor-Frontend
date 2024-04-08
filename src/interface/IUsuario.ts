@@ -7,7 +7,7 @@ export interface IUsuario extends IBase {
   apellido: string;
   email: string;
   clave: string;
-  claveConfirm: string;
+  claveConfirm: string;  //este se podria eliminar
   telefono: string;
   domicilio: IDomicilio;
   rol: IRol;

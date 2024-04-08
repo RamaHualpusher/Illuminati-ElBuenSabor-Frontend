@@ -6,25 +6,29 @@ import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
 import GenerarFacturaModal from "./GenerarFacturaModal";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
-import { IProductoDto } from "../../interface/IProducto";
+import { IProducto } from "../../interface/IProducto";
 import axios from "axios";
 
 const Factura = () => {
-  const [facturas, setFacturas] = useState<IPedidoDto[]>();
-  const [selectedPedido, setSelectedPedido] = useState<IPedidoDto>();
+  const [facturas, setFacturas] = useState<IPedidoDto[]>([]);
+  const [selectedFactura, setSelectedFactura] = useState<IPedidoDto>();
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const facturasResponse = await axios.get(`${API_URL}pedido`);
-        const facturasData = facturasResponse.data;
-        console.log(facturasData);
-        // Ordenar los pedidos por fecha de pedido de manera descendente
-        facturasData.sort((a: { fechaPedido: string | number | Date; }, b: { fechaPedido: string | number | Date; }) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+        
+        const facturasResponse = await axios.get(`${API_URL}factura`);   
+        if (facturasResponse?.data) {
+          //la siguiente linea esta para hacer un chequeo de si la factura es generada a traves del pedido, ya quede como factura y no se pueda modificar
+          // const facturasData: IPedidoDto[] = facturasResponse.data.filter((factura: IPedidoDto) => factura.esFactura === true);
+          
+          // Ordenar los pedidos por fecha de pedido de manera descendente
+          facturasResponse?.data.sort((a: IPedidoDto, b: IPedidoDto) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
 
-        setFacturas(facturasResponse.data);
+          setFacturas(facturasResponse?.data);
+        }
       } catch (error) {
         console.error('Error al cargar datos:', error);
       }
@@ -71,7 +75,7 @@ const Factura = () => {
 
     if (facturas && facturas.detallesPedidos) {
       facturas?.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
-        const producto: IProductoDto = detalle.producto;
+        const producto: IProducto = detalle.producto;
         totalPedido += producto?.precio * detalle?.cantidad;
       });
     }
@@ -86,7 +90,7 @@ const Factura = () => {
 
   const onView = (factura: IPedidoDto) => {
     if (factura) {
-      setSelectedPedido(factura);
+      setSelectedFactura(factura);
       setShowModal(true); // Muestra el modal de GenerarFacturaModal
     }
   };
@@ -114,7 +118,7 @@ const Factura = () => {
       
       {/* Modal para mostrar detalles de la factura */}
       <GenerarFacturaModal 
-        factura={selectedPedido ?? null}
+        factura={selectedFactura ?? null}
         closeModal={() => setShowModal(false)}
         show={showModal}
       />

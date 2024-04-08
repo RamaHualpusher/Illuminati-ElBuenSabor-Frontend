@@ -4,11 +4,12 @@ import Spinner from '../Spinner/Spinner';
 import { CartContext, CartItem } from '../../context/cart/CartProvider';
 import { IProducto } from '../../interface/IProducto';
 import { IDetallePedido } from '../../interface/IDetallePedido';
+import axios from 'axios';
 
 const DetallePage = () => {
   const { id } = useParams<{ id: string }>();
   const { addToCart } = useContext(CartContext);
-
+const API_URL = process.env.REACT_APP_API_URL || "";
   const [producto, setProducto] = useState<IProducto | undefined>();
   const [showAlert, setShowAlert] = useState(false);
 
@@ -16,9 +17,8 @@ const DetallePage = () => {
     const fetchProducto = async () => {
       if (id) {
         try {
-          const response = await fetch('/assets/data/productosLanding.json');
-          const data = await response.json();
-          const productoEncontrado = data.find((producto: IProducto) => producto.id === parseInt(id));
+          const response = await axios.get(`${API_URL}producto`);          
+          const productoEncontrado = response.data.find((producto: IProducto) => producto.id === parseInt(id));
           setProducto(productoEncontrado);
           if (productoEncontrado && productoEncontrado.stockActual === 0) {
             setShowAlert(true);
@@ -49,7 +49,7 @@ const DetallePage = () => {
         price: producto?.precio ?? 0,
         image: producto?.imagen ?? '',
         title: producto?.nombre ?? '',
-        DetallePedido: detallePedido,
+        detallePedido: detallePedido,
       };
 
       addToCart(item);

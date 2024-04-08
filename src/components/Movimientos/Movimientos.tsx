@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import { Button, Container, Row, Col, Modal } from 'react-bootstrap';
 import GenericTable from '../GenericTable/GenericTable';
 import { IColumn } from '../../interface/ICamposTablaGenerica';
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 import axios from 'axios';
 import { IDetallePedidoDto } from '../../interface/IDetallePedido';
-import { IProductoDto } from '../../interface/IProducto';
+import { IProducto } from '../../interface/IProducto';
 import { IIngredientes } from '../../interface/IIngredientes';
 import { IPedidoDto } from '../../interface/IPedido';
+import GenerarTicket from '../Ticket/GenerarTicket';
 
 const Movimientos = () => {
-  const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);  
+  const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);
   const API_URL = process.env.REACT_APP_API_URL || "";
-  
+  const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>(null);
+  const [showPedidoModal, setShowPedidoModal] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,16 +23,21 @@ const Movimientos = () => {
         const pedidosData = pedidosResponse.data;
         console.log(pedidosData)
         // Ordenar los pedidos por fecha de pedido de manera descendente
-        pedidosData.sort((a: { fechaPedido: string | number | Date; }, b: { fechaPedido: string | number | Date; }) => 
+        pedidosData.sort((a: { fechaPedido: string | number | Date; }, b: { fechaPedido: string | number | Date; }) =>
           new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
 
-        setPedidos(pedidosResponse.data);        
+        setPedidos(pedidosResponse.data);
       } catch (error) {
         console.error('Error al cargar datos:', error);
-      }    
+      }
     };
     fetchData();
   }, []);
+
+  const openPedidoModal = (pedido: IPedidoDto) => {
+    setSelectedPedido(pedido);
+    setShowPedidoModal(true);
+  };
 
   const columns: IColumn<IPedidoDto>[] = [
     { title: "Fecha de Pedido", field: "fechaPedido", width: 2 },
@@ -39,7 +47,7 @@ const Movimientos = () => {
       field: "usuario",
       render: (pedido: IPedidoDto) => {
         const usuario = pedido.usuario;
-        console.log("Usuario desde la carga de columnas: "+usuario);
+        console.log("Usuario desde la carga de columnas: " + usuario);
         return (
           <span>
             {usuario ? `${usuario.apellido} ${usuario.nombre}` : 'Usuario no disponible'}
@@ -47,70 +55,79 @@ const Movimientos = () => {
         );
       },
       width: 2
-    },   
+    },
     {
       title: "Total del Pedido",
       field: "esEfectivo",
-      render: (pedido: IPedidoDto) => {        
+      render: (pedido: IPedidoDto) => {
         return <div>{calcularTotalPedido(pedido)}</div>;
       },
       width: 2
     },
-     {
-       title: "Precio de Costo",
-       field: "fechaPedido",
-       width: 2,
-       render: (pedido: IPedidoDto) => {       
-         return <div>{calcularPrecioCosto(pedido)}</div>;
-       },
-     },
-     {
-       title: "Ganancia Neta",
-       field: "fechaPedido",
-       width: 2,
-       render: (pedido: IPedidoDto) => {        
-         return <div>{calcularGananciaNeta(pedido)}</div>;
-       },
-     },
+    {
+      title: "Precio de Costo",
+      field: "fechaPedido",
+      width: 2,
+      render: (pedido: IPedidoDto) => {
+        return <div>{calcularPrecioCosto(pedido)}</div>;
+      },
+    },
+    {
+      title: "Ganancia Neta",
+      field: "fechaPedido",
+      width: 2,
+      render: (pedido: IPedidoDto) => {
+        return <div>{calcularGananciaNeta(pedido)}</div>;
+      },
+    },
+    {
+      title: "Ver Pedido",
+      field: "fechaPedido",
+      render: (pedido: IPedidoDto) => (
+        <Button onClick={() => openPedidoModal(pedido)}>Ver</Button>
+      ),
+      width: 2,
+    },
+
   ];
-  
+
 
   const calcularGananciaNeta = (pedido: IPedidoDto) => {
     let gananciaNeta = 0;
-  
+
     if (pedido && pedido.detallesPedidos) {
       const totalPedido = calcularTotalPedido(pedido);
       const precioCosto = calcularPrecioCosto(pedido);
       gananciaNeta = totalPedido - precioCosto;
-    }  
-    
+    }
+
     return gananciaNeta;
   };
 
   const calcularTotalPedido = (pedidos: IPedidoDto) => {
     let totalPedido = 0;
-  
+
     if (!pedidos || !pedidos.detallesPedidos) {
       return totalPedido;
     }
-  
+
     pedidos.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
       if (!detalle || !detalle.producto || !detalle.producto.precio || !detalle.cantidad) {
         return;
       }
-  
+
       totalPedido += detalle.producto.precio * detalle.cantidad;
     });
-  
+
     return totalPedido;
   };
 
   const calcularPrecioCosto = (pedido: IPedidoDto) => {
     let costoTotalIngredientes = 0;
-    
+
     if (pedido && pedido.detallesPedidos) {
       pedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
-        const producto: IProductoDto = detalle.producto;
+        const producto: IProducto = detalle.producto;
         if (producto && producto.productosIngredientes && producto.productosIngredientes.length > 0) {
           producto.productosIngredientes.forEach((pi) => {
             const ingrediente: IIngredientes = pi.ingrediente;
@@ -120,10 +137,9 @@ const Movimientos = () => {
         }
       });
     }
-    
+
     return costoTotalIngredientes;
   };
-  
 
   const exportDataToExcel = () => {
     const dataToExport = pedidos;
@@ -153,6 +169,14 @@ const Movimientos = () => {
             )}
           </Col>
         </Row>
+        <Modal show={showPedidoModal} onHide={() => setShowPedidoModal(false)}>
+          <GenerarTicket
+            pedido={selectedPedido}
+            closeModal={() => setShowPedidoModal(false)}
+            show={showPedidoModal}
+          />
+        </Modal>
+
         <Button variant="success" onClick={() => exportDataToExcel()}>Exportar a Excel</Button>
       </Container>
     </div>

@@ -4,13 +4,17 @@ import CartTarjeta from "./CartTarjeta";
 import { CartContext, CartItem } from "../../context/cart/CartProvider";
 import axios from 'axios';
 import { IPedidoDto } from "../../interface/IPedido";
-import { IProducto, IProductoDto } from "../../interface/IProducto";
+import { IProducto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
-import { Alert, Button } from 'react-bootstrap';
+import { Alert, Button, Modal } from 'react-bootstrap';
 import { useAuth0 } from "@auth0/auth0-react";
-import { IIngredientes } from "../../interface/IIngredientes";
 import { IProductoIngrediente } from "../../interface/IProductoIngrediente";
+import GenerarTicket from "../Ticket/GenerarTicket";
+import { IMercadoPagoDatos } from "../../interface/IMercadoPagoDatos";
+import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
+import GenerarFacturaModal from "../Factura/GenerarFacturaModal";
+import { useNavigate } from "react-router-dom";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -18,7 +22,7 @@ interface ConfirmacionPedidoProps {
   eliminarDetallePedido: (id: number) => void;
   onCancel: () => void;
   onContinue: () => void;
-  isCartEmpty: boolean;
+  isCartEmpty: boolean;  
 }
 
 const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
@@ -28,7 +32,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   onCancel,
   onContinue,
   isCartEmpty,
-}) => {
+  }) => {
   const { clearCart } = useContext(CartContext);
   const [usuario, setUsuario] = useState<IUsuario | null>(null);
   const [productos, setProductos] = useState<IProducto[] | null>(null);
@@ -46,12 +50,21 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }[]>([]); // Use an array to store multiple insufficient stock errors
 
   const API_URL = process.env.REACT_APP_API_URL || "";
+  const MP_ACCESS = process.env.REACT_APP_MP_ACCESS_TOKEN || "";
+  const MP_PUBLIC = process.env.REACT_APP_MP_PUBLIC_KEY || "";
+  const [preferenceId, setPreferenceId] = useState<number | null>(null); //para mercado pago
+  const [showTicketModal, setShowTicketModal] = useState<boolean>(false);
+  const [returnUrl, setReturnUrl] = useState<string | null>(null); 
+  const [facturaGenerada, setFacturaGenerada] = useState<IPedidoDto | null>(null);
+  const navigate = useNavigate(); // Obtiene la función navigate desde useNavigate 
 
-
+  const handleClose = () => {
+      navigate("/"); // Redirige a la página principal al hacer click en "Cerrar"
+  };
   // Función para crear un nuevo cliente en el servidor
   const crearNuevoCliente = async () => {
     try {
-      if(user && isAuthenticated){
+      if (user && isAuthenticated) {
         const response = await axios.post(`${API_URL}usuario/clientes`, {
           nombre: user.given_name,
           apellido: user.family_name,
@@ -95,7 +108,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           console.log("Respuesta al verificar usuario existente:", JSON.stringify(response.data));
           // Si el usuario existe, lo establecemos en el estado
           setUsuario(response.data);
-        } catch (error:any) {
+        } catch (error: any) {
           // Si el usuario no existe, intentamos crearlo
           if (error.response && error.response.status === 404) {
             console.log("El usuario no existe, creándolo...");
@@ -125,7 +138,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
   }, [isAuthenticated]);
 
-
   useEffect(() => {
     const totalProducto = cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -136,7 +148,12 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }, [cartItems]);
 
   useEffect(() => {
-    if (usuario !== null && cartItems.length > 0 && productos !== null) {
+    if (usuario !== null &&
+      cartItems.length > 0 &&
+      productos !== null &&
+      esDelivery !== null &&
+      esEfectivo !== null
+    ) {
       const detallesPedido: IDetallePedidoDto[] = [];
 
       cartItems.forEach((cartItem) => {
@@ -153,9 +170,16 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       const nuevoTotalPedido =
         esDelivery ? subTotal + 500 : subTotal * 0.9;
 
+      //aca tenemos que poner segun el producto, el tiempo estimado segun hamburguesa, papas fritas, etc
+      const calcularHoraEstimadaFin = () => {
+        const horaActual = new Date();
+        horaActual.setMinutes(horaActual.getMinutes() + 20);
+        return horaActual;
+      };
+
       const nuevoPedidoCompleto: IPedidoDto = {
         activo: true,
-        horaEstimadaFin: new Date(),
+        horaEstimadaFin: new Date(), // aca deberia ir la linea 168 calcularHoraEstimadaFin
         esDelivery: esDelivery,
         esEfectivo: esEfectivo,
         estadoPedido: "A confirmar",
@@ -170,19 +194,136 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
   }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]);
 
+  //agregado por Javier
+  useEffect(() => {
+    if (pedidoConfirmado) {
+      setShowTicketModal(true);
+      //agregue esto para factura
+      setFacturaGenerada(pedidoCompleto);      
+    }
+  }, [pedidoConfirmado, pedidoCompleto]); //tambien agregue para factura el", pedidoCompleto"
+
+  useEffect(() => {
+    const generarFactura = async () => {
+      if (pedidoCompleto !== null && pedidoConfirmado) {
+        if (esEfectivo) {
+          // Si el pago es en efectivo, genera la factura inmediatamente
+          await guardarYEnviarFactura();
+        } else {
+          // Si el pago es a través de Mercado Pago, espera a que se complete el pago
+          const pagoCompletado = await verificarPago();
+          if (pagoCompletado) {
+            await guardarYEnviarFactura();
+          }
+        }
+      }
+    };
+  
+    const guardarYEnviarFactura = async () => {
+      try {
+        // Generar y guardar la factura en el backend
+        const response = await axios.post(`${API_URL}factura/guardar`, pedidoCompleto);
+        console.log("Factura guardada en el backend:", response.data);
+  
+        // Aquí envía la factura por correo electrónico
+        // Puedes implementar la lógica para enviar el correo aquí
+  
+        // Guardar la factura generada en el estado si es necesario
+        setFacturaGenerada(pedidoCompleto);
+      } catch (error) {
+        console.error("Error al generar y enviar la factura:", error);
+      }
+    };
+  
+    const verificarPago = async () => {
+      // Implementa la lógica para verificar el estado del pago en Mercado Pago
+      // Por simplicidad, este ejemplo simplemente espera 3 segundos antes de considerar el pago como completado
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(true); // Simula la confirmación del pago de Mercado Pago
+        }, 3000);
+      });
+    };
+  
+    generarFactura();
+  }, [pedidoCompleto, pedidoConfirmado, esEfectivo]);  
+
+  const createPreference = async () => {
+    if (pedidoCompleto !== null) {
+      try {
+        let response;
+        let responsePedidoCompleto;
+        if (esEfectivo) {
+          // Si el pago es en efectivo, utiliza la URL del controlador PedidoController
+          response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
+          console.log("Respuesta al guardar el pedido:", response.data);
+          if (response.data) {
+            setPedidoCompleto(response.data);
+            setPedidoConfirmado(true);
+            clearCart();
+          }
+        } else {
+          // Si el pago es con Mercado Pago, utiliza la URL del controlador MercadoPagoDatosController
+          // y envía los datos del pedido junto con la preferencia de pago          
+          initMercadoPago(MP_PUBLIC);
+          response = await axios.post(`${API_URL}mercado-pago-dato/prueba`, {
+            reference: {
+              items: [
+                {
+                  title: 'Pedido de ' + pedidoCompleto.usuario.nombre + " " + pedidoCompleto.usuario.apellido, // Título del pedido
+                  quantity: 1, // Cantidad de ítems (puede ser 1 si es un pedido completo)
+                  currency_id: 'ARS', // Moneda en la que se realiza el pago
+                  unit_price: pedidoCompleto.total, // Precio total del pedido
+                }
+              ],
+              back_urls: {
+                success: 'http://localhost:3000/pago-exitoso',
+                failure: 'http://localhost:3000/pago-fallido',
+                pending: 'http://localhost:3000/pago-pendiente',
+              },
+              auto_return: 'approved',
+              //esto me redirige al sitio cuando el pago esta okey
+              notification_url: "https://localhost:3000/confirmacion-pedido"
+            }
+          });
+
+          console.log("Respuesta al guardar datos de MercadoPago:", response.data);
+
+          if (response.data) {
+            const mercadoPagoResponse: IMercadoPagoDatos = response.data;
+            //esto debe guardar el id de mercado pago en el pedido
+            pedidoCompleto.mercadoPagoDatos = mercadoPagoResponse;
+            responsePedidoCompleto = await axios.post(`${API_URL}pedido`, pedidoCompleto);
+            setPedidoCompleto(responsePedidoCompleto.data);
+            setPedidoConfirmado(true);
+            // Aquí puedes guardar la preferencia de pago en el estado o realizar cualquier otra acción necesaria
+            // Por ejemplo, si deseas mostrar el botón de pago de Mercado Pago, puedes obtener el ID de preferencia y establecerlo en el estado
+            // setPreferenceId(mercadoPagoResponse.preferenceId);
+            clearCart();
+          }
+        }
+        // Retorna la respuesta del servidor
+        return response.data;
+      } catch (error) {
+        console.error('Error al crear preferencia de pago o guardar el pedido:', error);
+      }
+    }
+  };
+  //hasta aca agregado por javier
+
   const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!isAuthenticated) {
       setShowAlert(true);
       return;
     }
-  
+
     if (usuario === null) {
       console.error("El usuario no está cargado. No se puede confirmar el pedido.");
       return;
     }
-  
+
     if (pedidoCompleto !== null) {
       try {
         // Validar el stock de ingredientes antes de confirmar el pedido
@@ -193,7 +334,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
             const response = await axios.get(`${API_URL}producto/${detallePedido.producto.id}`);
             const producto = response.data;
             const ingredientesSuficientes = producto.productosIngredientes.every(
-              (productoIngrediente:IProductoIngrediente) =>
+              (productoIngrediente: IProductoIngrediente) =>
                 productoIngrediente.ingrediente.stockActual >= productoIngrediente.cantidad * detallePedido.cantidad
             );
             if (!ingredientesSuficientes) {
@@ -207,14 +348,18 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
             return false;
           }
         });
-  
+
         const validationResults = await Promise.all(validationPromises);
-  
+
         if (validationResults.every((result) => result)) {
           // Todos los productos tienen suficiente stock, proceder con el pedido
           const response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
+          
+
+
           console.log("Pedido enviado al servidor:", response.data);
-  
+          // await createPreference(); //este es para crear la preferencia de mercado pago
+
           // Mostrar la alerta con el número de pedido generado
           if (response.data) {
             setPedidoCompleto(response.data);
@@ -227,10 +372,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       }
     }
   };
-  
-  
 
   const handleLoginRedirect = () => {
+    setReturnUrl(window.location.href);
     loginWithRedirect();
   };
 
@@ -238,9 +382,32 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     setEsEfectivo(esEfectivo);
   };
 
+
   const handleEsDelivery = (esDelivery: boolean) => {
-    setEsDelivery(esDelivery);
-  };
+    if (!esDelivery) {
+      // Si se selecciona "Retiro en el Local", establece el domicilio en "Retiro en el Local"
+      setUsuario((prevUsuario) => ({
+        ...prevUsuario!,
+        domicilio: {
+          calle: "Retiro en el Local",
+          numero: 0,
+          localidad: "",
+        },
+      }));
+    } else {
+      // Si es Delivery y el usuario está logueado, establece el domicilio del usuario
+      if (user) {
+        setUsuario((prevUsuario) => ({
+          ...prevUsuario!,
+          domicilio: {
+            calle: prevUsuario?.domicilio.calle || "", // Usa el domicilio anterior si existe
+            numero: prevUsuario?.domicilio.numero || 0,
+            localidad: prevUsuario?.domicilio.localidad || "",
+          },
+        }));
+      }
+    }
+  };  
 
   return (
     <div style={{ marginTop: "90px" }}>
@@ -286,10 +453,11 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               esDelivery={esDelivery}
               esEfectivo={esEfectivo}
               handleEsDelivery={handleEsDelivery}
-              handleEsEfectivo={handleEsEfectivo}
+              handleEsEfectivo={handleEsEfectivo}              
               domicilio={usuario ? usuario.domicilio : null}
               subTotal={subTotal}
-              totalPedido={totalPedido} />
+              totalPedido={totalPedido}
+              usuario={usuario} />
           </div>
         </div>
       </div>
@@ -313,6 +481,29 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </button>
         </div>
       </form>
+      {/* {preferenceId &&
+        <Wallet initialization={{ preferenceId: preferenceId.toString() }} customization={{ texts: { valueProp: 'smart_option' } }} />
+      } */}
+      <div>
+        {/* Modal del ticket */}
+        <Modal show={showTicketModal} onHide={() => setShowTicketModal(false)}>
+          {/* <Modal.Header closeButton>
+            <Modal.Title>Ticket del Pedido</Modal.Title>
+          </Modal.Header> */}
+          <Modal.Body>
+            {/* Aquí renderizamos el componente GenerarTicket */}
+            {pedidoConfirmado && (
+              <GenerarTicket
+                pedido={pedidoCompleto}
+                closeModal={() => setShowTicketModal(false)}
+                show={showTicketModal}
+                modificarCantidad={modificarCantidad}
+                eliminarDetallePedido={eliminarDetallePedido}
+              />
+            )}
+          </Modal.Body>
+        </Modal>
+      </div>
       {/* Mostrar el Alert cuando el carrito esté vacío */}
       {isCartEmpty && (
         <div className="container mt-3">

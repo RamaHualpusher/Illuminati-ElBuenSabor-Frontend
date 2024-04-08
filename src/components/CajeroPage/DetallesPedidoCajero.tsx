@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { IPedido } from '../../interface/IPedido';
+import { IPedidoDto } from '../../interface/IPedido';
 import Spinner from '../Spinner/Spinner';
-import { IDetallePedido } from '../../interface/IDetallePedido';
+import { IDetallePedidoDto } from '../../interface/IDetallePedido';
 import { IProducto } from '../../interface/IProducto';
 import axios from 'axios';
 
 const DetallesPedidoCajero: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [pedido, setPedido] = useState<IPedido | null>(null);
+    const [pedido, setPedido] = useState<IPedidoDto | null>(null);
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
@@ -17,7 +17,7 @@ const DetallesPedidoCajero: React.FC = () => {
                 if (id) {
                     const pedidosResponse = await axios.get(`${API_URL}pedido`);
                     const data = await pedidosResponse.data;
-                    const pedidoEncontrado = data.find((pedido: IPedido) => pedido?.id === parseInt(id));
+                    const pedidoEncontrado = data.find((pedido: IPedidoDto) => pedido?.id === parseInt(id));
                     setPedido(pedidoEncontrado || null);
                 }
             } catch (error) {
@@ -29,7 +29,7 @@ const DetallesPedidoCajero: React.FC = () => {
     }, [id]);
 
     // Renderizar los productos en el detalle de pedido
-    const renderProductos = (detalle: IDetallePedido) => {
+    const renderProductos = (detalle: IDetallePedidoDto) => {
         if (!detalle?.producto || !Array.isArray(detalle?.producto) || detalle?.producto.length === 0) {
             return <p>Productos no disponibles</p>;
         }
@@ -51,9 +51,9 @@ const DetallesPedidoCajero: React.FC = () => {
     };
 
     // Calcular el tiempo estimado de finalización del pedido
-    const calcularTiempoEstimadoFinalizacion = (detallePedido: IDetallePedido[], esDelivery: boolean) => {
+    const calcularTiempoEstimadoFinalizacion = (detallePedido: IDetallePedidoDto[], esDelivery: boolean) => {
         let maxTiempoEstimadoCocina = 0;
-        detallePedido.forEach((detalle: IDetallePedido) => {
+        detallePedido.forEach((detalle: IDetallePedidoDto) => {
             if (detalle?.producto && Array.isArray(detalle?.producto) && detalle?.producto?.length > 0) {
                 detalle?.producto.forEach((producto: IProducto) => {
                     if (producto?.tiempoEstimadoCocina > maxTiempoEstimadoCocina) {
@@ -66,9 +66,9 @@ const DetallesPedidoCajero: React.FC = () => {
     };
 
     // Obtener el subtotal del pedido
-    const obtenerSubtotal = (detallePedido: IDetallePedido[]) => {
+    const obtenerSubtotal = (detallePedido: IDetallePedidoDto[]) => {
         let subtotal = 0;
-        detallePedido.forEach((detalle: IDetallePedido) => {
+        detallePedido.forEach((detalle: IDetallePedidoDto) => {
             if (detalle?.producto && Array.isArray(detalle?.producto) && detalle?.producto?.length > 0) {
                 detalle?.producto.forEach((producto: IProducto) => {
                     subtotal += producto?.precio || 0;
@@ -82,17 +82,17 @@ const DetallesPedidoCajero: React.FC = () => {
         return <Spinner />;
     }
 
-    const { Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
+    const { usuario, fechaPedido, esEfectivo, esDelivery, detallesPedidos } = pedido;
 
     const goBack = () => {
         window.history.go(-1);
     };
 
-    const subtotalPedido = obtenerSubtotal(DetallePedido);
-    const tiempoEstimadoFinalizacion = calcularTiempoEstimadoFinalizacion(DetallePedido, esDelivery);
+    const subtotalPedido = obtenerSubtotal(detallesPedidos);
+    const tiempoEstimadoFinalizacion = calcularTiempoEstimadoFinalizacion(detallesPedidos, esDelivery);
 
     // Función para calcular el total del pedido
-    const calcularTotalPedido = (detallePedido: IDetallePedido[]) => {
+    const calcularTotalPedido = (detallePedido: IDetallePedidoDto[]) => {
         let total = 0;
         for (let i = 0; i < detallePedido.length; i++) {
             const detalle = detallePedido[i];
@@ -111,7 +111,7 @@ const DetallesPedidoCajero: React.FC = () => {
         return total;
     };    
 
-    const totalPedido = calcularTotalPedido(DetallePedido);
+    const totalPedido = calcularTotalPedido(detallesPedidos);
 
     return (
         <div className="detalle-page-container d-flex align-items-center justify-content-center" style={{ backgroundImage: `url('/assets/img/fondoMisPedidos.jpg') `, minHeight: '100vh' }}>
@@ -122,12 +122,12 @@ const DetallesPedidoCajero: React.FC = () => {
                             <div className="card-header text-center"><h1 className="display-5">Detalles del Pedido</h1></div>
                             <div className="card-body text-center">
                                 <h5 className="card-title"> Número de Pedido: {id || 0}</h5>
-                                <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario?.nombre || ""} {Usuario?.apellido || ""}</p>
-                                <p className="card-text"><strong>Teléfono:</strong> {Usuario?.telefono}</p>
+                                <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {usuario?.nombre || ""} {usuario?.apellido || ""}</p>
+                                <p className="card-text"><strong>Teléfono:</strong> {usuario?.telefono}</p>
                                 {!esDelivery ? (
-                                    <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario?.domicilio?.calle || ""}, {Usuario?.domicilio?.localidad || ""}, {Usuario?.domicilio?.numero || 0}</p>
+                                    <p className="card-text"><strong>Dirección de Entrega:</strong> {usuario?.domicilio?.calle || ""}, {usuario?.domicilio?.localidad || ""}, {usuario?.domicilio?.numero || 0}</p>
                                 ) : (
-                                    <p className="card-text"><strong> Dirección de Entrega:</strong> {Usuario?.domicilio?.calle || ""}, {Usuario?.domicilio?.localidad || ""}, {Usuario?.domicilio?.numero || 0}</p>
+                                    <p className="card-text"><strong> Dirección de Entrega:</strong> {usuario?.domicilio?.calle || ""}, {usuario?.domicilio?.localidad || ""}, {usuario?.domicilio?.numero || 0}</p>
                                 )}
                                 <p className="card-text"><strong>Fecha:</strong> {formatDate(fechaPedido)}</p>
                                 <p className="card-text"><strong>Método de Pago:</strong> {esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
@@ -140,7 +140,7 @@ const DetallesPedidoCajero: React.FC = () => {
                                     </>
                                 )}
                                 <h5 className="card-title">Detalle de Ítems Pedidos</h5>
-                                {DetallePedido.map((detalle: IDetallePedido) => (
+                                {detallesPedidos.map((detalle: IDetallePedidoDto) => (
                                     <ul key={detalle.id} className="list-unstyled">
                                         {renderProductos(detalle)}
                                     </ul>

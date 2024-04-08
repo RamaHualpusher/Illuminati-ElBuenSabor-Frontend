@@ -8,7 +8,7 @@ export interface CartItem {
   price: number;
   image: string;
   title: string;
-  DetallePedido: IDetallePedido;
+  detallePedido: IDetallePedido; 
 }
 
 type CartAction =

@@ -1,35 +1,78 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { IDomicilio } from "../../interface/IDomicilio";
+import { IUsuario } from "../../interface/IUsuario";
 
 interface CartTarjetaProps {
   esDelivery: boolean;
   esEfectivo: boolean;
-  handleEsDelivery: (esDelivery: boolean) => void;
+  handleEsDelivery: (esDelivery: boolean) => void;  
   handleEsEfectivo: (esEfectivo: boolean) => void;
   domicilio: IDomicilio | null;
   subTotal: number;
   totalPedido: number;
+  usuario: IUsuario | null;
 }
 
 const CartTarjeta: React.FC<CartTarjetaProps> = ({
   esDelivery,
   esEfectivo,
   handleEsDelivery,
-  handleEsEfectivo,
+  handleEsEfectivo,  
   domicilio,
   subTotal,
   totalPedido,
+  usuario
 }) => {
-  const descuento = 0.1; // Descuento del 10% (0.1)
   const costoDelivery = 500;
+  const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo   
+  const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(
+    domicilio
+      ? {
+        calle: "Retiro en local",
+        numero: NaN,
+        localidad: "",
+      }
+      : null
+  );
 
-  // Manejar la selección de "Delivery" y "Mercado Pago" al cargar el componente
-  useEffect(() => {
+  // Función para manejar el clic en el botón de Delivery
+  const handleClickDelivery = () => {
+    handleEsDelivery(true);
+    handleEsEfectivo(false);
+    setNuevoDomicilio(usuario?.domicilio || null);
+  };
+
+  // Función para manejar el clic en el botón de Retiro en el Local
+  const handleClickRetiroLocal = () => {   
+    handleEsDelivery(false);
+    setNuevoDomicilio({
+      calle: "Retiro en el Local",
+      numero: NaN,
+      localidad: "",
+    });
+
+  };
+
+  // Función para manejar el clic en el botón de método de pago "Efectivo"
+  const handleClickEfectivo = () => {
+    handleEsEfectivo(true);
+  };
+
+  // Función para manejar el clic en el botón de método de pago "Mercado Pago"
+  const handleClickMercadoPago = () => {
+    handleEsEfectivo(false);
+  };
+
+  // Calcular total del pedido teniendo en cuenta descuentos y costos adicionales
+  const calcularTotalPedido = () => {
+    let total = subTotal;
     if (esDelivery) {
-      // Cuando se selecciona Delivery, automáticamente selecciona Mercado Pago
-      handleEsEfectivo(false);
+      total += costoDelivery;
+    } else if (esEfectivo) {
+      total -= subTotal * descuentoEfectivo; // Aplicar descuento del 10% para pago en efectivo
     }
-  }, [esDelivery, handleEsEfectivo]);
+    return total;
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center mb-4">
@@ -47,7 +90,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
               id="delivery-outlined"
               autoComplete="off"
               checked={esDelivery}
-              onChange={() => handleEsDelivery(true)}
+              onChange={() => handleClickDelivery()}
             />
             <label
               className="btn btn-outline-danger"
@@ -61,7 +104,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
               id="retiroLocal-outlined"
               autoComplete="off"
               checked={!esDelivery}
-              onChange={() => handleEsDelivery(false)}
+              onChange={() => handleClickRetiroLocal()}
             />
             <label
               className="btn btn-outline-danger"
@@ -76,75 +119,95 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
             <div className="d-flex flex-column align-items-center">
               <h1 className="display-6">Detalle del Pedido</h1>
               <p className="lead mb-0">
-                <strong>Dirección:</strong>
-                {domicilio && (
-                  <p>
-                    {domicilio.calle}, {domicilio.numero},{" "}
-                    {domicilio.localidad}
-                  </p>
+                <strong>Dirección:</strong>{" "}
+                {esDelivery ? (
+                  // Si es delivery, mostrar la dirección habitual del usuario o un mensaje si no está disponible
+                  domicilio ? (
+                    <p>
+                      {usuario?.domicilio.calle}, {usuario?.domicilio.numero},{" "}
+                      {usuario?.domicilio.localidad}
+                    </p>
+                  ) : (
+                    <p>Dirección no disponible</p>
+                  )
+                ) : (
+                  // Si no es delivery, mostrar la nueva dirección o un mensaje de "Retiro en el Local"
+                  <p>{nuevoDomicilio?.calle}</p>
                 )}
               </p>
-
               <div className="mb-0">
                 <p className="lead">
                   <strong>SubTotal: </strong>${subTotal}
                 </p>
-                {esDelivery && (
-                  <p className="lead">
-                    <strong>Costo del Delivery: </strong>${costoDelivery}
-                  </p>
-                )}
                 {!esDelivery && (
                   <p className="lead">
-                    <strong>Descuento:</strong> {descuento * 100}%
+                    <strong>Total: </strong>${calcularTotalPedido()}
                   </p>
                 )}
-                <p className="lead">
-                  <strong>Total: </strong>${totalPedido}
-                </p>
+                {esDelivery && (
+                  <>
+                    <p className="lead">
+                      <strong>Costo del Delivery: </strong>${costoDelivery}
+                    </p>
+                    <p className="lead">
+                      <strong>Total: </strong>${calcularTotalPedido()}
+                    </p>
+                  </>
+                )}
+                {!esDelivery && esEfectivo && (
+                  <>
+                    <p className="lead">
+                      <strong>Descuento:</strong> {descuentoEfectivo * 100}%
+                    </p>
+                    <p className="lead">
+                      <strong>Total con Descuento: </strong>${calcularTotalPedido()}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
-
         <div className="card-footer">
           <div className="container-fluid">
             <div className="d-flex flex-column align-items-center">
               <h5>Método de Pago</h5>
-              <div className="mb-0">
+              <div className="d-flex justify-content-center">
                 {!esDelivery && (
-                  <>
+                  <div className="mb-0 me-2">
                     <input
                       type="radio"
                       className="btn-check"
                       id="efectivo-outlined"
                       autoComplete="off"
-                      checked={esEfectivo}
-                      onChange={() => handleEsEfectivo(true)}
+                      checked={!esDelivery && esEfectivo} // Solo chequea si no es delivery y es efectivo
+                      onChange={handleClickEfectivo}
+                      disabled={esDelivery} // Deshabilita si es delivery
                     />
                     <label
-                      className="btn btn-outline-primary mx-1"
+                      className={!esDelivery && esEfectivo ? "btn btn-primary" : "btn btn-outline-primary"}
                       htmlFor="efectivo-outlined"
                     >
                       Efectivo
                     </label>
-                  </>
+                  </div>
                 )}
-
-                <input
-                  type="radio"
-                  className="btn-check"
-                  id="mercadoPago-outlined"
-                  autoComplete="off"
-                  checked={!esEfectivo}
-                  onChange={() => handleEsEfectivo(false)}
-                />
-                <label
-                  className="btn btn-outline-primary mx-2"
-                  htmlFor="mercadoPago-outlined"
-                >
-                  Mercado Pago
-                </label>
+                <div className="mb-0">
+                  <input
+                    type="radio"
+                    className="btn-check"
+                    id="mercadoPago-outlined"
+                    autoComplete="off"
+                    checked={true}
+                    onChange={handleClickMercadoPago}
+                  />
+                  <label
+                    className={!esEfectivo ? "btn btn-primary" : "btn btn-outline-primary"}
+                    htmlFor="mercadoPago-outlined"
+                  >
+                    Mercado Pago
+                  </label>
+                </div>
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ import Usuarios from "../Users/Usuarios/Usuarios";
 import Rankings from "../Rankings/Rankings";
 import Stock from "../Stock/Stock/Stock";
 import Movimientos from "../Movimientos/Movimientos";
+//aca puedo ver de poner pedidos como boton en /admin
 
 export default function OpcionesAdmin() {
   // Estado para controlar la opción seleccionada

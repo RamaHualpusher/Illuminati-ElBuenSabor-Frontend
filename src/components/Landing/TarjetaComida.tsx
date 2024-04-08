@@ -31,7 +31,7 @@ const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText, showButton 
         price: producto?.precio ?? 0,
         image: producto?.imagen ?? '',
         title: producto?.nombre ?? '',
-        DetallePedido: detallePedido,
+        detallePedido: detallePedido, //modifique aca la seccion de DetallePedido
       };
       addToCart(item); // Agregar el item al carrito
     }
