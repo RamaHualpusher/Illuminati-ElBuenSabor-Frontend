@@ -18,16 +18,17 @@ const EditIngredientesModal: React.FC<IEditIngredientesModalProps> = ({
 
     useEffect(() => {
         const fetchRubros = async () => {
-            try {
-                const responseData = await axios.get<IRubroNew[]>(API_URL + "rubro");
-                const filteredRubros = responseData.data.filter(rubro => rubro.ingredientOwner);
-                setRubros(filteredRubros);
-            } catch (error) {
-                console.log(error);
-            }
+          try {
+            const responseData = await axios.get<IRubroNew[]>(API_URL + "rubro");
+            const filteredRubros = responseData.data.filter(rubro => rubro.ingredientOwner && rubro.rubroPadre !== null);
+            setRubros(filteredRubros);
+          } catch (error) {
+            console.log(error);
+          }
         };
         fetchRubros();
-    }, [API_URL]);
+      }, [API_URL]);
+      
 
     useEffect(() => {
         if (selectedIngredientes) {

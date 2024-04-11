@@ -12,7 +12,6 @@ import axios from "axios";
 import CustomDropdown from "./CustomDropdown/CustomDropdown";
 import OpcionesUsuario from "./OpcionesUsuario/OpcionesUsuario ";
 
-
 /**
  * Barra de navegación con opciones de autenticación, carrito y búsqueda.
  */
