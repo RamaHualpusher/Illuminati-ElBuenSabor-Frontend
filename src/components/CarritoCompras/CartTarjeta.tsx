@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IDomicilio } from "../../interface/IDomicilio";
 import { IUsuario } from "../../interface/IUsuario";
 
@@ -49,8 +49,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
       calle: "Retiro en el Local",
       numero: NaN,
       localidad: "",
-    });
-
+    });  
   };
 
   // Función para manejar el clic en el botón de método de pago "Efectivo"

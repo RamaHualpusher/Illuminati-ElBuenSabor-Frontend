@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { IPedidoDto } from "../../interface/IPedido";
+import { IFactura } from "../../interface/IFactura";
 import { Button, Container, Modal, Table } from "react-bootstrap";
 import FacturaPDF from "./FacturaPDF";
 import GenerarCreditoModal from "./GenerarCreditoModal";
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
 import axios from 'axios';
+import { IDetalleFactura } from "../../interface/IDetalleFactura";
 
 interface GenerarFacturaModalProps {
-  factura: IPedidoDto | null,
+  factura: IFactura | null,
   closeModal: () => void;
   show: boolean;
 }
 
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, closeModal, show }) => {
   const [showCreditoModal, setShowCreditoModal] = useState(false);
-  const [selectedFactura, setSelectedFactura] = useState<IPedidoDto | null>();
+  const [selectedFactura, setSelectedFactura] = useState<IFactura | null>();
   const [userInfo, setUserInfo] = useState<any>(null); // IUsuario acordate
   const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     // Verificar que la factura no sea null y que esFactura sea true
-    if (factura ) { //aca borre en la verificacion "&& factura.esFactura"
+    if (factura) { //aca borre en la verificacion "&& factura.esFactura"
       setSelectedFactura(factura);
       getUserInfo();
     }
@@ -39,13 +40,13 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
   };
 
   const handleCredito = () => {
-    if (selectedFactura  && window.confirm("¿Estás seguro de generar la Nota de Crédito?")) {
+    if (selectedFactura && window.confirm("¿Estás seguro de generar la Nota de Crédito?")) {
       setShowCreditoModal(true);
     }
   };
 
-  const exportToExcel = (factura: IPedidoDto) => {
-    const dataToExport = factura?.detallesPedidos || [];
+  const exportToExcel = (factura: IFactura) => {
+    const dataToExport = factura?.detalleFactura || [];
     const filename = `Pedido ${factura?.usuario?.nombre} ${factura?.usuario?.apellido}-Num.${factura?.id}_detalles`;
     exportTableDataToExcel(dataToExport, filename);
   };
@@ -54,16 +55,18 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
     return value !== null && value !== undefined ? value : defaultValue;
   };
 
-  const calcularTotalPedido = (selectedFactura: IPedidoDto) => {
+  const calcularTotalPedido = (selectedFactura: IFactura) => {
     let total = 0;
 
-    selectedFactura.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
-      total += detalle.producto.precio * detalle.cantidad;
+    selectedFactura.detalleFactura.forEach((detalle: IDetalleFactura) => {
+      detalle.productos.forEach((producto) => {
+        total += producto.precio * detalle.cantidad;
+      });
     });
     return total;
   };
 
-  const calcularDescuento = (selectedFactura: IPedidoDto) => {
+  const calcularDescuento = (selectedFactura: IFactura) => {
     return selectedFactura.esEfectivo ? 0.1 : 0;
   };
 
@@ -78,41 +81,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
     closeModal();
   };
 
-  // const sendEmail = async (email: string, factura: IPedidoDto) => {
-  //   const bufferContent = Buffer.from(FacturaPDF(factura));
-  //   try {
-  //     // Configurar el transporte SMTP para enviar correos electrónicos
-  //     const transporter = nodemailer.createTransport({
-  //       service: 'smtp', // Puedes cambiar esto a tu proveedor de correo electrónico, como Gmail, Outlook, etc.
-  //       auth: {
-  //         user: 'elbuensaborutn@gmail.com', // Coloca aquí tu dirección de correo electrónico
-  //         pass: '1234buensabor', // Coloca aquí tu contraseña
-  //       },
-  //     });
-  
-  //     // Construir el cuerpo del correo electrónico
-  //     const mailOptions = {
-  //       from: 'elbuensaborutn@gmail.com', // Dirección de correo electrónico del remitente
-  //       to: email, // Dirección de correo electrónico del destinatario (en este caso, la del usuario)
-  //       subject: 'Factura de tu compra en El Buen Sabor', // Asunto del correo electrónico
-  //       text: `Adjunto encontrarás la factura de tu compra en formato PDF. Gracias por elegir El Buen Sabor.`, // Contenido del correo electrónico
-  //       attachments: [{
-  //         filename: `Factura ${factura.usuario.nombre}" "${factura.usuario.apellido}" Número"${factura.id}.pdf`, // Nombre del archivo adjunto
-  //         content: bufferContent, // Contenido del archivo adjunto, en este caso, el PDF generado por FacturaPDF
-  //         contentType: 'application/pdf', // Tipo de contenido del archivo adjunto
-  //       }],
-  //     };
-  
-  //     // Enviar el correo electrónico
-  //     await transporter.sendMail(mailOptions);
-  //     console.log('Correo electrónico enviado correctamente');
-  //   } catch (error) {
-  //     console.error('Error al enviar el correo electrónico:', error);
-  //     throw error;
-  //   }
-  // };
-
-  const sendEmail = async (email: string, factura: IPedidoDto) => {
+  const sendEmail = async (email: string, factura: IFactura) => {
     try {
       // Envío de correo electrónico utilizando la API de Gmail
       const response = await axios.post(`${API_URL}factura/guardar`, { //aca deberia ser guardar
@@ -163,12 +132,14 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                           </tr>
                         </thead>
                         <tbody>
-                          {selectedFactura?.detallesPedidos.map((detalle, index) => (
-                            <tr key={index}>
-                              <td>{getOrDefault(detalle.cantidad, "")}</td>
-                              <td>{detalle.producto.nombre}</td>
-                              <td>{detalle.producto.precio}</td>
-                            </tr>
+                          {selectedFactura?.detalleFactura.map((detalle, index) => (
+                            detalle.productos.map((producto, productoIndex) => ( // Itera sobre los productos de cada detalle
+                              <tr key={`${index}-${productoIndex}`}>
+                                <td>{getOrDefault(detalle.cantidad, "")}</td>
+                                <td>{producto.nombre}</td>
+                                <td>{producto.precio}</td>
+                              </tr>
+                            ))
                           ))}
                         </tbody>
                         <tfoot>
@@ -187,7 +158,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                           <br />
                           Descuento: {selectedFactura.esEfectivo ? "10%" : "0%"}
                           <br />
-                          Envío: {getOrDefault(selectedFactura.esDelivery ? "Domicilio" : "Retiro local", "")}
+                          {/* Envío: {getOrDefault(selectedFactura.esDelivery ? "Domicilio" : "Retiro local", "")} */}
                         </p>
                       </div>
                       <div className="center-section" style={{ textAlign: "center" }}>
@@ -232,12 +203,12 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
               </div>
             </div>
           )}
-          {showCreditoModal && (
+          {/* {showCreditoModal && (
             <GenerarCreditoModal
               closeModal={() => setShowCreditoModal(false)}
               factura={selectedFactura}
               show={show} />
-          )}
+          )} */}
         </Modal.Body>
       </Modal>
     </>

@@ -22,7 +22,11 @@ const IndexRouter = () => {
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/ranking-pedidos/:id" element={<PedidosID />} />
       <Route path="/cocinero" element={<Cocinero />} />
+      {/* este no deberia ir me parece */}
       <Route path="/cocinero/pedido/:id" element={<DetallesPedidoCocinero />} />
+
+
+      
       <Route path="/cajero" element={<Cajero />} />
       <Route path="/cajero/pedido/:id" element={<DetallesPedidoCajero />} />
       <Route path="/delivery" element={<Delivery />} />

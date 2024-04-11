@@ -2,6 +2,7 @@ import { IMercadoPagoDatos } from "./IMercadoPagoDatos";
 import { IUsuario } from "./IUsuario";
 import { IDetallePedido, IDetallePedidoDto } from "./IDetallePedido";
 import { IBase } from "./IBase";
+import { IFactura } from "./IFactura";
 
 export interface IPedido extends IBase {
   horaEstimadaFin: Date;
@@ -23,5 +24,6 @@ export interface IPedidoDto extends IBase {
   usuario: IUsuario;
   total: number; // este no deberia ir
   detallesPedidos: IDetallePedidoDto[];
-  mercadoPagoDatos?: IMercadoPagoDatos;  
+  mercadoPagoDatos?: IMercadoPagoDatos;   
+  factura?: IFactura; 
 }

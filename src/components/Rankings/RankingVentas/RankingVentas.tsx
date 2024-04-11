@@ -3,34 +3,39 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { IUsuario } from "../../../interface/IUsuario";
 import { IColumn } from "../../../interface/ICamposTablaGenerica";
 import GenericTable from "../../GenericTable/GenericTable";
+import axios from "axios";
 
 const RankingVentas = () => {
     const [clientes, setClientes] = useState<IUsuario[]>([]);
     const [addModalShow, setAddModalShow] = useState(false);
+    const API_URL = process.env.REACT_APP_API_URL; // Poner la URL correspondiente
 
     const columns: IColumn<IUsuario>[] = [
         { title: "ID", field: "id", width: 2 },
         { title: "Nombre", field: "nombre", width: 3 },
         { title: "Apellido", field: "apellido", width: 3 },
         {
-          title: "Cantidad de Pedidos", field: "telefono", width: 2,
-          render: (rowData) =>
-            <div>{calculateCantidadPedidosPorCliente(rowData.id)}</div>
+            title: "Cantidad de Pedidos", field: "telefono", width: 2,
+            render: (rowData) =>
+                <div>{calculateCantidadPedidosPorCliente(rowData.id)}</div>
         },
-      ];
+    ];
 
-      const calculateCantidadPedidosPorCliente = (clienteId: number | undefined) => {
+    const calculateCantidadPedidosPorCliente = (clienteId: number | undefined) => {
         return clientes.filter((cliente) => cliente.id === clienteId).length;
-      };
-      
+    };
+
     useEffect(() => {
-        const API_URL = "assets/data/pedidos.json"; // Poner la URL correspondiente
-        fetch(API_URL)
-            .then((response) => response.json())
-            .then((data) => {
-                setClientes(data);
-            })
-            .catch((error) => console.log(error));
+        const fechtdata = async () => {
+            const url = API_URL + 'clientes';
+            try {
+                const responseData = await axios.get(url);
+                setClientes(responseData.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fechtdata();
     }, []);
 
     const handleAddModalOpen = () => {
@@ -50,7 +55,7 @@ const RankingVentas = () => {
                             columns={columns}
                             data={clientes}
                             actions={{
-                                create: true,
+                                create: false,
                                 update: false,
                                 delete: false,
                                 view: false,

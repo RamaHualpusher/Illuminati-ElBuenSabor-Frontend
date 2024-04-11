@@ -12,9 +12,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { IProductoIngrediente } from "../../interface/IProductoIngrediente";
 import GenerarTicket from "../Ticket/GenerarTicket";
 import { IMercadoPagoDatos } from "../../interface/IMercadoPagoDatos";
-import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
-import GenerarFacturaModal from "../Factura/GenerarFacturaModal";
+import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { useNavigate } from "react-router-dom";
+import { IFactura } from "../../interface/IFactura";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -22,7 +22,7 @@ interface ConfirmacionPedidoProps {
   eliminarDetallePedido: (id: number) => void;
   onCancel: () => void;
   onContinue: () => void;
-  isCartEmpty: boolean;  
+  isCartEmpty: boolean;
 }
 
 const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
@@ -32,7 +32,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   onCancel,
   onContinue,
   isCartEmpty,
-  }) => {
+}) => {
   const { clearCart } = useContext(CartContext);
   const [usuario, setUsuario] = useState<IUsuario | null>(null);
   const [productos, setProductos] = useState<IProducto[] | null>(null);
@@ -54,13 +54,13 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const MP_PUBLIC = process.env.REACT_APP_MP_PUBLIC_KEY || "";
   const [preferenceId, setPreferenceId] = useState<number | null>(null); //para mercado pago
   const [showTicketModal, setShowTicketModal] = useState<boolean>(false);
-  const [returnUrl, setReturnUrl] = useState<string | null>(null); 
-  const [facturaGenerada, setFacturaGenerada] = useState<IPedidoDto | null>(null);
+  const [returnUrl, setReturnUrl] = useState<string | null>(null);
   const navigate = useNavigate(); // Obtiene la función navigate desde useNavigate 
 
   const handleClose = () => {
-      navigate("/"); // Redirige a la página principal al hacer click en "Cerrar"
+    navigate("/"); // Redirige a la página principal al hacer click en "Cerrar"
   };
+
   // Función para crear un nuevo cliente en el servidor
   const crearNuevoCliente = async () => {
     try {
@@ -143,7 +143,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       (total, item) => total + item.price * item.quantity,
       0
     );
-    console.log("Subtotal del pedido:", totalProducto);
     setSubTotal(totalProducto);
   }, [cartItems]);
 
@@ -192,62 +191,35 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       setTotalPedido(nuevoTotalPedido);
       setPedidoCompleto(nuevoPedidoCompleto);
     }
-  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]);
+  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]); 
 
   //agregado por Javier
   useEffect(() => {
-    if (pedidoConfirmado) {
+    if (pedidoConfirmado && pedidoCompleto) {
       setShowTicketModal(true);
       //agregue esto para factura
-      setFacturaGenerada(pedidoCompleto);      
+      // const facturaGenerada = convertirPedidoAFactura(pedidoCompleto);
+      // setFacturaGenerada(facturaGenerada);
+      setPedidoConfirmado(true);
     }
   }, [pedidoConfirmado, pedidoCompleto]); //tambien agregue para factura el", pedidoCompleto"
 
-  useEffect(() => {
-    const generarFactura = async () => {
-      if (pedidoCompleto !== null && pedidoConfirmado) {
-        if (esEfectivo) {
-          // Si el pago es en efectivo, genera la factura inmediatamente
-          await guardarYEnviarFactura();
-        } else {
-          // Si el pago es a través de Mercado Pago, espera a que se complete el pago
-          const pagoCompletado = await verificarPago();
-          if (pagoCompletado) {
-            await guardarYEnviarFactura();
-          }
-        }
-      }
-    };
-  
-    const guardarYEnviarFactura = async () => {
-      try {
-        // Generar y guardar la factura en el backend
-        const response = await axios.post(`${API_URL}factura/guardar`, pedidoCompleto);
-        console.log("Factura guardada en el backend:", response.data);
-  
-        // Aquí envía la factura por correo electrónico
-        // Puedes implementar la lógica para enviar el correo aquí
-  
-        // Guardar la factura generada en el estado si es necesario
-        setFacturaGenerada(pedidoCompleto);
-      } catch (error) {
-        console.error("Error al generar y enviar la factura:", error);
-      }
-    };
-  
-    const verificarPago = async () => {
-      // Implementa la lógica para verificar el estado del pago en Mercado Pago
-      // Por simplicidad, este ejemplo simplemente espera 3 segundos antes de considerar el pago como completado
-      return new Promise(resolve => {
-        setTimeout(() => {
-          resolve(true); // Simula la confirmación del pago de Mercado Pago
-        }, 3000);
-      });
-    };
-  
-    generarFactura();
-  }, [pedidoCompleto, pedidoConfirmado, esEfectivo]);  
 
+
+
+  //usamos este para cuando el pedido pase por mercado pago, tiene que esperar que se concrete el pago
+  const verificarPago = async () => {
+    // Implementa la lógica para verificar el estado del pago en Mercado Pago
+    // Por simplicidad, este ejemplo simplemente espera 3 segundos antes de considerar el pago como completado
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(true); // Simula la confirmación del pago de Mercado Pago
+      }, 3000);
+    });
+  };
+
+
+  
   const createPreference = async () => {
     if (pedidoCompleto !== null) {
       try {
@@ -286,20 +258,27 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               notification_url: "https://localhost:3000/confirmacion-pedido"
             }
           });
-
+  
           console.log("Respuesta al guardar datos de MercadoPago:", response.data);
-
+  
           if (response.data) {
             const mercadoPagoResponse: IMercadoPagoDatos = response.data;
             //esto debe guardar el id de mercado pago en el pedido
             pedidoCompleto.mercadoPagoDatos = mercadoPagoResponse;
-            responsePedidoCompleto = await axios.post(`${API_URL}pedido`, pedidoCompleto);
-            setPedidoCompleto(responsePedidoCompleto.data);
-            setPedidoConfirmado(true);
-            // Aquí puedes guardar la preferencia de pago en el estado o realizar cualquier otra acción necesaria
-            // Por ejemplo, si deseas mostrar el botón de pago de Mercado Pago, puedes obtener el ID de preferencia y establecerlo en el estado
-            // setPreferenceId(mercadoPagoResponse.preferenceId);
-            clearCart();
+            // Realizar la verificación del pago con Mercado Pago antes de guardar el pedido
+            const pagoConfirmado = await verificarPago();
+            if (pagoConfirmado) {
+              responsePedidoCompleto = await axios.post(`${API_URL}pedido`, pedidoCompleto);
+              setPedidoCompleto(responsePedidoCompleto.data);
+              setPedidoConfirmado(true);
+              // Aquí puedes guardar la preferencia de pago en el estado o realizar cualquier otra acción necesaria
+              // Por ejemplo, si deseas mostrar el botón de pago de Mercado Pago, puedes obtener el ID de preferencia y establecerlo en el estado
+              // setPreferenceId(mercadoPagoResponse.preferenceId);
+              // generarFactura();
+              clearCart();
+            } else {
+              console.log("El pago no se ha confirmado. El pedido no se guardará en la base de datos.");
+            }
           }
         }
         // Retorna la respuesta del servidor
@@ -309,6 +288,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       }
     }
   };
+  
   //hasta aca agregado por javier
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
@@ -354,8 +334,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         if (validationResults.every((result) => result)) {
           // Todos los productos tienen suficiente stock, proceder con el pedido
           const response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
-          
-
 
           console.log("Pedido enviado al servidor:", response.data);
           // await createPreference(); //este es para crear la preferencia de mercado pago
@@ -364,11 +342,11 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           if (response.data) {
             setPedidoCompleto(response.data);
             setPedidoConfirmado(true);
-            clearCart();
+            clearCart();           
           }
         }
       } catch (error) {
-        console.error("Error al enviar el pedido:", error);
+        console.error("Error al enviar el pedido o factura:", error);
       }
     }
   };
@@ -381,7 +359,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const handleEsEfectivo = (esEfectivo: boolean) => {
     setEsEfectivo(esEfectivo);
   };
-
 
   const handleEsDelivery = (esDelivery: boolean) => {
     if (!esDelivery) {
@@ -407,7 +384,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         }));
       }
     }
-  };  
+  };
 
   return (
     <div style={{ marginTop: "90px" }}>
@@ -425,7 +402,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       <div className="justify-content-center">
         <h1 className="display-4">Carrito de Compras</h1>
       </div>
-
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6">
@@ -442,7 +418,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               />
             </div>
           </div>
-
           <div className="col-md-6">
             <h1 className="display-6 mb-3">
               <small className="text-body-secondary">
@@ -453,7 +428,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               esDelivery={esDelivery}
               esEfectivo={esEfectivo}
               handleEsDelivery={handleEsDelivery}
-              handleEsEfectivo={handleEsEfectivo}              
+              handleEsEfectivo={handleEsEfectivo}
               domicilio={usuario ? usuario.domicilio : null}
               subTotal={subTotal}
               totalPedido={totalPedido}
@@ -461,7 +436,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </div>
         </div>
       </div>
-
       <form onSubmit={handleConfirmarPedido}>
         <div className="d-flex justify-content-center align-items-center mb-4">
           <button type="submit"

@@ -3,6 +3,10 @@ import { Container, Modal, Button, Table } from "react-bootstrap";
 import { IPedidoDto } from "../../interface/IPedido";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
 import { useNavigate } from "react-router-dom";
+import { IFactura } from "../../interface/IFactura";
+import { IDetalleFactura } from "../../interface/IDetalleFactura";
+import SendEmail from "../SendEmail/SendEmail";
+import axios from "axios";
 
 interface GenerarTicketProps {
     pedido: IPedidoDto | null;
@@ -15,16 +19,65 @@ interface GenerarTicketProps {
 const GenerarTicket: React.FC<GenerarTicketProps> = ({
     pedido,
     closeModal,
-    show
+    show,
 }) => {
     const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>(null);
-    const [showMisPedidos, setMisPedidos] = useState<boolean>(false);
-    // const [showConfirmation, setShowConfirmation] = useState(false);
     const navigate = useNavigate();
+    const API_URL = process.env.REACT_APP_API_URL || "";
+    const [facturaGenerada, setFacturaGenerada] = useState<IFactura | null>(null);
 
     useEffect(() => {
         setSelectedPedido(pedido);
-    }, [pedido]);
+    }, [pedido]);   
+    
+    const convertirPedidoAFactura = (pedidoCompleto: IPedidoDto): IFactura => {
+        const detalleFactura: IDetalleFactura[] = pedidoCompleto.detallesPedidos.map((detallePedido) => {
+          const subtotal = detallePedido.cantidad * detallePedido.producto.precio;
+          return {
+            cantidad: detallePedido.cantidad,
+            subtotal: subtotal,
+            productos: [
+              {
+                nombre: detallePedido.producto.nombre,
+                precio: detallePedido.producto.precio,
+              },
+            ],
+          };
+        });
+    
+        const factura: IFactura = {
+          activo: true,
+          fechaPedido: pedidoCompleto.fechaPedido,
+          esEfectivo: pedidoCompleto.esEfectivo,
+          total: pedidoCompleto.detallesPedidos.reduce(
+            (total, detalle) => total + detalle.cantidad * detalle.producto.precio,
+            0
+          ),
+          usuario: pedidoCompleto.usuario,
+          detalleFactura: detalleFactura,
+        };
+        
+        setFacturaGenerada(factura);
+        return factura;
+      };
+    
+      const generarFactura = async (selectedPedido: IPedidoDto | null) => {
+        if (selectedPedido) {
+          try {
+            const factura = convertirPedidoAFactura(selectedPedido);
+            const response = await axios.post(`${API_URL}factura/guardar`, factura);
+            if (response.data) {
+              console.log('Factura guardada en el backend:', response.data);
+              <SendEmail
+                factura={factura} />
+              return factura;
+            }
+          } catch (error) {
+            console.error('Error al generar la factura:', error);
+            return null;
+          }
+        }
+      };
 
     const getOrDefault = (value: any, defaultValue: any) => {
         return value !== null && value !== undefined ? value : defaultValue;
@@ -39,6 +92,19 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
         return total;
     };
 
+    const handleGenerarFactura = () => {
+        if (pedido) {
+            if (pedido.factura == null || undefined) {
+                const confirmarGenerarFactura = window.confirm("¿Está seguro de que desea generar la factura?");
+                if (confirmarGenerarFactura && generarFactura) {
+                    generarFactura(selectedPedido);
+                }
+            } else {
+                alert("Este pedido ya ha sido facturado.");
+            }
+        }
+    };    
+
     const calcularDescuento = (selectedPedido: IPedidoDto) => {
         return selectedPedido.esEfectivo ? 0.1 : 0;
     };
@@ -49,7 +115,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
         navigate("/mis-pedidos"); // Redirige a /mis-pedidos al hacer click en "Ir a Mis Pedidos" 
     };
 
-    const onCancel =() =>{
+    const onCancel = () => {
         navigate("/");
     }
 
@@ -132,6 +198,9 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                                     </div>
                                 </div>
                                 <div className="text-center">
+                                    <Button className="btn btn-primary me-2" onClick={handleGenerarFactura}>
+                                        Generar Factura
+                                    </Button>
                                     {/* Botón para abrir modal de factura */}
                                     <Button className="btn btn-primary me-2" onClick={handleMisPedidos}>
                                         Ir a Mis Pedidos

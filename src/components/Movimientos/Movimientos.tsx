@@ -24,7 +24,7 @@ const Movimientos = () => {
         console.log(pedidosData)
         // Ordenar los pedidos por fecha de pedido de manera descendente
         pedidosData.sort((a: { fechaPedido: string | number | Date; }, b: { fechaPedido: string | number | Date; }) =>
-          new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+          new Date(b.fechaPedido).getDate() - new Date(a.fechaPedido).getDate());
 
         setPedidos(pedidosResponse.data);
       } catch (error) {
@@ -34,10 +34,14 @@ const Movimientos = () => {
     fetchData();
   }, []);
 
-  const openPedidoModal = (pedido: IPedidoDto) => {
+  const openPedidoModal = async (pedido: IPedidoDto) => {
     setSelectedPedido(pedido);
-    setShowPedidoModal(true);
-  };
+    try {
+      setShowPedidoModal(true);
+    } catch (error) {
+      console.error('Error al generar la factura:', error);
+    }
+  };  
 
   const columns: IColumn<IPedidoDto>[] = [
     { title: "Fecha de Pedido", field: "fechaPedido", width: 2 },
@@ -79,7 +83,7 @@ const Movimientos = () => {
       render: (pedido: IPedidoDto) => {
         return <div>{calcularGananciaNeta(pedido)}</div>;
       },
-    },
+    },    
     {
       title: "Ver Pedido",
       field: "fechaPedido",
@@ -90,7 +94,6 @@ const Movimientos = () => {
     },
 
   ];
-
 
   const calcularGananciaNeta = (pedido: IPedidoDto) => {
     let gananciaNeta = 0;
@@ -176,7 +179,6 @@ const Movimientos = () => {
             show={showPedidoModal}
           />
         </Modal>
-
         <Button variant="success" onClick={() => exportDataToExcel()}>Exportar a Excel</Button>
       </Container>
     </div>

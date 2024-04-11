@@ -30,6 +30,11 @@ export interface IProductoDto extends IBase {
   productosIngredientes?: IProductoIngredienteDto[];
 }
 
+export interface IProductoFactura extends IBase { 
+  nombre: string;
+  precio: number;
+}
+
 export interface IEditProductoModalProps {
   show: boolean;
   handleClose: () => void;

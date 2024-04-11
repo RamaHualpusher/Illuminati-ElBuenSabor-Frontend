@@ -1,82 +1,84 @@
 import React, { useState, useEffect } from "react";
-import { IPedidoDto } from "../../interface/IPedido";
 import { IAction, IColumn } from "../../interface/ICamposTablaGenerica";
 import GenericTable from "../GenericTable/GenericTable";
 import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
 import GenerarFacturaModal from "./GenerarFacturaModal";
-import { IDetallePedidoDto } from "../../interface/IDetallePedido";
-import { IProducto } from "../../interface/IProducto";
+import { IDetalleFactura } from "../../interface/IDetalleFactura";
+import { IFactura } from "../../interface/IFactura";
 import axios from "axios";
 
 const Factura = () => {
-  const [facturas, setFacturas] = useState<IPedidoDto[]>([]);
-  const [selectedFactura, setSelectedFactura] = useState<IPedidoDto>();
-  const API_URL = process.env.REACT_APP_API_URL || "";
+  const [facturas, setFacturas] = useState<IFactura[]>([]);
+  const [selectedFactura, setSelectedFactura] = useState<IFactura | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
-        const facturasResponse = await axios.get(`${API_URL}factura`);   
-        if (facturasResponse?.data) {
-          //la siguiente linea esta para hacer un chequeo de si la factura es generada a traves del pedido, ya quede como factura y no se pueda modificar
-          // const facturasData: IPedidoDto[] = facturasResponse.data.filter((factura: IPedidoDto) => factura.esFactura === true);
-          
-          // Ordenar los pedidos por fecha de pedido de manera descendente
-          facturasResponse?.data.sort((a: IPedidoDto, b: IPedidoDto) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+        const facturasResponse = await axios.get<IFactura[]>(`${API_URL}factura`);
+        const facturasData = facturasResponse.data.filter((factura: IFactura) => factura.usuario !== null);
 
-          setFacturas(facturasResponse?.data);
-        }
+        facturasData.sort((a: IFactura, b: IFactura) =>
+          new Date(b.fechaPedido).getDate() - new Date(a.fechaPedido).getDate()
+        );
+
+        setFacturas(facturasData);
+        setLoading(false);
       } catch (error) {
-        console.error('Error al cargar datos:', error);
+        console.error('Error al cargar datos factura:', error);
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
 
-  if (!facturas || facturas === null) return <Spinner />;
+  if (loading) return <Spinner />;
 
   // Define las columnas para la tabla de facturas
-  const columns: IColumn<IPedidoDto>[] = [
+  const columns: IColumn<IFactura>[] = [
     {
       title: "Numero Factura",
       field: "id",
-      render: (facturas: IPedidoDto) => (
-        <span>{facturas.id?.toString() ?? 0}</span>
+      width: 2,
+      render: (factura: IFactura) => (
+        <span>{factura.id ?? 0}</span>
       ),
     },
     {
       title: "Usuario",
       field: "usuario",
-      render: (facturas: IPedidoDto) => (
-        <span>{facturas.usuario ? `${facturas.usuario?.apellido} ${facturas.usuario?.nombre}` : ""}</span>
+      width: 3,
+      render: (factura: IFactura) => (
+        <span>{factura.usuario ? `${factura.usuario?.apellido} ${factura.usuario?.nombre}` : ""}</span>
       ),
     },
     {
       title: "Fecha",
       field: "fechaPedido",
-      render: (facturas: IPedidoDto) => <span>{facturas.fechaPedido.toString()}</span>,
+      render: (factura: IFactura) => 
+      <span>{factura.fechaPedido}</span>,
     },
     {
       title: "Total del Pedido",
-      field: "fechaPedido",
-      render: (facturas: IPedidoDto) => (
-        <div>{calcularTotalPedido(facturas)}</div>
+      field: "total",
+      render: (factura: IFactura) => (
+        <div>{calcularTotalPedido}</div>
       ),
       width: 2
     },
   ];
 
+
   // Función para calcular el total del pedido
-  const calcularTotalPedido = (facturas: IPedidoDto) => {
+  const calcularTotalPedido = (factura: IFactura) => {
     let totalPedido = 0;
 
-    if (facturas && facturas.detallesPedidos) {
-      facturas?.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
-        const producto: IProducto = detalle.producto;
-        totalPedido += producto?.precio * detalle?.cantidad;
+    if (factura && factura.detalleFactura) {
+      factura.detalleFactura.forEach((detalle: IDetalleFactura) => {
+        totalPedido += detalle.subtotal;
       });
     }
 
@@ -88,9 +90,9 @@ const Factura = () => {
     view: true, // Acción de ver detalles
   };
 
-  const onView = (factura: IPedidoDto) => {
-    if (factura) {
-      setSelectedFactura(factura);
+  const onView = (factura: IFactura[]) => {
+    if (factura && factura.length > 0) {
+      setSelectedFactura(factura[0]);
       setShowModal(true); // Muestra el modal de GenerarFacturaModal
     }
   };
@@ -105,20 +107,28 @@ const Factura = () => {
         </Row>
         <Row className="mt-3">
           <Col>
-            <GenericTable<IPedidoDto>
-              data={facturas}
-              columns={columns}
-              actions={actions}
-              onView={onView}
-              showDate={true}
-            />
+            {facturas && facturas.length > 0 ? (
+              <GenericTable<IFactura>
+                data={facturas}
+                columns={columns}
+                actions={{
+                  create: false,
+                  update: false,
+                  delete: false,
+                  view: true,
+                }}
+                showDate={true}                
+              />
+            ) : (
+              <p>No hay datos de facturas disponibles.</p>
+            )}
           </Col>
         </Row>
       </Container>
-      
+
       {/* Modal para mostrar detalles de la factura */}
-      <GenerarFacturaModal 
-        factura={selectedFactura ?? null}
+      <GenerarFacturaModal
+        factura={selectedFactura}
         closeModal={() => setShowModal(false)}
         show={showModal}
       />

@@ -19,6 +19,7 @@
     "bootstrap-icons": "^1.10.5",
     "crypto-browserify": "^3.12.0",
     "date-fns": "^2.30.0",
+    "emailjs-com": "^3.2.0",
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.1",
     "jwt-decode": "^3.1.2",

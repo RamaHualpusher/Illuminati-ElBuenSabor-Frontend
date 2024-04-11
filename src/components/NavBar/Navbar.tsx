@@ -8,13 +8,17 @@ import CartItem from "../CarritoCompras/CartItem";
 import { IProducto } from "../../interface/IProducto";
 import { SearchContext } from "../Buscador/SearchContext";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import CustomDropdown from "./CustomDropdown/CustomDropdown";
+import OpcionesUsuario from "./OpcionesUsuario/OpcionesUsuario ";
+
 
 /**
  * Barra de navegación con opciones de autenticación, carrito y búsqueda.
  */
 
 const Navbar: FC = () => {
-  const { isAuthenticated, user } = useAuth0(); // Obtener el estado de autenticación de Auth0
+  const { isAuthenticated } = useAuth0(); // Obtener el estado de autenticación de Auth0
   const [navbarOpen, setNavbarOpen] = useState(false); // Estado para controlar la apertura del menú
   const { cartItems, removeFromCart, clearCart } = useContext(CartContext); // Obtener elementos del carrito y función para eliminar
   const [cartOpen, setCartOpen] = useState(false); // Estado para controlar la apertura del carrito
@@ -23,6 +27,7 @@ const Navbar: FC = () => {
   const [producComplete, setProducComplete] = useState<IProducto[]>([]); // Estado para almacenar productos completos
   const { setSearchParam } = useContext(SearchContext); // Obtener función para establecer parámetros de búsqueda
   const cartVacio = cartItems.length === 0; // Verificar si el carrito está vacío
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   //Esta función cambia el estado de navbarOpen entre true y false
   const toggleNavbar = () => {
@@ -45,17 +50,17 @@ const Navbar: FC = () => {
 
   //Hace la solicitud al BackEnd para traer datos del Producto
   useEffect(() => {
-    const fetchData = async () => {
+    const GetData = async () => {
       try {
-        const response = await fetch("assets/data/productosLanding.json");
-        const data = await response.json();
+        const response = await axios.get(API_URL + "producto");
+        const data = response.data;
         setProduc(data);
         setProducComplete(data);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData();
+    GetData();
   }, []);
 
   //Esta función se utiliza para actualizar el parámetro de búsqueda en el contexto de búsqueda.
@@ -157,7 +162,7 @@ const Navbar: FC = () => {
                         </ListGroup>
                       ) : (
                         <Dropdown.Item disabled>
-                          No hay items en el carrito
+                          No hay productos en el carrito
                         </Dropdown.Item>
                       )}
                       {!cartVacio && (
@@ -188,37 +193,8 @@ const Navbar: FC = () => {
             {isAuthenticated && (
               <li className="nav-item d-flex align-items-center mx-2">
                 <Dropdown>
-                  <Dropdown.Toggle
-                    variant="link"
-                    id="dropdown-user"
-                    as={Button}
-                    className="nav-link"
-                  >
-                    <img
-                      src={user?.picture}
-                      alt="imagen usuario"
-                      className="img-fluid rounded-circle me-2"
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                      }}
-                    />
-                    {user?.name}
-                    {/* aca deberia mostrarse el ROL del usuario  ya que Adminsitrador/Clente/Cocinero/Delivery
-                    creo que deberia ser con user?.rol */}
-                    {}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item as={Link} to="/mi-direccion">
-                      <i className="bi bi-geo-alt me-2"></i>Mi dirección
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/mis-pedidos">
-                      <i className="bi bi-journals me-2"></i>Mis pedidos
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/perfil">
-                      <i className="bi bi-person-square me-2"></i>Mi perfil
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
+                  <CustomDropdown />
+                  <OpcionesUsuario />
                 </Dropdown>
               </li>
             )}

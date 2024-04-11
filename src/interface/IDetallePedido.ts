@@ -7,6 +7,7 @@ export interface IDetallePedido extends IBase {
   producto: IProducto;
   maxCantidadProducto: number;
 }
+
 export interface IDetallePedidoDto extends IBase {
   cantidad: number;
   producto: IProductoDto;

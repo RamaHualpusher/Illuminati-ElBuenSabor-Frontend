@@ -1,9 +1,8 @@
 import { jsPDF } from "jspdf";
-import { IDetallePedidoDto } from "../../interface/IDetallePedido";
-import { IProducto } from "../../interface/IProducto";
-import { IPedidoDto } from "../../interface/IPedido";
+import { IDetalleFactura } from "../../interface/IDetalleFactura";
+import { IFactura } from "../../interface/IFactura";
 
-const FacturaPDF = (selectedPedido: IPedidoDto) => {
+const FacturaPDF = (selectedPedido: IFactura) => {
   const generatePDF = () => {
     const pdf = new jsPDF();
     let yPosition = 20;
@@ -26,9 +25,8 @@ const FacturaPDF = (selectedPedido: IPedidoDto) => {
 
     // Tabla de productos
     const tableHeaders = ["Cantidad", "Detalle Producto", "Precio Unit."];
-    const tableData = selectedPedido.detallesPedidos.map((detalle: IDetallePedidoDto) => {
-      const producto = detalle.producto as IProducto;
-      return [detalle.cantidad || "", producto.nombre || "", producto.precio || ""];
+    const tableData = selectedPedido.detalleFactura.map((detalle: IDetalleFactura) => {
+      return [detalle.cantidad || "", detalle.productos[0].nombre || "", detalle.productos[0].precio || ""];
     });
     const columnWidths = [30, 80, 40]; // Ancho de las columnas
     const rowHeight = 7; // Altura de las filas
@@ -45,12 +43,12 @@ const FacturaPDF = (selectedPedido: IPedidoDto) => {
     // Información de pago y envío
     const tipoPago = selectedPedido.esEfectivo ? "Efectivo" : "Mercado Pago";
     const descuento = selectedPedido.esEfectivo ? "10%" : "0%";
-    const tipoEnvio = selectedPedido.esDelivery ? "Domicilio" : "Retiro local";
+    // const tipoEnvio = selectedPedido.esDelivery ? "Domicilio" : "Retiro local";
     pdf.text(`Tipo de Pago: ${tipoPago}`, margin, yPosition);
     yPosition += 7;
     pdf.text(`Descuento: ${descuento}`, margin, yPosition);
     yPosition += 7;
-    pdf.text(`Envío: ${tipoEnvio}`, margin, yPosition);
+    // pdf.text(`Envío: ${tipoEnvio}`, margin, yPosition);
     yPosition += 10;
 
     // Dirección de envío
