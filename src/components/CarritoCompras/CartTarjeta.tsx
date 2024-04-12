@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { IDomicilio } from "../../interface/IDomicilio";
 import { IUsuario } from "../../interface/IUsuario";
+import { Modal } from "react-bootstrap";
+import axios from "axios";
 
 interface CartTarjetaProps {
   esDelivery: boolean;
   esEfectivo: boolean;
-  handleEsDelivery: (esDelivery: boolean) => void;  
+  handleEsDelivery: (esDelivery: boolean) => void;
   handleEsEfectivo: (esEfectivo: boolean) => void;
   domicilio: IDomicilio | null;
   subTotal: number;
@@ -17,7 +19,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   esDelivery,
   esEfectivo,
   handleEsDelivery,
-  handleEsEfectivo,  
+  handleEsEfectivo,
   domicilio,
   subTotal,
   totalPedido,
@@ -25,35 +27,46 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
 }) => {
   const costoDelivery = 500;
   const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo   
-  const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(
-    domicilio
-      ? {
-        calle: "Retiro en local",
-        numero: NaN,
-        localidad: "",
-      }
-      : null
-  );
+  const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(domicilio);
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [calle, setCalle] = useState('');
+  const [numero, setNumero] = useState('');
+  const [localidad, setLocalidad] = useState('');
+  const API_URL = process.env.REACT_APP_API_URL || "";
+
+  useEffect(() => {
+    // Si el usuario tiene una dirección, establecemos los valores en los campos correspondientes
+    if (domicilio) {
+      setCalle(domicilio.calle || '');
+      setNumero(domicilio.numero ? domicilio.numero.toString() : '');
+      setLocalidad(domicilio.localidad || '');
+    }
+  }, [domicilio]); 
 
   // Función para manejar el clic en el botón de Delivery
   const handleClickDelivery = () => {
     handleEsDelivery(true);
     handleEsEfectivo(false);
-    setNuevoDomicilio(usuario?.domicilio || null);
+    if (usuario && usuario?.domicilio) {
+      setNuevoDomicilio(usuario?.domicilio);
+    } else {      
+      setModalAbierto(true);
+    }
   };
 
   // Función para manejar el clic en el botón de Retiro en el Local
-  const handleClickRetiroLocal = () => {   
+  const handleClickRetiroLocal = () => {
     handleEsDelivery(false);
     setNuevoDomicilio({
       calle: "Retiro en el Local",
       numero: NaN,
       localidad: "",
-    });  
+    });
   };
 
-  // Función para manejar el clic en el botón de método de pago "Efectivo"
+  // Función para manejar el clic en el botón de método de pago "Efectivo" 
   const handleClickEfectivo = () => {
+    handleEsDelivery(false);
     handleEsEfectivo(true);
   };
 
@@ -62,12 +75,53 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     handleEsEfectivo(false);
   };
 
+  const handleCloseModal = () => {
+    setModalAbierto(false);
+  };
+
+  const handleFormSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (calle && numero && localidad) {
+      const nuevaDireccion = {
+        calle: calle,
+        numero: parseInt(numero),
+        localidad: localidad
+      };
+
+      try {
+        const domicilioUsuario = await obtenerDomicilioUsuario();
+        if (domicilioUsuario) {
+          // Si el usuario ya tiene una dirección, realizamos una solicitud PUT para actualizarla
+          await axios.put(`${API_URL}/domicilio/${domicilioUsuario.id}`, nuevaDireccion);
+        } else {
+          // Si el usuario no tiene una dirección, realizamos una solicitud POST para crearla
+          await axios.post(`${API_URL}/domicilio`, { ...nuevaDireccion, usuario: usuario });
+        }
+        // Cerramos el modal después de enviar la solicitud
+        setModalAbierto(false);
+      } catch (error) {
+        console.error('Error al guardar la dirección:', error);
+      }
+    }
+  };
+
+  const obtenerDomicilioUsuario = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/domicilio/usuario/${usuario?.id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener el domicilio del usuario:', error);
+      return null;
+    }
+  };
+
   // Calcular total del pedido teniendo en cuenta descuentos y costos adicionales
   const calcularTotalPedido = () => {
     let total = subTotal;
     if (esDelivery) {
       total += costoDelivery;
-    } else if (esEfectivo) {
+    }
+    if (!esDelivery && esEfectivo) {
       total -= subTotal * descuentoEfectivo; // Aplicar descuento del 10% para pago en efectivo
     }
     return total;
@@ -89,7 +143,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
               id="delivery-outlined"
               autoComplete="off"
               checked={esDelivery}
-              onChange={() => handleClickDelivery()}
+              onChange={handleClickDelivery}
             />
             <label
               className="btn btn-outline-danger"
@@ -103,7 +157,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
               id="retiroLocal-outlined"
               autoComplete="off"
               checked={!esDelivery}
-              onChange={() => handleClickRetiroLocal()}
+              onChange={handleClickRetiroLocal}
             />
             <label
               className="btn btn-outline-danger"
@@ -118,7 +172,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
             <div className="d-flex flex-column align-items-center">
               <h1 className="display-6">Detalle del Pedido</h1>
               <p className="lead mb-0">
-                <strong>Dirección:</strong>{" "}
+                <strong>Dirección:</strong>
                 {esDelivery ? (
                   // Si es delivery, mostrar la dirección habitual del usuario o un mensaje si no está disponible
                   domicilio ? (
@@ -127,7 +181,9 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                       {usuario?.domicilio.localidad}
                     </p>
                   ) : (
-                    <p>Dirección no disponible</p>
+                    <Modal to="/mi-direccion" className="btn btn-success" style ={{marginLeft: "10px"}} onClick={() => setModalAbierto(true)}>
+                       Agregar Dirección
+                    </Modal>
                   )
                 ) : (
                   // Si no es delivery, mostrar la nueva dirección o un mensaje de "Retiro en el Local"
@@ -172,32 +228,14 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
             <div className="d-flex flex-column align-items-center">
               <h5>Método de Pago</h5>
               <div className="d-flex justify-content-center">
-                {!esDelivery && (
-                  <div className="mb-0 me-2">
-                    <input
-                      type="radio"
-                      className="btn-check"
-                      id="efectivo-outlined"
-                      autoComplete="off"
-                      checked={!esDelivery && esEfectivo} // Solo chequea si no es delivery y es efectivo
-                      onChange={handleClickEfectivo}
-                      disabled={esDelivery} // Deshabilita si es delivery
-                    />
-                    <label
-                      className={!esDelivery && esEfectivo ? "btn btn-primary" : "btn btn-outline-primary"}
-                      htmlFor="efectivo-outlined"
-                    >
-                      Efectivo
-                    </label>
-                  </div>
-                )}
+                
                 <div className="mb-0">
                   <input
                     type="radio"
                     className="btn-check"
                     id="mercadoPago-outlined"
                     autoComplete="off"
-                    checked={true}
+                    checked={esDelivery}
                     onChange={handleClickMercadoPago}
                   />
                   <label
@@ -207,11 +245,66 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                     Mercado Pago
                   </label>
                 </div>
+                {!esDelivery && (
+                  <div className="mb-0 me-2">
+                    <input
+                      type="radio"
+                      className="btn-check"
+                      id="efectivo-outlined"
+                      autoComplete="off"
+                      checked={!esDelivery && esEfectivo} // Solo chequea si no es delivery y es efectivo
+                      onChange={handleClickEfectivo}
+                      disabled={esDelivery} // Deshabilita si es delivery                      
+                    />
+                    <label
+                      className={!esDelivery && esEfectivo ? "btn btn-primary" : "btn btn-outline-primary"}
+                      htmlFor="efectivo-outlined"
+                    >
+                      Efectivo
+                    </label>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
+      {modalAbierto && (
+        <div className="modal" tabIndex={-1} role="dialog" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Corregir Dirección</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}></button>
+              </div>
+              <div className="modal-body">
+                <form onSubmit={handleFormSubmit}>
+                  <div className="mb-3">
+                    <label htmlFor="calle" className="form-label">Calle</label>
+                    <input type="text" className="form-control" id="calle" value={calle} onChange={(e) => setCalle(e.target.value)} />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="numero" className="form-label">Número</label>
+                    <input type="number" className="form-control" id="numero" value={numero} onChange={(e) => setNumero(e.target.value)} />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="localidad" className="form-label">Localidad</label>
+                    <input type="text" className="form-control" id="localidad" value={localidad} onChange={(e) => setLocalidad(e.target.value)} />
+                  </div>
+                  <button type="submit" className="btn btn-primary">Guardar Dirección</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+       {!modalAbierto && (
+        <div className="card-footer">
+          <Modal to="/mi-direccion" className="btn btn-primary">
+            Corregir Dirección
+          </Modal>
+        </div>
+      )}
     </div>
   );
 };

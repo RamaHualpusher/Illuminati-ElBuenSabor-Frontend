@@ -13,8 +13,7 @@ const Direccion: FC = () => {
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
     const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
-
-    const API_URL = '/assets/data/domicilioCliente.json';
+    const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
         const fetchDomicilio = async () => {

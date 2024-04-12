@@ -14,7 +14,7 @@ import GenerarTicket from "../Ticket/GenerarTicket";
 import { IMercadoPagoDatos } from "../../interface/IMercadoPagoDatos";
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { useNavigate } from "react-router-dom";
-import { IFactura } from "../../interface/IFactura";
+// import { IFactura } from "../../interface/IFactura";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -73,7 +73,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           telefono: "", // No tenemos el teléfono aquí
           idDomicilio: 0, // No tenemos el id de domicilio aquí
           calle: "", // No tenemos la calle aquí
-          numero: 0, // No tenemos el número aquí
+          numero: NaN, // No tenemos el número aquí
           localidad: "", // No tenemos la localidad aquí
           idRol: 0, // No tenemos el id de rol aquí
           nombreRol: "" // No tenemos el nombre de rol aquí
@@ -217,14 +217,17 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       }, 3000);
     });
   };
-
-
   
   const createPreference = async () => {
     if (pedidoCompleto !== null) {
       try {
         let response;
         let responsePedidoCompleto;
+
+
+
+
+        //creo que esto no deberia estar porque si se crea la preferencia, es porque le pago va a ser con mercado pago
         if (esEfectivo) {
           // Si el pago es en efectivo, utiliza la URL del controlador PedidoController
           response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
@@ -234,6 +237,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
             setPedidoConfirmado(true);
             clearCart();
           }
+
+
+
         } else {
           // Si el pago es con Mercado Pago, utiliza la URL del controlador MercadoPagoDatosController
           // y envía los datos del pedido junto con la preferencia de pago          
@@ -361,16 +367,20 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   };
 
   const handleEsDelivery = (esDelivery: boolean) => {
+    setEsDelivery(esDelivery);
     if (!esDelivery) {
-      // Si se selecciona "Retiro en el Local", establece el domicilio en "Retiro en el Local"
-      setUsuario((prevUsuario) => ({
-        ...prevUsuario!,
-        domicilio: {
-          calle: "Retiro en el Local",
-          numero: 0,
-          localidad: "",
-        },
-      }));
+      setEsEfectivo(true); // Cambia esEfectivo a true cuando se selecciona Retiro en Local
+      if (user) {
+        // Si se selecciona "Retiro en el Local", establece el domicilio en "Retiro en el Local"
+        setUsuario((prevUsuario) => ({
+          ...prevUsuario!,
+          domicilio: {
+            calle: "Retiro en el Local",
+            numero: NaN,
+            localidad: "",
+          },
+        }));
+      }
     } else {
       // Si es Delivery y el usuario está logueado, establece el domicilio del usuario
       if (user) {
@@ -378,11 +388,11 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           ...prevUsuario!,
           domicilio: {
             calle: prevUsuario?.domicilio.calle || "", // Usa el domicilio anterior si existe
-            numero: prevUsuario?.domicilio.numero || 0,
+            numero: prevUsuario?.domicilio.numero || NaN,
             localidad: prevUsuario?.domicilio.localidad || "",
           },
-        }));
-      }
+        }));       
+      }     
     }
   };
 
@@ -461,9 +471,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       <div>
         {/* Modal del ticket */}
         <Modal show={showTicketModal} onHide={() => setShowTicketModal(false)}>
-          {/* <Modal.Header closeButton>
-            <Modal.Title>Ticket del Pedido</Modal.Title>
-          </Modal.Header> */}
           <Modal.Body>
             {/* Aquí renderizamos el componente GenerarTicket */}
             {pedidoConfirmado && (

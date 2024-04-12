@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, ReactNode, useEffect } from "react";
+import React, { createContext, useReducer, ReactNode, useEffect, useState } from "react";
 import { IDetallePedido } from "../../interface/IDetallePedido";
 
 export interface CartItem {
@@ -8,7 +8,7 @@ export interface CartItem {
   price: number;
   image: string;
   title: string;
-  DetallePedido: IDetallePedido;
+  detallePedido: IDetallePedido;
 }
 
 type CartAction =
@@ -16,7 +16,7 @@ type CartAction =
   | { type: "REMOVE_FROM_CART"; payload: number }
   | { type: "INCREMENT_ITEM"; payload: number }
   | { type: "DECREMENT_ITEM"; payload: number }
-  | { type: "CLEAR_CART" };
+  | { type: "CLEAR_CART" };  
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -24,18 +24,18 @@ interface CartContextType {
   removeFromCart: (itemId: number) => void;
   incrementItem: (itemId: number) => void;
   decrementItem: (itemId: number) => void;
-  clearCart: () => void;
+  clearCart: () => void;  
 }
 
 const initialCartState: CartItem[] = [];
 
 export const CartContext = createContext<CartContextType>({
   cartItems: initialCartState,
-  addToCart: () => {},
-  removeFromCart: () => {},
-  incrementItem: () => {},
-  decrementItem: () => {},
-  clearCart: () => {},
+  addToCart: () => { },
+  removeFromCart: () => { },
+  incrementItem: () => { },
+  decrementItem: () => { },
+  clearCart: () => { },  
 });
 
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
@@ -67,6 +67,7 @@ const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
       );
     case "CLEAR_CART":
       return [];
+    
     default:
       return state;
   }
@@ -132,7 +133,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         removeFromCart,
         incrementItem,
         decrementItem,
-        clearCart,
+        clearCart,      
       }}
     >
       {children}
