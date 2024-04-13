@@ -41,7 +41,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
       setNumero(domicilio.numero ? domicilio.numero.toString() : '');
       setLocalidad(domicilio.localidad || '');
     }
-  }, [domicilio]); 
+  }, [domicilio]);
 
   // Función para manejar el clic en el botón de Delivery
   const handleClickDelivery = () => {
@@ -49,7 +49,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     handleEsEfectivo(false);
     if (usuario && usuario?.domicilio) {
       setNuevoDomicilio(usuario?.domicilio);
-    } else {      
+    } else {
       setModalAbierto(true);
     }
   };
@@ -87,13 +87,14 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
         numero: parseInt(numero),
         localidad: localidad
       };
-
+  
       try {
         const domicilioUsuario = await obtenerDomicilioUsuario();
+  
         if (domicilioUsuario) {
           // Si el usuario ya tiene una dirección, realizamos una solicitud PUT para actualizarla
-          await axios.put(`${API_URL}/domicilio/${domicilioUsuario.id}`, nuevaDireccion);
-        } else {
+          await axios.put(`${API_URL}/usuario/${usuario?.id}/domicilio`, nuevaDireccion);
+        }  else {
           // Si el usuario no tiene una dirección, realizamos una solicitud POST para crearla
           await axios.post(`${API_URL}/domicilio`, { ...nuevaDireccion, usuario: usuario });
         }
@@ -107,12 +108,18 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
 
   const obtenerDomicilioUsuario = async () => {
     try {
-      const response = await axios.get(`${API_URL}/domicilio/usuario/${usuario?.id}`);
+      const response = await axios.get(`${API_URL}usuario/${usuario?.id}/domicilio`);
+      console.log("aca muestra lo que trae de usuario" + response);
+
       return response.data;
     } catch (error) {
       console.error('Error al obtener el domicilio del usuario:', error);
       return null;
     }
+  };
+
+  const handleClickDireccion = () => {
+    setModalAbierto(true);
   };
 
   // Calcular total del pedido teniendo en cuenta descuentos y costos adicionales
@@ -173,21 +180,18 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
               <h1 className="display-6">Detalle del Pedido</h1>
               <p className="lead mb-0">
                 <strong>Dirección:</strong>
-                {esDelivery ? (
-                  // Si es delivery, mostrar la dirección habitual del usuario o un mensaje si no está disponible
-                  domicilio ? (
-                    <p>
-                      {usuario?.domicilio.calle}, {usuario?.domicilio.numero},{" "}
-                      {usuario?.domicilio.localidad}
-                    </p>
-                  ) : (
-                    <Modal to="/mi-direccion" className="btn btn-success" style ={{marginLeft: "10px"}} onClick={() => setModalAbierto(true)}>
-                       Agregar Dirección
-                    </Modal>
-                  )
+                {domicilio ? (
+                  <span style={{marginLeft: "10px"}}>
+                    {domicilio.calle}, {domicilio.numero},{" "}
+                    {domicilio.localidad}
+                    <button className="btn btn-success ms-2" onClick={handleClickDireccion}>
+                      Corregir Dirección
+                    </button>
+                  </span>
                 ) : (
-                  // Si no es delivery, mostrar la nueva dirección o un mensaje de "Retiro en el Local"
-                  <p>{nuevoDomicilio?.calle}</p>
+                  <Modal className="btn btn-success" onClick={handleClickDireccion}>
+                    Agregar Dirección
+                  </Modal>
                 )}
               </p>
               <div className="mb-0">
@@ -228,7 +232,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
             <div className="d-flex flex-column align-items-center">
               <h5>Método de Pago</h5>
               <div className="d-flex justify-content-center">
-                
+
                 <div className="mb-0">
                   <input
                     type="radio"
@@ -291,18 +295,11 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                     <label htmlFor="localidad" className="form-label">Localidad</label>
                     <input type="text" className="form-control" id="localidad" value={localidad} onChange={(e) => setLocalidad(e.target.value)} />
                   </div>
-                  <button type="submit" className="btn btn-primary">Guardar Dirección</button>
+                  <button type="submit" className="btn btn-primary" onClick={handleCloseModal}>Guardar Dirección</button>
                 </form>
               </div>
             </div>
           </div>
-        </div>
-      )}
-       {!modalAbierto && (
-        <div className="card-footer">
-          <Modal to="/mi-direccion" className="btn btn-primary">
-            Corregir Dirección
-          </Modal>
         </div>
       )}
     </div>

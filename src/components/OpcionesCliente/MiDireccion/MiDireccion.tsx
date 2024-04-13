@@ -4,8 +4,8 @@ import { Container, Button } from 'react-bootstrap';
 import { IDomicilio } from '../../../interface/IDomicilio';
 import EditDireccionModal from './EditDireccionModal';
 import AddDireccionModal from './AddDireccionModal';
-import { handleRequest } from '../../FuncionRequest/FuncionRequest';
 import { Link } from 'react-router-dom';
+import { IUsuario } from '../../../interface/IUsuario';
 
 const Direccion: FC = () => {
     // Estados para controlar la dirección, modales y dirección seleccionada
@@ -13,12 +13,13 @@ const Direccion: FC = () => {
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
     const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
+    const [usuario, setUsuario] = useState<IUsuario | null>(null);
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
         const fetchDomicilio = async () => {
             try {
-                const response = await axios.get(API_URL);
+                const response = await axios.get(`${API_URL}domicilio/${usuario?.domicilio.id}`);
                 setDomicilio(response.data);
             } catch (error) {
                 console.log(error);
@@ -31,8 +32,8 @@ const Direccion: FC = () => {
     // Función para manejar la edición de la dirección
     const handleDomicilioEdit = async (domicilio: IDomicilio) => {
         try {
-            const updatedDomicilio = await handleRequest('PUT', API_URL, domicilio);
-            setDomicilio(updatedDomicilio);
+            const updatedDomicilio = await axios.put(`${API_URL}domicilio/${domicilio.id}`, domicilio);
+            setDomicilio(updatedDomicilio.data);
         } catch (error) {
             console.log(error);
         }
@@ -41,13 +42,14 @@ const Direccion: FC = () => {
     // Función para manejar la adición de una dirección
     const handleDomicilioAdd = async (domicilio: IDomicilio) => {
         try {
-            const newDomicilio = await handleRequest('POST', API_URL, domicilio);
-            setDomicilio(newDomicilio);
+            const newDomicilio = await axios.post(`${API_URL}domicilio`, domicilio);
+            setDomicilio(newDomicilio.data);
             setAddModalShow(false);
         } catch (error) {
             console.log(error);
         }
     };
+    
 
     // Funciones para controlar la apertura y cierre del modal de edición
     const handleEditModalOpen = () => {

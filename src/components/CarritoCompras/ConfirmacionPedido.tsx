@@ -14,7 +14,6 @@ import GenerarTicket from "../Ticket/GenerarTicket";
 import { IMercadoPagoDatos } from "../../interface/IMercadoPagoDatos";
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { useNavigate } from "react-router-dom";
-// import { IFactura } from "../../interface/IFactura";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -368,33 +367,36 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
   const handleEsDelivery = (esDelivery: boolean) => {
     setEsDelivery(esDelivery);
-    if (!esDelivery) {
+    if (esDelivery && user && isAuthenticated) {
+      // Si es Delivery y el usuario está autenticado, buscar y establecer el domicilio del usuario
+      buscarDomicilioUsuario();
+      setEsEfectivo(true); // Cambia esEfectivo a true cuando se selecciona Delivery
+    } else if (!esDelivery) {
+      // Si es Retiro en el Local, establecer el domicilio como "Retiro en el Local"
+      setUsuario((prevUsuario) => ({
+        ...prevUsuario!,
+        domicilio: {
+          calle: "Retiro en el Local",
+          numero: NaN,
+          localidad: "",
+        },
+      }));
       setEsEfectivo(true); // Cambia esEfectivo a true cuando se selecciona Retiro en Local
-      if (user) {
-        // Si se selecciona "Retiro en el Local", establece el domicilio en "Retiro en el Local"
-        setUsuario((prevUsuario) => ({
-          ...prevUsuario!,
-          domicilio: {
-            calle: "Retiro en el Local",
-            numero: NaN,
-            localidad: "",
-          },
-        }));
-      }
-    } else {
-      // Si es Delivery y el usuario está logueado, establece el domicilio del usuario
-      if (user) {
-        setUsuario((prevUsuario) => ({
-          ...prevUsuario!,
-          domicilio: {
-            calle: prevUsuario?.domicilio.calle || "", // Usa el domicilio anterior si existe
-            numero: prevUsuario?.domicilio.numero || NaN,
-            localidad: prevUsuario?.domicilio.localidad || "",
-          },
-        }));       
-      }     
     }
   };
+  
+  const buscarDomicilioUsuario = async () => {
+    try {
+      const response = await axios.get(`${API_URL}usuario/${usuario?.id}/domicilio`);
+      const domicilioUsuario = response.data;
+      setUsuario((prevUsuario) => ({
+        ...prevUsuario!,
+        domicilio: domicilioUsuario,
+      }));
+    } catch (error) {
+      console.error("Error al obtener el domicilio del usuario:", error);
+    }
+  };  
 
   return (
     <div style={{ marginTop: "90px" }}>

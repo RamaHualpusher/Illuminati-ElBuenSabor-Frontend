@@ -15,7 +15,7 @@ interface GenerarFacturaModalProps {
 }
 
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, closeModal, show }) => {
-  const [showCreditoModal, setShowCreditoModal] = useState(false);
+  // const [showCreditoModal, setShowCreditoModal] = useState(false);
   const [selectedFactura, setSelectedFactura] = useState<IFactura | null>();
   const [userInfo, setUserInfo] = useState<any>(null); // IUsuario acordate
   const API_URL = process.env.REACT_APP_API_URL || "";
@@ -39,11 +39,11 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
     }
   };
 
-  const handleCredito = () => {
-    if (selectedFactura && window.confirm("¿Estás seguro de generar la Nota de Crédito?")) {
-      setShowCreditoModal(true);
-    }
-  };
+  // const handleCredito = () => {
+  //   if (selectedFactura && window.confirm("¿Estás seguro de generar la Nota de Crédito?")) {
+  //     setShowCreditoModal(true);
+  //   }
+  // };
 
   const exportToExcel = (factura: IFactura) => {
     const dataToExport = factura?.detalleFactura || [];
@@ -190,9 +190,9 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                         <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => generatePDF()}>
                           Descargar PDF
                         </Button>
-                        <Button variant="secondary" onClick={handleCredito}>
+                        {/* <Button variant="secondary" onClick={handleCredito}>
                           Nota de Crédito
-                        </Button>
+                        </Button> */}
                         <Button variant="success" style={{ marginLeft: "10px" }} onClick={() => exportToExcel(selectedFactura)}>
                           Exportar a Excel
                         </Button>
