@@ -57,9 +57,7 @@ const Productos: React.FC = () => {
     }
   }, [selectedRubro, productosComplete]);
 
-  if (!productos.length || !rubros.length) {
-    return <p>Cargando...</p>;
-  }
+  
 
   // Agregar un producto
   const handleProductoAdd = async (producto: IProducto) => {
@@ -175,7 +173,6 @@ const Productos: React.FC = () => {
   return (
     <Container fluid>
       <Row>
-        <div>
           <Form.Group controlId="id">
             <select
               className="form-select"
@@ -192,9 +189,6 @@ const Productos: React.FC = () => {
               ))}
             </select>
           </Form.Group>
-          {selectedRubro && filteredProductos.length === 0 && (
-            <p>No hay productos disponibles con el rubro seleccionado.</p>
-          )}
           <GenericTable
             data={filteredProductos}
             columns={columns}
@@ -206,7 +200,6 @@ const Productos: React.FC = () => {
             }}
             onDelete={(producto) => handleDeleteConfirmation(producto)}
           />
-        </div>
       </Row>
       <AddProductoModal
         show={addModalShow}

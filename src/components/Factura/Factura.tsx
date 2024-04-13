@@ -10,7 +10,7 @@ import { IProductoDto } from "../../interface/IProducto";
 import axios from "axios";
 
 const Factura = () => {
-  const [facturas, setFacturas] = useState<IPedidoDto[]>();
+  const [facturas, setFacturas] = useState<IPedidoDto[]>([]);
   const [selectedPedido, setSelectedPedido] = useState<IPedidoDto>();
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [showModal, setShowModal] = useState(false);
@@ -32,7 +32,7 @@ const Factura = () => {
     fetchData();
   }, []);
 
-  if (!facturas || facturas === null) return <Spinner />;
+  
 
   // Define las columnas para la tabla de facturas
   const columns: IColumn<IPedidoDto>[] = [

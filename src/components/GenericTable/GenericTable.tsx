@@ -1,7 +1,8 @@
 import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
-import { Button, Table, FormControl, Container, Row, Col } from 'react-bootstrap';
+import { Button, Table, FormControl, Container, Row, Col, Spinner } from 'react-bootstrap';
 import { ITableProps, IColumn } from '../../interface/ICamposTablaGenerica';
 import DatePicker from 'react-datepicker';
+import NoHayElementosTablaGenerica from '../Page404/NoHayElementosTablaGenerica';
 
 function GenericTable<T>({
   data,
@@ -36,6 +37,7 @@ function GenericTable<T>({
         setFilteredData(
           data.filter((item) => defaultSearch(item, searchText, columns))
         );
+        setIsLoading(false); // Si no hay customSearch, la carga de datos se completa aquí
       }
     };
 
@@ -143,46 +145,63 @@ function GenericTable<T>({
           
         </Col>
       </Row>
-      <Table responsive className="table table-bordered mt-2">
-        <thead>
-          <tr>
-            {columns.map((column, index) => (
-              <th key={index} style={{ width: `${column.width ? column.width * 100 / 12 : ""}%` }}>
-                {column.title}
-              </th>
-            ))}
-            {(actions.update || actions.delete || actions.view) && <th>Acciones</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((item, index) => (
-            <tr key={index}>
-              {columns.map((column, key) => (
-                <td key={key}>
-                  {column.render ? column.render(item) : String(item[column.field])}
-                </td>
-              ))}
-              <td>
-                {actions.update && (
-                  <Button variant="primary" className='mx-2' onClick={() => onUpdate!(item)}>
-                    <i className="bi bi-pencil-square"></i>
-                  </Button>
-                )}
-                {actions.delete && (
-                  <Button variant="danger" className='mx-2' onClick={() => onDelete!(item)}>
-                    <i className="bi bi-trash"></i>
-                  </Button>
-                )}
-                {actions.view && (
-                  <Button variant="info" className='mx-2' onClick={() => onView!(item)}>
-                    <i className="bi bi-eye"></i>
-                  </Button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      {isLoading ? (
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      ) : (
+        <>
+          {/* Mostrar componente NoHayElementosTablaGenerica si no hay elementos */}
+          {!isLoading && filteredData.length === 0 && (
+            <NoHayElementosTablaGenerica onReload={() => window.location.reload()} />
+          )}
+          {/* Mostrar tabla si no está cargando y hay elementos para mostrar */}
+          {!isLoading && filteredData.length > 0 && (
+            <Table responsive className="table table-bordered mt-2">
+              <thead>
+                <tr>
+                  {columns.map((column, index) => (
+                    <th key={index} style={{ width: `${column.width ? column.width * 100 / 12 : ""}%` }}>
+                      {column.title}
+                    </th>
+                  ))}
+                  {(actions.update || actions.delete || actions.view) && <th>Acciones</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.map((item, index) => (
+                  <tr key={index}>
+                    {columns.map((column, key) => (
+                      <td key={key}>
+                        {column.render ? column.render(item) : String(item[column.field])}
+                      </td>
+                    ))}
+                    <td>
+                      {actions.update && (
+                        <Button variant="primary" className='mx-2' onClick={() => onUpdate!(item)}>
+                          <i className="bi bi-pencil-square"></i>
+                        </Button>
+                      )}
+                      {actions.delete && (
+                        <Button variant="danger" className='mx-2' onClick={() => onDelete!(item)}>
+                          <i className="bi bi-trash"></i>
+                        </Button>
+                      )}
+                      {actions.view && (
+                        <Button variant="info" className='mx-2' onClick={() => onView!(item)}>
+                          <i className="bi bi-eye"></i>
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </>
+
+          )}
+      
     </Container>
   );
 }
