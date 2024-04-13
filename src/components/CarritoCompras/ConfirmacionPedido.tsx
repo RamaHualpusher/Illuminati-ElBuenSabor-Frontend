@@ -222,10 +222,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       try {
         let response;
         let responsePedidoCompleto;
-
-
-
-
         //creo que esto no deberia estar porque si se crea la preferencia, es porque le pago va a ser con mercado pago
         if (esEfectivo) {
           // Si el pago es en efectivo, utiliza la URL del controlador PedidoController
@@ -236,9 +232,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
             setPedidoConfirmado(true);
             clearCart();
           }
-
-
-
         } else {
           // Si el pago es con Mercado Pago, utiliza la URL del controlador MercadoPagoDatosController
           // y envía los datos del pedido junto con la preferencia de pago          
