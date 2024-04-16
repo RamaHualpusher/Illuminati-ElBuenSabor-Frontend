@@ -154,35 +154,31 @@ const Clientes = () => {
     return (
         <div>
             <Container fluid>
-                <Col sm={3} className="mb-3">
-                    <Form.Select
-                        value={filterOption}
-                        onChange={(e) => setFilterOption(e.target.value)}
-                    >
-                        <option value="all">Mostrar Todos</option>
-                        <option value="active">Mostrar solo Activos</option>
-                        <option value="inactive">Mostrar solo Inactivos</option>
-                    </Form.Select>
-                </Col>
                 <Row className="mt-3">
-                    <Col>
-                        {clientes && clientes.length > 0 ? (
-                            <GenericTable
-                                data={clientes.filter(cliente => {
-                                    return (
-                                        filterOption === "all" ||
-                                        (filterOption === "active" && cliente.activo) ||
-                                        (filterOption === "inactive" && !cliente.activo)
-                                    );
-                                })}
-                                columns={columns}
-                                actions={actions}
-                                onUpdate={handleEditModalOpen}
-                                onDelete={handleClienteDelete}
-                            />
-                        ) : (
-                            <p>No hay datos de clientes disponibles.</p>
-                        )}
+                    <Col sm={3} className="mb-3">
+                        <Form.Select
+                            value={filterOption}
+                            onChange={(e) => setFilterOption(e.target.value)}
+                        >
+                            <option value="all">Mostrar Todos</option>
+                            <option value="active">Mostrar solo Activos</option>
+                            <option value="inactive">Mostrar solo Inactivos</option>
+                        </Form.Select>
+                    </Col>
+                    <Col sm={12}>
+                        <GenericTable
+                            data={clientes.filter(cliente => {
+                                return (
+                                    filterOption === "all" ||
+                                    (filterOption === "active" && cliente.activo) ||
+                                    (filterOption === "inactive" && !cliente.activo)
+                                );
+                            })}
+                            columns={columns}
+                            actions={actions}
+                            onUpdate={handleEditModalOpen}
+                            onDelete={handleClienteDelete}
+                        />
                     </Col>
                 </Row>
                 <EditClienteModal
