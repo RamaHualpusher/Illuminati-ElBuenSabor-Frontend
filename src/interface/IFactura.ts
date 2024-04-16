@@ -1,11 +1,7 @@
 import { IBase } from "./IBase";
-import { IDetalleFactura } from "./IDetalleFactura";
-import { IUsuario } from "./IUsuario";
+import { IPedidoDto } from "./IPedido";
 
-export interface IFactura extends IBase {  
-  fechaPedido: Date;
-  esEfectivo: boolean;
-  total: number;
-  usuario: IUsuario;
-  detalleFactura: IDetalleFactura[];
+export interface IFactura extends IBase {
+  fechaFactura: Date;
+  pedido: IPedidoDto;
 }

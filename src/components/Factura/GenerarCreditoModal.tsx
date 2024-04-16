@@ -102,7 +102,8 @@ const GenerarCreditoModal: React.FC<GenerarCreditoModalProps> = ({
                         <div className="details-container">
                             <h2>DETALLES DE FACTURA</h2>
                             <p>Número de factura: {getOrDefault(factura?.id, "")}</p>
-                            <p>Fecha Factura: {getOrDefault(factura?.fechaPedido?.toLocaleString(), "")}</p>
+                            <p>Fecha Factura: {getOrDefault(factura?.fechaPedido?.toLocaleString(), "")}</p> 
+                             {/* aca hay que agregar a fechaFactura en vez de fechaPedido */}
 
                             {fechaAnulacion && (
                                 <p>Fecha Anulación: {fechaAnulacion.toLocaleString()}</p>

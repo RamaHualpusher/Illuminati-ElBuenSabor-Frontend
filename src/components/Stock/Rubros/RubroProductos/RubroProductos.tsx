@@ -23,10 +23,6 @@ const RubroProductos: FC<RubroProductosProps> = ({ categorias, rubros, onRubroCh
     create: true,
     update: true,
   };
-  
-  if (!rubros || !rubros.length) {
-    return <p>Cargando...</p>;
-  }
 
   const handleRubroAdd = async (rubro: IRubroNew) => {
     try {

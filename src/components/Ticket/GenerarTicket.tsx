@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Container, Modal, Button, Table } from "react-bootstrap";
 import { IPedidoDto } from "../../interface/IPedido";
-import { IDetallePedidoDto } from "../../interface/IDetallePedido";
+import { IDetallePedido } from "../../interface/IDetallePedido";
 import { useNavigate } from "react-router-dom";
 import { IFactura } from "../../interface/IFactura";
-import { IDetalleFactura } from "../../interface/IDetalleFactura";
 import SendEmail from "../SendEmail/SendEmail";
 import axios from "axios";
 
@@ -24,60 +23,47 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
     const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>(null);
     const navigate = useNavigate();
     const API_URL = process.env.REACT_APP_API_URL || "";
-    const [facturaGenerada, setFacturaGenerada] = useState<IFactura | null>(null);
 
     useEffect(() => {
         setSelectedPedido(pedido);
-    }, [pedido]);   
-    
-    const convertirPedidoAFactura = (pedidoCompleto: IPedidoDto): IFactura => {
-        const detalleFactura: IDetalleFactura[] = pedidoCompleto.detallesPedidos.map((detallePedido) => {
-          const subtotal = detallePedido.cantidad * detallePedido.producto.precio;
-          return {
-            cantidad: detallePedido.cantidad,
-            subtotal: subtotal,
-            productos: [
-              {
-                nombre: detallePedido.producto.nombre,
-                precio: detallePedido.producto.precio,
-              },
-            ],
-          };
-        });
-    
-        const factura: IFactura = {
-          activo: true,
-          fechaPedido: pedidoCompleto.fechaPedido,
-          esEfectivo: pedidoCompleto.esEfectivo,
-          total: pedidoCompleto.detallesPedidos.reduce(
-            (total, detalle) => total + detalle.cantidad * detalle.producto.precio,
-            0
-          ),
-          usuario: pedidoCompleto.usuario,
-          detalleFactura: detalleFactura,
-        };
-        
-        setFacturaGenerada(factura);
-        return factura;
-      };
-    
-      const generarFactura = async (selectedPedido: IPedidoDto | null) => {
+    }, [pedido]); 
+
+    const generarFactura = async (selectedPedido: IPedidoDto | null) => {
         if (selectedPedido) {
-          try {
-            const factura = convertirPedidoAFactura(selectedPedido);
-            const response = await axios.post(`${API_URL}factura/guardar`, factura);
-            if (response.data) {
-              console.log('Factura guardada en el backend:', response.data);
-              <SendEmail
-                factura={factura} />
-              return factura;
+            try {
+                // Obtener todas las facturas desde el backend
+                const response = await axios.get(`${API_URL}factura`);
+                const facturas: IFactura[] = response.data;
+    
+                // Verificar si alguna factura tiene el mismo ID de pedido que estamos tratando de generar
+                const facturaExistente = facturas.find(factura => factura.pedido.id === selectedPedido.id);
+    
+                if (facturaExistente) {
+                    alert('¡Esta factura ya ha sido generada previamente!');
+                    return null;
+                } else {
+                    // Aquí conviertes el pedido a un objeto de factura manualmente
+                    const factura: IFactura = {
+                        activo: true,
+                        fechaFactura: new Date(),
+                        pedido: selectedPedido,
+                    };
+    
+                    // Luego, realizas el proceso de envío de la factura
+                    const response = await axios.post(`${API_URL}factura`, factura);
+                    if (response.data) {
+                        console.log('Factura guardada en el backend:', response.data);
+                        alert('¡La factura se generó correctamente!');
+                        return factura;
+                    }
+                    <SendEmail factura={factura} onCancel={() => {}} />
+                }
+            } catch (error) {
+                console.error('Error al generar la factura:', error);
+                return null;
             }
-          } catch (error) {
-            console.error('Error al generar la factura:', error);
-            return null;
-          }
         }
-      };
+    };    
 
     const getOrDefault = (value: any, defaultValue: any) => {
         return value !== null && value !== undefined ? value : defaultValue;
@@ -86,24 +72,27 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
     const calcularTotalPedido = (pedido: IPedidoDto) => {
         let total = 0;
 
-        pedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+        pedido.detallesPedidos.forEach((detalle: IDetallePedido) => {
             total += detalle.producto.precio * detalle.cantidad;
         });
         return total;
     };
 
-    const handleGenerarFactura = () => {
+    const handleGenerarFactura = async (selectedPedido: IPedidoDto | null) => {        
         if (pedido) {
-            if (pedido.factura == null || undefined) {
-                const confirmarGenerarFactura = window.confirm("¿Está seguro de que desea generar la factura?");
-                if (confirmarGenerarFactura && generarFactura) {
-                    generarFactura(selectedPedido);
+            const confirmarGenerarFactura = window.confirm("¿Está seguro de que desea generar la factura?");
+            if (confirmarGenerarFactura) {
+                if (selectedPedido) {
+                    await generarFactura(selectedPedido);
+                    closeModal();
+                } else {
+                    console.error("Selected pedido es null o undefined");
                 }
-            } else {
-                alert("Este pedido ya ha sido facturado.");
             }
+        } else {
+            alert("Este pedido ya ha sido facturado.");
         }
-    };    
+    };
 
     const calcularDescuento = (selectedPedido: IPedidoDto) => {
         return selectedPedido.esEfectivo ? 0.1 : 0;
@@ -197,27 +186,24 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                                         </p>
                                     </div>
                                 </div>
-                                <div className="text-center">
-                                    <Button className="btn btn-primary me-2" onClick={handleGenerarFactura}>
-                                        Generar Factura
-                                    </Button>
-                                    {/* Botón para abrir modal de factura */}
-                                    <Button className="btn btn-primary me-2" onClick={handleMisPedidos}>
-                                        Ir a Mis Pedidos
-                                    </Button>
-                                    {/* Botón para abrir modal de edición */}
-                                    {/* <Button className="btn btn-primary me-2" onClick={() => setShowEditModal(true)}>
-                                        Editar Pedido
-                                    </Button> */}
-                                    {/* Botón para cerrar el modal */}
-                                    <Button className="btn btn-secondary" onClick={onCancel}>
-                                        Cerrar
-                                    </Button>
-                                </div>
+
                             </div>
                         </Container>
                     )}
                 </Modal.Body>
+                <Modal.Footer className="d-flex justify-content-center">
+                    <button className="btn btn-primary me-2" onClick={() => handleGenerarFactura(selectedPedido)}>
+                        Generar Factura
+                    </button>
+                    {/* Botón para abrir modal de factura */}
+                    <button className="btn btn-primary me-2" onClick={handleMisPedidos}>
+                        Ir a Mis Pedidos
+                    </button>
+                    {/* Botón para cerrar el modal */}
+                    <button className="btn btn-secondary" onClick={onCancel}>
+                        Cerrar
+                    </button>
+                </Modal.Footer>
             </Modal>
 
             {/* Modal de edición */}

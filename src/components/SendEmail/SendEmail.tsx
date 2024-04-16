@@ -5,6 +5,7 @@ import { IFactura } from "../../interface/IFactura";
 
 interface SendEmailProps {
  factura: IFactura;
+ onCancel: () => void;
 }
 
 const SendEmail: React.FC<SendEmailProps> = ({ factura }) => {
@@ -19,11 +20,11 @@ const SendEmail: React.FC<SendEmailProps> = ({ factura }) => {
             "Gmail_API", // Nombre del servicio de email
             "template_id", // ID de la plantilla de email (si estás utilizando una)
             {
-              to_email: factura.usuario.email, // Dirección de correo electrónico del destinatario
-              subject: `Factura a nombre de -${factura.usuario.nombre}-${factura.usuario.apellido}.pdf`, // Asunto del correo electrónico
+              to_email: factura.pedido.usuario.email, // Dirección de correo electrónico del destinatario
+              subject: `Factura a nombre de -${factura.pedido.usuario.nombre}-${factura.pedido.usuario.apellido}.pdf`, // Asunto del correo electrónico
               message: `Gracias por utilizar nuestros servicios, te enviamos la factura del pedido.`, // Cuerpo del correo electrónico
               attachments: [{
-                fileName: `Factura a nombre de -${factura.usuario.nombre}-${factura.usuario.apellido}.pdf`, // Nombre del archivo adjunto
+                fileName: `Factura a nombre de -${factura.pedido.usuario.nombre}-${factura.pedido.usuario.apellido}.pdf`, // Nombre del archivo adjunto
                 content: facturaBuffer, // Contenido del archivo adjunto (el PDF de la factura)
                 contentType: 'application/pdf', // Tipo de contenido del archivo adjunto
               }]

@@ -4,11 +4,13 @@ import GenericTable from '../GenericTable/GenericTable';
 import { IColumn } from '../../interface/ICamposTablaGenerica';
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 import axios from 'axios';
-import { IDetallePedidoDto } from '../../interface/IDetallePedido';
+import { IDetallePedido } from '../../interface/IDetallePedido';
 import { IProducto } from '../../interface/IProducto';
 import { IIngredientes } from '../../interface/IIngredientes';
 import { IPedidoDto } from '../../interface/IPedido';
 import GenerarTicket from '../Ticket/GenerarTicket';
+import NoHayPedidos from '../Page404/NoHayPedidos';
+import { IFactura } from '../../interface/IFactura';
 
 const Movimientos = () => {
   const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);
@@ -41,7 +43,12 @@ const Movimientos = () => {
     } catch (error) {
       console.error('Error al generar la factura:', error);
     }
-  };  
+  };
+
+  // Función para cerrar el modal y actualizar el estado showPedidoModal
+  const handleClosePedidoModal = () => {
+    setShowPedidoModal(false);
+  };
 
   const columns: IColumn<IPedidoDto>[] = [
     { title: "Fecha de Pedido", field: "fechaPedido", width: 2 },
@@ -51,7 +58,6 @@ const Movimientos = () => {
       field: "usuario",
       render: (pedido: IPedidoDto) => {
         const usuario = pedido.usuario;
-        console.log("Usuario desde la carga de columnas: " + usuario);
         return (
           <span>
             {usuario ? `${usuario.apellido} ${usuario.nombre}` : 'Usuario no disponible'}
@@ -83,7 +89,7 @@ const Movimientos = () => {
       render: (pedido: IPedidoDto) => {
         return <div>{calcularGananciaNeta(pedido)}</div>;
       },
-    },    
+    },
     {
       title: "Ver Pedido",
       field: "fechaPedido",
@@ -92,7 +98,6 @@ const Movimientos = () => {
       ),
       width: 2,
     },
-
   ];
 
   const calcularGananciaNeta = (pedido: IPedidoDto) => {
@@ -114,7 +119,7 @@ const Movimientos = () => {
       return totalPedido;
     }
 
-    pedidos.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+    pedidos.detallesPedidos.forEach((detalle: IDetallePedido) => {
       if (!detalle || !detalle.producto || !detalle.producto.precio || !detalle.cantidad) {
         return;
       }
@@ -129,7 +134,7 @@ const Movimientos = () => {
     let costoTotalIngredientes = 0;
 
     if (pedido && pedido.detallesPedidos) {
-      pedido.detallesPedidos.forEach((detalle: IDetallePedidoDto) => {
+      pedido.detallesPedidos.forEach((detalle: IDetallePedido) => {
         const producto: IProducto = detalle.producto;
         if (producto && producto.productosIngredientes && producto.productosIngredientes.length > 0) {
           producto.productosIngredientes.forEach((pi) => {
@@ -150,6 +155,8 @@ const Movimientos = () => {
     exportTableDataToExcel(dataToExport, filename);
   };
 
+  
+
   return (
     <div>
       <Container fluid>
@@ -168,17 +175,15 @@ const Movimientos = () => {
                 showDate={true}
               />
             ) : (
-              <p>No hay datos de pedidos disponibles.</p>
+              NoHayPedidos
             )}
           </Col>
-        </Row>
-        <Modal show={showPedidoModal} onHide={() => setShowPedidoModal(false)}>
+        </Row>        
           <GenerarTicket
             pedido={selectedPedido}
-            closeModal={() => setShowPedidoModal(false)}
-            show={showPedidoModal}
-          />
-        </Modal>
+            closeModal={handleClosePedidoModal} // Pasar la función de manejo de estado adicional
+            show={showPedidoModal}            
+          />        
         <Button variant="success" onClick={() => exportDataToExcel()}>Exportar a Excel</Button>
       </Container>
     </div>

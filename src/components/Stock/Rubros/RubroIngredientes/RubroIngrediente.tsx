@@ -25,11 +25,6 @@ const RubroIngrediente: FC<RubroIngredienteProps> = ({ categorias, rubros, onRub
     create: true,
     update: true
   };
-
-  
-  if (!rubros || !rubros.length) {
-    return <p>Cargando...</p>;
-  }
   
   // Función para manejar la adición de un rubro
   const handleRubroAdd = async (rubro: IRubroNew) => {

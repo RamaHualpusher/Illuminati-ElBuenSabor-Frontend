@@ -210,24 +210,20 @@ const Empleados = () => {
                         </Form.Select>
                     </Col>
                     <Col sm={12}>
-                        {empleados && empleados.length > 0 ? (
-                            <GenericTable
-                                data={empleados.filter(empleado => {
-                                    return (
-                                        filterOption === "all" ||
-                                        (filterOption === "active" && empleado.activo) ||
-                                        (filterOption === "inactive" && !empleado.activo)
-                                    );
-                                })}
-                                columns={columns}
-                                actions={actions}
-                                onAdd={handleAddModalOpen}
-                                onUpdate={handleEditModalOpen}
-                                onDelete={handleEmpleadoDelete}
-                            />
-                        ) : (
-                            <p>No hay datos de empleados disponibles.</p>
-                        )}
+                        <GenericTable
+                            data={empleados.filter(empleado => {
+                                return (
+                                    filterOption === "all" ||
+                                    (filterOption === "active" && empleado.activo) ||
+                                    (filterOption === "inactive" && !empleado.activo)
+                                );
+                            })}
+                            columns={columns}
+                            actions={actions}
+                            onAdd={handleAddModalOpen}
+                            onUpdate={handleEditModalOpen}
+                            onDelete={handleEmpleadoDelete}
+                        />
                     </Col>
                 </Row>
                 <AddEmpleadoModal

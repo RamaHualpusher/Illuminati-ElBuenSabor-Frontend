@@ -6,7 +6,7 @@ import axios from 'axios';
 import { IPedidoDto } from "../../interface/IPedido";
 import { IProducto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
-import { IDetallePedidoDto } from "../../interface/IDetallePedido";
+import { IDetallePedido } from "../../interface/IDetallePedido";
 import { Alert, Button, Modal } from 'react-bootstrap';
 import { useAuth0 } from "@auth0/auth0-react";
 import { IProductoIngrediente } from "../../interface/IProductoIngrediente";
@@ -152,14 +152,17 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       esDelivery !== null &&
       esEfectivo !== null
     ) {
-      const detallesPedido: IDetallePedidoDto[] = [];
+      const detallesPedido: IDetallePedido[] = [];
 
       cartItems.forEach((cartItem) => {
         const productoEncontrado = productos.find(producto => producto.id === cartItem.id);
         if (productoEncontrado) {
-          const detallePedido: IDetallePedidoDto = {
+          const detallePedido: IDetallePedido = {
             cantidad: cartItem.quantity,
-            producto: productoEncontrado
+            subTotal: cartItem.quantity * cartItem.price,
+            producto: productoEncontrado,
+            //aca invente que es 5, tengo que ver cuanto es el maximo
+            maxCantidadProducto: 5,
           };
           detallesPedido.push(detallePedido);
         }
@@ -202,9 +205,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       setPedidoConfirmado(true);
     }
   }, [pedidoConfirmado, pedidoCompleto]); //tambien agregue para factura el", pedidoCompleto"
-
-
-
 
   //usamos este para cuando el pedido pase por mercado pago, tiene que esperar que se concrete el pago
   const verificarPago = async () => {

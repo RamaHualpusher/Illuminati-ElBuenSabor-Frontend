@@ -4,25 +4,26 @@ import GenericTable from "../GenericTable/GenericTable";
 import { Col, Container, Row } from "react-bootstrap";
 import Spinner from "../Spinner/Spinner";
 import GenerarFacturaModal from "./GenerarFacturaModal";
-import { IDetalleFactura } from "../../interface/IDetalleFactura";
 import { IFactura } from "../../interface/IFactura";
 import axios from "axios";
+import { IPedidoDto } from "../../interface/IPedido";
+import { IDetallePedido } from "../../interface/IDetallePedido";
 
 const Factura = () => {
   const [facturas, setFacturas] = useState<IFactura[]>([]);
   const [selectedFactura, setSelectedFactura] = useState<IFactura | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const API_URL = process.env.REACT_APP_API_URL || "";
+  const API_URL = process.env.REACT_APP_API_URL || "";  
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const facturasResponse = await axios.get<IFactura[]>(`${API_URL}factura`);
-        const facturasData = facturasResponse.data.filter((factura: IFactura) => factura.usuario !== null);
+        const facturasData = facturasResponse.data.filter((factura: IFactura) => factura.pedido !== null);
 
         facturasData.sort((a: IFactura, b: IFactura) =>
-          new Date(b.fechaPedido).getDate() - new Date(a.fechaPedido).getDate()
+          new Date(b.pedido.fechaPedido).getDate() - new Date(a.fechaFactura).getDate()
         );
 
         setFacturas(facturasData);
@@ -49,23 +50,29 @@ const Factura = () => {
     },
     {
       title: "Usuario",
-      field: "usuario",
+      field: "pedido",
       width: 3,
       render: (factura: IFactura) => (
-        <span>{factura.usuario ? `${factura.usuario?.apellido} ${factura.usuario?.nombre}` : ""}</span>
+        <span>{factura.pedido.usuario ? `${factura.pedido.usuario.apellido} ${factura.pedido.usuario.nombre}` : ""}</span>
       ),
     },
     {
-      title: "Fecha",
-      field: "fechaPedido",
+      title: "Fecha Pedido",
+      field: "pedido",
       render: (factura: IFactura) => 
-      <span>{factura.fechaPedido}</span>,
+      <span>{factura.pedido.fechaPedido}</span>,
+    },
+    {
+      title: "Fecha Factura",
+      field: "fechaFactura",
+      render: (factura: IFactura) => 
+      <span>{factura.fechaFactura}</span>,
     },
     {
       title: "Total del Pedido",
-      field: "total",
+      field: "pedido",
       render: (factura: IFactura) => (
-        <div>{calcularTotalPedido}</div>
+        <div>{calcularTotalPedido(factura.pedido)}</div>
       ),
       width: 2
     },
@@ -73,12 +80,12 @@ const Factura = () => {
 
 
   // Función para calcular el total del pedido
-  const calcularTotalPedido = (factura: IFactura) => {
+  const calcularTotalPedido = (pedido: IPedidoDto) => {
     let totalPedido = 0;
 
-    if (factura && factura.detalleFactura) {
-      factura.detalleFactura.forEach((detalle: IDetalleFactura) => {
-        totalPedido += detalle.subtotal;
+    if (pedido && pedido.detallesPedidos) {
+      pedido.detallesPedidos.forEach((detalle: IDetallePedido) => {
+        totalPedido += detalle.cantidad * detalle.producto.precio;
       });
     }
 
@@ -90,11 +97,9 @@ const Factura = () => {
     view: true, // Acción de ver detalles
   };
 
-  const onView = (factura: IFactura[]) => {
-    if (factura && factura.length > 0) {
-      setSelectedFactura(factura[0]);
-      setShowModal(true); // Muestra el modal de GenerarFacturaModal
-    }
+  const onView = (factura: IFactura) => {    
+      setSelectedFactura(factura);
+      setShowModal(true); // Muestra el modal de GenerarFacturaModal    
   };
 
   return (
@@ -117,6 +122,7 @@ const Factura = () => {
                   delete: false,
                   view: true,
                 }}
+                onView={onView}
                 showDate={true}                
               />
             ) : (

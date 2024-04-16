@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import { IIngredientes } from '../../../interface/IIngredientes';
@@ -36,7 +35,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
       }
     };
     fetchRubros();
-  }, [API_URL]);
+  }, []);
   
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

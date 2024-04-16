@@ -42,23 +42,28 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   >([]);
 
   useEffect(() => {
-    axios
-      .get<IRubroNew[]>(API_URL + "rubro")
-      .then((response) => {
-        setRubros(response.data);
-      })
-      .catch((error) => {
+    const fetchRubros = async () => {
+      try {
+        const responseData = await axios.get<IRubroNew[]>(`${API_URL}rubro`);
+        const filteredRubros = responseData.data.filter(rubro => !rubro.ingredientOwner && rubro.rubroPadre !== null); // Filtrar rubros que no sean ingredientes y tengan un padre
+        setRubros(filteredRubros);
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
 
-    fetch(API_URL + "ingrediente")
-      .then((response) => response.json())
-      .then((data: IIngredientes[]) => {
+    const fetchIngredientes = async () => {
+      try {
+        const response = await fetch(`${API_URL}ingrediente`);
+        const data: IIngredientes[] = await response.json();
         setIngredientesA(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchRubros();
+    fetchIngredientes();
   }, []);
 
   const selectIngredienteA = (id: number) => {
@@ -273,18 +278,21 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
             <Col md={6}>
               <Form.Group className="mb-3" controlId="formPrecio">
                 <Form.Label>Precio</Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="Ingrese precio"
-                  value={product.precio}
-                  onChange={(event) =>
-                    setProduct({
-                      ...product,
-                      precio: parseFloat(event.target.value),
-                    })
-                  }
-                  required
-                />
+                <div className="input-group">
+                <span className="bg-success input-group-text"><b>$</b></span>
+                  <Form.Control
+                    type="number"
+                    placeholder="Ingrese precio"
+                    value={product.precio}
+                    onChange={(event) =>
+                      setProduct({
+                        ...product,
+                        precio: parseFloat(event.target.value),
+                      })
+                    }
+                    required
+                  />
+                  </div>
               </Form.Group>
             </Col>
           </Row>
