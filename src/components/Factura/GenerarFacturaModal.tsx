@@ -15,15 +15,14 @@ interface GenerarFacturaModalProps {
 }
 
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, closeModal, show }) => {
-  // const [showCreditoModal, setShowCreditoModal] = useState(false);
   const [selectedFactura, setSelectedFactura] = useState<IFactura | null>();
-  const [userInfo, setUserInfo] = useState<any>(null); // IUsuario acordate
+  const [userInfo, setUserInfo] = useState<any>(null);
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [showSendEmail, setShowSendEmail] = useState<boolean>(false);
+  const [confirmSendEmail, setConfirmSendEmail] = useState<boolean>(false);
 
   useEffect(() => {
-    // Verificar que la factura no sea null y que esFactura sea true
-    if (factura) { //aca borre en la verificacion "&& factura.esFactura"
+    if (factura) {
       setSelectedFactura(factura);
       getUserInfo();
     }
@@ -41,18 +40,18 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
   };
 
   const handleSendEmail = () => {
-    setShowSendEmail(true);
+    const confirmSendEmail = window.confirm(`¿Seguro que desea enviar la factura a ${selectedFactura?.pedido.usuario.email}?`);
+  
+    if (confirmSendEmail) {
+      setConfirmSendEmail(true);
+      setShowSendEmail(true);
+      closeModal();
+    }
   };
 
   const handleCancelSendEmail = () => {
     setShowSendEmail(false);
   };
-
-  // const handleCredito = () => {
-  //   if (selectedFactura && window.confirm("¿Estás seguro de generar la Nota de Crédito?")) {
-  //     setShowCreditoModal(true);
-  //   }
-  // };
 
   const exportToExcel = (factura: IFactura) => {
     const dataToExport = factura.pedido?.detallesPedidos || [];
@@ -146,7 +145,6 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                           <br />
                           Descuento: {selectedFactura.pedido.esEfectivo ? "10%" : "0%"}
                           <br />
-                          {/* Envío: {getOrDefault(selectedFactura.esDelivery ? "Domicilio" : "Retiro local", "")} */}
                         </p>
                       </div>
                       <div className="center-section" style={{ textAlign: "center" }}>
@@ -173,34 +171,26 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                         El Buen Sabor
                       </p>
                     </div>
-                    <div className="pdf-container">
-                      <div className="pdf-container">
+                    <div className="pdf-container d-flex justify-content-between" style={{marginTop: "40px"}}>                      
                         <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => handleSendEmail()}>
                           Enviar por Email
                         </Button>
                         <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => generatePDF()}>
                           Descargar PDF
                         </Button>
-                        {/* <Button variant="secondary" onClick={handleCredito}>
-                          Nota de Crédito
-                        </Button> */}
                         <Button variant="success" style={{ marginLeft: "10px" }} onClick={() => exportToExcel(selectedFactura)}>
                           Exportar a Excel
                         </Button>
-                      </div>
+                        <Button variant="secondary" onClick={closeModal}>
+                          Cerrar
+                        </Button>                      
                     </div>
                   </div>
                 </Container>
               </div>
             </div>
           )}
-          {/* {showCreditoModal && (
-            <GenerarCreditoModal
-              closeModal={() => setShowCreditoModal(false)}
-              factura={selectedFactura}
-              show={show} />
-          )} */}
-          {showSendEmail && selectedFactura && (
+          {showSendEmail && selectedFactura && confirmSendEmail &&(
             <SendEmail factura={selectedFactura} onCancel={handleCancelSendEmail} />
           )}
         </Modal.Body>

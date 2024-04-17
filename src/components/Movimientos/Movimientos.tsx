@@ -17,6 +17,7 @@ const Movimientos = () => {
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>(null);
   const [showPedidoModal, setShowPedidoModal] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,7 +78,7 @@ const Movimientos = () => {
     {
       title: "Precio de Costo",
       field: "fechaPedido",
-      width: 2,
+      width: 1,
       render: (pedido: IPedidoDto) => {
         return <div>{calcularPrecioCosto(pedido)}</div>;
       },
@@ -85,19 +86,11 @@ const Movimientos = () => {
     {
       title: "Ganancia Neta",
       field: "fechaPedido",
-      width: 2,
+      width: 1,
       render: (pedido: IPedidoDto) => {
         return <div>{calcularGananciaNeta(pedido)}</div>;
       },
-    },
-    {
-      title: "Ver Pedido",
-      field: "fechaPedido",
-      render: (pedido: IPedidoDto) => (
-        <Button onClick={() => openPedidoModal(pedido)}>Ver</Button>
-      ),
-      width: 2,
-    },
+    },   
   ];
 
   const calcularGananciaNeta = (pedido: IPedidoDto) => {
@@ -155,8 +148,6 @@ const Movimientos = () => {
     exportTableDataToExcel(dataToExport, filename);
   };
 
-  
-
   return (
     <div>
       <Container fluid>
@@ -170,9 +161,10 @@ const Movimientos = () => {
                   create: false,
                   update: false,
                   delete: false,
-                  view: false,
+                  view: true,
                 }}
                 showDate={true}
+                onView={openPedidoModal}
               />
             ) : (
               NoHayPedidos

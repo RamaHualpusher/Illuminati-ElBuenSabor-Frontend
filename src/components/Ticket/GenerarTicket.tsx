@@ -21,12 +21,15 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
     show,
 }) => {
     const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>(null);
+    const [showSendEmail, setShowSendEmail] = useState<boolean>(false);
+    const [confirmSendEmail, setConfirmSendEmail] = useState<boolean>(false);
+    const [factura, setFactura] = useState<IFactura | null>(null);
     const navigate = useNavigate();
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
         setSelectedPedido(pedido);
-    }, [pedido]); 
+    }, [pedido]);
 
     const generarFactura = async (selectedPedido: IPedidoDto | null) => {
         if (selectedPedido) {
@@ -34,36 +37,37 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                 // Obtener todas las facturas desde el backend
                 const response = await axios.get(`${API_URL}factura`);
                 const facturas: IFactura[] = response.data;
-    
+
                 // Verificar si alguna factura tiene el mismo ID de pedido que estamos tratando de generar
                 const facturaExistente = facturas.find(factura => factura.pedido.id === selectedPedido.id);
-    
+
                 if (facturaExistente) {
-                    alert('¡Esta factura ya ha sido generada previamente!');
+                    alert('¡Esta factura ya ha sido generada PREVIAMENTE!');
                     return null;
                 } else {
                     // Aquí conviertes el pedido a un objeto de factura manualmente
                     const factura: IFactura = {
+                        id:0,
                         activo: true,
                         fechaFactura: new Date(),
                         pedido: selectedPedido,
                     };
-    
+
                     // Luego, realizas el proceso de envío de la factura
                     const response = await axios.post(`${API_URL}factura`, factura);
                     if (response.data) {
                         console.log('Factura guardada en el backend:', response.data);
                         alert('¡La factura se generó correctamente!');
+                        setFactura(factura);
                         return factura;
                     }
-                    <SendEmail factura={factura} onCancel={() => {}} />
                 }
             } catch (error) {
                 console.error('Error al generar la factura:', error);
                 return null;
             }
         }
-    };    
+    };
 
     const getOrDefault = (value: any, defaultValue: any) => {
         return value !== null && value !== undefined ? value : defaultValue;
@@ -78,12 +82,19 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
         return total;
     };
 
-    const handleGenerarFactura = async (selectedPedido: IPedidoDto | null) => {        
+    const handleGenerarFactura = async (selectedPedido: IPedidoDto | null) => {
         if (pedido) {
             const confirmarGenerarFactura = window.confirm("¿Está seguro de que desea generar la factura?");
             if (confirmarGenerarFactura) {
                 if (selectedPedido) {
-                    await generarFactura(selectedPedido);
+                    const facturaGenerada = await generarFactura(selectedPedido);
+                    console.log("ya genero la factura"+facturaGenerada)
+                    if (facturaGenerada) {
+                        const confirmarEnviarEmail = window.confirm(`¿Desea enviar la factura generada por correo electrónico a ${pedido.usuario.email}?`);
+                        if (confirmarEnviarEmail) {
+                            setShowSendEmail(true); 
+                        }
+                    }
                     closeModal();
                 } else {
                     console.error("Selected pedido es null o undefined");
@@ -91,6 +102,15 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
             }
         } else {
             alert("Este pedido ya ha sido facturado.");
+        }
+    };
+
+    const handleSendEmail = () => {
+        const confirmSendEmail = window.confirm(`¿Seguro que desea enviar la factura a ${selectedPedido?.usuario.email}?`);
+
+        if (confirmSendEmail) {
+            setShowSendEmail(true);
+            closeModal();
         }
     };
 
@@ -205,6 +225,9 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                     </button>
                 </Modal.Footer>
             </Modal>
+            {showSendEmail && (
+                <SendEmail factura={factura} onCancel={() => setShowSendEmail(false)} />
+            )}
 
             {/* Modal de edición */}
 
