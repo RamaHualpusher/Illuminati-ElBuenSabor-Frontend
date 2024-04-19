@@ -26,7 +26,7 @@ const CarritoConConfirmacion: React.FC = () => {
   const onCancel = () => {
     clearCart();
     navigate("/");
-  }
+  } 
 
   // Función para continuar con la compra y regresar a la página principal
   const onContinue = () => {
@@ -46,7 +46,7 @@ const CarritoConConfirmacion: React.FC = () => {
         }}
         onCancel={onCancel}
         onContinue={onContinue}
-        isCartEmpty={isCartEmpty}/>
+        isCartEmpty={isCartEmpty} />
     </>
   );
 }
