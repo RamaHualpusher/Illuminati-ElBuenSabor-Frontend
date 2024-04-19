@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 import { IFactura } from "../../interface/IFactura";
-import { IDetallePedido } from "../../interface/IDetallePedido";
+import { IDetalleFactura } from "../../interface/IDetalleFactura";
 
 const FacturaPDF = (selectedFactura: IFactura) => {
   const generatePDF = () => {
@@ -18,15 +18,15 @@ const FacturaPDF = (selectedFactura: IFactura) => {
     // Detalles del pedido
     pdf.text(`DETALLES DEL PEDIDO`, margin, yPosition);
     yPosition += 10;
-    pdf.text(`Número de Pedido: ${selectedFactura.id}`, margin, yPosition);
+    pdf.text(`Número de Factura: ${selectedFactura.id}`, margin, yPosition);
     yPosition += 7;
     pdf.text(`Fecha: ${new Date(selectedFactura.fechaFactura).toLocaleString()}`, margin, yPosition);
     yPosition += 10;
 
     // Tabla de productos
     const tableHeaders = ["Cantidad", "Detalle Producto", "Precio Unit."];
-    const tableData = selectedFactura.pedido?.detallesPedidos.map((detalle: IDetallePedido) => {
-      return [detalle.cantidad || "", detalle.producto.nombre || "", detalle.producto.precio || ""];
+    const tableData = selectedFactura.detalleFactura.map((detalle: IDetalleFactura) => {
+      return [detalle.cantidad || "", detalle.nombreProducto || "", detalle.precioProducto || ""];
     }) || [];
     const columnWidths = [30, 30, 40]; // Ancho de las columnas
     const rowHeight = 7; // Altura de las filas
@@ -42,8 +42,8 @@ const FacturaPDF = (selectedFactura: IFactura) => {
     yPosition += (tableData.length + 2) * rowHeight + 10;
 
     // Información de pago y envío
-    const tipoPago = selectedFactura.pedido?.esEfectivo ? "Efectivo" : "Mercado Pago";
-    const descuento = selectedFactura.pedido?.esEfectivo ? "10%" : "0%";
+    const tipoPago = selectedFactura.esEfectivo ? "Efectivo" : "Mercado Pago";
+    const descuento = selectedFactura.esEfectivo ? "10%" : "0%";
     // const tipoEnvio = selectedFactura?.esDelivery ? "Domicilio" : "Retiro local";
     pdf.text(`Tipo de Pago: ${tipoPago}`, margin, yPosition);
     yPosition += 7;
@@ -54,18 +54,18 @@ const FacturaPDF = (selectedFactura: IFactura) => {
 
     // Dirección de envío
     const direccion = selectedFactura.pedido?.usuario?.domicilio ? 
-      `${selectedFactura.pedido.usuario.domicilio.calle || ""} ${selectedFactura.pedido.usuario.domicilio.numero || ""}, ${selectedFactura.pedido.usuario.domicilio.localidad || ""}` :
+      `${selectedFactura.usuario.domicilio.calle || ""} ${selectedFactura.usuario.domicilio.numero || ""}, ${selectedFactura.usuario.domicilio.localidad || ""}` :
       "";
     pdf.text(`Dirección: ${direccion}`, margin, yPosition);
 
     // Agradecimiento
     yPosition += 40;
-    pdf.text(`Muchas gracias ${selectedFactura.pedido.usuario.nombre} ${selectedFactura.pedido.usuario.apellido} por comprar en`, margin, yPosition);
+    pdf.text(`Muchas gracias ${selectedFactura.usuario.nombre} ${selectedFactura.usuario.apellido} por comprar en`, margin, yPosition);
     yPosition += 10;
     pdf.text(`El Buen Sabor`, margin, yPosition);
 
     // Guardar el PDF
-    const pdfFileName = `Factura de ${selectedFactura.pedido.usuario.nombre} ${selectedFactura.pedido.usuario.apellido}-Num. ${selectedFactura.id}.pdf`;
+    const pdfFileName = `Factura de ${selectedFactura.usuario.nombre} ${selectedFactura.usuario.apellido}-Num. ${selectedFactura.id}.pdf`;
     pdf.save(pdfFileName);
     
     // Devolver el contenido del PDF como un Buffer (necesario para enviar por correo electrónico)

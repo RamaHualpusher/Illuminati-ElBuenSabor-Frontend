@@ -55,7 +55,7 @@ const RankingVentas = () => {
                             columns={columns}
                             data={clientes}
                             actions={{
-                                create: false,
+                                create: true,
                                 update: false,
                                 delete: false,
                                 view: false,

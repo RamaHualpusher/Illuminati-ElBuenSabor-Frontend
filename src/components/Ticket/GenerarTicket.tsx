@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Container, Modal, Button, Table } from "react-bootstrap";
 import { IPedidoDto } from "../../interface/IPedido";
 import { IDetallePedido } from "../../interface/IDetallePedido";
+import { IDetalleFactura } from "../../interface/IDetalleFactura";
 import { useNavigate } from "react-router-dom";
 import { IFactura } from "../../interface/IFactura";
 import SendEmail from "../SendEmail/SendEmail";
 import axios from "axios";
+import { IUsuario } from "../../interface/IUsuario";
 
 interface GenerarTicketProps {
     pedido: IPedidoDto | null;
@@ -45,11 +47,24 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                     alert('¡Esta factura ya ha sido generada PREVIAMENTE!');
                     return null;
                 } else {
+                    const detallesFactura: IDetalleFactura[] = selectedPedido.detallesPedidos.map((detalle: IDetallePedido) => ({
+                        cantidad: detalle.cantidad,
+                        subtotal: detalle.producto.precio * detalle.cantidad,
+                        nombreProducto: detalle.producto.nombre,
+                        precioProducto: detalle.producto.precio
+                    }));                    
+
                     // Aquí conviertes el pedido a un objeto de factura manualmente
                     const factura: IFactura = {
-                        id:0,
+                        id: 0,
                         activo: true,
+                        fechaPedido: selectedPedido.fechaPedido,
                         fechaFactura: new Date(),
+                        esDelivery: selectedPedido.esDelivery,
+                        esEfectivo: selectedPedido.esEfectivo,
+                        usuario: selectedPedido.usuario,
+                        total: selectedPedido.total,
+                        detalleFactura: detallesFactura,
                         pedido: selectedPedido,
                     };
 
@@ -88,11 +103,11 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
             if (confirmarGenerarFactura) {
                 if (selectedPedido) {
                     const facturaGenerada = await generarFactura(selectedPedido);
-                    console.log("ya genero la factura"+facturaGenerada)
+                    console.log("ya genero la factura" + facturaGenerada)
                     if (facturaGenerada) {
                         const confirmarEnviarEmail = window.confirm(`¿Desea enviar la factura generada por correo electrónico a ${pedido.usuario.email}?`);
                         if (confirmarEnviarEmail) {
-                            setShowSendEmail(true); 
+                            setShowSendEmail(true);
                         }
                     }
                     closeModal();
@@ -102,15 +117,6 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
             }
         } else {
             alert("Este pedido ya ha sido facturado.");
-        }
-    };
-
-    const handleSendEmail = () => {
-        const confirmSendEmail = window.confirm(`¿Seguro que desea enviar la factura a ${selectedPedido?.usuario.email}?`);
-
-        if (confirmSendEmail) {
-            setShowSendEmail(true);
-            closeModal();
         }
     };
 
@@ -125,7 +131,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
     };
 
     const onCancel = () => {
-        navigate("/");
+        closeModal(); // chequear esto para cerrar el modal y no volver a la pagina anterior
     }
 
     return (

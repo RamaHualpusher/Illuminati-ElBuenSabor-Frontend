@@ -36,6 +36,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   const API_URL = process.env.REACT_APP_API_URL || "";
   const { isAuthenticated } = useAuth0();
 
+  // Manejar la selección de "Delivery" y "Mercado Pago" al cargar el componente
   useEffect(() => {
     // Si el usuario tiene una dirección, establecemos los valores en los campos correspondientes
     if (domicilio) {

@@ -174,13 +174,16 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       //aca tenemos que poner segun el producto, el tiempo estimado segun hamburguesa, papas fritas, etc
       const calcularHoraEstimadaFin = () => {
         const horaActual = new Date();
-        horaActual.setMinutes(horaActual.getMinutes() + 20);
+        const esBebida = detallesPedido.some(detalle => detalle.producto.esBebida);
+        if (!esBebida) {
+          horaActual.setMinutes(horaActual.getMinutes() + 20);
+        }
         return horaActual;
-      };
+      };      
 
       const nuevoPedidoCompleto: IPedidoDto = {
         activo: true,
-        horaEstimadaFin: new Date(), // aca deberia ir la linea 168 calcularHoraEstimadaFin
+        horaEstimadaFin: calcularHoraEstimadaFin(), 
         esDelivery: esDelivery,
         esEfectivo: esEfectivo,
         estadoPedido: "A confirmar",

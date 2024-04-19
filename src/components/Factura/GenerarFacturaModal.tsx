@@ -7,6 +7,7 @@ import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
 import { IDetallePedido, IDetallePedidoDto } from "../../interface/IDetallePedido";
 import axios from 'axios';
 import SendEmail from "../SendEmail/SendEmail";
+import { IDetalleFactura } from "../../interface/IDetalleFactura";
 
 interface GenerarFacturaModalProps {
   factura: IFactura | null,
@@ -54,8 +55,8 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
   };
 
   const exportToExcel = (factura: IFactura) => {
-    const dataToExport = factura.pedido?.detallesPedidos || [];
-    const filename = `Pedido ${factura.pedido?.usuario?.nombre} ${factura.pedido?.usuario?.apellido}-Num.${factura?.id}_detalles`;
+    const dataToExport = factura.detalleFactura || [];
+    const filename = `Pedido ${factura.usuario?.nombre} ${factura.usuario?.apellido}-Num.${factura?.id}_detalles`;
     exportTableDataToExcel(dataToExport, filename);
   };
 
@@ -66,14 +67,14 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
   const calcularTotalPedido = (selectedFactura: IFactura) => {
     let total = 0;
 
-    selectedFactura.pedido.detallesPedidos.forEach((detalle: IDetallePedido) => {
-      total += detalle.producto.precio * detalle.cantidad;
+    selectedFactura.detalleFactura.forEach((detalle: IDetalleFactura) => {
+      total += detalle.precioProducto * detalle.cantidad;
     });
     return total;
   };
 
   const calcularDescuento = (selectedFactura: IFactura) => {
-    return selectedFactura.pedido.esEfectivo ? 0.1 : 0;
+    return selectedFactura.esEfectivo ? 0.1 : 0;
   };
 
   const totalConDescuento = selectedFactura ? calcularTotalPedido(selectedFactura) * (1 - calcularDescuento(selectedFactura)) : 0;
@@ -121,11 +122,11 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                           </tr>
                         </thead>
                         <tbody>
-                          {selectedFactura?.pedido.detallesPedidos.map((detalle, index) => (
+                          {selectedFactura?.detalleFactura.map((detalle, index) => (
                             <tr key={index}>
                               <td>{detalle.cantidad}</td>
-                              <td>{detalle.producto.nombre}</td>
-                              <td>{detalle.producto.precio}</td>
+                              <td>{detalle.nombreProducto}</td>
+                              <td>{detalle.precioProducto}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -141,9 +142,9 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                     <div className="payment-container">
                       <div className="left-section" style={{ textAlign: "center" }}>
                         <p>
-                          Tipo de Pago: {getOrDefault(selectedFactura.pedido.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
+                          Tipo de Pago: {getOrDefault(selectedFactura.esEfectivo ? "Efectivo" : "Mercado Pago", "")}
                           <br />
-                          Descuento: {selectedFactura.pedido.esEfectivo ? "10%" : "0%"}
+                          Descuento: {selectedFactura.esEfectivo ? "10%" : "0%"}
                           <br />
                         </p>
                       </div>
@@ -157,16 +158,16 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                       <div className="right-section">
                         <h2>Envío</h2>
                         <p>
-                          Dirección: {getOrDefault(selectedFactura.pedido.usuario.domicilio?.calle, "")} {getOrDefault(selectedFactura.pedido.usuario.domicilio?.numero, "")},
+                          Dirección: {getOrDefault(selectedFactura.usuario.domicilio?.calle, "")} {getOrDefault(selectedFactura.usuario.domicilio?.numero, "")},
                           <br />
-                          {getOrDefault(selectedFactura.pedido.usuario.domicilio?.localidad, "")}
+                          {getOrDefault(selectedFactura.usuario.domicilio?.localidad, "")}
                         </p>
                       </div>
                     </div>
 
                     <div className="thankyou-container text-center">
                       <p>
-                        Muchas gracias {selectedFactura.pedido.usuario.nombre} {selectedFactura.pedido.usuario.apellido} por comprar en
+                        Muchas gracias {selectedFactura.usuario.nombre} {selectedFactura.usuario.apellido} por comprar en
                         <br />
                         El Buen Sabor
                       </p>
