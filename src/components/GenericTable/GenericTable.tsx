@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FormEvent, ChangeEvent } from "react";
+import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import {
   Button,
   Table,
@@ -8,9 +8,11 @@ import {
   Col,
   Overlay,
   Popover,
+  Spinner,
 } from "react-bootstrap";
-import { ITableProps, IColumn } from "../../interface/ICamposTablaGenerica";
-import DatePicker from "react-datepicker";
+import { ITableProps, IColumn } from '../../interface/ICamposTablaGenerica';
+import DatePicker from 'react-datepicker';
+import NoHayElementosTablaGenerica from '../Page404/NoHayElementosTablaGenerica';
 
 function GenericTable<T>({
   data,
@@ -54,6 +56,7 @@ function GenericTable<T>({
         setFilteredData(
           data.filter((item) => defaultSearch(item, searchText, columns))
         );
+        setIsLoading(false); // Si no hay customSearch, la carga de datos se completa aquí
       }
     };
 
@@ -193,26 +196,37 @@ function GenericTable<T>({
           )}
         </Col>
       </Row>
+      {isLoading ? (
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      ) : (
+        <>
+          {/* Mostrar componente NoHayElementosTablaGenerica si no hay elementos */}
+          {!isLoading && filteredData.length === 0 && (
+            <NoHayElementosTablaGenerica onReload={() => window.location.reload()} />
+          )}
+          {/* Mostrar tabla si no está cargando y hay elementos para mostrar */}
+          {!isLoading && filteredData.length > 0 && (
       <Table responsive className="table table-bordered mt-2">
         <thead>
           <tr>
-            {columns.map(
+          {columns.map(
               (column, index) =>
                 column.showColumn !== false && (
-                  <th
-                    key={index}
-                    style={{
-                      width: `${
-                        column.width ? (column.width * 100) / 12 : ""
-                      }%`,
-                      backgroundColor: "#353535",
-                      color: "white",
-                    }}
-                  >
-                    {column.title}
-                  </th>
-                )
-            )}
+              <th
+              key={index}
+              style={{
+                width: `${
+                  column.width ? (column.width * 100) / 12 : ""
+                }%`,
+                backgroundColor: "#353535",
+                color: "white",
+              }}
+            >
+                {column.title}
+              </th>
+            ))}
             {(actions.update || actions.delete || actions.view) && (
               <th
                 style={{
@@ -230,7 +244,7 @@ function GenericTable<T>({
             <tr key={index}>
               {columns.map((column, key) => (
                 <td key={key}>
-                  {column.render
+                 {column.render
                     ? column.render(item)
                     : String(item[column.field])}
                 </td>
@@ -294,6 +308,11 @@ function GenericTable<T>({
           ))}
         </tbody>
       </Table>
+      )}
+      </>
+
+        )}
+    
     </Container>
   );
 }

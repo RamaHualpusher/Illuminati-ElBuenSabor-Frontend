@@ -136,7 +136,7 @@ const Movimientos = () => {
       <Container fluid>
         <Row className="mt-3">
           <Col className="d-flex justify-content-center">
-            {pedidos && pedidos.length > 0 ? (
+            
               <GenericTable<IPedidoDto>
                 data={pedidos}
                 columns={columns}
@@ -148,12 +148,14 @@ const Movimientos = () => {
                 }}
                 showDate={true}
               />
-            ) : (
-              <p>No hay datos de pedidos disponibles.</p>
-            )}
+            
           </Col>
         </Row>
-        <Button variant="success" onClick={() => exportDataToExcel()}>Exportar a Excel</Button>
+        {pedidos && pedidos.length > 0 ? (
+          <Button variant="success" onClick={() => exportDataToExcel()}>Exportar a Excel</Button>
+        ) : (
+          <span></span>
+        )}
       </Container>
     </div>
   );

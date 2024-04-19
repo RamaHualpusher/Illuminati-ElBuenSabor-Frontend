@@ -35,7 +35,7 @@ const AddIngredienteModal: React.FC<IAddIngredienteModalProps> = ({
       }
     };
     fetchRubros();
-  }, [API_URL]);
+  }, []);
   
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Container, Form } from 'react-bootstrap';
+import { Container, Form, Row } from 'react-bootstrap';
 import EditIngredienteModal from './EditIngredienteModal';
 import AddIngredienteModal from './AddIngredienteModal';
 import { IIngredientes } from '../../../interface/IIngredientes';
@@ -149,16 +149,12 @@ const Ingrediente: React.FC = () => {
         setSelectedRubro(selectedRubroId ? selectedRubroId : null);
     };
 
-    // Mensaje cuando no hay ingredientes con el rubro seleccionado
-    const noProductosMessage =
-        selectedRubro && filteredIngredientes.length === 0 ? (
-            <p>No hay ingredientes disponibles con el rubro seleccionado.</p>
-        ) : null;
+   
 
     return (
-        <div>
+        
             <Container fluid>
-                <div>
+                <Row>
                     {/* Filtros y mensajes */}
                     <Form.Group controlId="id">
                         <select
@@ -176,7 +172,7 @@ const Ingrediente: React.FC = () => {
                             ))}
                         </select>
                     </Form.Group>
-                    {noProductosMessage}
+                    
                     {/* Tabla de ingredientes */}
                     <GenericTable
                         data={filteredIngredientes}
@@ -185,7 +181,7 @@ const Ingrediente: React.FC = () => {
                         onAdd={handleAddModalOpen}
                         onUpdate={handleEditModalOpen}
                     />
-                </div>
+                </Row>
                 {/* Modales de edición y adición */}
                 <EditIngredienteModal
                     show={editModalShow}
@@ -199,7 +195,7 @@ const Ingrediente: React.FC = () => {
                     handleIngredienteAdd={handleIngredienteAdd}
                 />
             </Container>
-        </div>
+        
     );
 };
 
