@@ -1,56 +1,66 @@
 import React, { FC, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { IDomicilio } from '../../../interface/IDomicilio';
 import EditDireccionModal from './EditDireccionModal';
 import AddDireccionModal from './AddDireccionModal';
-import { handleRequest } from '../../FuncionRequest/FuncionRequest';
-import { Link } from 'react-router-dom';
 
 const Direccion: FC = () => {
-    // Estados para controlar la dirección, modales y dirección seleccionada
     const [domicilio, setDomicilio] = useState<IDomicilio | null>(null);
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
     const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
-
-    const API_URL = '/assets/data/domicilioCliente.json';
+    const [usuario, setUsuario] = useState<any>(null); // Aquí puedes definir la interfaz para IUsuario si tienes una
 
     useEffect(() => {
-        const fetchDomicilio = async () => {
-            try {
-                const response = await axios.get(API_URL);
-                setDomicilio(response.data);
-            } catch (error) {
-                console.log(error);
+        const fetchUsuario = async () => {
+          try {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}usuario`);
+            // console.log(response);
+            setUsuario(response.data);
+      
+            // Log the user data to check its structure
+            console.log('User data:', response.data);
+      
+            // Fetch the domicilio data after getting the user data
+            if (response.data.domicilio) {
+              try {
+                const domicilioResponse = await axios.get(`${process.env.REACT_APP_API_URL}usuario/${response.data.id}/domicilio`);
+                console.log('Domicilio response:', domicilioResponse);
+                setDomicilio(domicilioResponse.data);
+              } catch (error) {
+                console.error('Error fetching domicilio:', error);
+              }
             }
+          } catch (error) {
+            console.error('Error fetching user:', error);
+          }
         };
+      
+        fetchUsuario();
+      }, []);
 
-        fetchDomicilio();
-    }, []);
-
-    // Función para manejar la edición de la dirección
     const handleDomicilioEdit = async (domicilio: IDomicilio) => {
         try {
-            const updatedDomicilio = await handleRequest('PUT', API_URL, domicilio);
-            setDomicilio(updatedDomicilio);
+            await axios.put(`${process.env.REACT_APP_API_URL}usuario/${usuario.id}/domicilio`, domicilio);
+            setDomicilio(domicilio);
+            setEditModalShow(false);
         } catch (error) {
             console.log(error);
         }
     };
 
-    // Función para manejar la adición de una dirección
     const handleDomicilioAdd = async (domicilio: IDomicilio) => {
         try {
-            const newDomicilio = await handleRequest('POST', API_URL, domicilio);
-            setDomicilio(newDomicilio);
+            await axios.post(`${process.env.REACT_APP_API_URL}usuario/${usuario.id}/domicilio`, domicilio);
+            setDomicilio(domicilio);
             setAddModalShow(false);
         } catch (error) {
             console.log(error);
         }
     };
 
-    // Funciones para controlar la apertura y cierre del modal de edición
     const handleEditModalOpen = () => {
         setEditModalShow(true);
         setSelectedDireccion(domicilio);
@@ -60,7 +70,6 @@ const Direccion: FC = () => {
         setEditModalShow(false);
     };
 
-    // Funciones para controlar la apertura y cierre del modal de adición
     const handleAddModalOpen = () => {
         setAddModalShow(true);
     };
@@ -108,7 +117,6 @@ const Direccion: FC = () => {
                                 </Button>
                             </div>
                         </div>
-
                     </>
                 )}
                 <AddDireccionModal
@@ -122,7 +130,6 @@ const Direccion: FC = () => {
                     handleDireccionEdit={handleDomicilioEdit}
                     selectedDireccion={selectedDireccion}
                 />
-
             </Container>
         </div>
     );
