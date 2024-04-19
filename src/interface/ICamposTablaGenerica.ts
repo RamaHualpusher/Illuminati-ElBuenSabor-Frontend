@@ -3,6 +3,7 @@ export interface IColumn<T> {
   field: keyof T; // Campo correspondiente en los datos
   width?: number; // Ancho de la columna (opcional)
   render?: (row: T) => JSX.Element | null; // Función de renderizado personalizado para la celda (opcional)
+  showColumn?: boolean; // Mostrar o no las columnas
 }
 
 export interface IAction {
@@ -23,4 +24,6 @@ export interface ITableProps<T> {
   customSearch?: (searchText: string) => Promise<T[]>; // Función de búsqueda personalizada (opcional)
   customDate?: (firtsDate:Date|null, secondDate:Date|null) => Promise<T[]>; // Función de busqueda por fechas(opcional)
   showDate?: boolean; // Permite Mostrar busqueda por fecha (opcional)
+  onSearch?: boolean; // Permite motrar o no el buscador (opcional)
+  showActions?: boolean; // Permite motrar o no las actions (opcional)
 }

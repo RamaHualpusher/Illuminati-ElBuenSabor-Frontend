@@ -32,6 +32,6 @@ export interface IEditIngredientesModalProps {
 export interface IEditCompraIngredientesModalProps {
   show: boolean;
   handleClose: () => void;
-  handleIngredientesEdit: (ingredientes: IIngredientes) => void;
+  handleIngredientesEdit: (ingrediente: IIngredientes, cantidad: number) => void;
   selectedIngredientes: IIngredientes | null;
 }

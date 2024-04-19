@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
 import { CartContext, CartItem } from "../../context/cart/CartProvider";
-import axios from 'axios';
+import axios from "axios";
 import { IPedidoDto } from "../../interface/IPedido";
 import { IProducto, IProductoDto } from "../../interface/IProducto";
 import { IUsuario } from "../../interface/IUsuario";
 import { IDetallePedidoDto } from "../../interface/IDetallePedido";
-import { Alert, Button } from 'react-bootstrap';
+import { Alert, Button, Container } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
 import { IIngredientes } from "../../interface/IIngredientes";
 import { IProductoIngrediente } from "../../interface/IProductoIngrediente";
@@ -40,18 +40,19 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const [totalPedido, setTotalPedido] = useState(0);
   const { loginWithRedirect, user, isAuthenticated } = useAuth0();
   const [showAlert, setShowAlert] = useState(!isAuthenticated);
-  const [insufficientStock, setInsufficientStock] = useState<{
-    isInsufficient: boolean;
-    productName: string;
-  }[]>([]); // Use an array to store multiple insufficient stock errors
+  const [insufficientStock, setInsufficientStock] = useState<
+    {
+      isInsufficient: boolean;
+      productName: string;
+    }[]
+  >([]); // Use an array to store multiple insufficient stock errors
 
   const API_URL = process.env.REACT_APP_API_URL || "";
-
 
   // Función para crear un nuevo cliente en el servidor
   const crearNuevoCliente = async () => {
     try {
-      if(user && isAuthenticated){
+      if (user && isAuthenticated) {
         const response = await axios.post(`${API_URL}usuario/clientes`, {
           nombre: user.given_name,
           apellido: user.family_name,
@@ -63,9 +64,12 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           numero: 0, // No tenemos el número aquí
           localidad: "", // No tenemos la localidad aquí
           idRol: 0, // No tenemos el id de rol aquí
-          nombreRol: "" // No tenemos el nombre de rol aquí
+          nombreRol: "", // No tenemos el nombre de rol aquí
         });
-        console.log("Respuesta al crear nuevo cliente:", JSON.stringify(response.data));
+        console.log(
+          "Respuesta al crear nuevo cliente:",
+          JSON.stringify(response.data)
+        );
         // Si se crea exitosamente el nuevo cliente, lo establecemos en el estado
         setUsuario(response.data);
       }
@@ -79,23 +83,29 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     const verificarUsuarioExistente = async () => {
       if (isAuthenticated && user) {
         try {
-          const response = await axios.post(`${process.env.REACT_APP_API_URL}usuario/clientes/email`, {
-            nombre: user.given_name,
-            apellido: user.family_name,
-            email: user.email,
-            clave: null, // No tenemos la contraseña aquí
-            telefono: "", // No tenemos el teléfono aquí
-            idDomicilio: 0, // No tenemos el id de domicilio aquí
-            calle: "", // No tenemos la calle aquí
-            numero: 0, // No tenemos el número aquí
-            localidad: "", // No tenemos la localidad aquí
-            idRol: 0, // No tenemos el id de rol aquí
-            nombreRol: "" // No tenemos el nombre de rol aquí
-          });
-          console.log("Respuesta al verificar usuario existente:", JSON.stringify(response.data));
+          const response = await axios.post(
+            `${process.env.REACT_APP_API_URL}usuario/clientes/email`,
+            {
+              nombre: user.given_name,
+              apellido: user.family_name,
+              email: user.email,
+              clave: null, // No tenemos la contraseña aquí
+              telefono: "", // No tenemos el teléfono aquí
+              idDomicilio: 0, // No tenemos el id de domicilio aquí
+              calle: "", // No tenemos la calle aquí
+              numero: 0, // No tenemos el número aquí
+              localidad: "", // No tenemos la localidad aquí
+              idRol: 0, // No tenemos el id de rol aquí
+              nombreRol: "", // No tenemos el nombre de rol aquí
+            }
+          );
+          console.log(
+            "Respuesta al verificar usuario existente:",
+            JSON.stringify(response.data)
+          );
           // Si el usuario existe, lo establecemos en el estado
           setUsuario(response.data);
-        } catch (error:any) {
+        } catch (error: any) {
           // Si el usuario no existe, intentamos crearlo
           if (error.response && error.response.status === 404) {
             console.log("El usuario no existe, creándolo...");
@@ -125,7 +135,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
   }, [isAuthenticated]);
 
-
   useEffect(() => {
     const totalProducto = cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -140,18 +149,19 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       const detallesPedido: IDetallePedidoDto[] = [];
 
       cartItems.forEach((cartItem) => {
-        const productoEncontrado = productos.find(producto => producto.id === cartItem.id);
+        const productoEncontrado = productos.find(
+          (producto) => producto.id === cartItem.id
+        );
         if (productoEncontrado) {
           const detallePedido: IDetallePedidoDto = {
             cantidad: cartItem.quantity,
-            producto: productoEncontrado
+            producto: productoEncontrado,
           };
           detallesPedido.push(detallePedido);
         }
       });
 
-      const nuevoTotalPedido =
-        esDelivery ? subTotal + 500 : subTotal * 0.9;
+      const nuevoTotalPedido = esDelivery ? subTotal + 500 : subTotal * 0.9;
 
       const nuevoPedidoCompleto: IPedidoDto = {
         activo: true,
@@ -162,7 +172,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         fechaPedido: new Date(),
         usuario: usuario!,
         detallesPedidos: detallesPedido,
-        total: nuevoTotalPedido
+        total: nuevoTotalPedido,
       };
       console.log("Pedido completo:", JSON.stringify(nuevoPedidoCompleto));
       setTotalPedido(nuevoTotalPedido);
@@ -172,49 +182,65 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!isAuthenticated) {
       setShowAlert(true);
       return;
     }
-  
+
     if (usuario === null) {
-      console.error("El usuario no está cargado. No se puede confirmar el pedido.");
+      console.error(
+        "El usuario no está cargado. No se puede confirmar el pedido."
+      );
       return;
     }
-  
+
     if (pedidoCompleto !== null) {
       try {
         // Validar el stock de ingredientes antes de confirmar el pedido
-        const validationPromises = pedidoCompleto.detallesPedidos.map(async (detallePedido) => {
-          try {
-            // Limpiar el array de errores antes de la validación
-            setInsufficientStock([]);
-            const response = await axios.get(`${API_URL}producto/${detallePedido.producto.id}`);
-            const producto = response.data;
-            const ingredientesSuficientes = producto.productosIngredientes.every(
-              (productoIngrediente:IProductoIngrediente) =>
-                productoIngrediente.ingrediente.stockActual >= productoIngrediente.cantidad * detallePedido.cantidad
-            );
-            if (!ingredientesSuficientes) {
-              setInsufficientStock(prevState => [...prevState, { isInsufficient: true, productName: detallePedido.producto.nombre }]);
-              console.error(`No hay suficiente stock para ${detallePedido.producto.nombre}`);
+        const validationPromises = pedidoCompleto.detallesPedidos.map(
+          async (detallePedido) => {
+            try {
+              // Limpiar el array de errores antes de la validación
+              setInsufficientStock([]);
+              const response = await axios.get(
+                `${API_URL}producto/${detallePedido.producto.id}`
+              );
+              const producto = response.data;
+              const ingredientesSuficientes =
+                producto.productosIngredientes.every(
+                  (productoIngrediente: IProductoIngrediente) =>
+                    productoIngrediente.ingrediente.stockActual >=
+                    productoIngrediente.cantidad * detallePedido.cantidad
+                );
+              if (!ingredientesSuficientes) {
+                setInsufficientStock((prevState) => [
+                  ...prevState,
+                  {
+                    isInsufficient: true,
+                    productName: detallePedido.producto.nombre,
+                  },
+                ]);
+                console.error(
+                  `No hay suficiente stock para ${detallePedido.producto.nombre}`
+                );
+                return false;
+              }
+              return true;
+            } catch (error) {
+              console.error("Error al validar el stock:", error);
               return false;
             }
-            return true;
-          } catch (error) {
-            console.error("Error al validar el stock:", error);
-            return false;
           }
-        });
-  
+        );
+
         const validationResults = await Promise.all(validationPromises);
-  
+
         if (validationResults.every((result) => result)) {
           // Todos los productos tienen suficiente stock, proceder con el pedido
           const response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
           console.log("Pedido enviado al servidor:", response.data);
-  
+
           // Mostrar la alerta con el número de pedido generado
           if (response.data) {
             setPedidoCompleto(response.data);
@@ -227,8 +253,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       }
     }
   };
-  
-  
 
   const handleLoginRedirect = () => {
     loginWithRedirect();
@@ -267,13 +291,22 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
                 ¿Desea agregar o eliminar algo?
               </small>
             </h1>
-            <div className="card shadow">
+            <Container className="card shadow" fluid>
+              {/* Mostrar el Alert cuando el carrito esté vacío */}
+              {isCartEmpty && (
+                <div className="container mt-4">
+                  <Alert show={true} variant="warning">
+                    No hay productos en el carrito. Agregue productos antes de
+                    confirmar.
+                  </Alert>
+                </div>
+              )}
               <CartTabla
                 cartItems={cartItems}
                 modificarCantidad={modificarCantidad}
                 eliminarDetallePedido={eliminarDetallePedido}
               />
-            </div>
+            </Container>
           </div>
 
           <div className="col-md-6">
@@ -289,16 +322,19 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               handleEsEfectivo={handleEsEfectivo}
               domicilio={usuario ? usuario.domicilio : null}
               subTotal={subTotal}
-              totalPedido={totalPedido} />
+              totalPedido={totalPedido}
+            />
           </div>
         </div>
       </div>
 
       <form onSubmit={handleConfirmarPedido}>
         <div className="d-flex justify-content-center align-items-center mb-4">
-          <button type="submit"
+          <button
+            type="submit"
             className="btn btn-primary me-2"
-            disabled={isCartEmpty || !isAuthenticated}>
+            disabled={isCartEmpty || !isAuthenticated}
+          >
             Confirmar Pedido
           </button>
           <button
@@ -313,18 +349,18 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </button>
         </div>
       </form>
-      {/* Mostrar el Alert cuando el carrito esté vacío */}
-      {isCartEmpty && (
-        <div className="container mt-3">
-          <Alert show={true} variant="warning">
-            No hay productos en el carrito. Agregue productos antes de confirmar.
-          </Alert>
-        </div>
-      )}
       {/* Mostrar el mensaje de error de stock insuficiente */}
       {insufficientStock.map((error, index) => (
         <div className="container mt-3" key={index}>
-          <Alert variant="danger" onClose={() => setInsufficientStock(prevState => prevState.filter((_, i) => i !== index))} dismissible>
+          <Alert
+            variant="danger"
+            onClose={() =>
+              setInsufficientStock((prevState) =>
+                prevState.filter((_, i) => i !== index)
+              )
+            }
+            dismissible
+          >
             No hay suficiente stock para el producto: {error.productName}
           </Alert>
         </div>
@@ -332,7 +368,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       {!isAuthenticated && (
         <div className="container mt-3">
           <Alert variant="danger" show={showAlert}>
-            Por favor, inicie sesión para confirmar el pedido.    <br />
+            Por favor, inicie sesión para confirmar el pedido. <br />
             <div className="mt-1">
               <Button variant="primary" onClick={handleLoginRedirect}>
                 Iniciar Sesión
