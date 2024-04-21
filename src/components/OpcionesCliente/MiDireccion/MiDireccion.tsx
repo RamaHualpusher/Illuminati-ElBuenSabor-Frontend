@@ -1,49 +1,47 @@
 import React, { FC, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { IDomicilio } from '../../../interface/IDomicilio';
 import EditDireccionModal from './EditDireccionModal';
 import AddDireccionModal from './AddDireccionModal';
+import { IUsuario } from '../../../interface/IUsuario';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Direccion: FC = () => {
     const [domicilio, setDomicilio] = useState<IDomicilio | null>(null);
     const [editModalShow, setEditModalShow] = useState(false);
     const [addModalShow, setAddModalShow] = useState(false);
     const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
-    const [usuario, setUsuario] = useState<any>(null); // Aquí puedes definir la interfaz para IUsuario si tienes una
+    const [usuario, setUsuario] = useState<IUsuario>(); // Aquí puedes definir la interfaz para IUsuario si tienes una
+    const { user, isAuthenticated, loginWithRedirect } = useAuth0();
+    const API_URL = process.env.REACT_APP_API_URL || "";
+    const [showAlert, setShowAlert] = useState(false); // Estado para controlar la visibilidad de la alerta
 
     useEffect(() => {
-        const fetchUsuario = async () => {
-          try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}usuario`);
-            // console.log(response);
-            setUsuario(response.data);
-      
-            // Log the user data to check its structure
-            console.log('User data:', response.data);
-      
-            // Fetch the domicilio data after getting the user data
-            if (response.data.domicilio) {
-              try {
-                const domicilioResponse = await axios.get(`${process.env.REACT_APP_API_URL}usuario/${response.data.id}/domicilio`);
-                console.log('Domicilio response:', domicilioResponse);
+        const verificarUsuarioExistente = async () => {
+            const response = await axios.get(`${API_URL}usuario`);
+            const usuarioDB = response.data;
+
+            // Encontrar el usuario correspondiente en la base de datos usando el correo electrónico
+            const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user?.email);
+            if (usuarioEncontrado) {
+                setUsuario(usuarioEncontrado);
+
+                // Obtener el domicilio del usuario
+                const domicilioResponse = await axios.get(`${API_URL}usuario/${usuarioEncontrado.id}/domicilio`);
                 setDomicilio(domicilioResponse.data);
-              } catch (error) {
-                console.error('Error fetching domicilio:', error);
-              }
+            } else {
+                console.error("No se encontró el usuario en la base de datos.");
             }
-          } catch (error) {
-            console.error('Error fetching user:', error);
-          }
         };
-      
-        fetchUsuario();
-      }, []);
+
+        verificarUsuarioExistente();
+    }, [isAuthenticated, user]);
 
     const handleDomicilioEdit = async (domicilio: IDomicilio) => {
         try {
-            await axios.put(`${process.env.REACT_APP_API_URL}usuario/${usuario.id}/domicilio`, domicilio);
+            await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
             setDomicilio(domicilio);
             setEditModalShow(false);
         } catch (error) {
@@ -53,7 +51,7 @@ const Direccion: FC = () => {
 
     const handleDomicilioAdd = async (domicilio: IDomicilio) => {
         try {
-            await axios.post(`${process.env.REACT_APP_API_URL}usuario/${usuario.id}/domicilio`, domicilio);
+            await axios.post(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
             setDomicilio(domicilio);
             setAddModalShow(false);
         } catch (error) {
@@ -78,10 +76,27 @@ const Direccion: FC = () => {
         setAddModalShow(false);
     };
 
+    const handleLoginRedirect = () => {
+        // Redirigir al usuario para iniciar sesión
+        loginWithRedirect();
+    };
+
     return (
         <div className="d-flex align-items-center" style={{ backgroundImage: `url('/assets/img/Fondo-UbicacionPerfil.jpg') `, minHeight: '100vh' }}>
             <Container>
-                {domicilio ? (
+                {!isAuthenticated && ( // Mostrar la alerta si el usuario no está autenticado
+                    <div className="container mt-3">
+                        <Alert variant="danger" show={showAlert}>
+                            Por favor, inicie sesión para confirmar el pedido.    <br />
+                            <div className="mt-1">
+                                <Button variant="primary" onClick={handleLoginRedirect}>
+                                    Iniciar Sesión
+                                </Button>
+                            </div>
+                        </Alert>
+                    </div>
+                )}
+                {domicilio && isAuthenticated ? (
                     <div>
                         <div className="card text-center">
                             <div className="card-header">
@@ -111,11 +126,11 @@ const Direccion: FC = () => {
                             <div className="card-body">
                                 <h5>No se encontró ninguna dirección.</h5>
                             </div>
-                            <div className="card-footer text-body-secondary">
+                            {isAuthenticated && (
                                 <Button variant="primary" onClick={handleAddModalOpen}>
-                                    Agregar dirección
+                                    Agregar Nueva Dirección
                                 </Button>
-                            </div>
+                            )}
                         </div>
                     </>
                 )}
