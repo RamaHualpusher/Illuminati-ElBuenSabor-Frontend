@@ -1,1 +1,10 @@
-GET http://localhost:8080/api/pedido
+PUT http://localhost:8080/api/usuario/16/domicilio
+Content-Type: application/json
+
+{
+#   "id": 11, // Este es el ID del domicilio que deseas modificar
+#   "activo": true, // Aquí puedes establecer el estado activo según tu lógica
+  "calle": "Nueva Calle",
+  "localidad": "Nueva Localidad",
+  "numero": 123,
+}
