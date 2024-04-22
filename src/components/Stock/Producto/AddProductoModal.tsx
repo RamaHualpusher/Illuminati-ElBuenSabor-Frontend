@@ -29,12 +29,25 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
       productosIngredientes: [],
     };
   };
+  const initializeIngredienteBebida = (): IIngredientes => {
+    return{
+      id: 0,
+      nombre: "",
+      stockMinimo: 0,
+      stockActual: 0,
+      precioCosto: 0,
+      unidadMedida: "U",
+      rubro: { id: 0, nombre: "", activo: true, ingredientOwner: true },
+    }
+  };
 
   const [product, setProduct] = useState<IProducto>(initializeProduct);
   const [rubros, setRubros] = useState<IRubroNew[]>([]);
-  const [ingredientesA, setIngredientesA] = useState<IIngredientes[]>([]);
-  const [ingredienteA, setIngredienteA] = useState<IIngredientes | null>(null);
-  const [cantIngredienteA, setCantIngredienteA] = useState<number>(0);
+  const [rubrosBebidas, setRubrosBebidas] = useState<IRubroNew[]>([]);
+  const [IngredientesListToAddInProduct, setIngredientesListToAddInProduct] = useState<IIngredientes[]>([]);
+  const [ingredienteToAddInProduct, setIngredienteToAddInProduct] = useState<IIngredientes | null>(null);
+  const [cantIngredienteToAddInProduct, setCantIngredienteToAddInProduct] = useState<number>(0);
+  const [ingredienteBebida, setIngredienteBebida] = useState<IIngredientes>(initializeIngredienteBebida);
   const [costo, setCosto] = useState<number>(0);
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [selectedIngredients, setSelectedIngredients] = useState<
@@ -46,6 +59,8 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
       try {
         const responseData = await axios.get<IRubroNew[]>(`${API_URL}rubro`);
         const filteredRubros = responseData.data.filter(rubro => !rubro.ingredientOwner && rubro.rubroPadre !== null); // Filtrar rubros que no sean ingredientes y tengan un padre
+        const filteredRubrosBebidas = responseData.data.filter(rubroBebida => rubroBebida.ingredientOwner && rubroBebida.rubroPadre !== null && rubroBebida.nombre.includes("Bebida"));
+        setRubrosBebidas(filteredRubrosBebidas);
         setRubros(filteredRubros);
       } catch (error) {
         console.log(error);
@@ -56,7 +71,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
       try {
         const response = await fetch(`${API_URL}ingrediente`);
         const data: IIngredientes[] = await response.json();
-        setIngredientesA(data);
+        setIngredientesListToAddInProduct(data);
       } catch (error) {
         console.log(error);
       }
@@ -66,21 +81,21 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
     fetchIngredientes();
   }, []);
 
-  const selectIngredienteA = (id: number) => {
+  const selectIngredienteToAddInProduct = (id: number) => {
     if (id !== 0) {
-      const selectedIngrediente = ingredientesA.find((ingr) => ingr.id === id);
-      setIngredienteA(selectedIngrediente || null);
-      setCantIngredienteA(0);
+      const selectedIngrediente = IngredientesListToAddInProduct.find((ingr) => ingr.id === id);
+      setIngredienteToAddInProduct(selectedIngrediente || null);
+      setCantIngredienteToAddInProduct(0);
     } else {
-      setIngredienteA(null);
+      setIngredienteToAddInProduct(null);
     }
   };
 
   const agregarIngrediente = () => {
-    if (ingredienteA && cantIngredienteA > 0) {
+    if (ingredienteToAddInProduct && cantIngredienteToAddInProduct > 0) {
       // Verificar si el ingrediente ya está presente en la lista
       const ingredienteExistente = product.productosIngredientes?.find(
-        (ingr) => ingr.ingrediente.id === ingredienteA.id
+        (ingr) => ingr.ingrediente.id === ingredienteToAddInProduct.id
       );
 
       if (ingredienteExistente) {
@@ -88,9 +103,9 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
         console.log("Este ingrediente ya está en la lista.");
       } else {
         const newProductIngrediente: IProductoIngrediente = {
-          cantidad: cantIngredienteA,
+          cantidad: cantIngredienteToAddInProduct,
           id: 0,
-          ingrediente: ingredienteA,
+          ingrediente: ingredienteToAddInProduct,
         };
 
         setProduct({
@@ -101,12 +116,12 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
           ],
         });
 
-        setCosto(costo + cantIngredienteA * ingredienteA.precioCosto);
+        setCosto(costo + cantIngredienteToAddInProduct * ingredienteToAddInProduct.precioCosto);
         setSelectedIngredients([...selectedIngredients, newProductIngrediente]);
 
         // Limpiar el ingrediente seleccionado del select
-        setIngredienteA(null);
-        setCantIngredienteA(0);
+        setIngredienteToAddInProduct(null);
+        setCantIngredienteToAddInProduct(0);
       }
     } else {
       // La cantidad del ingrediente es 0 o no se seleccionó ningún ingrediente
@@ -136,23 +151,56 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    // Asignar null a la receta si es bebida
-    const finalProduct: IProducto = {
-      ...product,
-      preparacion: product.esBebida ? "" : product.preparacion,
-    };
-
-    // Agregar el producto
-    handleProductoAdd(finalProduct);
+  
+    if (product.esBebida) {  
+      // Crear el ingrediente de la bebida con el mismo nombre que el producto
+      const ingredienteNuevo: IIngredientes = {
+        ...ingredienteBebida,
+        nombre: product.nombre,
+      };
+  
+      // Agregar el ingrediente a la lista de productosIngredientes
+      const newProductIngrediente: IProductoIngrediente = {
+        cantidad: 1,
+        id: 0,
+        ingrediente: ingredienteNuevo,
+      };
+  
+      // Crear el producto final con la lista de ingredientes actualizada
+      const finalProduct: IProducto = {
+        id: product.id,
+        nombre: product.nombre,
+        tiempoEstimadoCocina: product.tiempoEstimadoCocina,
+        denominacion: product.denominacion,
+        imagen: product.imagen,
+        stockMinimo: product.stockMinimo,
+        stockActual: product.stockActual,
+        preparacion: product.preparacion,
+        precio: product.precio,
+        esBebida: product.esBebida,
+        activo: product.activo,
+        rubro: product.rubro,
+        productosIngredientes: [newProductIngrediente],
+      };
+      console.log(finalProduct);
+      // Agregar el producto final
+      handleProductoAdd(finalProduct);
+    } else {
+  
+      // Agregar el producto final
+      handleProductoAdd(product);
+    }
+  
+    // Limpiar el estado y cerrar el modal
     handleCancelar();
   };
+  
   const handleCancelar = () => {
     setProduct(initializeProduct);
-    setCantIngredienteA(0);
+    setCantIngredienteToAddInProduct(0);
     setCosto(0);
-    setIngredienteA(null);
-    setIngredienteA(null);
+    setIngredienteToAddInProduct(null);
+    setIngredienteToAddInProduct(null);
 
     // Limpiar la lista de ingredientes seleccionados al cerrar el modal
     setSelectedIngredients([]);
@@ -229,7 +277,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
           </Row>
           {!product.esBebida && (    
           <Row>
-            <Col md={12}>
+            <Col md={8}>
               <Form.Group className="mb-3" controlId="formPreparacion">
                 <Form.Label>Receta</Form.Label>
                 <Form.Control
@@ -243,6 +291,18 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                   required
                 />
               </Form.Group>
+            </Col>
+            <Col md={4}>
+                <Form.Group className="mb-3" controlId="formTiempo">
+                    <Form.Label>Tiempo en cocina</Form.Label>
+                    <Form.Control
+                        type="number"
+                        placeholder="Ingrese tiempo"
+                        value={product.tiempoEstimadoCocina}
+                        onChange={(event) => setProduct({ ...product, tiempoEstimadoCocina: parseInt(event.target.value) })}
+                        required
+                    />
+                </Form.Group>
             </Col>
           </Row>
           )}
@@ -296,76 +356,149 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
               </Form.Group>
             </Col>
           </Row>
-          <Row>
-            <Col md={4}>
-                <Form.Group className="mb-3" controlId="formTiempo">
-                    <Form.Label>Tiempo en cocina</Form.Label>
-                    <Form.Control
-                        type="number"
-                        placeholder="Ingrese tiempo"
-                        value={product.tiempoEstimadoCocina}
-                        onChange={(event) => setProduct({ ...product, tiempoEstimadoCocina: parseInt(event.target.value) })}
-                        required
-                    />
-                </Form.Group>
-            </Col>
-            <Col md={4}>
+
+          {/*
+            TIPO BEBIDA
+            Cuando el producto es de tipo bebida se mostrará ésta parte oculta del formulario
+            Donde se agregan los campos necesarios para la creación del ingrediente correspondiente a éste producto Bebida
+            export interface IIngredientes extends IBase {
+              nombre: string; //Uso el mismo del producto
+              stockMinimo: number; OK
+              stockActual: number; OK
+              precioCosto: number; 
+              unidadMedida: string; //Se setea siempre el tipo "U"
+              rubro: IRubroNew; //Se seteará un rubro de tipo ingrediente que contenga el string "BEBIDA" //Definir si será en el back o front
+            }
+          */}
+          {product.esBebida && (
+            <>
+            <Row>
+              <Col md={6}>
                 <Form.Group className="mb-3" controlId="formStockMin">
-                    <Form.Label>Stock Mínimo</Form.Label>
-                    <Form.Control
-                        type="number"
-                        placeholder="Ingrese stock"
-                        value={product.stockMinimo}
-                        onChange={(event) => setProduct({ ...product, stockMinimo: parseFloat(event.target.value) })}
-                        required
-                    />
+                  <Form.Label>Stock Mínimo</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Ingrese stock"
+                    value={ingredienteBebida.stockMinimo}
+                    onChange={(event) =>
+                      setIngredienteBebida({
+                        ...ingredienteBebida,
+                        stockMinimo: parseFloat(event.target.value),
+                        })
+                    }
+                    required
+                  />
                 </Form.Group>
-            </Col>
-            <Col md={4}>
+              </Col>
+              <Col md={6}>
                 <Form.Group className="mb-3" controlId="formStockAct">
-                    <Form.Label>Stock Actual</Form.Label>
-                    <Form.Control
-                        type="number"
-                        placeholder="Ingrese stock"
-                        value={product.stockActual}
-                        onChange={(event) => setProduct({ ...product, stockActual: parseFloat(event.target.value) })}
-                        required
-                    />
+                  <Form.Label>Stock Actual</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Ingrese stock"
+                    value={ingredienteBebida.stockActual}
+                    onChange={(event) =>
+                      setIngredienteBebida({
+                        ...ingredienteBebida,
+                        stockActual: parseFloat(event.target.value),
+                        })
+                    }
+                    required
+                  />
                 </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formRubro">
+                <Form.Label>Tipo de bebida</Form.Label>
+                <Form.Select
+                  onChange={(event) => {
+                    const rubroId = parseInt(event.target.value);
+                    const selectedRubro = rubrosBebidas.find(
+                      (rubro) => rubro.id === rubroId
+                    );
+                    if (selectedRubro) {
+                        setIngredienteBebida({
+                          ...ingredienteBebida,
+                          rubro: selectedRubro
+                          })
+                    }
+                  }}
+                  required
+                >
+                  <option value="">Seleccione el tipo de bebida</option>
+                  {rubrosBebidas.map((rubro) => (
+                    <option
+                      key={rubro.id}
+                      value={rubro.id}
+                      disabled={!rubro.activo}
+                    >
+                      {rubro.nombre}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
             </Col>
-          </Row>
-          
+
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formPrecioCosto">
+                <Form.Label>Precio Costo</Form.Label>
+                <div className="input-group">
+                  <span className="bg-success input-group-text"><b>$</b></span>
+                  <Form.Control
+                    type="number"
+                    placeholder="Ingrese precio"
+                    value={ingredienteBebida.precioCosto}
+                    onChange={(event) =>
+                      setIngredienteBebida({
+                        ...ingredienteBebida,
+                        precioCosto: parseFloat(event.target.value),
+                        })
+                    }
+                    required
+                  />
+                </div>
+              </Form.Group>
+            </Col>
+
+            </Row>
+            </>
+          )}
+          {!product.esBebida && ( 
+            <>
           <Row>
             <Col md={12}>
-              <Form.Group className="mb-3" controlId="formIngredienteA">
+              <Form.Group className="mb-3" controlId="formIngredienteToAddInProduct">
                 <Form.Label>Agregar Ingredientes</Form.Label>
                 <Form.Select
-                  value={ingredienteA?.id || 0}
+                  value={ingredienteToAddInProduct?.id || 0}
                   onChange={(event) =>
-                    selectIngredienteA(parseInt(event.target.value))
+                    selectIngredienteToAddInProduct(parseInt(event.target.value))
                   }
                   required
                 >
                   <option value={0}>Agregar Ingrediente</option>
-                  {ingredientesA.map((Ingrediente) => (
+                  {IngredientesListToAddInProduct.map((Ingrediente) => (
                     <option value={Ingrediente.id} key={Ingrediente.id}>
                       {Ingrediente.nombre}
                     </option>
                   ))}
                 </Form.Select>
-                {ingredienteA && (
+                {ingredienteToAddInProduct && (
                   <div className="input-group mt-3">
                     <Form.Control
                       type="number"
                       placeholder="Ingrese Cantidad"
-                      value={cantIngredienteA}
+                      value={cantIngredienteToAddInProduct}
                       onChange={(event) =>
-                        setCantIngredienteA(parseInt(event.target.value))
+                        setCantIngredienteToAddInProduct(parseInt(event.target.value))
                       }
                       required
                       className="mr-2"
                     />
-                    <span className="input-group-text">{ingredienteA.unidadMedida}</span>
+                    <span className="input-group-text">{ingredienteToAddInProduct.unidadMedida}</span>
                   </div>
                 )}
                 <Button variant="success" onClick={() => agregarIngrediente()}>
@@ -407,6 +540,8 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
               </Table>
             </Col>
           </Row>
+          </>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
