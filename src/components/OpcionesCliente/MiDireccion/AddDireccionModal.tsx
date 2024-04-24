@@ -17,7 +17,6 @@ const AddDireccionModal: React.FC<IAddDireccionModalProps> = ({
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newDireccion: IDomicilio = {
-            id: 0,
             calle,
             numero,
             localidad,

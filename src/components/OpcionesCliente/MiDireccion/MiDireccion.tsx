@@ -20,24 +20,29 @@ const Direccion: FC = () => {
 
     useEffect(() => {
         const verificarUsuarioExistente = async () => {
-            const response = await axios.get(`${API_URL}usuario`);
-            const usuarioDB = response.data;
-
-            // Encontrar el usuario correspondiente en la base de datos usando el correo electrónico
-            const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user?.email);
-            if (usuarioEncontrado) {
-                setUsuario(usuarioEncontrado);
-
-                // Obtener el domicilio del usuario
-                const domicilioResponse = await axios.get(`${API_URL}usuario/${usuarioEncontrado.id}/domicilio`);
-                setDomicilio(domicilioResponse.data);
-            } else {
-                console.error("No se encontró el usuario en la base de datos.");
+            try {
+                const response = await axios.get(`${API_URL}usuario`);
+                const usuarioDB = response.data;
+    
+                // Encontrar el usuario correspondiente en la base de datos usando el correo electrónico
+                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user?.email);
+                if (usuarioEncontrado) {
+                    setUsuario(usuarioEncontrado);
+    
+                    // Obtener el domicilio del usuario
+                    const domicilioResponse = await axios.get(`${API_URL}usuario/${usuarioEncontrado.id}/domicilio`);
+                    setDomicilio(domicilioResponse.data);
+                } else {
+                    console.error("No se encontró el usuario en la base de datos.");
+                }
+            } catch (error) {
+                console.error("Error al verificar el usuario existente:", error);
+                // Manejar el error aquí según sea necesario, como mostrar un mensaje de error al usuario
             }
         };
-
+    
         verificarUsuarioExistente();
-    }, [isAuthenticated, user]);
+    }, [isAuthenticated, user]);    
 
     const handleDomicilioEdit = async (domicilio: IDomicilio) => {
         try {
