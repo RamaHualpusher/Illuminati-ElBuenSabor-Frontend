@@ -33,12 +33,18 @@ function GenericTable<T>({
   const [isLoading, setIsLoading] = useState(false);
   const [firstDate, setFirstDate] = useState<Date | null>(null);
   const [secondDate, setSecondDate] = useState<Date | null>(null);
-  const [showPopover, setShowPopover] = useState(false);
-  const [target, setTarget] = useState<HTMLElement | null>(null);
+  const [popoverStates, setPopoverStates] = useState(filteredData.map(() => false));
+  const [activeTarget, setActiveTarget] = useState<HTMLElement | null>(null); // Estado para el objetivo activo
 
-  const handleButtonClick = (event: React.MouseEvent<HTMLElement>) => {
-    setShowPopover(!showPopover);
-    setTarget(event.target as HTMLElement);
+  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number) => {
+    const target = event.currentTarget;
+    const newPopoverStates = [...popoverStates];
+    newPopoverStates[index] = !newPopoverStates[index];
+
+    // Establecer el objetivo activo
+    setActiveTarget(activeTarget === target ? null : target);
+
+    setPopoverStates(newPopoverStates);
   };
 
   useEffect(() => {
@@ -244,7 +250,7 @@ function GenericTable<T>({
             <tr key={index}>
               {columns.map((column, key) => (
                 <td key={key}>
-                 {column.render
+                  {column.render
                     ? column.render(item)
                     : String(item[column.field])}
                 </td>
@@ -255,21 +261,25 @@ function GenericTable<T>({
                     variant="link"
                     className="fs-3 bi bi-three-dots-vertical text-dark"
                     style={{ backgroundColor: "transparent", border: "none" }}
-                    onClick={handleButtonClick}
+                    onClick={(e) => handleButtonClick(e, index)} // Pasar evento y índice
                   />
                   <Overlay
-                    show={showPopover}
-                    target={target}
+                    show={popoverStates[index]}
+                    target={activeTarget} // Usar el objetivo activo aquí
                     placement="bottom"
                     rootClose
-                    onHide={() => setShowPopover(false)}
+                    onHide={() => {
+                      const newPopoverStates = [...popoverStates];
+                      newPopoverStates[index] = false;
+                      setPopoverStates(newPopoverStates);
+                    }}
                   >
                     <Popover id="popover-contained">
                       <Popover.Body className="d-flex flex-column p-1 align-items-start">
                         {actions.update && (
                           <Button
                             variant="link"
-                            onClick={() => onUpdate && onUpdate(item)}
+                            onClick={() => onUpdate!(item)}
                             className="text-dark"
                             style={{ textDecoration: "none" }}
                           >
@@ -280,7 +290,7 @@ function GenericTable<T>({
                         {actions.delete && (
                           <Button
                             variant="link"
-                            onClick={() => onDelete && onDelete(item)}
+                            onClick={() => onDelete!(item)}
                             style={{ textDecoration: "none" }}
                             className="text-dark"
                           >
@@ -291,7 +301,7 @@ function GenericTable<T>({
                         {actions.view && (
                           <Button
                             variant="link"
-                            onClick={() => onView && onView(item)}
+                            onClick={() => onView!(item)}
                             style={{ textDecoration: "none" }}
                             className="text-dark"
                           >
