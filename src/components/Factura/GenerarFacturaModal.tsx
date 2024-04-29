@@ -108,7 +108,7 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                       </p>
                     </div>
                     <div className="details-container">
-                      <h2>DETALLES DEL PEDIDO</h2>
+                      <h2>FACTURA</h2>
                       <p>Número de Pedido: {getOrDefault(selectedFactura.id, "")}</p>
                       <p>Fecha: {getOrDefault(new Date(selectedFactura.fechaFactura).toLocaleString(), "")}</p>
                     </div>

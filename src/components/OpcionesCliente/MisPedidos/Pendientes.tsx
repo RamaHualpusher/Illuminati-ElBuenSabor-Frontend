@@ -1,28 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { IPedido } from '../../../interface/IPedido';
+import { IPedidoDto } from '../../../interface/IPedido';
 import PedidoCardUsuario from './PedidoCardUsuario';
 import { Link } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { IUsuario } from '../../../interface/IUsuario';
+import NoHayPedidos from '../../Page404/NoHayPedidos';
 
 const Pendientes: React.FC = () => {
-    const [pedidosPendientes, setPedidosPendientes] = useState<IPedido[]>([]);
+    const [pedidosPendientes, setPedidosPendientes] = useState<IPedidoDto[]>([]);
+    const { user, isAuthenticated } = useAuth0();
+    const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
         const fetchPedidosPendientes = async () => {
             try {
-                const response = await axios.get<IPedido[]>('/assets/data/pedidos.json');
-                // Filtrar los pedidos con estados pendientes
-                const pedidos = response.data.filter((pedido) =>
-                    ['A confirmar', 'En cocina', 'Listo', 'En delivery'].includes(pedido.estadoPedido)
-                );
-                setPedidosPendientes(pedidos);
+                if (!isAuthenticated || !user) return;
+                
+                // Verificar el usuario existente
+                const response = await axios.get(`${API_URL}usuario`);
+                const usuarioDB = response.data;
+                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user.email);
+
+                if (usuarioEncontrado) {
+                    // Obtener los pedidos del usuario
+                    const pedidosResponse = await axios.get<IPedidoDto[]>(`${API_URL}pedido/usuario/${usuarioEncontrado.id}`);
+                    // Filtrar los pedidos pendientes
+                    const pedidosPendientes = pedidosResponse.data.filter((pedido) =>
+                        // ['A confirmar', 'En cocina', 'Listo', 'En delivery'].includes(pedido.estadoPedido)
+                    ['A confirmar', 'En cocina'].includes(pedido.estadoPedido)
+
+                    );
+                    pedidosPendientes.sort((a, b) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+                    setPedidosPendientes(pedidosPendientes);
+                } else {
+                    console.error("No se encontró el usuario en la base de datos.");
+                }
             } catch (error) {
-                console.log(error);
+                console.error("Error al verificar el usuario existente:", error);
+                // Manejar el error aquí según sea necesario, como mostrar un mensaje de error al usuario
             }
         };
 
         fetchPedidosPendientes();
-    }, []);
+    }, [isAuthenticated, user]);   
 
     return (
         <div style={{ minHeight: 'calc(100vh - 90px)' }}>
@@ -36,7 +57,7 @@ const Pendientes: React.FC = () => {
             ) : (
                 // Mostrar mensaje si no hay pedidos pendientes
                 <>
-                    <p>No hay pedidos pendientes disponibles.</p>
+                    <NoHayPedidos onReload={() => window.location.reload()} />
                     <div className="text-center">
                         <Link to="/" className="btn btn-primary btn-lg mb-3">
                             Ver Catálogo

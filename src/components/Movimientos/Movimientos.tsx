@@ -10,39 +10,37 @@ import { IIngredientes } from '../../interface/IIngredientes';
 import { IPedidoDto } from '../../interface/IPedido';
 import GenerarTicket from '../Ticket/GenerarTicket';
 import NoHayPedidos from '../Page404/NoHayPedidos';
-import { IFactura } from '../../interface/IFactura';
 
 const Movimientos = () => {
   const [pedidos, setPedidos] = useState<IPedidoDto[]>([]);
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>(null);
   const [showPedidoModal, setShowPedidoModal] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const pedidosResponse = await axios.get(`${API_URL}pedido`);
         const pedidosData = pedidosResponse.data;
-        console.log(pedidosData)
-        // Ordenar los pedidos por fecha de pedido de manera descendente
-        pedidosData.sort((a: { fechaPedido: string | number | Date; }, b: { fechaPedido: string | number | Date; }) =>
-          new Date(b.fechaPedido).getDate() - new Date(a.fechaPedido).getDate());
 
-        setPedidos(pedidosResponse.data);
+        // Ordenar los pedidos por fecha de pedido de manera descendente
+         pedidosData.sort((a: IPedidoDto, b: IPedidoDto) =>
+           new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+
+        setPedidos(pedidosData);
       } catch (error) {
         console.error('Error al cargar datos:', error);
       }
     };
     fetchData();
-  }, []);
+  }, [pedidos]);
 
   const openPedidoModal = async (pedido: IPedidoDto) => {
     setSelectedPedido(pedido);
     try {
       setShowPedidoModal(true);
     } catch (error) {
-      console.error('Error al generar la factura:', error);
+      console.error('Error al generar ticket:', error);
     }
   };
 
@@ -167,7 +165,7 @@ const Movimientos = () => {
                 onView={openPedidoModal}
               />
             ) : (
-              NoHayPedidos
+              <NoHayPedidos onReload={() => window.location.reload()} />
             )}
           </Col>
         </Row>        

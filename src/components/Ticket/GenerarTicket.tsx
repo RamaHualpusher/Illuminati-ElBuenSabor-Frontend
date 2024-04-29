@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { IFactura } from "../../interface/IFactura";
 import SendEmail from "../SendEmail/SendEmail";
 import axios from "axios";
-import { IUsuario } from "../../interface/IUsuario";
 
 interface GenerarTicketProps {
     pedido: IPedidoDto | null;
@@ -24,7 +23,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
 }) => {
     const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>(null);
     const [showSendEmail, setShowSendEmail] = useState<boolean>(false);
-    const [confirmSendEmail, setConfirmSendEmail] = useState<boolean>(false);
+    const [showGenerarFactura, setShowGenerarFactura] = useState<boolean>(false);
     const [factura, setFactura] = useState<IFactura | null>(null);
     const navigate = useNavigate();
     const API_URL = process.env.REACT_APP_API_URL || "";
@@ -98,14 +97,13 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
     };
 
     const handleGenerarFactura = async (selectedPedido: IPedidoDto | null) => {
-        if (pedido) {
-            const confirmarGenerarFactura = window.confirm("¿Está seguro de que desea generar la factura?");
+        if (selectedPedido) {
+            const confirmarGenerarFactura = window.confirm(`¿Está seguro de que desea generar la factura a nomnbre de ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido}?`);
             if (confirmarGenerarFactura) {
                 if (selectedPedido) {
                     const facturaGenerada = await generarFactura(selectedPedido);
-                    console.log("ya genero la factura" + facturaGenerada)
                     if (facturaGenerada) {
-                        const confirmarEnviarEmail = window.confirm(`¿Desea enviar la factura generada por correo electrónico a ${pedido.usuario.email}?`);
+                        const confirmarEnviarEmail = window.confirm(`¿Desea enviar la factura generada por correo electrónico a ${selectedPedido.usuario.email}?`);
                         if (confirmarEnviarEmail) {
                             setShowSendEmail(true);
                         }

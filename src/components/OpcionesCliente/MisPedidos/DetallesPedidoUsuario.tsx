@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { IPedido } from '../../../interface/IPedido';
+import { IPedidoDto } from '../../../interface/IPedido';
 import Spinner from '../../Spinner/Spinner';
 import { IDetallePedido } from '../../../interface/IDetallePedido';
 import { IProducto } from '../../../interface/IProducto';
+import axios from 'axios';
+import { useAuth0 } from "@auth0/auth0-react";
+import { IUsuario } from '../../../interface/IUsuario';
 
 // Función para calcular el tiempo estimado de finalización
 const calcularTiempoEstimadoFinalizacion = (detallePedido: IDetallePedido[], esDelivery: boolean) => {
@@ -39,32 +41,46 @@ const obtenerSubtotal = (detallePedido: IDetallePedido[]) => {
 };
 
 const DetallesPedidoUsuario: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const [pedido, setPedido] = useState<IPedido | null>(null);
+    const [pedido, setPedido] = useState<IPedidoDto | null>(null);
+    const API_URL = process.env.REACT_APP_API_URL || "";
+    const { user} = useAuth0();
+    const [usuario, setUsuario] = useState<IUsuario>(); // Aquí puedes definir la interfaz para IUsuario si tienes una
 
     useEffect(() => {
-        const fetchPedido = async () => {
+        const verificarUsuarioYObtenerPedidos = async () => {
             try {
-                if (id) {
-                    const response = await fetch('/assets/data/pedidos.json');
-                    const data = await response.json();
-                    const pedidoEncontrado = data.find((pedido: IPedido) => pedido.id === parseInt(id));
-                    setPedido(pedidoEncontrado || null);
+                // Verificar el usuario existente
+                const usuarioResponse = await axios.get(`${API_URL}usuario`);
+                const usuarioDB = usuarioResponse.data;
+    
+                // Encontrar el usuario correspondiente en la base de datos usando el correo electrónico
+                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user?.email);
+                if (usuarioEncontrado) {
+                    // Establecer el usuario encontrado en el estado
+                    setUsuario(usuarioEncontrado);
+    
+                    // Obtener los pedidos del usuario
+                    const pedidosResponse = await axios.get(`${API_URL}pedido/usuario/${usuarioEncontrado.id}`);
+                    const pedidosDelUsuario = pedidosResponse.data;
+                    setPedido(pedidosDelUsuario);
+    
+                    // Puedes manejar los pedidos obtenidos aquí, como establecerlos en el estado o realizar otras acciones
+                    console.log("Pedidos del usuario:", pedidosDelUsuario);
+                } else {
+                    console.error("No se encontró el usuario en la base de datos.");
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Error al verificar el usuario y obtener pedidos:", error);
+                // Manejar el error aquí según sea necesario, como mostrar un mensaje de error al usuario
             }
         };
-
-        fetchPedido();
-    }, [id]);
+    
+        verificarUsuarioYObtenerPedidos();
+    }, [user]);
 
     if (!pedido) {
         return <Spinner />;
     }
-
-    // Obtener propiedades del pedido
-    const { Usuario, fechaPedido, esEfectivo, esDelivery, DetallePedido } = pedido;
 
     // Función para regresar a la página anterior
     const goBack = () => {
@@ -95,9 +111,9 @@ const DetallesPedidoUsuario: React.FC = () => {
     };
 
     // Cálculos relacionados con el pedido
-    const subtotalPedido = obtenerSubtotal(DetallePedido);
-    const totalPedido = esDelivery ? subtotalPedido + 500 : subtotalPedido * 0.9;
-    const tiempoEstimadoFinalizacion = calcularTiempoEstimadoFinalizacion(DetallePedido, esDelivery);
+    const subtotalPedido = obtenerSubtotal(pedido.detallesPedidos);
+    const totalPedido = pedido.esDelivery ? subtotalPedido + 500 : subtotalPedido * 0.9;
+    const tiempoEstimadoFinalizacion = calcularTiempoEstimadoFinalizacion(pedido.detallesPedidos, pedido.esDelivery);
 
     return (
         <div className="detalle-page-container d-flex align-items-center justify-content-center" style={{ backgroundImage: `url('/assets/img/fondoMisPedidos.jpg') `, minHeight: '100vh' }}>
@@ -107,17 +123,17 @@ const DetallesPedidoUsuario: React.FC = () => {
                         <div className="card mb-5 mt-3">
                             <div className="card-header text-center"><h1 className="display-5">Detalles del Pedido</h1></div>
                             <div className="card-body text-center">
-                                <h5 className="card-title"> Número de Pedido: {id}</h5>
-                                <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {Usuario.nombre} {Usuario.apellido}</p>
-                                <p className="card-text"><strong>Teléfono:</strong> {Usuario.telefono}</p>
-                                {!esDelivery ? (
-                                    <p className="card-text"><strong>Dirección de Entrega:</strong> {Usuario.domicilio.calle}, {Usuario.domicilio.localidad}, {Usuario.domicilio.numero}</p>
+                                <h5 className="card-title"> Número de Pedido: {pedido.id}</h5>
+                                <p className="card-text"><strong>Nombre y Apellido del Cliente:</strong> {usuario?.nombre} {usuario?.apellido}</p>
+                                <p className="card-text"><strong>Teléfono:</strong> {usuario?.telefono}</p>
+                                {!pedido.esDelivery ? (
+                                    <p className="card-text"><strong>Dirección de Entrega:</strong> {usuario?.domicilio.calle}, {usuario?.domicilio.localidad}, {usuario?.domicilio.numero}</p>
                                 ) : (
-                                    <p className="card-text"><strong> Dirección de Entrega:</strong> {Usuario.domicilio.calle}, {Usuario.domicilio.localidad}, {Usuario.domicilio.numero}</p>
+                                    <p className="card-text"><strong> Dirección de Entrega:</strong> {usuario?.domicilio.calle}, {usuario?.domicilio.localidad}, {usuario?.domicilio.numero}</p>
                                 )}
-                                <p className="card-text"><strong>Fecha:</strong> {formatDate(fechaPedido)}</p>
-                                <p className="card-text"><strong>Método de Pago:</strong> {esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
-                                {!esDelivery ? (
+                                <p className="card-text"><strong>Fecha:</strong> {formatDate(pedido.fechaPedido)}</p>
+                                <p className="card-text"><strong>Método de Pago:</strong> {pedido.esEfectivo ? 'Efectivo' : 'Mercado Pago'}</p>
+                                {!pedido.esDelivery ? (
                                     <p className="card-text"><strong>Método de Entrega:</strong> Retiro en Local</p>
                                 ) : (
                                     <p className="card-text"><strong>Método de Entrega:</strong> Delivery</p>
@@ -125,14 +141,14 @@ const DetallesPedidoUsuario: React.FC = () => {
 
                                 <h5 className="card-title">Detalle de Ítems Pedidos</h5>
 
-                                {DetallePedido.map((detalle: IDetallePedido) => (
+                                {pedido.detallesPedidos.map((detalle: IDetallePedido) => (
                                     <ul key={detalle.id} className="list-unstyled">
                                         {renderProductos(detalle)}
                                     </ul>
                                 ))}
 
                                 <p className="card-text"><strong>Subtotal:</strong> ${subtotalPedido}</p>
-                                {!esDelivery && <p className="card-text"><strong>Descuento (10%):</strong> ${subtotalPedido * 0.1}</p>}
+                                {!pedido.esDelivery && <p className="card-text"><strong>Descuento (10%):</strong> ${subtotalPedido * 0.1}</p>}
                                 <p className="card-text"><strong>Total:</strong> ${totalPedido}</p>
                                 <p className="card-text"><strong>Tiempo Estimado:</strong> {tiempoEstimadoFinalizacion}Min</p>
                             </div>

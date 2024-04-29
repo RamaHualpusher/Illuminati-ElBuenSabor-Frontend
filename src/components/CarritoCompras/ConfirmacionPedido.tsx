@@ -469,7 +469,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       <div>
         {/* Modal del ticket */}
         <Modal show={showTicketModal} onHide={() => setShowTicketModal(false)}>
-          <Modal.Body>
             {/* Aquí renderizamos el componente GenerarTicket */}
             {pedidoConfirmado && (
               <GenerarTicket
@@ -479,8 +478,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
                 modificarCantidad={modificarCantidad}
                 eliminarDetallePedido={eliminarDetallePedido}
               />
-            )}
-          </Modal.Body>
+            )}         
         </Modal>
       </div>
       {/* Mostrar el Alert cuando el carrito esté vacío */}

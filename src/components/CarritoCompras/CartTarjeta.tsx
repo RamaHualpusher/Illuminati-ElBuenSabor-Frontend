@@ -193,19 +193,19 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                     <span style={{ marginLeft: "10px" }}>
                       {domicilio.calle}, {domicilio.numero},{" "}
                       {domicilio.localidad}
-                      <button className="btn btn-success ms-2" onClick={handleClickDireccion}>
+                      <button className="btn btn-success ms-2" onClick={handleClickDireccion} style= {{marginTop: "5px"}}>
                         Corregir Dirección
                       </button>
                     </span>
                   ) : (
-                    <Modal className="btn btn-success" onClick={handleClickDireccion}>
+                    <Modal className="btn btn-success" onClick={handleClickDireccion} style= {{marginTop: "5px"}}>
                       Agregar Dirección
                     </Modal>
                   )}
                 </p>
               )}
               <div className="mb-0">
-                <p className="lead">
+                <p className="lead" style= {{marginTop: "20px"}}>
                   <strong>SubTotal: </strong>${subTotal}
                 </p>
                 {!esDelivery && esEfectivo && (

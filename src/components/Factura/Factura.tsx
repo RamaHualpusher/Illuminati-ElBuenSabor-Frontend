@@ -8,6 +8,7 @@ import { IFactura } from "../../interface/IFactura";
 import axios from "axios";
 import { IPedidoDto } from "../../interface/IPedido";
 import { IDetallePedido } from "../../interface/IDetallePedido";
+import NoHayPedidos from "../Page404/NoHayPedidos";
 
 const Factura = () => {
   const [facturas, setFacturas] = useState<IFactura[]>([]);
@@ -126,7 +127,7 @@ const Factura = () => {
                 showDate={true}                
               />
             ) : (
-              <p>No hay datos de facturas disponibles.</p>
+              <NoHayPedidos onReload={() => window.location.reload()} />
             )}
           </Col>
         </Row>
