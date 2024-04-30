@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { IDomicilio } from '../../interface/IDomicilio';
+import { IDomicilio } from "../../interface/IDomicilio";
 import { IUsuario } from "../../interface/IUsuario";
-import { Modal } from "react-bootstrap";
+import { Col, Modal, Row } from "react-bootstrap";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -24,15 +24,17 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   domicilio,
   subTotal,
   totalPedido,
-  usuario
+  usuario,
 }) => {
   const costoDelivery = 500;
-  const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo   
-  const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(domicilio);
+  const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo
+  const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(
+    domicilio
+  );
   const [modalAbierto, setModalAbierto] = useState(false);
-  const [calle, setCalle] = useState('');
-  const [numero, setNumero] = useState('');
-  const [localidad, setLocalidad] = useState('');
+  const [calle, setCalle] = useState("");
+  const [numero, setNumero] = useState("");
+  const [localidad, setLocalidad] = useState("");
   const API_URL = process.env.REACT_APP_API_URL || "";
   const { isAuthenticated } = useAuth0();
 
@@ -40,9 +42,9 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   useEffect(() => {
     // Si el usuario tiene una dirección, establecemos los valores en los campos correspondientes
     if (domicilio) {
-      setCalle(domicilio.calle || '');
-      setNumero(domicilio.numero ? domicilio.numero.toString() : '');
-      setLocalidad(domicilio.localidad || '');
+      setCalle(domicilio.calle || "");
+      setNumero(domicilio.numero ? domicilio.numero.toString() : "");
+      setLocalidad(domicilio.localidad || "");
     }
   }, [domicilio]);
 
@@ -60,14 +62,9 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   // Función para manejar el clic en el botón de Retiro en el Local
   const handleClickRetiroLocal = () => {
     handleEsDelivery(false);
-    setNuevoDomicilio({
-      calle: "Retiro en el Local",
-      numero: NaN,
-      localidad: "",
-    });
   };
 
-  // Función para manejar el clic en el botón de método de pago "Efectivo" 
+  // Función para manejar el clic en el botón de método de pago "Efectivo"
   const handleClickEfectivo = () => {
     handleEsDelivery(false);
     handleEsEfectivo(true);
@@ -84,44 +81,56 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (calle && numero && localidad)  {
-      const nuevaDireccion : IDomicilio = {
+    if (calle && numero && localidad) {
+      const nuevaDireccion: IDomicilio = {
         activo: true,
         calle: calle,
         numero: parseInt(numero),
-        localidad: localidad
+        localidad: localidad,
       };
 
       try {
-        const domicilioUsuario : IDomicilio = await obtenerDomicilioUsuario();
+        const domicilioUsuario: IDomicilio = await obtenerDomicilioUsuario();
 
-        if (domicilioUsuario) { 
+        if (domicilioUsuario) {
           domicilioUsuario.activo = true;
           domicilioUsuario.calle = nuevaDireccion.calle;
           domicilioUsuario.numero = nuevaDireccion.numero;
           domicilioUsuario.localidad = nuevaDireccion.localidad;
-                    
+
           // Si el usuario ya tiene una dirección, realizamos una solicitud PUT para actualizarla
-          await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilioUsuario);
+          await axios.put(  
+            `${API_URL}usuario/${usuario?.id}/domicilio`,
+            domicilioUsuario
+          );
+          // Actualizamos el estado del domicilio después de guardar la dirección
+          setNuevoDomicilio(domicilioUsuario);
         } else {
           // Si el usuario no tiene una dirección, realizamos una solicitud POST para crearla
-          await axios.post(`${API_URL}domicilio`, { ...nuevaDireccion, usuario: usuario });
+          await axios.post(`${API_URL}domicilio`, {
+            ...nuevaDireccion,
+            usuario: usuario,
+          });
+          // Actualizamos el estado del domicilio después de guardar la dirección
+        setNuevoDomicilio(nuevaDireccion);
         }
         // Cerramos el modal después de enviar la solicitud
         setModalAbierto(false);
       } catch (error) {
-        console.error('Error al guardar la dirección:', error);
+        console.error("Error al guardar la dirección:", error);
       }
     }
   };
 
   const obtenerDomicilioUsuario = async () => {
     try {
-      const response = await axios.get(`${API_URL}usuario/${usuario?.id}/domicilio`);
+      const response = await axios.get(
+        `${API_URL}usuario/${usuario?.id}/domicilio`
+      );
 
       return response.data;
     } catch (error) {
-      console.error('Error al obtener el domicilio del usuario:', error);
+      console.error("Error al obtener el domicilio del usuario:", error);
       return null;
     }
   };
@@ -191,14 +200,44 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                   <strong>Dirección:</strong>
                   {domicilio ? (
                     <span style={{ marginLeft: "10px" }}>
-                      {domicilio.calle}, {domicilio.numero},{" "}
-                      {domicilio.localidad}
-                      <button className="btn btn-success ms-2" onClick={handleClickDireccion}>
-                        Corregir Dirección
-                      </button>
+                      {domicilio ? (
+                        <>
+                          {esDelivery ? (
+                            <>
+                              <span>
+                                {domicilio.calle}, {domicilio.numero},{" "}
+                                {domicilio.localidad}
+                              </span>
+                              <br />
+                              <button
+                                className="btn btn-success ms-2 mt-1 mb-2"
+                                onClick={handleClickDireccion}
+                              >
+                                Cambiar Dirección
+                              </button>
+                            </>
+                          ) : (
+                            <span>
+                              Retiro en el Local
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <button
+                          className="btn btn-success"
+                          onClick={handleClickDireccion}
+                        >
+                          Agregar Dirección
+                        </button>
+                      )}
+
+                      <br />
                     </span>
                   ) : (
-                    <Modal className="btn btn-success" onClick={handleClickDireccion}>
+                    <Modal
+                      className="btn btn-success"
+                      onClick={handleClickDireccion}
+                    >
                       Agregar Dirección
                     </Modal>
                   )}
@@ -239,7 +278,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
             <div className="d-flex flex-column align-items-center">
               <h5>Método de Pago</h5>
               <div className="d-flex justify-content-center">
-                <div className="mb-0">
+                <div className="mb-0 me-2">
                   <input
                     type="radio"
                     className="btn-check"
@@ -249,7 +288,11 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                     onChange={handleClickMercadoPago}
                   />
                   <label
-                    className={!esEfectivo ? "btn btn-primary" : "btn btn-outline-primary"}
+                    className={
+                      !esEfectivo
+                        ? "btn btn-primary"
+                        : "btn btn-outline-primary"
+                    }
                     htmlFor="mercadoPago-outlined"
                   >
                     Mercado Pago
@@ -264,10 +307,14 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                       autoComplete="off"
                       checked={!esDelivery && esEfectivo} // Solo chequea si no es delivery y es efectivo
                       onChange={handleClickEfectivo}
-                      disabled={esDelivery} // Deshabilita si es delivery                      
+                      disabled={esDelivery} // Deshabilita si es delivery
                     />
                     <label
-                      className={!esDelivery && esEfectivo ? "btn btn-primary" : "btn btn-outline-primary"}
+                      className={
+                        !esDelivery && esEfectivo
+                          ? "btn btn-primary"
+                          : "btn btn-outline-primary"
+                      }
                       htmlFor="efectivo-outlined"
                     >
                       Efectivo
@@ -280,28 +327,68 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
         </div>
       </div>
       {modalAbierto && (
-        <div className="modal" tabIndex={-1} role="dialog" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+        <div
+          className="modal"
+          tabIndex={-1}
+          role="dialog"
+          style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Corregir Dirección</h5>
-                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}></button>
+                <h5 className="modal-title">Cambiar Dirección</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={handleCloseModal}
+                ></button>
               </div>
               <div className="modal-body">
                 <form onSubmit={handleFormSubmit}>
-                  <div className="mb-3">
-                    <label htmlFor="calle" className="form-label">Calle</label>
-                    <input type="text" className="form-control" id="calle" value={calle} onChange={(e) => setCalle(e.target.value)} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="numero" className="form-label">Número</label>
-                    <input type="number" className="form-control" id="numero" value={numero} onChange={(e) => setNumero(e.target.value)} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="localidad" className="form-label">Localidad</label>
-                    <input type="text" className="form-control" id="localidad" value={localidad} onChange={(e) => setLocalidad(e.target.value)} />
-                  </div>
-                  <button type="submit" className="btn btn-primary">Guardar Dirección</button>
+                  <Row className="justify-content-center mb-2">
+                    <Col md={11}>
+                      <label htmlFor="calle" className="form-label">
+                        Calle
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="calle"
+                        value={calle}
+                        onChange={(e) => setCalle(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="mb-4">
+                    <Col>
+                      <label htmlFor="numero" className="form-label">
+                        Número
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="numero"
+                        value={numero}
+                        onChange={(e) => setNumero(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <label htmlFor="localidad" className="form-label">
+                        Localidad
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="localidad"
+                        value={localidad}
+                        onChange={(e) => setLocalidad(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                  <button type="submit" className="btn btn-primary">
+                    Guardar Dirección
+                  </button>
                 </form>
               </div>
             </div>
