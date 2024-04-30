@@ -136,7 +136,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         detallesPedidos: detallesPedido,
         total: nuevoTotalPedido,
       };
-      // console.log("Pedido completo:", JSON.stringify(nuevoPedidoCompleto));
       setTotalPedido(nuevoTotalPedido);
       setPedidoCompleto(nuevoPedidoCompleto);
     }
