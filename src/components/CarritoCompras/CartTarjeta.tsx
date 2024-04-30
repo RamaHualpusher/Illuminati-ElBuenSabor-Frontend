@@ -90,7 +90,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
       };
 
       try {
-        const domicilioUsuario: IDomicilio = await obtenerDomicilioUsuario();
+        const domicilioUsuario = domicilio;
 
         if (domicilioUsuario) {
           domicilioUsuario.activo = true;
@@ -119,19 +119,6 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
       } catch (error) {
         console.error("Error al guardar la dirección:", error);
       }
-    }
-  };
-
-  const obtenerDomicilioUsuario = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}usuario/${usuario?.id}/domicilio`
-      );
-
-      return response.data;
-    } catch (error) {
-      console.error("Error al obtener el domicilio del usuario:", error);
-      return null;
     }
   };
 
