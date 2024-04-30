@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { IDomicilio } from "../../interface/IDomicilio";
 import { IUsuario } from "../../interface/IUsuario";
-import { Col, Modal, Row } from "react-bootstrap";
+import { Button, Col, Modal, Row } from "react-bootstrap";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -99,7 +99,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
           domicilioUsuario.localidad = nuevaDireccion.localidad;
 
           // Si el usuario ya tiene una dirección, realizamos una solicitud PUT para actualizarla
-          await axios.put(  
+          await axios.put(
             `${API_URL}usuario/${usuario?.id}/domicilio`,
             domicilioUsuario
           );
@@ -112,7 +112,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
             usuario: usuario,
           });
           // Actualizamos el estado del domicilio después de guardar la dirección
-        setNuevoDomicilio(nuevaDireccion);
+          setNuevoDomicilio(nuevaDireccion);
         }
         // Cerramos el modal después de enviar la solicitud
         setModalAbierto(false);
@@ -205,7 +205,19 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                             </>
                           ) : (
                             <span>
-                              Retiro en el Local
+                              Retiro en el Local{" "}
+                              <span
+                                className="icon"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => {
+                                  window.open(
+                                    "https://maps.app.goo.gl/aCW5vzKe88XF2poYA",
+                                    "_blank"
+                                  );
+                                }}
+                              >
+                                <i className="bi bi-geo-alt-fill text-black"></i>
+                              </span>
                             </span>
                           )}
                         </>
