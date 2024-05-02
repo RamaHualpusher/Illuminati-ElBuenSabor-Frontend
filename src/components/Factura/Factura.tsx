@@ -8,6 +8,7 @@ import { IFactura } from "../../interface/IFactura";
 import axios from "axios";
 import { IPedidoDto } from "../../interface/IPedido";
 import { IDetallePedido } from "../../interface/IDetallePedido";
+import NoHayPedidos from "../Page404/NoHayPedidos";
 
 const Factura = () => {
   const [facturas, setFacturas] = useState<IFactura[]>([]);
@@ -117,22 +118,26 @@ const Factura = () => {
         </Row>
         <Row className="mt-3">
           <Col>
-            <GenericTable<IFactura>
-              data={facturas}
-              columns={columns}
-              actions={{
-                create: false,
-                update: false,
-                delete: false,
-                view: true,
-              }}
-              onView={onView}
-              showDate={true}
-            />
+            {facturas && facturas.length > 0 ? (
+              <GenericTable<IFactura>
+                data={facturas}
+                columns={columns}
+                actions={{
+                  create: false,
+                  update: false,
+                  delete: false,
+                  view: true,
+                }}
+                onView={onView}
+                showDate={true}                
+              />
+            ) : (
+              <NoHayPedidos onReload={() => window.location.reload()} />
+            )}
+
           </Col>
         </Row>
       </Container>
-
       {/* Modal para mostrar detalles de la factura */}
       <GenerarFacturaModal
         factura={selectedFactura}

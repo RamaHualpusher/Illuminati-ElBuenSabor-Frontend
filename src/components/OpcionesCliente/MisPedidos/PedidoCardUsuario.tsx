@@ -1,23 +1,34 @@
-import React from 'react';
-import { Card, Row, Col } from 'react-bootstrap';
-import { IPedido } from '../../../interface/IPedido';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Card, Row, Col, Button } from 'react-bootstrap';
+import { IPedidoDto } from '../../../interface/IPedido';
 import EstadoPedidoCard from '../../Pedidos/EstadoPedidoCard';
+import GenerarTicket from '../../Ticket/GenerarTicket';
+import { IDetallePedido } from '../../../interface/IDetallePedido';
+import { IProducto } from '../../../interface/IProducto';
 
 interface PedidoCardUsuarioProps {
-    pedido: IPedido;
+    pedido: IPedidoDto;
 }
 
 const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
     // URL para el detalle del pedido
     const urlDetallePedido = `/mis-pedido/${pedido.id}`;
+    const [showGenerarTicket, setShowGenerarTicket] = useState(false);
 
-    // Función para manejar la acción de "ver"
-    const onView = () => {
-        const encodedPedido = encodeURIComponent(JSON.stringify(pedido));
-        window.open(`/factura/${encodedPedido}`, "_blank");
-        window.postMessage(pedido, "*");
+    // Función para calcular el subtotal del pedido
+    const obtenerSubtotal = (detallePedido: IDetallePedido[]) => {
+        let subtotal = 0;
+        detallePedido.forEach((detalle: IDetallePedido) => {
+            subtotal += detalle.producto.precio * detalle.cantidad;
+        });
+        return subtotal;
     };
+
+    // Función para calcular el total del pedido
+    const calcularTotalPedido = () => {
+        const subtotal = obtenerSubtotal(pedido.detallesPedidos);
+        return pedido.esDelivery ? subtotal + 500 : subtotal * 0.9;
+    };   
 
     return (
         <Card className="pedido-card mb-2">
@@ -30,6 +41,7 @@ const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
                             {pedido.horaEstimadaFin ? new Date(pedido.horaEstimadaFin).toLocaleTimeString() : ''} - {pedido.esDelivery ? 'Delivery' : 'Retiro Local'}
                         </Card.Text>
                         <Card.Text>{new Date(pedido.fechaPedido).toLocaleDateString()}</Card.Text>
+                        <Card.Text><b>Total: </b> ${calcularTotalPedido().toFixed(2)}</Card.Text>
                     </Col>
                     <Col sm={8}>
                         <div className="d-flex align-items-center justify-content-end">
@@ -39,18 +51,16 @@ const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
                             {['Listo', 'Pagado', 'A confirmar', 'En cocina', 'En delivery', 'Entregado', 'Cancelado'].includes(pedido.estadoPedido) && (
                                 // Mostrar botones solo para ciertos estados de pedido
                                 <>
-                                    <Link to={urlDetallePedido} className="btn btn-primary me-2">
-                                        <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
-                                    </Link>
-                                    <button className="btn btn-primary me-2" onClick={onView}>
-                                        <i className="bi bi-receipt me-1"></i> Factura
-                                    </button>
+                                    <Button variant="primary" className="me-2" onClick={() => setShowGenerarTicket(true)}>
+                                        <i className="bi bi-file-earmark-text-fill me-1"></i> Detalle pedido
+                                    </Button>
                                 </>
                             )}
                         </div>
                     </Col>
                 </Row>
             </Card.Body>
+            <GenerarTicket pedido={pedido} closeModal={() => setShowGenerarTicket(false)} show={showGenerarTicket} />
         </Card>
     );
 };

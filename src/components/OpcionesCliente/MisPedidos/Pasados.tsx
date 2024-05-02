@@ -1,32 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { IPedido } from '../../../interface/IPedido';
+import { IPedidoDto } from '../../../interface/IPedido';
 import PedidoCardUsuario from './PedidoCardUsuario';
 import { Link } from 'react-router-dom';
+import { useAuth0 } from "@auth0/auth0-react";
+import { IUsuario } from '../../../interface/IUsuario';
+import NoHayPedidos from '../../Page404/NoHayPedidos';
 
 const Pasados: React.FC = () => {
     // Estado para almacenar los pedidos pasados
-    const [pedidosPasados, setPedidosPasados] = useState<IPedido[]>([]);
-
-    // Estado para almacenar el pedido seleccionado
-    const [selectedPedido, setSelectedPedido] = useState<IPedido | null>(null);
+    const [pedidosPasados, setPedidosPasados] = useState<IPedidoDto[]>([]);
+    const { isAuthenticated, user } = useAuth0();
+    const API_URL = process.env.REACT_APP_API_URL || "";
 
     // Obtener y filtrar los pedidos pasados al montar el componente
     useEffect(() => {
         const fetchPedidosPasados = async () => {
             try {
-                const response = await axios.get<IPedido[]>('/assets/data/pedidos.json');
-                const pedidos = response.data.filter((pedido) =>
-                    pedido.estadoPedido === 'Entregado' || pedido.estadoPedido === 'Cancelado'
-                );
-                setPedidosPasados(pedidos);
+                if (!isAuthenticated || !user) return;
+
+                // Verificar el usuario existente
+                const responseUsuario = await axios.get(`${API_URL}usuario`);
+                const usuarioDB: IUsuario[] = responseUsuario.data;
+                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user.email);
+
+                if (usuarioEncontrado) {
+                    const responsePedidos = await axios.get<IPedidoDto[]>(`${API_URL}pedido/usuario/${usuarioEncontrado.id}`);
+                    const pedidosResponse: IPedidoDto[] = responsePedidos.data;
+
+                    // Filtrar pedidos entregados y cancelados
+                    const entregados = pedidosResponse.filter((pedido) => pedido.estadoPedido === 'Entregado');
+                    const cancelados = pedidosResponse.filter((pedido) => pedido.estadoPedido === 'Cancelado');
+
+                    // Concatenar los pedidos entregados y cancelados
+                    const pedidos = [...entregados, ...cancelados];
+
+                    pedidos.sort((a, b) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+                    setPedidosPasados(pedidos);
+                }
             } catch (error) {
                 console.log(error);
             }
         };
 
         fetchPedidosPasados();
-    }, []);
+    }, [isAuthenticated, user]);
 
     return (
         <div style={{ minHeight: 'calc(100vh - 90px)' }}>
@@ -40,7 +58,7 @@ const Pasados: React.FC = () => {
             ) : (
                 // Mostrar mensaje si no hay pedidos pasados disponibles
                 <>
-                    <p>No hay pedidos pasados disponibles.</p>
+                   <NoHayPedidos onReload={() => window.location.reload()} />
                     <div className="text-center">
                         <Link to="/" className="btn btn-primary btn-lg mb-3">
                             Ver Catálogo
