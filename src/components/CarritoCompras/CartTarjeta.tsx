@@ -4,6 +4,8 @@ import { IUsuario } from "../../interface/IUsuario";
 import { Modal } from "react-bootstrap";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
+import AddDireccionModal from "../OpcionesCliente/MiDireccion/AddDireccionModal";
+import EditDireccionModal from "../OpcionesCliente/MiDireccion/EditDireccionModal";
 
 interface CartTarjetaProps {
   esDelivery: boolean;
@@ -27,24 +29,29 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   usuario
 }) => {
   const costoDelivery = 500;
-  const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo   
-  const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(domicilio);
+  const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo
   const [modalAbierto, setModalAbierto] = useState(false);
-  const [calle, setCalle] = useState('');
-  const [numero, setNumero] = useState('');
-  const [localidad, setLocalidad] = useState('');
+  const [editModalShow, setEditModalShow] = useState(false);
+  const [addModalShow, setAddModalShow] = useState(false);
+  const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
+  const { isAuthenticated, user } = useAuth0();
   const API_URL = process.env.REACT_APP_API_URL || "";
-  const { isAuthenticated } = useAuth0();
+  const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(
+    domicilio
+  );
 
   // Manejar la selección de "Delivery" y "Mercado Pago" al cargar el componente
   useEffect(() => {
-    // Si el usuario tiene una dirección, establecemos los valores en los campos correspondientes
-    if (domicilio) {
-      setCalle(domicilio.calle || '');
-      setNumero(domicilio.numero ? domicilio.numero.toString() : '');
-      setLocalidad(domicilio.localidad || '');
-    }
-  }, [domicilio]);
+    const obtenerDomicilioUsuario = async () => {
+      try {
+        const response = await axios.get(`${API_URL}usuario/${user?.id}/domicilio`);
+        return response.data;
+      } catch (error) {
+        console.error("Error al obtener la dirección del usuario:", error);
+      }
+    };
+    
+  }, []);
 
   // Función para manejar el clic en el botón de Delivery
   const handleClickDelivery = () => {
@@ -73,6 +80,23 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     handleEsEfectivo(true);
   };
 
+  const handleEditModalOpen = () => {
+    setEditModalShow(true);
+    setSelectedDireccion(domicilio);
+  };
+
+  const handleEditModalClose = () => {
+    setEditModalShow(false);
+  };
+
+  const handleAddModalOpen = () => {
+    setAddModalShow(true);
+  };
+
+  const handleAddModalClose = () => {
+    setAddModalShow(false);
+  };
+
   // Función para manejar el clic en el botón de método de pago "Mercado Pago"
   const handleClickMercadoPago = () => {
     handleEsEfectivo(false);
@@ -82,38 +106,57 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     setModalAbierto(false);
   };
 
-  const handleFormSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (calle && numero && localidad)  {
-      const nuevaDireccion : IDomicilio = {
-        activo: true,
-        calle: calle,
-        numero: parseInt(numero),
-        localidad: localidad
-      };
-
-      try {
-        const domicilioUsuario : IDomicilio = await obtenerDomicilioUsuario();
-
-        if (domicilioUsuario) { 
-          domicilioUsuario.activo = true;
-          domicilioUsuario.calle = nuevaDireccion.calle;
-          domicilioUsuario.numero = nuevaDireccion.numero;
-          domicilioUsuario.localidad = nuevaDireccion.localidad;
-                    
-          // Si el usuario ya tiene una dirección, realizamos una solicitud PUT para actualizarla
-          await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilioUsuario);
-        } else {
-          // Si el usuario no tiene una dirección, realizamos una solicitud POST para crearla
-          await axios.post(`${API_URL}domicilio`, { ...nuevaDireccion, usuario: usuario });
-        }
-        // Cerramos el modal después de enviar la solicitud
-        setModalAbierto(false);
-      } catch (error) {
-        console.error('Error al guardar la dirección:', error);
-      }
+  const handleDomicilioEdit = async (domicilio: IDomicilio) => {
+    try {
+        await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
+        setNuevoDomicilio(domicilio);
+        setEditModalShow(false);
+    } catch (error) {
+        console.log(error);
     }
-  };
+};
+
+const handleDomicilioAdd = async (domicilio: IDomicilio) => {
+    try {
+        await axios.post(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
+        setAddModalShow(false);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+  // const handleFormSubmit = async (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   if (calle && numero && localidad)  {
+  //     const nuevaDireccion : IDomicilio = {
+  //       activo: true,
+  //       calle: calle,
+  //       numero: parseInt(numero),
+  //       localidad: localidad
+  //     };
+
+  //     try {
+  //       const domicilioUsuario : IDomicilio = await obtenerDomicilioUsuario();
+
+  //       if (domicilioUsuario) { 
+  //         domicilioUsuario.activo = true;
+  //         domicilioUsuario.calle = nuevaDireccion.calle;
+  //         domicilioUsuario.numero = nuevaDireccion.numero;
+  //         domicilioUsuario.localidad = nuevaDireccion.localidad;
+                    
+  //         // Si el usuario ya tiene una dirección, realizamos una solicitud PUT para actualizarla
+  //         await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilioUsuario);
+  //       } else {
+  //         // Si el usuario no tiene una dirección, realizamos una solicitud POST para crearla
+  //         await axios.post(`${API_URL}domicilio`, { ...nuevaDireccion, usuario: usuario });
+  //       }
+  //       // Cerramos el modal después de enviar la solicitud
+  //       setModalAbierto(false);
+  //     } catch (error) {
+  //       console.error('Error al guardar la dirección:', error);
+  //     }
+  //   }
+  // };
 
   const obtenerDomicilioUsuario = async () => {
     try {
@@ -186,23 +229,28 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
           <div className="container-fluid">
             <div className="d-flex flex-column align-items-center">
               <h1 className="display-6">Detalle del Pedido</h1>
-              {isAuthenticated && (
+              {isAuthenticated && domicilio ? (
                 <p className="lead mb-0">
                   <strong>Dirección:</strong>
-                  {domicilio ? (
-                    <span style={{ marginLeft: "10px" }}>
-                      {domicilio.calle}, {domicilio.numero},{" "}
-                      {domicilio.localidad}
-                      <button className="btn btn-success ms-2" onClick={handleClickDireccion} style= {{marginTop: "5px"}}>
-                        Corregir Dirección
-                      </button>
-                    </span>
-                  ) : (
-                    <Modal className="btn btn-success" onClick={handleClickDireccion} style= {{marginTop: "5px"}}>
-                      Agregar Dirección
-                    </Modal>
-                  )}
+                  <span style={{ marginLeft: "10px" }}>
+                    {domicilio.calle}, {domicilio.numero}, {domicilio.localidad}
+                    <button
+                      className="btn btn-success ms-2"
+                      onClick={handleEditModalOpen}
+                      style={{ marginTop: "5px" }}
+                    >
+                      Editar Dirección
+                    </button>
+                  </span>
                 </p>
+              ) : (
+                <button
+                  className="btn btn-success"
+                  onClick={handleAddModalOpen}
+                  style={{ marginTop: "5px" }}
+                >
+                  Agregar Dirección
+                </button>
               )}
               <div className="mb-0">
                 <p className="lead" style= {{marginTop: "20px"}}>
@@ -279,36 +327,18 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
           </div>
         </div>
       </div>
-      {modalAbierto && (
-        <div className="modal" tabIndex={-1} role="dialog" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Corregir Dirección</h5>
-                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}></button>
-              </div>
-              <div className="modal-body">
-                <form onSubmit={handleFormSubmit}>
-                  <div className="mb-3">
-                    <label htmlFor="calle" className="form-label">Calle</label>
-                    <input type="text" className="form-control" id="calle" value={calle} onChange={(e) => setCalle(e.target.value)} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="numero" className="form-label">Número</label>
-                    <input type="number" className="form-control" id="numero" value={numero} onChange={(e) => setNumero(e.target.value)} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="localidad" className="form-label">Localidad</label>
-                    <input type="text" className="form-control" id="localidad" value={localidad} onChange={(e) => setLocalidad(e.target.value)} />
-                  </div>
-                  <button type="submit" className="btn btn-primary">Guardar Dirección</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      <AddDireccionModal
+        show={addModalShow}
+        handleClose={handleAddModalClose}
+        handleDireccionAdd={handleDomicilioAdd}
+      />
+      <EditDireccionModal
+        show={editModalShow}
+        handleClose={handleEditModalClose}
+        handleDireccionEdit={handleDomicilioEdit}
+        selectedDireccion={selectedDireccion}
+      />
+    </div>    
   );
 };
 
