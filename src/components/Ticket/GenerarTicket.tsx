@@ -51,18 +51,25 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                         subtotal: detalle.producto.precio * detalle.cantidad,
                         nombreProducto: detalle.producto.nombre,
                         precioProducto: detalle.producto.precio
-                    }));                    
-
+                    }));   
+                    
+                    //validacion por si el usuario no tiene direccion asignada
+                    const direccion = selectedPedido.usuario.domicilio
+    ? `${selectedPedido.usuario.domicilio.calle} ${selectedPedido.usuario.domicilio.numero}, ${selectedPedido.usuario.domicilio.localidad}`
+    : "Retiro en local";
+                   
                     // Aquí conviertes el pedido a un objeto de factura manualmente
-                    const factura: IFactura = {
-                        id: 0,
+                    const factura: IFactura = {                        
                         activo: true,
                         fechaPedido: selectedPedido.fechaPedido,
                         fechaFactura: new Date(),
-                        esDelivery: selectedPedido.esDelivery,
-                        esEfectivo: selectedPedido.esEfectivo,
-                        usuario: selectedPedido.usuario,
-                        total: selectedPedido.total,
+                        esDelivery: selectedPedido.esDelivery ?? false,
+                        esEfectivo: selectedPedido.esEfectivo ?? false,
+                        usuario: {
+                            ...selectedPedido.usuario,
+                            domicilio: selectedPedido.usuario.domicilio ? selectedPedido.usuario.domicilio : { calle: "Retiro en local", numero: 0, localidad: "" },                            
+                        },
+                        total: selectedPedido.total ?? 0,
                         detalleFactura: detallesFactura,
                         pedido: selectedPedido,
                     };

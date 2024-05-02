@@ -18,6 +18,7 @@ const Movimientos = () => {
   const [showPedidoModal, setShowPedidoModal] = useState<boolean>(false);
 
   useEffect(() => {
+    
     const fetchData = async () => {
       try {
         const pedidosResponse = await axios.get(`${API_URL}pedido`);
@@ -33,7 +34,7 @@ const Movimientos = () => {
       }
     };
     fetchData();
-  }, [pedidos]);
+  }, []);
 
   const openPedidoModal = async (pedido: IPedidoDto) => {
     setSelectedPedido(pedido);
