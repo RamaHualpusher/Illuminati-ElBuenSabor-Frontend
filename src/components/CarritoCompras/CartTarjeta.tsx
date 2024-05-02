@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { IDomicilio } from '../../interface/IDomicilio';
+import { IDomicilio } from "../../interface/IDomicilio";
 import { IUsuario } from "../../interface/IUsuario";
-import { Modal } from "react-bootstrap";
+import { Button, Col, Modal, Row } from "react-bootstrap";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import AddDireccionModal from "../OpcionesCliente/MiDireccion/AddDireccionModal";
@@ -26,15 +26,17 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   domicilio,
   subTotal,
   totalPedido,
-  usuario
+  usuario,
 }) => {
   const costoDelivery = 500;
   const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo
+
   const [modalAbierto, setModalAbierto] = useState(false);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
   const { isAuthenticated, user } = useAuth0();
+
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(
     domicilio
@@ -67,14 +69,9 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   // Función para manejar el clic en el botón de Retiro en el Local
   const handleClickRetiroLocal = () => {
     handleEsDelivery(false);
-    setNuevoDomicilio({
-      calle: "Retiro en el Local",
-      numero: NaN,
-      localidad: "",
-    });
   };
 
-  // Función para manejar el clic en el botón de método de pago "Efectivo" 
+  // Función para manejar el clic en el botón de método de pago "Efectivo"
   const handleClickEfectivo = () => {
     handleEsDelivery(false);
     handleEsEfectivo(true);
@@ -123,51 +120,7 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
     } catch (error) {
         console.log(error);
     }
-};
-
-  // const handleFormSubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   if (calle && numero && localidad)  {
-  //     const nuevaDireccion : IDomicilio = {
-  //       activo: true,
-  //       calle: calle,
-  //       numero: parseInt(numero),
-  //       localidad: localidad
-  //     };
-
-  //     try {
-  //       const domicilioUsuario : IDomicilio = await obtenerDomicilioUsuario();
-
-  //       if (domicilioUsuario) { 
-  //         domicilioUsuario.activo = true;
-  //         domicilioUsuario.calle = nuevaDireccion.calle;
-  //         domicilioUsuario.numero = nuevaDireccion.numero;
-  //         domicilioUsuario.localidad = nuevaDireccion.localidad;
-                    
-  //         // Si el usuario ya tiene una dirección, realizamos una solicitud PUT para actualizarla
-  //         await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilioUsuario);
-  //       } else {
-  //         // Si el usuario no tiene una dirección, realizamos una solicitud POST para crearla
-  //         await axios.post(`${API_URL}domicilio`, { ...nuevaDireccion, usuario: usuario });
-  //       }
-  //       // Cerramos el modal después de enviar la solicitud
-  //       setModalAbierto(false);
-  //     } catch (error) {
-  //       console.error('Error al guardar la dirección:', error);
-  //     }
-  //   }
-  // };
-
-  const obtenerDomicilioUsuario = async () => {
-    try {
-      const response = await axios.get(`${API_URL}usuario/${usuario?.id}/domicilio`);
-
-      return response.data;
-    } catch (error) {
-      console.error('Error al obtener el domicilio del usuario:', error);
-      return null;
-    }
-  };
+}; 
 
   const handleClickDireccion = () => {
     setModalAbierto(true);
@@ -242,6 +195,7 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
                       Editar Dirección
                     </button>
                   </span>
+
                 </p>
               ) : (
                 <button
@@ -287,7 +241,7 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
             <div className="d-flex flex-column align-items-center">
               <h5>Método de Pago</h5>
               <div className="d-flex justify-content-center">
-                <div className="mb-0">
+                <div className="mb-0 me-2">
                   <input
                     type="radio"
                     className="btn-check"
@@ -297,7 +251,11 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
                     onChange={handleClickMercadoPago}
                   />
                   <label
-                    className={!esEfectivo ? "btn btn-primary" : "btn btn-outline-primary"}
+                    className={
+                      !esEfectivo
+                        ? "btn btn-primary"
+                        : "btn btn-outline-primary"
+                    }
                     htmlFor="mercadoPago-outlined"
                   >
                     Mercado Pago
@@ -312,10 +270,14 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
                       autoComplete="off"
                       checked={!esDelivery && esEfectivo} // Solo chequea si no es delivery y es efectivo
                       onChange={handleClickEfectivo}
-                      disabled={esDelivery} // Deshabilita si es delivery                      
+                      disabled={esDelivery} // Deshabilita si es delivery
                     />
                     <label
-                      className={!esDelivery && esEfectivo ? "btn btn-primary" : "btn btn-outline-primary"}
+                      className={
+                        !esDelivery && esEfectivo
+                          ? "btn btn-primary"
+                          : "btn btn-outline-primary"
+                      }
                       htmlFor="efectivo-outlined"
                     >
                       Efectivo
@@ -338,7 +300,7 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
         handleDireccionEdit={handleDomicilioEdit}
         selectedDireccion={selectedDireccion}
       />
-    </div>    
+    </div>  
   );
 };
 

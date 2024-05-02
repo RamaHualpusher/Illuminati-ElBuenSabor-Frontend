@@ -15,22 +15,28 @@ const Factura = () => {
   const [selectedFactura, setSelectedFactura] = useState<IFactura | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const API_URL = process.env.REACT_APP_API_URL || "";  
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const facturasResponse = await axios.get<IFactura[]>(`${API_URL}factura`);
-        const facturasData = facturasResponse.data.filter((factura: IFactura) => factura.pedido !== null);
+        const facturasResponse = await axios.get<IFactura[]>(
+          `${API_URL}factura`
+        );
+        const facturasData = facturasResponse.data.filter(
+          (factura: IFactura) => factura.pedido !== null
+        );
 
-        facturasData.sort((a: IFactura, b: IFactura) =>
-          new Date(b.pedido.fechaPedido).getDate() - new Date(a.fechaFactura).getDate()
+        facturasData.sort(
+          (a: IFactura, b: IFactura) =>
+            new Date(b.pedido.fechaPedido).getDate() -
+            new Date(a.fechaFactura).getDate()
         );
 
         setFacturas(facturasData);
         setLoading(false);
       } catch (error) {
-        console.error('Error al cargar datos factura:', error);
+        console.error("Error al cargar datos factura:", error);
         setLoading(false);
       }
     };
@@ -45,29 +51,29 @@ const Factura = () => {
       title: "Numero Factura",
       field: "id",
       width: 2,
-      render: (factura: IFactura) => (
-        <span>{factura.id ?? 0}</span>
-      ),
+      render: (factura: IFactura) => <span>{factura.id ?? 0}</span>,
     },
     {
       title: "Usuario",
       field: "pedido",
       width: 3,
       render: (factura: IFactura) => (
-        <span>{factura.pedido.usuario ? `${factura.pedido.usuario.apellido} ${factura.pedido.usuario.nombre}` : ""}</span>
+        <span>
+          {factura.pedido.usuario
+            ? `${factura.pedido.usuario.apellido} ${factura.pedido.usuario.nombre}`
+            : ""}
+        </span>
       ),
     },
     {
       title: "Fecha Pedido",
       field: "pedido",
-      render: (factura: IFactura) => 
-      <span>{factura.pedido.fechaPedido}</span>,
+      render: (factura: IFactura) => <span>{factura.pedido.fechaPedido}</span>,
     },
     {
       title: "Fecha Factura",
       field: "fechaFactura",
-      render: (factura: IFactura) => 
-      <span>{factura.fechaFactura}</span>,
+      render: (factura: IFactura) => <span>{factura.fechaFactura}</span>,
     },
     {
       title: "Total del Pedido",
@@ -75,10 +81,9 @@ const Factura = () => {
       render: (factura: IFactura) => (
         <div>{calcularTotalPedido(factura.pedido)}</div>
       ),
-      width: 2
+      width: 2,
     },
   ];
-
 
   // Función para calcular el total del pedido
   const calcularTotalPedido = (pedido: IPedidoDto) => {
@@ -98,9 +103,9 @@ const Factura = () => {
     view: true, // Acción de ver detalles
   };
 
-  const onView = (factura: IFactura) => {    
-      setSelectedFactura(factura);
-      setShowModal(true); // Muestra el modal de GenerarFacturaModal    
+  const onView = (factura: IFactura) => {
+    setSelectedFactura(factura);
+    setShowModal(true); // Muestra el modal de GenerarFacturaModal
   };
 
   return (
@@ -129,10 +134,10 @@ const Factura = () => {
             ) : (
               <NoHayPedidos onReload={() => window.location.reload()} />
             )}
+
           </Col>
         </Row>
       </Container>
-
       {/* Modal para mostrar detalles de la factura */}
       <GenerarFacturaModal
         factura={selectedFactura}

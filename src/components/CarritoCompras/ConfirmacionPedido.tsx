@@ -2,18 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import CartTabla from "./CartTabla";
 import CartTarjeta from "./CartTarjeta";
 import { CartContext, CartItem } from "../../context/cart/CartProvider";
-import axios from 'axios';
+import axios from "axios";
 import { IPedidoDto } from "../../interface/IPedido";
 import { IProducto } from "../../interface/IProducto";
-import { IUsuario } from "../../interface/IUsuario";
 import { IDetallePedido } from "../../interface/IDetallePedido";
-import { Alert, Button, Modal } from 'react-bootstrap';
+import { Alert, Button, Modal } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
 import { IProductoIngrediente } from "../../interface/IProductoIngrediente";
 import GenerarTicket from "../Ticket/GenerarTicket";
 import { IMercadoPagoDatos } from "../../interface/IMercadoPagoDatos";
-import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
+import { initMercadoPago } from "@mercadopago/sdk-react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/User/UserContext";
 
 interface ConfirmacionPedidoProps {
   cartItems: CartItem[];
@@ -33,7 +33,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   isCartEmpty,
 }) => {
   const { clearCart } = useContext(CartContext);
-  const [usuario, setUsuario] = useState<IUsuario | null>(null);
+  const { usuarioContext } = useUser();
   const [productos, setProductos] = useState<IProducto[] | null>(null);
   const [subTotal, setSubTotal] = useState(0);
   const [pedidoCompleto, setPedidoCompleto] = useState<IPedidoDto | null>(null);
@@ -43,10 +43,12 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const [totalPedido, setTotalPedido] = useState(0);
   const { loginWithRedirect, user, isAuthenticated } = useAuth0();
   const [showAlert, setShowAlert] = useState(!isAuthenticated);
-  const [insufficientStock, setInsufficientStock] = useState<{
-    isInsufficient: boolean;
-    productName: string;
-  }[]>([]); // Use an array to store multiple insufficient stock errors
+  const [insufficientStock, setInsufficientStock] = useState<
+    {
+      isInsufficient: boolean;
+      productName: string;
+    }[]
+  >([]); // Use an array to store multiple insufficient stock errors
 
   const API_URL = process.env.REACT_APP_API_URL || "";
   const MP_ACCESS = process.env.REACT_APP_MP_ACCESS_TOKEN || "";
@@ -54,73 +56,11 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const [preferenceId, setPreferenceId] = useState<number | null>(null); //para mercado pago
   const [showTicketModal, setShowTicketModal] = useState<boolean>(false);
   const [returnUrl, setReturnUrl] = useState<string | null>(null);
-  const navigate = useNavigate(); // Obtiene la función navigate desde useNavigate 
+  const navigate = useNavigate(); // Obtiene la función navigate desde useNavigate
 
   const handleClose = () => {
     navigate("/"); // Redirige a la página principal al hacer click en "Cerrar"
   };
-
-  // Función para crear un nuevo cliente en el servidor
-  const crearNuevoCliente = async () => {
-    try {
-      if (user && isAuthenticated) {
-        const response = await axios.post(`${API_URL}usuario/clientes`, {
-          nombre: user.given_name,
-          apellido: user.family_name,
-          email: user.email,
-          clave: null, // No tenemos la contraseña aquí
-          telefono: "", // No tenemos el teléfono aquí
-          idDomicilio: 0, // No tenemos el id de domicilio aquí
-          calle: "", // No tenemos la calle aquí
-          numero: NaN, // No tenemos el número aquí
-          localidad: "", // No tenemos la localidad aquí
-          idRol: 0, // No tenemos el id de rol aquí
-          nombreRol: "" // No tenemos el nombre de rol aquí
-        });
-        console.log("Respuesta al crear nuevo cliente:", JSON.stringify(response.data));
-        // Si se crea exitosamente el nuevo cliente, lo establecemos en el estado
-        setUsuario(response.data);
-      }
-    } catch (error) {
-      console.error("Error al crear el nuevo cliente:", error);
-      // Aquí puedes manejar el error de forma adecuada, por ejemplo, mostrar un mensaje al usuario
-    }
-  };
-
-  useEffect(() => {
-    const verificarUsuarioExistente = async () => {
-      if (isAuthenticated && user) {
-        try {
-          const response = await axios.post(`${process.env.REACT_APP_API_URL}usuario/clientes/email`, {
-            nombre: user.given_name,
-            apellido: user.family_name,
-            email: user.email,
-            clave: null, // No tenemos la contraseña aquí
-            telefono: "", // No tenemos el teléfono aquí
-            idDomicilio: 0, // No tenemos el id de domicilio aquí
-            calle: "", // No tenemos la calle aquí
-            numero: 0, // No tenemos el número aquí
-            localidad: "", // No tenemos la localidad aquí
-            idRol: 0, // No tenemos el id de rol aquí
-            nombreRol: "" // No tenemos el nombre de rol aquí
-          });
-          console.log("Respuesta al verificar usuario existente:", JSON.stringify(response.data));
-          // Si el usuario existe, lo establecemos en el estado
-          setUsuario(response.data);
-        } catch (error: any) {
-          // Si el usuario no existe, intentamos crearlo
-          if (error.response && error.response.status === 404) {
-            console.log("El usuario no existe, creándolo...");
-            crearNuevoCliente(); // Llamamos a la función para crear un nuevo cliente
-          } else {
-            console.error("Error al verificar el usuario:", error);
-          }
-        }
-      }
-    };
-
-    verificarUsuarioExistente();
-  }, [isAuthenticated, user]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -146,7 +86,8 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }, [cartItems]);
 
   useEffect(() => {
-    if (usuario !== null &&
+    if (
+      usuarioContext !== null &&
       cartItems.length > 0 &&
       productos !== null &&
       esDelivery !== null &&
@@ -155,7 +96,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       const detallesPedido: IDetallePedido[] = [];
 
       cartItems.forEach((cartItem) => {
-        const productoEncontrado = productos.find(producto => producto.id === cartItem.id);
+        const productoEncontrado = productos.find(
+          (producto) => producto.id === cartItem.id
+        );
         if (productoEncontrado) {
           const detallePedido: IDetallePedido = {
             cantidad: cartItem.quantity,
@@ -168,35 +111,35 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         }
       });
 
-      const nuevoTotalPedido =
-        esDelivery ? subTotal + 500 : subTotal * 0.9;
+      const nuevoTotalPedido = esDelivery ? subTotal + 500 : subTotal * 0.9;
 
       //aca tenemos que poner segun el producto, el tiempo estimado segun hamburguesa, papas fritas, etc
       const calcularHoraEstimadaFin = () => {
         const horaActual = new Date();
-        const esBebida = detallesPedido.some(detalle => detalle.producto.esBebida);
+        const esBebida = detallesPedido.some(
+          (detalle) => detalle.producto.esBebida
+        );
         if (!esBebida) {
           horaActual.setMinutes(horaActual.getMinutes() + 20);
         }
         return horaActual;
-      };      
+      };
 
       const nuevoPedidoCompleto: IPedidoDto = {
         activo: true,
-        horaEstimadaFin: calcularHoraEstimadaFin(), 
+        horaEstimadaFin: calcularHoraEstimadaFin(),
         esDelivery: esDelivery,
         esEfectivo: esEfectivo,
         estadoPedido: "A confirmar",
         fechaPedido: new Date(),
-        usuario: usuario!,
+        usuario: usuarioContext!,
         detallesPedidos: detallesPedido,
-        total: nuevoTotalPedido
+        total: nuevoTotalPedido,
       };
-      console.log("Pedido completo:", JSON.stringify(nuevoPedidoCompleto));
       setTotalPedido(nuevoTotalPedido);
       setPedidoCompleto(nuevoPedidoCompleto);
     }
-  }, [usuario, cartItems, subTotal, esDelivery, esEfectivo, productos]); 
+  }, [usuarioContext, cartItems, subTotal, esDelivery, esEfectivo, productos]);
 
   //agregado por Javier
   useEffect(() => {
@@ -213,13 +156,13 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const verificarPago = async () => {
     // Implementa la lógica para verificar el estado del pago en Mercado Pago
     // Por simplicidad, este ejemplo simplemente espera 3 segundos antes de considerar el pago como completado
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve(true); // Simula la confirmación del pago de Mercado Pago
       }, 3000);
     });
   };
-  
+
   const createPreference = async () => {
     if (pedidoCompleto !== null) {
       try {
@@ -237,31 +180,38 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           }
         } else {
           // Si el pago es con Mercado Pago, utiliza la URL del controlador MercadoPagoDatosController
-          // y envía los datos del pedido junto con la preferencia de pago          
+          // y envía los datos del pedido junto con la preferencia de pago
           initMercadoPago(MP_PUBLIC);
           response = await axios.post(`${API_URL}mercado-pago-dato/prueba`, {
             reference: {
               items: [
                 {
-                  title: 'Pedido de ' + pedidoCompleto.usuario.nombre + " " + pedidoCompleto.usuario.apellido, // Título del pedido
+                  title:
+                    "Pedido de " +
+                    pedidoCompleto.usuario.nombre +
+                    " " +
+                    pedidoCompleto.usuario.apellido, // Título del pedido
                   quantity: 1, // Cantidad de ítems (puede ser 1 si es un pedido completo)
-                  currency_id: 'ARS', // Moneda en la que se realiza el pago
+                  currency_id: "ARS", // Moneda en la que se realiza el pago
                   unit_price: pedidoCompleto.total, // Precio total del pedido
-                }
+                },
               ],
               back_urls: {
-                success: 'http://localhost:3000/pago-exitoso',
-                failure: 'http://localhost:3000/pago-fallido',
-                pending: 'http://localhost:3000/pago-pendiente',
+                success: "http://localhost:3000/pago-exitoso",
+                failure: "http://localhost:3000/pago-fallido",
+                pending: "http://localhost:3000/pago-pendiente",
               },
-              auto_return: 'approved',
+              auto_return: "approved",
               //esto me redirige al sitio cuando el pago esta okey
-              notification_url: "https://localhost:3000/confirmacion-pedido"
-            }
+              notification_url: "https://localhost:3000/confirmacion-pedido",
+            },
           });
-  
-          console.log("Respuesta al guardar datos de MercadoPago:", response.data);
-  
+
+          console.log(
+            "Respuesta al guardar datos de MercadoPago:",
+            response.data
+          );
+
           if (response.data) {
             const mercadoPagoResponse: IMercadoPagoDatos = response.data;
             //esto debe guardar el id de mercado pago en el pedido
@@ -269,7 +219,10 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
             // Realizar la verificación del pago con Mercado Pago antes de guardar el pedido
             const pagoConfirmado = await verificarPago();
             if (pagoConfirmado) {
-              responsePedidoCompleto = await axios.post(`${API_URL}pedido`, pedidoCompleto);
+              responsePedidoCompleto = await axios.post(
+                `${API_URL}pedido`,
+                pedidoCompleto
+              );
               setPedidoCompleto(responsePedidoCompleto.data);
               setPedidoConfirmado(true);
               // Aquí puedes guardar la preferencia de pago en el estado o realizar cualquier otra acción necesaria
@@ -278,18 +231,23 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               // generarFactura();
               clearCart();
             } else {
-              console.log("El pago no se ha confirmado. El pedido no se guardará en la base de datos.");
+              console.log(
+                "El pago no se ha confirmado. El pedido no se guardará en la base de datos."
+              );
             }
           }
         }
         // Retorna la respuesta del servidor
         return response.data;
       } catch (error) {
-        console.error('Error al crear preferencia de pago o guardar el pedido:', error);
+        console.error(
+          "Error al crear preferencia de pago o guardar el pedido:",
+          error
+        );
       }
     }
   };
-  
+
   //hasta aca agregado por javier
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
@@ -300,35 +258,51 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       return;
     }
 
-    if (usuario === null) {
-      console.error("El usuario no está cargado. No se puede confirmar el pedido.");
+    if (usuarioContext === null) {
+      console.error(
+        "El usuario no está cargado. No se puede confirmar el pedido."
+      );
       return;
     }
 
     if (pedidoCompleto !== null) {
       try {
         // Validar el stock de ingredientes antes de confirmar el pedido
-        const validationPromises = pedidoCompleto.detallesPedidos.map(async (detallePedido) => {
-          try {
-            // Limpiar el array de errores antes de la validación
-            setInsufficientStock([]);
-            const response = await axios.get(`${API_URL}producto/${detallePedido.producto.id}`);
-            const producto = response.data;
-            const ingredientesSuficientes = producto.productosIngredientes.every(
-              (productoIngrediente: IProductoIngrediente) =>
-                productoIngrediente.ingrediente.stockActual >= productoIngrediente.cantidad * detallePedido.cantidad
-            );
-            if (!ingredientesSuficientes) {
-              setInsufficientStock(prevState => [...prevState, { isInsufficient: true, productName: detallePedido.producto.nombre }]);
-              console.error(`No hay suficiente stock para ${detallePedido.producto.nombre}`);
+        const validationPromises = pedidoCompleto.detallesPedidos.map(
+          async (detallePedido) => {
+            try {
+              // Limpiar el array de errores antes de la validación
+              setInsufficientStock([]);
+              const response = await axios.get(
+                `${API_URL}producto/${detallePedido.producto.id}`
+              );
+              const producto = response.data;
+              const ingredientesSuficientes =
+                producto.productosIngredientes.every(
+                  (productoIngrediente: IProductoIngrediente) =>
+                    productoIngrediente.ingrediente.stockActual >=
+                    productoIngrediente.cantidad * detallePedido.cantidad
+                );
+              if (!ingredientesSuficientes) {
+                setInsufficientStock((prevState) => [
+                  ...prevState,
+                  {
+                    isInsufficient: true,
+                    productName: detallePedido.producto.nombre,
+                  },
+                ]);
+                console.error(
+                  `No hay suficiente stock para ${detallePedido.producto.nombre}`
+                );
+                return false;
+              }
+              return true;
+            } catch (error) {
+              console.error("Error al validar el stock:", error);
               return false;
             }
-            return true;
-          } catch (error) {
-            console.error("Error al validar el stock:", error);
-            return false;
           }
-        });
+        );
 
         const validationResults = await Promise.all(validationPromises);
 
@@ -343,7 +317,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           if (response.data) {
             setPedidoCompleto(response.data);
             setPedidoConfirmado(true);
-            clearCart();           
+            clearCart();
           }
         }
       } catch (error) {
@@ -363,36 +337,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
   const handleEsDelivery = (esDelivery: boolean) => {
     setEsDelivery(esDelivery);
-    if (esDelivery && user && isAuthenticated) {
-      // Si es Delivery y el usuario está autenticado, buscar y establecer el domicilio del usuario
-      buscarDomicilioUsuario();
-      setEsEfectivo(true); // Cambia esEfectivo a true cuando se selecciona Delivery
-    } else if (!esDelivery) {
-      // Si es Retiro en el Local, establecer el domicilio como "Retiro en el Local"
-      setUsuario((prevUsuario) => ({
-        ...prevUsuario!,
-        domicilio: {
-          calle: "Retiro en el Local",
-          numero: NaN,
-          localidad: "",
-        },
-      }));
-      setEsEfectivo(true); // Cambia esEfectivo a true cuando se selecciona Retiro en Local
-    }
+    setEsEfectivo(true);
   };
-  
-  const buscarDomicilioUsuario = async () => {
-    try {
-      const response = await axios.get(`${API_URL}usuario/${usuario?.id}/domicilio`);
-      const domicilioUsuario = response.data;
-      setUsuario((prevUsuario) => ({
-        ...prevUsuario!,
-        domicilio: domicilioUsuario,
-      }));
-    } catch (error) {
-      console.error("Error al obtener el domicilio del usuario:", error);
-    }
-  };  
+
 
   return (
     <div style={{ marginTop: "90px" }}>
@@ -437,18 +384,21 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
               esEfectivo={esEfectivo}
               handleEsDelivery={handleEsDelivery}
               handleEsEfectivo={handleEsEfectivo}
-              domicilio={usuario ? usuario.domicilio : null}
+              domicilio={usuarioContext ? usuarioContext.domicilio : null}
               subTotal={subTotal}
               totalPedido={totalPedido}
-              usuario={usuario} />
+              usuario={usuarioContext}
+            />
           </div>
         </div>
       </div>
       <form onSubmit={handleConfirmarPedido}>
         <div className="d-flex justify-content-center align-items-center mb-4">
-          <button type="submit"
+          <button
+            type="submit"
             className="btn btn-primary me-2"
-            disabled={isCartEmpty || !isAuthenticated}>
+            disabled={isCartEmpty || !isAuthenticated}
+          >
             Confirmar Pedido
           </button>
           <button
@@ -485,14 +435,23 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       {isCartEmpty && (
         <div className="container mt-3">
           <Alert show={true} variant="warning">
-            No hay productos en el carrito. Agregue productos antes de confirmar.
+            No hay productos en el carrito. Agregue productos antes de
+            confirmar.
           </Alert>
         </div>
       )}
       {/* Mostrar el mensaje de error de stock insuficiente */}
       {insufficientStock.map((error, index) => (
         <div className="container mt-3" key={index}>
-          <Alert variant="danger" onClose={() => setInsufficientStock(prevState => prevState.filter((_, i) => i !== index))} dismissible>
+          <Alert
+            variant="danger"
+            onClose={() =>
+              setInsufficientStock((prevState) =>
+                prevState.filter((_, i) => i !== index)
+              )
+            }
+            dismissible
+          >
             No hay suficiente stock para el producto: {error.productName}
           </Alert>
         </div>
@@ -500,7 +459,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       {!isAuthenticated && (
         <div className="container mt-3">
           <Alert variant="danger" show={showAlert}>
-            Por favor, inicie sesión para confirmar el pedido.    <br />
+            Por favor, inicie sesión para confirmar el pedido. <br />
             <div className="mt-1">
               <Button variant="primary" onClick={handleLoginRedirect}>
                 Iniciar Sesión
