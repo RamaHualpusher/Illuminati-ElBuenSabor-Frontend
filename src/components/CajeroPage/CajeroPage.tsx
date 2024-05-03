@@ -14,17 +14,21 @@ const CajeroPage = () => {
 
   // Cargar los pedidos desde una fuente de datos al cargar el componente
   useEffect(() => {
-      const fetchPedidos = async () => {
-          try {
-              const response = await axios.get(`${API_URL}pedido`); // Llama al endpoint de pedidos
-              console.log('Response from API:', response); // Log del response de la API
-              setPedidos(response.data);
-          } catch (error) {
-              console.log('Error fetching pedidos:', error); // Log del error al obtener pedidos
-          }
-      };
-  
-      fetchPedidos();
+    const fetchPedidos = async () => {
+      try {
+        const response = await axios.get(`${API_URL}pedido`); // Llama al endpoint de pedidos
+        // Ordenar los pedidos por fecha de pedido de manera descendente
+        response.data.sort((a: IPedidoDto, b: IPedidoDto) =>
+          new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+        console.log('Response from API:', response); // Log del response de la API
+        setPedidos(response.data);
+        setPedidosComplete(response.data);
+      } catch (error) {
+        console.log('Error fetching pedidos:', error); // Log del error al obtener pedidos
+      }
+    };
+
+    fetchPedidos();
   }, []);
 
   // Filtrar los pedidos según el estado seleccionado
@@ -69,9 +73,20 @@ const CajeroPage = () => {
   //cambio realizado 26/1/2024
   // Cambiar el estado de un pedido seleccionado
   const handleEstadoFiltroChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setFiltroEstado(event.target.value);
+    const estadoSeleccionado = event.target.value;
+    setFiltroEstado(estadoSeleccionado);
     setPedidoSeleccionado(null); // Reiniciar el pedido seleccionado
-    setPedidos(pedidosComplete); // Resetear la lista de pedidos
+
+    // Filtrar los pedidos según el estado seleccionado
+    const pedidosFiltrados = pedidosComplete.filter((pedido) => {
+      if (estadoSeleccionado === "") {
+        return true;
+      } else {
+        return pedido.estadoPedido === estadoSeleccionado;
+      }
+    });
+
+    setPedidos(pedidosFiltrados);
   };
 
   return (
