@@ -4,7 +4,6 @@ import { IPedidoDto } from '../../../interface/IPedido';
 import EstadoPedidoCard from '../../Pedidos/EstadoPedidoCard';
 import GenerarTicket from '../../Ticket/GenerarTicket';
 import { IDetallePedido } from '../../../interface/IDetallePedido';
-import { IProducto } from '../../../interface/IProducto';
 
 interface PedidoCardUsuarioProps {
     pedido: IPedidoDto;
