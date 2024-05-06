@@ -102,7 +102,10 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
       }
     }
   };
+
   const renderActionButtons = () => {
+    const tieneOtrosProductos = contieneOtrosProductos(pedido.detallesPedidos);
+
     switch (pedido.estadoPedido) {
       case 'A confirmar':
         return (
@@ -110,12 +113,15 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-            <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('A cocina')} disabled={!pedido.esDelivery}>
-              A cocina
-            </button>
-            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
-              Listo
-            </button>
+            {tieneOtrosProductos ? (
+              <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('A cocina')} disabled={!pedido.esDelivery}>
+                A cocina
+              </button>
+            ) : (
+              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
+                Listo
+              </button>
+            )}
           </>
         );
       case 'Listo':
@@ -124,14 +130,17 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-            <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En delivery')} disabled={!pedido.esDelivery || pedido.esEfectivo}>
-              En delivery
-            </button>
             <button className="btn btn-primary" onClick={handlePagoConfirmacion} disabled={pedido.esDelivery || !pedido.esEfectivo}>
               Entregado
             </button>
+            <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('A cocina')} disabled={!pedido.esDelivery || pedido.esEfectivo} style={{ marginLeft: "8px" }}>
+              A cocina
+            </button>
           </>
         );
+
+
+      //logica de seguridad, solo el delivery puede cambiar el estado a "entregado" 
       case 'En delivery':
         return (
           <>
@@ -151,15 +160,21 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             </Button>
           </>
         );
-      case 'En cocina': // Nuevo caso añadido basado en el componente CajeroPage
+      case 'A cocina':
         return (
           <>
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
-              Listo
-            </button>
+            {!pedido.esDelivery ? (
+              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
+                Listo
+              </button>
+            ) : (
+              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
+                Delivery
+              </button>
+            )}
           </>
         );
       default:
@@ -187,7 +202,6 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
               {pedido.detallesPedidos.every((detalle) => detalle.producto.esBebida) && (
                 <Button variant="success" size="sm">Es sólo bebida</Button>
               )}
-
               {/* importante aca verificar payment_id con mercado pago, verificar traerlo */}
               {pedido.estadoPedido === 'Listo' && isPagoMercadoPago && (
                 <Button className="btn btn-success" onClick={() => handleEstadoPedidoChange('En delivery')}>En Delivery</Button>
