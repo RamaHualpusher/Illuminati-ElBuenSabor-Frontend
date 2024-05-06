@@ -12,7 +12,7 @@ const CocineroPedido: React.FC = () => {
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const response = await axios.get(`${API_URL}pedido/estado/En_cocina`);
+        const response = await axios.get(`${API_URL}pedido/estado/A cocina`);
         setPedidos(response.data);
       } catch (error) {
         console.log('Error fetching pedidos:', error);
