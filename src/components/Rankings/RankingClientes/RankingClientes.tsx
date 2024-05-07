@@ -6,27 +6,30 @@ import { exportTableDataToExcel } from "../../../util/exportTableDataToExcel";
 import { IRankingUsuario } from "../../../interface/IUsuario";
 import { IColumn } from "../../../interface/ICamposTablaGenerica";
 import { Link } from "react-router-dom";
+import { IPedidoDto } from "../../../interface/IPedido";
+import PedidosID from "./PedidosID";
 
 const RankingClientes = () => {
   const [clientes, setClientes] = useState<IRankingUsuario[]>([]);
   const [filteredClientes, setFilteredClientes] = useState<IRankingUsuario[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-
+  const [showPedidoModal, setShowPedidoModal] = useState<boolean>(false);
+  const [selectedCliente, setSelectedCliente] = useState<IRankingUsuario | null>(null); // Nuevo estado para almacenar el cliente seleccionado
   const API_URL = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get<IRankingUsuario[]>(`${API_URL}usuario/ranking`);
+        console.log(response.data)
         setClientes(response.data);
         // Filtrar clientes sin pedidos
-        const filteredData = response.data.filter(cliente => cliente.pedidos.length > 0 && cliente.pedidos[0].id !== null);
-        setFilteredClientes(filteredData);
+        // const filteredData = response.data.filter(cliente => cliente.pedidos.length > 0 && cliente.pedidos[0].id !== null);
+        // setFilteredClientes(filteredData);
       } catch (error) {
         console.error(error);
       }
-    };
-    
+    };    
 
     fetchData();
   }, [API_URL]);
@@ -74,6 +77,15 @@ const RankingClientes = () => {
     setSearchText(e.target.value);
   };
 
+  const openPedidoModal = (cliente: IRankingUsuario) => {
+    setSelectedCliente(cliente);
+    setShowPedidoModal(true);
+  };
+
+  const handleClosePedidoModal = () => {
+    setShowPedidoModal(false);
+  };
+
   const exportToExcel = () => {
     if (clientes.length > 0) {
       const dataToExport = clientes.map(cliente => ({
@@ -101,7 +113,7 @@ const RankingClientes = () => {
           <Col>
             <GenericTable
               columns={columns}
-              data={filteredClientes}
+              data={clientes}
               actions={{
                 create: false,
                 update: false,

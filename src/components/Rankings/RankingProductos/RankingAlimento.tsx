@@ -169,7 +169,6 @@ const RankingAlimento = () => {
                 </Row> */}
                 <Row className="mt-3">
                     <Col>
-                        <h2>Ranking de Productos</h2>
                         <GenericTable<IDetallePedido>
                             columns={columns}
                             data={productoAlimentos.sort((a, b) => b.cantidad - a.cantidad)}

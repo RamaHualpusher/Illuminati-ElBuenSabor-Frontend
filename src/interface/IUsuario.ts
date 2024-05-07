@@ -71,9 +71,8 @@ export interface IRankingUsuario {
   nombre: string;
   apellido: string;
   email: string;
-  clave: string;
   telefono: string;
-  domicilioId: number;
+  // domicilioId: number;
   domicilio: {
       id: number;
       activo: boolean;
