@@ -28,7 +28,7 @@ const RankingClientes = () => {
     };
 
     fetchPedidos();
-  }, [API_URL]);
+  }, []);
 
   const columns: IColumn<IPedidoDto>[] = [
     {

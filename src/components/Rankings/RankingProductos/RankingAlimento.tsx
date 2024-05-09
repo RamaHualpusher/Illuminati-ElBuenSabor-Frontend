@@ -1,187 +1,198 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { IProducto } from '../../../interface/IProducto';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import GenericTable from "../../GenericTable/GenericTable";
 import { IColumn } from "../../../interface/ICamposTablaGenerica";
-import { IPedido } from "../../../interface/IPedido";
-import { IDetallePedido, IDetallePedidoDto } from "../../../interface/IDetallePedido";
 import axios from "axios";
-import { spawn } from "child_process";
+import { IPedidoDto } from "../../../interface/IPedido";
+import NoHayPedidos from "../../Page404/NoHayPedidos";
 
 const RankingAlimento = () => {
-    const [productoAlimentos, setProductoAlimentos] = useState<IDetallePedido[]>([]);
-    const [detallePedidos, setDetallesPedidos] = useState<IDetallePedido[]>([]);
-    const [searchText, setSearchText] = useState<string>('');
-    const [startDate, setStartDate] = useState<Date | null>(new Date());
-    const [endDate, setEndDate] = useState<Date | null>(new Date());
+    const [productosCocina, setProductosCocina] = useState<IPedidoDto[]>([]);
+    const [productosBebida, setProductosBebida] = useState<IPedidoDto[]>([]);
+    const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const detallePedidoResponse = await axios.get(process.env.REACT_APP_API_URL + "detalle-pedido");
-                setDetallesPedidos(detallePedidoResponse.data);
-                detallePedidos.map((detalle) => {
-                    if (detalle.producto.esBebida!) {
-                        productoAlimentos.map((ali) => {
-                            if (ali.producto.id === detalle.producto.id) {
-                                ali = {
-                                    ...ali,
-                                    cantidad: ali.cantidad + detalle.cantidad,
-                                }
-                            } else {
-                                setProductoAlimentos([...productoAlimentos, detalle]);
-                            }
-                        });
-                    }
+                const pedidoResponse = await axios.get<IPedidoDto[]>(`${API_URL}pedido`);
+                const pedidos = pedidoResponse.data;
+
+                const productosCocina = pedidos.filter(pedido => {
+                    return pedido.detallesPedidos.some(detalle => !detalle.producto.esBebida);
                 });
 
+                console.log("productos cocina" + productosCocina)
+
+                const productosBebida = pedidos.filter(pedido => {
+                    return pedido.detallesPedidos.some(detalle => detalle.producto.esBebida);
+                });
+
+                console.log("productos bebida" + productosBebida)
+
+                setProductosCocina(productosCocina);
+                setProductosBebida(productosBebida);
             } catch (error) {
                 console.log(error);
             }
-        }
+        };
 
         fetchData();
     }, []);
 
-    const columns: IColumn<IDetallePedido>[] = [
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const pedidoResponse = await axios.get<IPedidoDto[]>(`${API_URL}pedido`);
+    //             const pedidos = pedidoResponse.data;
+
+    //             let productosCocina: IPedidoDto[] = [];
+    //             let productosBebida: IPedidoDto[] = [];
+
+    //             pedidos.forEach(pedido => {
+    //                 pedido.detallesPedidos.forEach(detalle => {
+    //                     if (detalle.producto.esBebida) {
+    //                         productosBebida.push(pedido);
+    //                     } else {
+    //                         productosCocina.push(pedido);
+    //                     }
+    //                 });
+    //             });
+
+    //             console.log("productos cocina", productosCocina);
+    //             console.log("productos bebida", productosBebida);
+
+    //             setProductosCocina(productosCocina);
+    //             setProductosBebida(productosBebida);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);    
+
+    const columns: IColumn<IPedidoDto>[] = [
         {
             title: "Nombre",
-            field: "producto",
-            render: (detalle: IDetallePedido) => <span>{detalle.producto.nombre}</span>
+            field: "detallesPedidos",
+            render: rowData => {
+                return rowData.detallesPedidos[0].producto.nombre ? <span>{rowData.detallesPedidos[0].producto.nombre}</span> : <span>-</span>;
+            }
         },
-        { title: "Activo", field: "activo" },
-        { title: "Imagen", field: "producto", render: (detalle: IDetallePedido) => <span>{detalle.producto.imagen}</span> },
-        { title: "Cantidad", field: "cantidad" },
+        {
+            title: "Cantidad",
+            field: "detallesPedidos",
+            render: rowData => {
+                return rowData.detallesPedidos[0].cantidad ? <span>{rowData.detallesPedidos[0].cantidad}</span> : <span>-</span>;
+            }
+        },
+        {
+            title: "Imagen",
+            field: "detallesPedidos",
+            render: rowData => <img src={rowData.detallesPedidos[0].producto.imagen} alt={rowData.detallesPedidos[0].producto.imagen} style={{ width: "50px" }} />
+        },
     ];
 
+    // const columns: IColumn<IPedidoDto>[] = [
+    //     { 
+    //         title: "Nombre", 
+    //         field: "detallesPedidos",
+    //         render: rowData => (
+    //             <>
+    //                 {rowData.detallesPedidos.map(detalle => (
+    //                     <span key={detalle.id}>{detalle.producto.nombre}</span> 
+    //                 ))}
+    //             </>
+    //         )
+    //     },
+    //     { 
+    //         title: "Cantidad", 
+    //         field: "detallesPedidos",
+    //         render: rowData => (
+    //             <>
+    //                 {rowData.detallesPedidos.map(detalle => (
+    //                     <span key={detalle.id}>{detalle.cantidad}</span>
+    //                 ))}
+    //             </>
+    //         )
+    //     },
+    //     { 
+    //         title: "Imagen", 
+    //         field: "detallesPedidos",
+    //         render: rowData => (
+    //             <>
+    //                 {rowData.detallesPedidos.map(detalle => (
+    //                     <img key={detalle.id} src={detalle.producto.imagen} alt={detalle.producto.nombre} style={{ width: "50px" }} />
+    //                 ))}
+    //             </>
+    //         )
+    //     },
+    // ];    
 
-    /*const calculateCantidadVendido = (productoId: number, esBebida: boolean | undefined) => {
-        return pedidos.reduce((totalCantidad, pedido) => {
-            const cantidadProductoEnPedido = pedido.DetallePedido.reduce((cantidad, detalle) => {
-                if (
-                    detalle.Productos &&
-                    detalle.Productos.id === productoId &&
-                    (esBebida === undefined || detalle.Productos.esBebida === esBebida)
-                ) {
-                    cantidad += detalle.cantidad;
-                }
-                return cantidad;
-            }, 0);
-            console.log(`Pedido ${pedido.id}, Cantidad: ${cantidadProductoEnPedido}`);
-            return totalCantidad + cantidadProductoEnPedido;
-        }, 0);
-    };*/
+    const exportToExcel = () => {
+        //     if (pedidos.length > 0) {
+        //       const dataToExport: any[] = [];
+        //       const usuariosProcesados = new Set(); // Para evitar procesar al mismo usuario más de una vez
+        //       pedidos.forEach(pedido => {
+        //         const usuario = pedido.usuario;
+        //         if (!usuariosProcesados.has(usuario.id)) {
+        //           dataToExport.push({
+        //             "Nombre Completo": `${usuario.nombre} ${usuario.apellido}`,
+        //             Email: usuario.email,
+        //             Teléfono: usuario.telefono,
+        //             Estado: usuario.activo ? "Activo" : "Inactivo",
+        //             "Cantidad de Pedidos": calcularCantidadTotalPedidos(usuario),
+        //             "Total Pedidos": calcularTotalPedidos(usuario),
+        //           });
+        //           usuariosProcesados.add(usuario.id);
+        //         }
+        //       });
+        //       exportTableDataToExcel(dataToExport, "Pedidos");
+        //     }
+    };
 
-    // const handleBuscarClick = () => {
-    //     if (startDate !== null && endDate !== null) {
-    //         const pedidosFiltrados = pedidos.filter(pedido => {
-    //             const fechaPedido = new Date(pedido.fechaPedido);
-    //             return fechaPedido >= startDate && fechaPedido <= endDate;
-    //         });
-
-    //         const ventasPorProducto = pedidosFiltrados.map((pedido) => {
-    //             const ventas = pedido.DetallePedido.reduce((total, detalle) => {
-    //                 if (detalle.Productos) {
-    //                     return total + detalle.cantidad;
-    //                 }
-    //                 return total;
-    //             }, 0);
-    //             return { ...pedido, ventas };
-    //         });
-
-    //         // Filtrar los productos por el texto ingresado
-    //         const productosFiltrados = ventasPorProducto.filter((pedido) =>
-    //             pedido.DetallePedido.some((detalle) =>
-    //                 detalle.Productos.nombre.toLowerCase().includes(searchText.toLowerCase())
-    //             )
-    //         );
-    //         // Ordenar la lista de productos por ventas
-    //         productosFiltrados.sort((a, b) => b.ventas - a.ventas);
-
-    //         // Actualizar el estado con los productos filtrados y ordenados
-    //         setPedidos(productosFiltrados);
-    //     } else {
-    //         alert("Por favor, seleccione ambas fechas antes de realizar la búsqueda.");
-    //     }
-    // };
-
-    /* const pedidosBebida = pedidos
-         .filter((pedido) => pedido.id !== undefined && pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
-         .map((pedido) => ({
-             ...pedido,
-             ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
-             ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
-         }));
-        
-     const pedidosNoBebida = pedidos
-         .filter((pedido) => pedido.id !== undefined && !pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
-         .map((pedido) => ({
-             ...pedido,
-             ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
-             ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
-         }));
- 
-     const mergedProducts = [...pedidosBebida, ...pedidosNoBebida];
- */
     return (
         <div>
             <Container fluid>
-                {/* <Row className="mt-3">
-                    <Col>
-                        <Form>
-                            <Col>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Fecha inicio búsqueda</Form.Label>
-                                            <Col>
-                                                <DatePicker
-                                                    selected={startDate}
-                                                    onChange={(date: Date | null) => setStartDate(date)}
-                                                    dateFormat="yyyy-MM-dd"
-                                                    isClearable
-                                                    className="form-control"
-                                                />
-                                            </Col>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Fecha fin búsqueda</Form.Label>
-                                            <Col>
-                                                <DatePicker
-                                                    selected={endDate}
-                                                    onChange={(date: Date | null) => setEndDate(date)}
-                                                    dateFormat="yyyy-MM-dd"
-                                                    isClearable
-                                                    className="form-control"
-                                                />
-                                            </Col>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Button variant="primary" style={{ marginTop: "30px" }} onClick={handleBuscarClick}>Buscar</Button>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Form>
-                    </Col>
-                </Row> */}
                 <Row className="mt-3">
                     <Col>
-                        <GenericTable<IDetallePedido>
-                            columns={columns}
-                            data={productoAlimentos.sort((a, b) => b.cantidad - a.cantidad)}
-                            actions={{
-                                create: false,
-                                update: false,
-                                delete: false,
-                                view: false,
-                            }}
-                        />
+                        <h2>Productos Cocina</h2>
+                        {productosCocina && productosCocina.length > 0 ? (
+                            <GenericTable<IPedidoDto>
+                                data={productosCocina}
+                                columns={columns}
+                                actions={{
+                                    create: false,
+                                    update: false,
+                                    delete: false,
+                                    view: false,
+                                }}
+                            />
+                        ) : (
+                            <NoHayPedidos onReload={() => window.location.reload()} />
+                        )}
                     </Col>
-
+                    <Col>
+                        <h2> Productos Bebidas</h2>
+                        {productosBebida && productosBebida.length > 0 ? (
+                            <GenericTable<IPedidoDto>
+                                columns={columns}
+                                data={productosBebida}
+                                actions={{
+                                    create: false,
+                                    update: false,
+                                    delete: false,
+                                    view: false,
+                                }}
+                            />
+                        ) : (
+                            <NoHayPedidos onReload={() => window.location.reload()} />
+                        )}
+                    </Col>
                 </Row>
+                <Button variant="success" style={{ marginLeft: "10px" }} onClick={exportToExcel}>
+                    Exportar a Excel
+                </Button>
             </Container>
         </div>
     );
