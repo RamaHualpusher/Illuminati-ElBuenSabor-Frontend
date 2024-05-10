@@ -5,6 +5,7 @@ import { IColumn } from "../../../interface/ICamposTablaGenerica";
 import axios from "axios";
 import { IPedidoDto } from "../../../interface/IPedido";
 import NoHayPedidos from "../../Page404/NoHayPedidos";
+import { exportTableDataToExcel } from "../../../util/exportTableDataToExcel";
 
 const RankingAlimento = () => {
     const [productosCocina, setProductosCocina] = useState<IPedidoDto[]>([]);
@@ -21,16 +22,18 @@ const RankingAlimento = () => {
                     return pedido.detallesPedidos.some(detalle => !detalle.producto.esBebida);
                 });
 
-                console.log("productos cocina" + productosCocina)
 
                 const productosBebida = pedidos.filter(pedido => {
                     return pedido.detallesPedidos.some(detalle => detalle.producto.esBebida);
                 });
 
-                console.log("productos bebida" + productosBebida)
 
                 setProductosCocina(productosCocina);
                 setProductosBebida(productosBebida);
+
+                console.log("productos cocina", productosCocina)
+                console.log("productos bebida", productosBebida)
+
             } catch (error) {
                 console.log(error);
             }
@@ -39,51 +42,27 @@ const RankingAlimento = () => {
         fetchData();
     }, []);
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const pedidoResponse = await axios.get<IPedidoDto[]>(`${API_URL}pedido`);
-    //             const pedidos = pedidoResponse.data;
-
-    //             let productosCocina: IPedidoDto[] = [];
-    //             let productosBebida: IPedidoDto[] = [];
-
-    //             pedidos.forEach(pedido => {
-    //                 pedido.detallesPedidos.forEach(detalle => {
-    //                     if (detalle.producto.esBebida) {
-    //                         productosBebida.push(pedido);
-    //                     } else {
-    //                         productosCocina.push(pedido);
-    //                     }
-    //                 });
-    //             });
-
-    //             console.log("productos cocina", productosCocina);
-    //             console.log("productos bebida", productosBebida);
-
-    //             setProductosCocina(productosCocina);
-    //             setProductosBebida(productosBebida);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, []);    
-
     const columns: IColumn<IPedidoDto>[] = [
         {
+            title: "ID",
+            field: "id"            
+        },
+        {
             title: "Nombre",
-            field: "detallesPedidos",
+            field: "fechaPedido",
             render: rowData => {
-                return rowData.detallesPedidos[0].producto.nombre ? <span>{rowData.detallesPedidos[0].producto.nombre}</span> : <span>-</span>;
+                return rowData.detallesPedidos[0].producto.nombre ?
+                    <span>{rowData.detallesPedidos[0].producto.nombre}</span>
+                    : <span>-</span>;
             }
         },
         {
             title: "Cantidad",
             field: "detallesPedidos",
             render: rowData => {
-                return rowData.detallesPedidos[0].cantidad ? <span>{rowData.detallesPedidos[0].cantidad}</span> : <span>-</span>;
+                return rowData.detallesPedidos[0].cantidad ?
+                    <span>{rowData.detallesPedidos[0].cantidad}</span>
+                    : <span>-</span>;
             }
         },
         {
@@ -93,62 +72,75 @@ const RankingAlimento = () => {
         },
     ];
 
-    // const columns: IColumn<IPedidoDto>[] = [
-    //     { 
-    //         title: "Nombre", 
-    //         field: "detallesPedidos",
-    //         render: rowData => (
-    //             <>
-    //                 {rowData.detallesPedidos.map(detalle => (
-    //                     <span key={detalle.id}>{detalle.producto.nombre}</span> 
-    //                 ))}
-    //             </>
-    //         )
-    //     },
-    //     { 
-    //         title: "Cantidad", 
-    //         field: "detallesPedidos",
-    //         render: rowData => (
-    //             <>
-    //                 {rowData.detallesPedidos.map(detalle => (
-    //                     <span key={detalle.id}>{detalle.cantidad}</span>
-    //                 ))}
-    //             </>
-    //         )
-    //     },
-    //     { 
-    //         title: "Imagen", 
-    //         field: "detallesPedidos",
-    //         render: rowData => (
-    //             <>
-    //                 {rowData.detallesPedidos.map(detalle => (
-    //                     <img key={detalle.id} src={detalle.producto.imagen} alt={detalle.producto.nombre} style={{ width: "50px" }} />
-    //                 ))}
-    //             </>
-    //         )
-    //     },
-    // ];    
+    // Agrupa los pedidos por producto de cocina y muestra solo un producto con toda la información
+    const pedidosPorProducto: IPedidoDto[] = productosCocina.reduce((acc: IPedidoDto[], pedido) => {
+        const existingProductIndex = acc.findIndex(product => product.detallesPedidos[0].producto.id === pedido.detallesPedidos[0].producto.id);
+        if (existingProductIndex === -1) {
+            acc.push(pedido);
+        } else {
+            // Suma la cantidad vendida del producto existente
+            acc[existingProductIndex].detallesPedidos[0].cantidad += pedido.detallesPedidos[0].cantidad;
+        }
+        return acc;
+    }, []);
 
-    const exportToExcel = () => {
-        //     if (pedidos.length > 0) {
-        //       const dataToExport: any[] = [];
-        //       const usuariosProcesados = new Set(); // Para evitar procesar al mismo usuario más de una vez
-        //       pedidos.forEach(pedido => {
-        //         const usuario = pedido.usuario;
-        //         if (!usuariosProcesados.has(usuario.id)) {
-        //           dataToExport.push({
-        //             "Nombre Completo": `${usuario.nombre} ${usuario.apellido}`,
-        //             Email: usuario.email,
-        //             Teléfono: usuario.telefono,
-        //             Estado: usuario.activo ? "Activo" : "Inactivo",
-        //             "Cantidad de Pedidos": calcularCantidadTotalPedidos(usuario),
-        //             "Total Pedidos": calcularTotalPedidos(usuario),
-        //           });
-        //           usuariosProcesados.add(usuario.id);
-        //         }
-        //       });
-        //       exportTableDataToExcel(dataToExport, "Pedidos");
-        //     }
+    //ordena los productos cocina desde el que tiene mas ventas, al de menor ventas
+    const pedidosPorProductoOrdenado = pedidosPorProducto.sort((a, b) => {
+        return b.detallesPedidos[0].cantidad - a.detallesPedidos[0].cantidad;
+    });
+
+    // Agrupa los pedidos por producto de bebida y muestra solo un producto con toda la información
+    const pedidosPorProductoBebida = productosBebida.reduce((acc: IPedidoDto[], pedido) => {
+        const existingProductIndex = acc.findIndex(product => product.detallesPedidos[0].producto.id === pedido.detallesPedidos[0].producto.id);
+        if (existingProductIndex === -1) {
+            acc.push(pedido);
+        } else {
+            acc[existingProductIndex].detallesPedidos[0].cantidad += pedido.detallesPedidos[0].cantidad;
+        }
+        return acc;
+    }, []);
+
+    //ordena los productos bebidas desde el que tiene mas ventas, al de menor ventas
+    const pedidosPorProductoBebidaOrdenado = pedidosPorProductoBebida.sort((a, b) => {
+        return b.detallesPedidos[0].cantidad - a.detallesPedidos[0].cantidad;
+    });
+
+    const exportToExcelBebidas = () => {
+        if (productosBebida.length > 0) {
+            const dataToExport: any[] = [];
+            const productosProcesados = new Set();
+            productosBebida.forEach(pedido => {
+                const producto = pedido.detallesPedidos[0].producto;
+                if (!productosProcesados.has(producto.id)) {
+                    dataToExport.push({
+                        "Nombre": `${producto.nombre} `,
+                        Estado: producto.activo ? "Activo" : "Inactivo",
+                        "Cantidad": pedido.detallesPedidos[0].cantidad,
+                    });
+                    productosProcesados.add(producto.id);
+                }
+            });
+            exportTableDataToExcel(dataToExport, "Pedidos Bebidas");
+        }
+    };
+
+    const exportToExcelCocina = () => {
+        if (productosCocina.length > 0) {
+            const dataToExport: any[] = [];
+            const productosProcesados = new Set();
+            productosCocina.forEach(pedido => {
+                const producto = pedido.detallesPedidos[0].producto;
+                if (!productosProcesados.has(producto.id)) {
+                    dataToExport.push({
+                        "Nombre": `${producto.nombre} `,
+                        "Estado": producto.activo ? "Activo" : "Inactivo",
+                        "Cantidad": pedido.detallesPedidos[0].cantidad,
+                    });
+                    productosProcesados.add(producto.id);
+                }
+            });
+            exportTableDataToExcel(dataToExport, "Pedidos Cocina");
+        }
     };
 
     return (
@@ -159,7 +151,7 @@ const RankingAlimento = () => {
                         <h2>Productos Cocina</h2>
                         {productosCocina && productosCocina.length > 0 ? (
                             <GenericTable<IPedidoDto>
-                                data={productosCocina}
+                                data={pedidosPorProductoOrdenado}
                                 columns={columns}
                                 actions={{
                                     create: false,
@@ -171,13 +163,16 @@ const RankingAlimento = () => {
                         ) : (
                             <NoHayPedidos onReload={() => window.location.reload()} />
                         )}
+                        <Button variant="success" style={{ marginLeft: "10px" }} onClick={exportToExcelCocina}>
+                            Exportar a Excel - Cocina
+                        </Button>
                     </Col>
                     <Col>
                         <h2> Productos Bebidas</h2>
                         {productosBebida && productosBebida.length > 0 ? (
                             <GenericTable<IPedidoDto>
                                 columns={columns}
-                                data={productosBebida}
+                                data={pedidosPorProductoBebidaOrdenado}
                                 actions={{
                                     create: false,
                                     update: false,
@@ -188,11 +183,13 @@ const RankingAlimento = () => {
                         ) : (
                             <NoHayPedidos onReload={() => window.location.reload()} />
                         )}
+                        <Button variant="success" style={{ marginLeft: "10px" }} onClick={exportToExcelBebidas}>
+                            Exportar a Excel - Bebidas
+                        </Button>
                     </Col>
+
                 </Row>
-                <Button variant="success" style={{ marginLeft: "10px" }} onClick={exportToExcel}>
-                    Exportar a Excel
-                </Button>
+
             </Container>
         </div>
     );
