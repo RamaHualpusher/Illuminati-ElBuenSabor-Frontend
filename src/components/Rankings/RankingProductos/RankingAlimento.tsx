@@ -1,187 +1,195 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { IProducto } from '../../../interface/IProducto';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import GenericTable from "../../GenericTable/GenericTable";
 import { IColumn } from "../../../interface/ICamposTablaGenerica";
-import { IPedido } from "../../../interface/IPedido";
-import { IDetallePedido, IDetallePedidoDto } from "../../../interface/IDetallePedido";
 import axios from "axios";
-import { spawn } from "child_process";
+import { IPedidoDto } from "../../../interface/IPedido";
+import NoHayPedidos from "../../Page404/NoHayPedidos";
+import { exportTableDataToExcel } from "../../../util/exportTableDataToExcel";
 
 const RankingAlimento = () => {
-    const [productoAlimentos, setProductoAlimentos] = useState<IDetallePedido[]>([]);
-    const [detallePedidos, setDetallesPedidos] = useState<IDetallePedido[]>([]);
-    const [searchText, setSearchText] = useState<string>('');
-    const [startDate, setStartDate] = useState<Date | null>(new Date());
-    const [endDate, setEndDate] = useState<Date | null>(new Date());
+    const [productosCocina, setProductosCocina] = useState<IPedidoDto[]>([]);
+    const [productosBebida, setProductosBebida] = useState<IPedidoDto[]>([]);
+    const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const detallePedidoResponse = await axios.get(process.env.REACT_APP_API_URL + "detalle-pedido");
-                setDetallesPedidos(detallePedidoResponse.data);
-                detallePedidos.map((detalle) => {
-                    if (detalle.producto.esBebida!) {
-                        productoAlimentos.map((ali) => {
-                            if (ali.producto.id === detalle.producto.id) {
-                                ali = {
-                                    ...ali,
-                                    cantidad: ali.cantidad + detalle.cantidad,
-                                }
-                            } else {
-                                setProductoAlimentos([...productoAlimentos, detalle]);
-                            }
-                        });
-                    }
+                const pedidoResponse = await axios.get<IPedidoDto[]>(`${API_URL}pedido`);
+                const pedidos = pedidoResponse.data;
+
+                const productosCocina = pedidos.filter(pedido => {
+                    return pedido.detallesPedidos.some(detalle => !detalle.producto.esBebida);
                 });
+
+
+                const productosBebida = pedidos.filter(pedido => {
+                    return pedido.detallesPedidos.some(detalle => detalle.producto.esBebida);
+                });
+
+
+                setProductosCocina(productosCocina);
+                setProductosBebida(productosBebida);
+
+                console.log("productos cocina", productosCocina)
+                console.log("productos bebida", productosBebida)
 
             } catch (error) {
                 console.log(error);
             }
-        }
+        };
 
         fetchData();
     }, []);
 
-    const columns: IColumn<IDetallePedido>[] = [
+    const columns: IColumn<IPedidoDto>[] = [
+        {
+            title: "ID",
+            field: "id"            
+        },
         {
             title: "Nombre",
-            field: "producto",
-            render: (detalle: IDetallePedido) => <span>{detalle.producto.nombre}</span>
+            field: "fechaPedido",
+            render: rowData => {
+                return rowData.detallesPedidos[0].producto.nombre ?
+                    <span>{rowData.detallesPedidos[0].producto.nombre}</span>
+                    : <span>-</span>;
+            }
         },
-        { title: "Activo", field: "activo" },
-        { title: "Imagen", field: "producto", render: (detalle: IDetallePedido) => <span>{detalle.producto.imagen}</span> },
-        { title: "Cantidad", field: "cantidad" },
+        {
+            title: "Cantidad",
+            field: "detallesPedidos",
+            render: rowData => {
+                return rowData.detallesPedidos[0].cantidad ?
+                    <span>{rowData.detallesPedidos[0].cantidad}</span>
+                    : <span>-</span>;
+            }
+        },
+        {
+            title: "Imagen",
+            field: "detallesPedidos",
+            render: rowData => <img src={rowData.detallesPedidos[0].producto.imagen} alt={rowData.detallesPedidos[0].producto.imagen} style={{ width: "50px" }} />
+        },
     ];
 
+    // Agrupa los pedidos por producto de cocina y muestra solo un producto con toda la información
+    const pedidosPorProducto: IPedidoDto[] = productosCocina.reduce((acc: IPedidoDto[], pedido) => {
+        const existingProductIndex = acc.findIndex(product => product.detallesPedidos[0].producto.id === pedido.detallesPedidos[0].producto.id);
+        if (existingProductIndex === -1) {
+            acc.push(pedido);
+        } else {
+            // Suma la cantidad vendida del producto existente
+            acc[existingProductIndex].detallesPedidos[0].cantidad += pedido.detallesPedidos[0].cantidad;
+        }
+        return acc;
+    }, []);
 
-    /*const calculateCantidadVendido = (productoId: number, esBebida: boolean | undefined) => {
-        return pedidos.reduce((totalCantidad, pedido) => {
-            const cantidadProductoEnPedido = pedido.DetallePedido.reduce((cantidad, detalle) => {
-                if (
-                    detalle.Productos &&
-                    detalle.Productos.id === productoId &&
-                    (esBebida === undefined || detalle.Productos.esBebida === esBebida)
-                ) {
-                    cantidad += detalle.cantidad;
+    //ordena los productos cocina desde el que tiene mas ventas, al de menor ventas
+    const pedidosPorProductoOrdenado = pedidosPorProducto.sort((a, b) => {
+        return b.detallesPedidos[0].cantidad - a.detallesPedidos[0].cantidad;
+    });
+
+    // Agrupa los pedidos por producto de bebida y muestra solo un producto con toda la información
+    const pedidosPorProductoBebida = productosBebida.reduce((acc: IPedidoDto[], pedido) => {
+        const existingProductIndex = acc.findIndex(product => product.detallesPedidos[0].producto.id === pedido.detallesPedidos[0].producto.id);
+        if (existingProductIndex === -1) {
+            acc.push(pedido);
+        } else {
+            acc[existingProductIndex].detallesPedidos[0].cantidad += pedido.detallesPedidos[0].cantidad;
+        }
+        return acc;
+    }, []);
+
+    //ordena los productos bebidas desde el que tiene mas ventas, al de menor ventas
+    const pedidosPorProductoBebidaOrdenado = pedidosPorProductoBebida.sort((a, b) => {
+        return b.detallesPedidos[0].cantidad - a.detallesPedidos[0].cantidad;
+    });
+
+    const exportToExcelBebidas = () => {
+        if (productosBebida.length > 0) {
+            const dataToExport: any[] = [];
+            const productosProcesados = new Set();
+            productosBebida.forEach(pedido => {
+                const producto = pedido.detallesPedidos[0].producto;
+                if (!productosProcesados.has(producto.id)) {
+                    dataToExport.push({
+                        "Nombre": `${producto.nombre} `,
+                        Estado: producto.activo ? "Activo" : "Inactivo",
+                        "Cantidad": pedido.detallesPedidos[0].cantidad,
+                    });
+                    productosProcesados.add(producto.id);
                 }
-                return cantidad;
-            }, 0);
-            console.log(`Pedido ${pedido.id}, Cantidad: ${cantidadProductoEnPedido}`);
-            return totalCantidad + cantidadProductoEnPedido;
-        }, 0);
-    };*/
+            });
+            exportTableDataToExcel(dataToExport, "Pedidos Bebidas");
+        }
+    };
 
-    // const handleBuscarClick = () => {
-    //     if (startDate !== null && endDate !== null) {
-    //         const pedidosFiltrados = pedidos.filter(pedido => {
-    //             const fechaPedido = new Date(pedido.fechaPedido);
-    //             return fechaPedido >= startDate && fechaPedido <= endDate;
-    //         });
+    const exportToExcelCocina = () => {
+        if (productosCocina.length > 0) {
+            const dataToExport: any[] = [];
+            const productosProcesados = new Set();
+            productosCocina.forEach(pedido => {
+                const producto = pedido.detallesPedidos[0].producto;
+                if (!productosProcesados.has(producto.id)) {
+                    dataToExport.push({
+                        "Nombre": `${producto.nombre} `,
+                        "Estado": producto.activo ? "Activo" : "Inactivo",
+                        "Cantidad": pedido.detallesPedidos[0].cantidad,
+                    });
+                    productosProcesados.add(producto.id);
+                }
+            });
+            exportTableDataToExcel(dataToExport, "Pedidos Cocina");
+        }
+    };
 
-    //         const ventasPorProducto = pedidosFiltrados.map((pedido) => {
-    //             const ventas = pedido.DetallePedido.reduce((total, detalle) => {
-    //                 if (detalle.Productos) {
-    //                     return total + detalle.cantidad;
-    //                 }
-    //                 return total;
-    //             }, 0);
-    //             return { ...pedido, ventas };
-    //         });
-
-    //         // Filtrar los productos por el texto ingresado
-    //         const productosFiltrados = ventasPorProducto.filter((pedido) =>
-    //             pedido.DetallePedido.some((detalle) =>
-    //                 detalle.Productos.nombre.toLowerCase().includes(searchText.toLowerCase())
-    //             )
-    //         );
-    //         // Ordenar la lista de productos por ventas
-    //         productosFiltrados.sort((a, b) => b.ventas - a.ventas);
-
-    //         // Actualizar el estado con los productos filtrados y ordenados
-    //         setPedidos(productosFiltrados);
-    //     } else {
-    //         alert("Por favor, seleccione ambas fechas antes de realizar la búsqueda.");
-    //     }
-    // };
-
-    /* const pedidosBebida = pedidos
-         .filter((pedido) => pedido.id !== undefined && pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
-         .map((pedido) => ({
-             ...pedido,
-             ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
-             ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
-         }));
-        
-     const pedidosNoBebida = pedidos
-         .filter((pedido) => pedido.id !== undefined && !pedido.DetallePedido.some((detalle) => detalle.Productos.esBebida))
-         .map((pedido) => ({
-             ...pedido,
-             ventasNoBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, true) : 0,
-             ventasBebida: pedido.id !== undefined ? calculateCantidadVendido(pedido.id, false) : 0,
-         }));
- 
-     const mergedProducts = [...pedidosBebida, ...pedidosNoBebida];
- */
     return (
         <div>
             <Container fluid>
-                {/* <Row className="mt-3">
-                    <Col>
-                        <Form>
-                            <Col>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Fecha inicio búsqueda</Form.Label>
-                                            <Col>
-                                                <DatePicker
-                                                    selected={startDate}
-                                                    onChange={(date: Date | null) => setStartDate(date)}
-                                                    dateFormat="yyyy-MM-dd"
-                                                    isClearable
-                                                    className="form-control"
-                                                />
-                                            </Col>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Fecha fin búsqueda</Form.Label>
-                                            <Col>
-                                                <DatePicker
-                                                    selected={endDate}
-                                                    onChange={(date: Date | null) => setEndDate(date)}
-                                                    dateFormat="yyyy-MM-dd"
-                                                    isClearable
-                                                    className="form-control"
-                                                />
-                                            </Col>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Button variant="primary" style={{ marginTop: "30px" }} onClick={handleBuscarClick}>Buscar</Button>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Form>
-                    </Col>
-                </Row> */}
                 <Row className="mt-3">
                     <Col>
-                        <GenericTable<IDetallePedido>
-                            columns={columns}
-                            data={productoAlimentos.sort((a, b) => b.cantidad - a.cantidad)}
-                            actions={{
-                                create: false,
-                                update: false,
-                                delete: false,
-                                view: false,
-                            }}
-                        />
+                        <h2>Productos Cocina</h2>
+                        {productosCocina && productosCocina.length > 0 ? (
+                            <GenericTable<IPedidoDto>
+                                data={pedidosPorProductoOrdenado}
+                                columns={columns}
+                                actions={{
+                                    create: false,
+                                    update: false,
+                                    delete: false,
+                                    view: false,
+                                }}
+                            />
+                        ) : (
+                            <NoHayPedidos onReload={() => window.location.reload()} />
+                        )}
+                        <Button variant="success" style={{ marginLeft: "10px" }} onClick={exportToExcelCocina}>
+                            Exportar a Excel - Cocina
+                        </Button>
+                    </Col>
+                    <Col>
+                        <h2> Productos Bebidas</h2>
+                        {productosBebida && productosBebida.length > 0 ? (
+                            <GenericTable<IPedidoDto>
+                                columns={columns}
+                                data={pedidosPorProductoBebidaOrdenado}
+                                actions={{
+                                    create: false,
+                                    update: false,
+                                    delete: false,
+                                    view: false,
+                                }}
+                            />
+                        ) : (
+                            <NoHayPedidos onReload={() => window.location.reload()} />
+                        )}
+                        <Button variant="success" style={{ marginLeft: "10px" }} onClick={exportToExcelBebidas}>
+                            Exportar a Excel - Bebidas
+                        </Button>
                     </Col>
 
                 </Row>
+
             </Container>
         </div>
     );
