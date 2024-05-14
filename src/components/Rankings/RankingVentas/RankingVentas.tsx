@@ -8,7 +8,7 @@ import axios from "axios";
 const RankingVentas = () => {
     const [clientes, setClientes] = useState<IUsuario[]>([]);
     const [addModalShow, setAddModalShow] = useState(false);
-    const API_URL = process.env.REACT_APP_API_URL; // Poner la URL correspondiente
+    const API_URL = process.env.REACT_APP_API_URL; 
 
     const columns: IColumn<IUsuario>[] = [
         { title: "ID", field: "id", width: 2 },

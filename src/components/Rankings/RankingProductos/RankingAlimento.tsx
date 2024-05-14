@@ -42,11 +42,7 @@ const RankingAlimento = () => {
         fetchData();
     }, []);
 
-    const columns: IColumn<IPedidoDto>[] = [
-        {
-            title: "ID",
-            field: "id"            
-        },
+    const columns: IColumn<IPedidoDto>[] = [        
         {
             title: "Nombre",
             field: "fechaPedido",
@@ -109,7 +105,7 @@ const RankingAlimento = () => {
         if (productosBebida.length > 0) {
             const dataToExport: any[] = [];
             const productosProcesados = new Set();
-            productosBebida.forEach(pedido => {
+            pedidosPorProductoBebidaOrdenado.forEach(pedido => {
                 const producto = pedido.detallesPedidos[0].producto;
                 if (!productosProcesados.has(producto.id)) {
                     dataToExport.push({
@@ -128,7 +124,7 @@ const RankingAlimento = () => {
         if (productosCocina.length > 0) {
             const dataToExport: any[] = [];
             const productosProcesados = new Set();
-            productosCocina.forEach(pedido => {
+            pedidosPorProductoOrdenado.forEach(pedido => {
                 const producto = pedido.detallesPedidos[0].producto;
                 if (!productosProcesados.has(producto.id)) {
                     dataToExport.push({
