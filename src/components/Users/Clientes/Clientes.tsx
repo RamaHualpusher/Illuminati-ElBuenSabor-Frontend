@@ -185,7 +185,7 @@ const Clientes = () => {
                     show={editModalShow}
                     handleClose={handleEditModalClose}
                     handleClienteEdit={handleClienteEdit}
-                    selectedCliente={selectedCliente} />
+                    selectedUsuario={selectedCliente} />
             </Container>
         </div>
     );

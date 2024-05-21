@@ -1,94 +1,189 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
-import { useAuth0 } from '@auth0/auth0-react';
-import { IEditUsuarioFromCliente, IUsuario } from '../../../interface/IUsuario';
-import EditPerfil from './EditPerfil';
+import React, { useState, useEffect } from "react";
+import { Button, Col, Row } from "react-bootstrap";
+import { useAuth0 } from "@auth0/auth0-react";
+import { IEditUsuarioPerfil, IUsuario } from "../../../interface/IUsuario";
+import EditPerfil from "./EditPerfil";
+import { useUser } from "../../../context/User/UserContext";
+import AddDireccionModal from "../MiDireccion/AddDireccionModal";
+import axios from "axios";
+import { IDomicilio } from "../../../interface/IDomicilio";
+import EditDireccionModal from "../MiDireccion/EditDireccionModal";
 
 const MiPerfil: React.FC = () => {
-    const { user, isAuthenticated } = useAuth0();
-    const defaultImage = process.env.PUBLIC_URL + "/logo512.png";
-    const [selectedCliente, setSelectedCliente] = useState<IUsuario | null>(null);
-    const [editModalShow, setEditModalShow] = useState(false);
+  const { user, isAuthenticated } = useAuth0();
+  const { usuarioContext } = useUser();
+  const defaultImage = "assets/img/EditPerfil.jpg";
+  const [selectedUsuario, setSelectedUsuario] = useState<IUsuario | null>(null);
+  const [editModalShow, setEditModalShow] = useState(false);
+  const [showAddDireccionModal, setShowAddDireccionModal] = useState(false);
+  const [showEditDireccionModal, setShowEditDireccionModal] = useState(false);
+  const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
+  const API_URL = process.env.REACT_APP_API_URL || "";
 
-    const [usuario, setUsuario] = useState<IEditUsuarioFromCliente>({
-        id: 0,
-        nombre: '',
-        apellido: '',
-        email: '',
-        clave: '',
-        telefono: '',
-        domicilio:{
-            calle:"",
-            numero: 0,
-            localidad: ""
-          }
-    });
+  const [usuario, setUsuario] = useState<IEditUsuarioPerfil>({
+    id: 0,
+    nombre: "",
+    apellido: "",
+    email: "",
+    clave: "",
+    telefono: "",
+    domicilio: {
+      calle: "",
+      numero: 0,
+      localidad: "",
+    },
+  });
 
-    useEffect(() => {
-        if (user) {
-            const idUsuario = user.sub ? parseInt(user.sub) : 0;
-            const usuarioData: IEditUsuarioFromCliente = {
-                id: idUsuario,
-                nombre: user.given_name || '',
-                apellido: user.family_name || '',
-                email: user.email || '',
-                clave: '',
-                telefono: '',
-                domicilio:{
-                    calle:"",
-                    numero: 0,
-                    localidad: ""
-                  }
-            };
-            setUsuario(usuarioData);
-        }
-    }, [user]);
+  useEffect(() => {
+    if (usuarioContext) {
+      setUsuario(usuarioContext);
+    }
+  }, [usuarioContext]);
+  
+  const handleEditModalOpen = () => {
+    setEditModalShow(true);
+  };
 
-    const handleEditModalOpen = () => {
-        setEditModalShow(true);
-    };
+  const handleEditModalClose = () => {
+    setEditModalShow(false);
+  };
 
-    const handleEditModalClose = () => {
+  const handleAddDireccionModalOpen = () => {
+    setShowAddDireccionModal(true);
+  };
+
+  const handleEditDireccionModalOpen = () => {
+    setShowEditDireccionModal(true);
+    setSelectedDireccion(usuarioContext?.domicilio || null)
+  };
+
+  const handleDireccionModalClose = () => {
+    setShowAddDireccionModal(false);
+    setShowEditDireccionModal(false);
+  };
+
+  const handleDomicilioAdd = async (domicilio: IDomicilio) => {
+    try {
+      await axios.post(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
+      setShowAddDireccionModal(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDomicilioEdit = async (domicilio: IDomicilio) => {
+    try {
+        await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
+        const updatedUsuarioContext = { ...usuario, domicilio };
+        setUsuario(updatedUsuarioContext);
         setEditModalShow(false);
-    };
+    } catch (error) {
+        console.log(error);
+    }
+};
 
-    return (
-        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-            <div className="card">
-                <div className="card-header">
-                    <h1 className='display-6 text-start'> Mi Perfil</h1>
-                </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-3 d-flex align-items-start">
-                            {/* Mostrar imagen de perfil del usuario */}
-                            <img
-                                className="rounded-circle"
-                                src={user?.picture}
-                                alt={user?.name}
-                                style={{ width: "100px", height: "100px" }}
-                            />
-                        </div>
-                        <div className="col-9">
-                            {/* Mostrar información del usuario */}
-                            <p className="card-text">Nombre: {usuario.nombre} {usuario.apellido}</p>
-                            <p className="card-text">Email: {usuario.email}</p>
-                        </div>
-                        <Button variant="primary" onClick={handleEditModalOpen} style={{ marginTop: "20px" }}>
-                            Editar datos
-                        </Button>
-                        <EditPerfil
-                            show={editModalShow}
-                            handleClose={handleEditModalClose}
-                            handleClienteEdit={handleEditModalOpen}
-                            selectedCliente={selectedCliente}
-                        />
-                    </div>
-                </div>
-            </div>
-
+  return (
+    <div
+      className="d-flex justify-content-center align-items-center"
+      style={{
+        minHeight: "100vh",
+        backgroundImage: `url("${defaultImage}")`,
+        backgroundSize: "cover",
+      }}
+    >
+      <div className="card w-50 w-md-50 w-lg-50">
+        <div className="card-header">
+          <h1 className="display-6 text-start"> Mi Perfil</h1>
         </div>
-    );
+        <div className="card-body">
+          <Row>
+            <Col
+              className="d-flex align-items-start justify-content-center"
+              md={4}
+            >
+              <img
+                className="rounded-circle"
+                src={user?.picture}
+                alt={user?.name}
+                style={{ width: "100px", height: "100px" }}
+              />
+            </Col>
+            <Col className="d-flex flex-column align-items-start" md={8}>
+              {usuario?.nombre && usuario?.apellido ? (
+                <p className="card-text">
+                  Nombre: {usuario?.nombre} {usuario?.apellido}
+                </p>
+              ) : (
+                <p className="card-text">Nombre: Sin datos</p>
+              )}
+              {usuario?.email ? (
+                <p className="card-text">Email: {usuario?.email}</p>
+              ) : (
+                <p className="card-text">Email: Sin datos</p>
+              )}
+              {usuario?.telefono ? (
+                <p className="card-text">Telefono: {usuario?.telefono}</p>
+              ) : (
+                <p className="card-text">Telefono: Sin datos</p>
+              )}
+              {usuarioContext?.domicilio ? (
+                <>
+                  <p className="card-text">
+                    Domicilio: {usuario?.domicilio.calle},{" "}
+                    {usuario?.domicilio.numero}, {usuario?.domicilio.localidad}{" "}
+                    <Button
+                      variant="primary"
+                      onClick={handleEditDireccionModalOpen}
+                    >
+                      Editar
+                    </Button>
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="card-text">Domicilio: Sin datos</p>
+                  <Button
+                    variant="primary"
+                    onClick={handleAddDireccionModalOpen}
+                  >
+                    Agregar dirección
+                  </Button>
+                </>
+              )}
+            </Col>
+          </Row>
+          <Row md={8} className="d-flex justify-content-center">
+            <Col>
+              <Button
+                variant="primary"
+                onClick={handleEditModalOpen}
+                className="mt-3"
+              >
+                Editar Perfil
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      </div>
+      <EditPerfil
+        show={editModalShow}
+        handleClose={handleEditModalClose}
+        handleClienteEdit={handleEditModalOpen}
+        selectedUsuario={usuarioContext}
+      />
+      <AddDireccionModal
+        show={showAddDireccionModal}
+        handleClose={handleDireccionModalClose}
+        handleDireccionAdd={handleDomicilioAdd}
+      />
+      <EditDireccionModal
+        show={showEditDireccionModal}
+        handleClose={handleDireccionModalClose}
+        handleDireccionEdit={handleDomicilioEdit}
+        selectedDireccion={selectedDireccion}
+      />
+    </div>
+  );
 };
 
 export default MiPerfil;

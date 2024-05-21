@@ -22,6 +22,15 @@ export interface IEditUsuarioFromCliente extends IBase {
   domicilio: IDomicilio;
 }
 
+export interface IEditUsuarioPerfil extends IBase {
+  nombre: string;
+  apellido: string;
+  email: string;
+  clave?: string;
+  telefono: string;
+  domicilio: IDomicilio;
+}
+
 export interface IEditUsuarioFromAdmin extends IBase {
   nombre: string;
   apellido: string;
@@ -62,7 +71,7 @@ export interface IEditClienteModalProps {
   show: boolean;
   handleClose: () => void;
   handleClienteEdit: (cliente: IEditUsuarioFromCliente) => void;
-  selectedCliente: IEditUsuarioFromCliente | null;
+  selectedUsuario: IEditUsuarioFromCliente | null;
 }
 
 export interface IRankingUsuario {
