@@ -7,7 +7,7 @@ const EditClienteModal: React.FC<IEditClienteModalProps> = ({
   show,
   handleClose,
   handleClienteEdit,
-  selectedCliente,
+  selectedUsuario: selectedCliente,
 }) => {
   const initializeUsuario = (cliente: IEditUsuarioFromCliente | null): IEditUsuarioFromCliente => {
     return cliente ||{
