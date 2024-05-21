@@ -33,14 +33,14 @@ const Rankings: FC = () => {
                                 Alimentos
                             </Button>
                         </Col>
-                        <Col xs={12} md={6} lg={4} className="mx-auto mb-2">
+                        {/* <Col xs={12} md={6} lg={4} className="mx-auto mb-2">
                             <Button
                                 className={`btn btn-primary rounded w-100 ${selectedOption === 'ventas' ? 'btn-dark' : 'btn-secondary'}`}
                                 onClick={() => handleOptionChange('ventas')}
                             >
                                 Ventas
                             </Button>
-                        </Col>
+                        </Col> */}
                     </Row>
                 </div>
 

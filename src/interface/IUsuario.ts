@@ -1,6 +1,7 @@
 import { IDomicilio } from "./IDomicilio";
 import { IRol } from "./IRol";
 import { IBase } from "./IBase";
+import { IPedidoDto } from "./IPedido";
 
 export interface IUsuario extends IBase {
   nombre: string;
@@ -75,29 +76,18 @@ export interface IEditClienteModalProps {
 }
 
 export interface IRankingUsuario {
-  id: number;
-  activo: boolean;
-  nombre: string;
-  apellido: string;
-  email: string;
-  clave: string;
-  telefono: string;
-  domicilioId: number;
+  usuario: IUsuario;
   domicilio: {
-      id: number;
-      activo: boolean;
-      calle: string;
-      numero: number;
-      localidad: string;
+    id: number;
+    activo: boolean;
+    calle: string;
+    numero: number;
+    localidad: string;
   };
   rol: {
-      id: number;
-      activo: boolean;
-      nombreRol: string;
+    id: number;
+    activo: boolean;
+    nombreRol: string;
   };
-  pedidos: {
-      id: number,
-      estadoPedido: string,
-      fechaPedido: Date
-  }[];
+  pedidos: IPedidoDto[],
 }
