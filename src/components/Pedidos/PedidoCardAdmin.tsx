@@ -189,7 +189,8 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
   };
 
   //aca se verifica con mercado pago el pago 
-  const isPagoMercadoPago = pedido.mercadoPagoDatos && pedido.mercadoPagoDatos.payment_id;
+  const isPagoMercadoPago = pedido.mercadoPagoDatos && pedido.mercadoPagoDatos.id;
+  //aca va preferenceId??
 
   return (
     <>
