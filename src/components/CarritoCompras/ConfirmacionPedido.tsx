@@ -52,7 +52,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const API_URL = process.env.REACT_APP_API_URL || "";
   const MP_ACCESS = process.env.REACT_APP_MP_ACCESS_TOKEN || "";
   const MP_PUBLIC = process.env.REACT_APP_MP_PUBLIC_KEY || "";
-  const [preferenceId, setPreferenceId] = useState<number | null>(null); //para mercado pago
+  const [preferenceId, setPreferenceId] = useState<string | null>(null); //para mercado pago
   const [showTicketModal, setShowTicketModal] = useState<boolean>(false);
   const [returnUrl, setReturnUrl] = useState<string | null>(null);
   const navigate = useNavigate(); // Obtiene la función navigate desde useNavigate
@@ -143,10 +143,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   //agregado por Javier
   useEffect(() => {
     if (pedidoConfirmado && pedidoCompleto) {
-      setShowTicketModal(true);
-      //agregue esto para factura
-      // const facturaGenerada = convertirPedidoAFactura(pedidoCompleto);
-      // setFacturaGenerada(facturaGenerada);
+      setShowTicketModal(true);      
       setPedidoConfirmado(true);
     }
   }, [pedidoConfirmado, pedidoCompleto]); //tambien agregue para factura el", pedidoCompleto"
@@ -184,17 +181,15 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         } else {
           // Si el pago es con Mercado Pago, crea la preferencia de pago
           initMercadoPago(MP_PUBLIC);
-          response = await axios.post(`${API_URL}pedido/mercadoPago`, {
+          response = await axios.post(`${API_URL}mercado-pago-dato/mercadoPago`, {
             ...pedidoCompleto, // Agregamos todo el objeto pedidoCompleto
             items: [
               {
-                title:
-                  "Pedido de " +
-                  pedidoCompleto.usuario.nombre +" " +
-                  pedidoCompleto.usuario.apellido, // Título del pedido
-                quantity: 1, // Cantidad de ítems (puede ser 1 si es un pedido completo)
-                currency_id: "ARS", // Moneda en la que se realiza el pago
-                unit_price: pedidoCompleto.total, // Precio total del pedido
+                id: pedidoCompleto.id?.toString(), // Agrega el ID del pedido
+                title: "Pedido de " + pedidoCompleto.usuario.nombre + " " + pedidoCompleto.usuario.apellido,
+                quantity: 1,
+                unit_price: pedidoCompleto.total, // Asegúrate de que sea un número
+                currency_id: "ARS",
               },
             ],
             back_urls: {
@@ -212,11 +207,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           });
 
           if (response.data) {
-            setPreferenceId(response.data.preferenceId);
-            const mercadoPagoUrl = `https://www.mercadopago.com/checkout/v1/redirect?pref_id=${preferenceId}`;
-            window.open(mercadoPagoUrl, "_blank");
-            clearCart();
-            window.location.href = '/confirmacion-pedido';
+            const { preferenceId } = response.data;
+            setPreferenceId(preferenceId);
+            console.dir("Preference ID emitido desde SPA: " + preferenceId);            
           }
 
           console.log("Respuesta al crear preferencia de MercadoPago:", response.data);
@@ -312,7 +305,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     setEsEfectivo(false);
   };
 
-
   return (
     <div style={{ marginTop: "90px" }}>
       {/* Mostrar la alerta con el número de pedido */}
@@ -386,7 +378,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         </div>
       </form>
       {preferenceId &&
-        <Wallet initialization={{ preferenceId: preferenceId.toString() }} customization={{ texts: { valueProp: 'smart_option' } }} />
+        <Wallet initialization={{ preferenceId: preferenceId.toString(), redirectMode: "blank" }} customization={{ texts: { valueProp: 'smart_option' } }} />
       }
       <div>
         {/* Modal del ticket */}
