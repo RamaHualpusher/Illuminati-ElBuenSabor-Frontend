@@ -114,7 +114,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
             {tieneOtrosProductos ? (
-              <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('A cocina')} disabled={!pedido.esDelivery}>
+              <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En cocina')} disabled={!pedido.esDelivery}>
                 A cocina
               </button>
             ) : (
@@ -133,7 +133,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <button className="btn btn-primary" onClick={handlePagoConfirmacion} disabled={pedido.esDelivery || !pedido.esEfectivo}>
               Entregado
             </button>
-            <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('A cocina')} disabled={!pedido.esDelivery || pedido.esEfectivo} style={{ marginLeft: "8px" }}>
+            <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En cocina')} disabled={!pedido.esDelivery || pedido.esEfectivo} style={{ marginLeft: "8px" }}>
               A cocina
             </button>
           </>
@@ -160,7 +160,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             </Button>
           </>
         );
-      case 'A cocina':
+      case 'En cocina':
         return (
           <>
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
