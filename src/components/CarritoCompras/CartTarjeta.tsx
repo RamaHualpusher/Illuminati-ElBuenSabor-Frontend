@@ -332,12 +332,12 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
                     className="btn-check"
                     id="mercadoPago-outlined"
                     autoComplete="off"
-                    checked={esDelivery && !esEfectivo}
+                    checked={esDelivery}
                     onChange={handleClickMercadoPago}
                   />
                   <label
                     className={
-                      !esEfectivo && esDelivery
+                      !esEfectivo
                         ? "btn btn-primary"
                         : "btn btn-outline-primary"
                     }
