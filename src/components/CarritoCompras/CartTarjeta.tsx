@@ -30,12 +30,9 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   const costoDelivery = 500;
   const descuentoEfectivo = 0.1; // Descuento del 10% para pago en efectivo
 
-  //aca gonza
   const [calle, setCalle] = useState("");
   const [numero, setNumero] = useState("");
   const [localidad, setLocalidad] = useState("");
-  //aca gonza
-
   const [modalAbierto, setModalAbierto] = useState(false);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
@@ -46,7 +43,6 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     domicilio
   );
 
-  // Manejar la selección de "Delivery" y "Mercado Pago" al cargar el componente
   useEffect(() => {
     const obtenerDomicilioUsuario = async () => {
       try {
@@ -55,22 +51,17 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
       } catch (error) {
         console.error("Error al obtener la dirección del usuario:", error);
       }
-    };    
-  }, []);
+    };
+  }, [user?.id, API_URL]);
 
-  //aca gonza
-  // Manejar la selección de "Delivery" y "Mercado Pago" al cargar el componente
   useEffect(() => {
-    // Si el usuario tiene una dirección, establecemos los valores en los campos correspondientes
     if (domicilio) {
       setCalle(domicilio.calle || "");
       setNumero(domicilio.numero ? domicilio.numero.toString() : "");
       setLocalidad(domicilio.localidad || "");
     }
   }, [domicilio]);
-  //aca gonza
 
-  // Función para manejar el clic en el botón de Delivery
   const handleClickDelivery = () => {
     handleEsDelivery(true);
     handleEsEfectivo(false);
@@ -81,14 +72,12 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     }
   };
 
-  // Función para manejar el clic en el botón de Retiro en el Local
   const handleClickRetiroLocal = () => {
     handleEsDelivery(false);
+    handleEsEfectivo(false);
   };
 
-  // Función para manejar el clic en el botón de método de pago "Efectivo"
   const handleClickEfectivo = () => {
-    handleEsDelivery(false);
     handleEsEfectivo(true);
   };
 
@@ -109,7 +98,6 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     setAddModalShow(false);
   };
 
-  // Función para manejar el clic en el botón de método de pago "Mercado Pago"
   const handleClickMercadoPago = () => {
     handleEsEfectivo(false);
   };
@@ -118,7 +106,6 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     setModalAbierto(false);
   };
 
-  //aca gonza
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (calle && numero && localidad) {
@@ -138,62 +125,55 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
           domicilioUsuario.numero = nuevaDireccion.numero;
           domicilioUsuario.localidad = nuevaDireccion.localidad;
 
-          // Si el usuario ya tiene una dirección, realizamos una solicitud PUT para actualizarla
           await axios.put(
             `${API_URL}usuario/${usuario?.id}/domicilio`,
             domicilioUsuario
           );
-          // Actualizamos el estado del domicilio después de guardar la dirección
           setNuevoDomicilio(domicilioUsuario);
         } else {
-          // Si el usuario no tiene una dirección, realizamos una solicitud POST para crearla
           await axios.post(`${API_URL}domicilio`, {
             ...nuevaDireccion,
             usuario: usuario,
           });
-          // Actualizamos el estado del domicilio después de guardar la dirección
           setNuevoDomicilio(nuevaDireccion);
         }
-        // Cerramos el modal después de enviar la solicitud
         setModalAbierto(false);
       } catch (error) {
         console.error("Error al guardar la dirección:", error);
       }
     }
   };
-  //aca gonza
 
   const handleDomicilioEdit = async (domicilio: IDomicilio) => {
     try {
-        await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
-        setNuevoDomicilio(domicilio);
-        setEditModalShow(false);
+      await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
+      setNuevoDomicilio(domicilio);
+      setEditModalShow(false);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-};
+  };
 
-const handleDomicilioAdd = async (domicilio: IDomicilio) => {
+  const handleDomicilioAdd = async (domicilio: IDomicilio) => {
     try {
-        await axios.post(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
-        setAddModalShow(false);
+      await axios.post(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
+      setAddModalShow(false);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-}; 
+  };
 
   const handleClickDireccion = () => {
     setModalAbierto(true);
   };
 
-  // Calcular total del pedido teniendo en cuenta descuentos y costos adicionales
   const calcularTotalPedido = () => {
     let total = subTotal;
     if (esDelivery) {
       total += costoDelivery;
     }
     if (!esDelivery && esEfectivo) {
-      total -= subTotal * descuentoEfectivo; // Aplicar descuento del 10% para pago en efectivo
+      total -= subTotal * descuentoEfectivo;
     }
     return total;
   };
@@ -203,7 +183,7 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
       <div className="card shadow" style={{ width: "25rem" }}>
         <h5 className="card-header">
           <div
-            className="btn-group "
+            className="btn-group"
             role="group"
             aria-label="Basic example"
             style={{ width: "20rem" }}
@@ -267,7 +247,7 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
                             Retiro en el Local{" "}
                             <span
                               className="icon"
-                              style={{ cursor: 'pointer' }}
+                              style={{ cursor: "pointer" }}
                               onClick={() => {
                                 window.open(
                                   "https://maps.app.goo.gl/aCW5vzKe88XF2poYA",
@@ -332,12 +312,12 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
                     className="btn-check"
                     id="mercadoPago-outlined"
                     autoComplete="off"
-                    checked={esDelivery}
+                    checked={esDelivery || !esEfectivo}
                     onChange={handleClickMercadoPago}
                   />
                   <label
                     className={
-                      !esEfectivo
+                      esDelivery || !esEfectivo
                         ? "btn btn-primary"
                         : "btn btn-outline-primary"
                     }
@@ -353,9 +333,8 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
                       className="btn-check"
                       id="efectivo-outlined"
                       autoComplete="off"
-                      checked={!esDelivery && esEfectivo} // Solo chequea si no es delivery y es efectivo
+                      checked={!esDelivery && esEfectivo}
                       onChange={handleClickEfectivo}
-                      disabled={esDelivery} // Deshabilita si es delivery
                     />
                     <label
                       className={
@@ -385,8 +364,8 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
         handleDireccionEdit={handleDomicilioEdit}
         selectedDireccion={selectedDireccion}
       />
-    </div>  
-  );  
+    </div>
+  );
 };
 
 export default CartTarjeta;
