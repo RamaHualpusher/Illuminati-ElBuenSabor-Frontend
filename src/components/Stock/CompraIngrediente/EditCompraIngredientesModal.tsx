@@ -104,7 +104,7 @@ const EditCompraIngredientesModal: React.FC<
 
   // Renderizar el modal y el formulario
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} size="lg">
       <Modal.Header closeButton>
         <Modal.Title>Compra de Ingredientes</Modal.Title>
       </Modal.Header>
@@ -138,6 +138,7 @@ const EditCompraIngredientesModal: React.FC<
                 type="number"
                 value={precioCosto}
                 onChange={(e) => setPrecioCosto(parseInt(e.target.value))}
+                min={1}
                 required
               />
             </Form.Group>
@@ -162,6 +163,7 @@ const EditCompraIngredientesModal: React.FC<
                 onChange={(e) => setCantidad(parseInt(e.target.value))}
                 required
                 isInvalid={submitAttempted && cantidad <= 0}
+                min={1}
               />
               <Form.Control.Feedback type="invalid">
                 La cantidad debe ser mayor que cero.

@@ -142,10 +142,10 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
     return (
         <>
             <Modal show={show} onHide={closeModal} size="lg" centered>
-                <Modal.Body>
+            <Modal.Body className="d-flex justify-content-center align-items-center">
                     {selectedPedido && (
-                        <Container fluid className="d-flex justify-content-center">
-                            <div className="border p-4 bg-white">
+                        <Container className="d-flex justify-content-center">
+                            <div className=" w-100 border p-4 bg-white">
                                 <div className="logo-container text-center mb-4">
                                     <img src="/assets/img/logo-grupo-illuminati.jpg" alt="Logo de la empresa" width={100} />
                                 </div>
