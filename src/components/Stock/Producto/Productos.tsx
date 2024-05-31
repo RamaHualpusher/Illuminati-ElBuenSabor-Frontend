@@ -162,6 +162,7 @@ const Productos: React.FC = () => {
     {
       title: "Estado",
       field: "activo",
+      width: 1,
       render: (producto: IProducto) => (
         <span className={`text-${producto.activo ? "success" : "danger"}`}>
           {producto.activo ? <i className="bi bi-unlock-fill"></i> : <i className="bi bi-lock-fill"></i>}
