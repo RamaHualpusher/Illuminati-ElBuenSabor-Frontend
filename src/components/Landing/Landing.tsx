@@ -2,11 +2,11 @@ import React, { useEffect, useState, useContext } from "react";
 import BotonesMenu from "./BotonesMenu";
 import ImagenMenu from "./ImagenMenu";
 import ComoFunc from "./ComoFunc";
-import { IProducto } from "../../interface/IProducto";
 import { SearchContext } from "../Buscador/SearchContext";
 import DondeEstamos from "../DondeEstamos/DondeEstamos";
 import Catalogo from "./Catalogo";
 import axios from 'axios';
+import { IProductoMaxProducto } from "../../interface/IProducto";
 /**
  * Componente de la página principal (landing page) de la aplicación.
  */
@@ -17,8 +17,8 @@ export default function Landing() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
 
   // Estado para almacenar los productos y los productos filtrados
-  const [productos, setProductos] = useState<IProducto[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<IProducto[]>([]);
+  const [productos, setProductos] = useState<IProductoMaxProducto[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<IProductoMaxProducto[]>([]);
 
   // Obtener el parámetro de búsqueda del contexto
   const { searchParam } = useContext(SearchContext);

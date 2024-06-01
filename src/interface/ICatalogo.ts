@@ -1,5 +1,6 @@
-import { IProducto } from "./IProducto";
+import { IProductoMaxProducto } from "./IProducto";
+
 
 export interface ICatalogoProps {
-  filteredProductos: IProducto[];
+  filteredProductos: IProductoMaxProducto[];
 }

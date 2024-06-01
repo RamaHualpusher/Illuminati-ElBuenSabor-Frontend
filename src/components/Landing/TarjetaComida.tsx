@@ -13,14 +13,14 @@ const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText, showButton 
 
   // Manejar el clic en el botón del carrito
   const handleCartClick = () => {
-    if (producto.stockActual > 0) {
+    if (producto.maxCantidadProducto > 0) {
       // Crear un objeto DetallePedido para el carrito
       const detallePedido: IDetallePedido = {
         id: 0,
         cantidad: 1,
         subTotal: 0,
         producto: producto,
-        maxCantidadProducto: 0,
+        maxCantidadProducto: producto.maxCantidadProducto,
       };
 
       // Crear un objeto CartItem para agregar al carrito
@@ -39,7 +39,7 @@ const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText, showButton 
 
   // Renderizar el botón o el mensaje de sin stock
   const renderButton = () => {
-    if (showButton && producto.stockActual > 0) {
+    if (showButton && producto.maxCantidadProducto > 0) {
       return (
         <button onClick={handleCartClick} className="btn btn-primary mb-2">
           {buttonText}

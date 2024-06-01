@@ -45,7 +45,7 @@ const Catalogo: React.FC<ICatalogoProps> = ({ filteredProductos }) => {
                 <TarjetaComida
                   producto={producto}
                   buttonText={"Agregar al Carrito"}
-                  showButton={producto.stockActual > 0} // Mostrar el botón si hay stock
+                  showButton={producto.maxCantidadProducto > 0} // Mostrar el botón si hay stock basado en maxCantidadProducto
                 />
               </div>
             ))}

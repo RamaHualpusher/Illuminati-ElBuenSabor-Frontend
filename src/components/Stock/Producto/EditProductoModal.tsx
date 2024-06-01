@@ -119,6 +119,21 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
     }
   };
 
+  // useEffect(() => {
+  //   if (selectedProducto) {
+  //     setProducto({
+  //       ...selectedProducto,
+  //       rubro: selectedProducto.rubro,
+  //     });
+  //     let cos = 0;
+  //     selectedProducto.productosIngredientes?.map((ingre) => {
+  //       cos += ingre.ingrediente.precioCosto * ingre.cantidad;
+  //     });
+  //     setCosto(cos);
+  //     setSelectedIngredients(selectedProducto.productosIngredientes || []);
+  //   }
+  // }, [selectedProducto]);
+  
   useEffect(() => {
     if (selectedProducto) {
       setProducto({
@@ -131,6 +146,17 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
       });
       setCosto(cos);
       setSelectedIngredients(selectedProducto.productosIngredientes || []);
+  
+      if (selectedProducto.esBebida) {
+        const bebidaIngrediente = selectedProducto.productosIngredientes?.find(
+          (ingre) => ingre.ingrediente.nombre === selectedProducto.nombre
+        );
+        if (bebidaIngrediente) {
+          setIngredienteBebida({
+            ...bebidaIngrediente.ingrediente,
+          });
+        }
+      }
     }
   }, [selectedProducto]);
   
@@ -176,6 +202,17 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
     setCosto(costo - ingredient.cantidad * ingredient.ingrediente.precioCosto);
   };
 
+  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   if (producto && selectedIngredients.length > 0) {
+  //     const updatedProducto: IProducto = {
+  //       ...producto,
+  //       productosIngredientes: selectedIngredients,
+  //     };
+  //     handleProductoEdit(updatedProducto);
+  //     handleClose();
+  //   }
+  // };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (producto && selectedIngredients.length > 0) {
@@ -183,10 +220,19 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
         ...producto,
         productosIngredientes: selectedIngredients,
       };
+      if (producto.esBebida) {
+        const bebidaIngrediente: IProductoIngrediente = {
+          cantidad: 1, // Asumiendo que siempre es 1
+          id: 0, // Ajustar según la lógica de backend
+          ingrediente: ingredienteBebida,
+        };
+        updatedProducto.productosIngredientes = [bebidaIngrediente];
+      }
       handleProductoEdit(updatedProducto);
       handleClose();
     }
   };
+  
 
   return (
     <Modal show={show} onHide={handleClose} size="xl">
@@ -245,7 +291,7 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
                 />
               </Form.Group>
             </Col>
-            <Col md={2}>
+            {/* <Col md={2}>
               <Form.Group className="mb-3" controlId="formEstado">
                 <Form.Label>Es Bebida</Form.Label>
                 <Form.Check
@@ -258,7 +304,7 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
                   }
                 />
               </Form.Group>
-            </Col>
+            </Col> */}
             <Col md={2}>
               <Form.Group className="mb-3" controlId="formEstado">
                 <Form.Label>Activo</Form.Label>
