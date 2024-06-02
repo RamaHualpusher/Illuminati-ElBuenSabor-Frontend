@@ -44,6 +44,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   const [product, setProduct] = useState<IProducto>(initializeProduct);
   const [rubros, setRubros] = useState<IRubroNew[]>([]);
   const [rubrosBebidas, setRubrosBebidas] = useState<IRubroNew[]>([]);
+  const [rubrosIngredienteBebidas, setRubrosIngredienteBebidas] = useState<IRubroNew[]>([]);
   const [IngredientesListToAddInProduct, setIngredientesListToAddInProduct] =
     useState<IIngredientes[]>([]);
   const [ingredienteToAddInProduct, setIngredienteToAddInProduct] =
@@ -65,22 +66,32 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
         const responseData = await axios.get<IRubroNew[]>(`${API_URL}rubro`);
         const allRubros = responseData.data;
 
-        const filteredRubros = product.esBebida
-          ? allRubros.filter(
-              (rubro) => !rubro.ingredientOwner && rubro.rubroPadre !== null
-            )
-          : allRubros.filter((rubro) => !rubro.ingredientOwner);
+        const filteredRubros = allRubros.filter(
+          (rubroBebida) =>
+            !rubroBebida.ingredientOwner &&
+            rubroBebida.rubroPadre !== null &&
+            !rubroBebida.rubroPadre?.nombre.includes("Bebida")
+        );
 
         setRubros(filteredRubros);
 
         const filteredRubrosBebidas = allRubros.filter(
           (rubroBebida) =>
-            rubroBebida.ingredientOwner &&
+            !rubroBebida.ingredientOwner &&
             rubroBebida.rubroPadre !== null &&
-            rubroBebida.nombre.includes("Bebida")
+            rubroBebida.rubroPadre?.nombre.includes("Bebida")
         );
 
         setRubrosBebidas(filteredRubrosBebidas);
+
+        const filteredRubrosIngredienteBebidas = allRubros.filter(
+          (rubroBebida) =>
+            rubroBebida.ingredientOwner &&
+            rubroBebida.rubroPadre !== null &&
+            rubroBebida.rubroPadre?.nombre.includes("Bebida")
+        );
+
+        setRubrosIngredienteBebidas(filteredRubrosIngredienteBebidas);
       } catch (error) {
         console.log(error);
       }
@@ -339,10 +350,13 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
             </Row>
           )}
           <Row>
+            
+            {!product.esBebida && (
             <Col md={6}>
               <Form.Group className="mb-3" controlId="formRubro">
                 <Form.Label>Rubro</Form.Label>
                 <Form.Select
+                  value={product.rubro.id || ""} // Establecer el valor seleccionado en función del ID del rubro del producto
                   onChange={(event) => {
                     const rubroId = parseInt(event.target.value);
                     const selectedRubro = rubros.find(
@@ -367,6 +381,38 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                 </Form.Select>
               </Form.Group>
             </Col>
+            )}
+            {product.esBebida && (
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formRubro">
+                <Form.Label>Rubro</Form.Label>
+                <Form.Select
+                  value={product.rubro.id || ""} // Establecer el valor seleccionado en función del ID del rubro del producto
+                  onChange={(event) => {
+                    const rubroId = parseInt(event.target.value);
+                    const selectedRubro = rubrosBebidas.find(
+                      (rubro) => rubro.id === rubroId
+                    );
+                    if (selectedRubro) {
+                      setProduct({ ...product, rubro: selectedRubro });
+                    }
+                  }}
+                  required
+                >
+                  <option value="">Seleccione un rubro</option>
+                  {rubrosBebidas.map((rubro) => (
+                    <option
+                      key={rubro.id}
+                      value={rubro.id}
+                      disabled={!rubro.activo}
+                    >
+                      {rubro.nombre}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            )}
             <Col md={6}>
               <Form.Group className="mb-3" controlId="formPrecio">
                 <Form.Label>Precio</Form.Label>
@@ -401,7 +447,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                     <Form.Select
                       onChange={(event) => {
                         const rubroId = parseInt(event.target.value);
-                        const selectedRubro = rubrosBebidas.find(
+                        const selectedRubro = rubrosIngredienteBebidas.find(
                           (rubro) => rubro.id === rubroId
                         );
                         if (selectedRubro) {
@@ -414,7 +460,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                       required
                     >
                       <option value="">Seleccione el tipo de bebida</option>
-                      {rubrosBebidas.map((rubro) => (
+                      {rubrosIngredienteBebidas.map((rubro) => (
                         <option
                           key={rubro.id}
                           value={rubro.id}

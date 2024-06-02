@@ -72,19 +72,20 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
         const responseData = await axios.get<IRubroNew[]>(`${API_URL}rubro`);
         const allRubros = responseData.data;
 
-        const filteredRubros = producto.esBebida
-          ? allRubros.filter(
-              (rubro) => !rubro.ingredientOwner && rubro.rubroPadre !== null
-            )
-          : allRubros.filter((rubro) => !rubro.ingredientOwner);
+        const filteredRubros = allRubros.filter(
+          (rubroBebida) =>
+            !rubroBebida.ingredientOwner &&
+            rubroBebida.rubroPadre !== null &&
+            !rubroBebida.rubroPadre?.nombre.includes("Bebida")
+        );
 
         setRubros(filteredRubros);
 
         const filteredRubrosBebidas = allRubros.filter(
           (rubroBebida) =>
-            rubroBebida.ingredientOwner &&
+            !rubroBebida.ingredientOwner &&
             rubroBebida.rubroPadre !== null &&
-            rubroBebida.nombre.includes("Bebida")
+            rubroBebida.rubroPadre?.nombre.includes("Bebida")
         );
 
         setRubrosBebidas(filteredRubrosBebidas);
@@ -322,7 +323,9 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
               </Col>
             </Row>
           )}
+         
           <Row>
+          {!producto.esBebida && (
             <Col md={6}>
               <Form.Group className="mb-3" controlId="formRubro">
                 <Form.Label>Rubro</Form.Label>
@@ -352,6 +355,38 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
                 </Form.Select>
               </Form.Group>
             </Col>
+            )}
+            {producto.esBebida && (
+            <Col md={6}>
+              <Form.Group className="mb-3" controlId="formRubro">
+                <Form.Label>Rubro</Form.Label>
+                <Form.Select
+                  value={producto.rubro.id || ""} // Establecer el valor seleccionado en función del ID del rubro del producto
+                  onChange={(event) => {
+                    const rubroId = parseInt(event.target.value);
+                    const selectedRubro = rubros.find(
+                      (rubro) => rubro.id === rubroId
+                    );
+                    if (selectedRubro) {
+                      setProducto({ ...producto, rubro: selectedRubro });
+                    }
+                  }}
+                  required
+                >
+                  <option value="">Seleccione un rubro</option>
+                  {rubrosBebidas.map((rubro) => (
+                    <option
+                      key={rubro.id}
+                      value={rubro.id}
+                      disabled={!rubro.activo}
+                    >
+                      {rubro.nombre}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            )}
             <Col md={6}>
               <Form.Group className="mb-3" controlId="formPrecio">
                 <Form.Label>Precio</Form.Label>
