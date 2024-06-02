@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IDomicilio } from "../../interface/IDomicilio";
 import { IUsuario } from "../../interface/IUsuario";
-import { Button, Col, Modal, Row } from "react-bootstrap";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import AddDireccionModal from "../OpcionesCliente/MiDireccion/AddDireccionModal";
@@ -333,12 +332,12 @@ const handleDomicilioAdd = async (domicilio: IDomicilio) => {
                     className="btn-check"
                     id="mercadoPago-outlined"
                     autoComplete="off"
-                    checked={esDelivery}
+                    checked={esDelivery && !esEfectivo}
                     onChange={handleClickMercadoPago}
                   />
                   <label
                     className={
-                      !esEfectivo
+                      !esEfectivo && esDelivery
                         ? "btn btn-primary"
                         : "btn btn-outline-primary"
                     }

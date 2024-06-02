@@ -1,7 +1,7 @@
-import { IProducto } from "./IProducto";
+import { IProductoMaxProducto } from "./IProducto";
 
 export interface ICardProps {
-  producto: IProducto;
+  producto: IProductoMaxProducto;
   buttonText: string;
   showButton: boolean;
 }

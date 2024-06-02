@@ -14,11 +14,6 @@ const BotonesMenu: FC<IBotonesMenuProps> = ({
       icon: "bi bi-grid-3x3-gap",
     },
     {
-      value: "Ofertas",
-      label: "Ofertas",
-      icon: "bi bi-tag-fill",
-    },
-    {
       value: "Pizzas",
       label: "Pizza",
       icon: "bi bi-fan",

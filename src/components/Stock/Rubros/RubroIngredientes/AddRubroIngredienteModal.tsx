@@ -59,7 +59,7 @@ const AddRubroIngredienteModal: React.FC<IAddRubroIngredienteModalProps> = ({
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} size='lg'>
       <Modal.Header closeButton>
         <Modal.Title>Agregar Rubro de Producto</Modal.Title>
       </Modal.Header>
@@ -68,7 +68,7 @@ const AddRubroIngredienteModal: React.FC<IAddRubroIngredienteModalProps> = ({
           <Form.Group className="mb-3" controlId="formNombre">
             <Form.Label>Nombre</Form.Label>
             <Form.Control
-              as="textarea"
+              type="text"
               placeholder="Ingrese nombre"
               value={nombre}
               onChange={(event) => setNombre(event.target.value)}

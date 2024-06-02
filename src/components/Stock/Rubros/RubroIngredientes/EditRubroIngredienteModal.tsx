@@ -63,7 +63,7 @@ const EditRubroIngredientesModal: React.FC<IEditRubroIngredientesModalProps> = (
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} size='lg'>
       <Modal.Header closeButton>
         <Modal.Title>Editar rubro de ingredientes</Modal.Title>
       </Modal.Header>

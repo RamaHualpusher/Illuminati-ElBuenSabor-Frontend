@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { IRol } from "../../../interface/IRol";
-import { IEditUsuarioFromAdmin, IEditEmpleadoModalProps } from "../../../interface/IUsuario";
+import {
+  IEditUsuarioFromAdmin,
+  IEditEmpleadoModalProps,
+} from "../../../interface/IUsuario";
 import axios from "axios";
 
 const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
@@ -10,41 +13,49 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
   handleEmpleadoEdit,
   selectedEmpleado,
 }) => {
-  const initializeUsuario = (empleado: IEditUsuarioFromAdmin | null): IEditUsuarioFromAdmin => {
-    return empleado || {
-      id: 0,
-      activo: true,
-      nombre: "",
-      apellido: "",
-      email: "",
-      telefono: "",      
-      rol: { id: 0, nombreRol: "" },
-      domicilio: {
+  const initializeUsuario = (
+    empleado: IEditUsuarioFromAdmin | null
+  ): IEditUsuarioFromAdmin => {
+    return (
+      empleado || {
         id: 0,
-        calle: "",
-        numero: 0,
-        localidad: "",
-      },
-    };
+        activo: true,
+        nombre: "",
+        apellido: "",
+        email: "",
+        telefono: "",
+        rol: { id: 0, nombreRol: "" },
+        domicilio: {
+          id: 0,
+          calle: "",
+          numero: 0,
+          localidad: "",
+        },
+      }
+    );
   };
 
-  const [usuario, setUsuario] = useState<IEditUsuarioFromAdmin>(initializeUsuario(selectedEmpleado));
+  const [usuario, setUsuario] = useState<IEditUsuarioFromAdmin>(
+    initializeUsuario(selectedEmpleado)
+  );
   const [roles, setRoles] = useState<IRol[]>([]);
   const [emailValido, setEmailValido] = useState(true);
   const [emailEnUso, setEmailEnUso] = useState(false);
   const [originalEmail, setOriginalEmail] = useState("");
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
   useEffect(() => {
     if (selectedEmpleado) {
       setUsuario(selectedEmpleado);
       setOriginalEmail(selectedEmpleado.email);
     }
-  }, [selectedEmpleado]);  
+  }, [selectedEmpleado]);
 
   useEffect(() => {
-    axios.get(API_URL + "rol")
+    axios
+      .get(API_URL + "rol")
       .then((response) => {
         setRoles(response.data);
       })
@@ -63,7 +74,7 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
     setEmailEnUso(false);
     setIsSubmitting(false);
     handleClose(); // Cerrar el modal
-  }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,7 +84,9 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
       const empleados = response.data;
 
       if (usuario.email !== originalEmail) {
-        const emailExists = empleados.some((empleado: any) => empleado.email === usuario.email);
+        const emailExists = empleados.some(
+          (empleado: any) => empleado.email === usuario.email
+        );
 
         if (emailExists) {
           setEmailEnUso(true);
@@ -82,14 +95,12 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
           setEmailEnUso(false);
         }
       }
-
     } catch (error) {
       console.error("Error al verificar el email:", error);
       return;
     }
 
     // Verificar dirección de correo electrónico
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailRegex.test(usuario.email)) {
       setEmailValido(false);
       return;
@@ -97,7 +108,7 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
       setEmailValido(true);
     }
 
-    setIsSubmitting(true); //Si ya se apreto una vez el boton de editar este se deshabilita
+    setIsSubmitting(true); // Si ya se apretó una vez el botón de editar este se deshabilita
     handleEmpleadoEdit(usuario);
     setUsuario(initializeUsuario);
     setIsSubmitting(false);
@@ -105,7 +116,7 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} size="xl">
       <Modal.Header closeButton>
         <Modal.Title>Editar Empleado</Modal.Title>
       </Modal.Header>
@@ -119,7 +130,9 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese nombre"
                   value={usuario.nombre}
-                  onChange={(event) => setUsuario({ ...usuario, nombre: event.target.value })}
+                  onChange={(event) =>
+                    setUsuario({ ...usuario, nombre: event.target.value })
+                  }
                   required
                 />
               </Form.Group>
@@ -131,8 +144,9 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese apellido"
                   value={usuario.apellido}
-                  onChange={(event) => 
-                    setUsuario({ ...usuario, apellido: event.target.value })}
+                  onChange={(event) =>
+                    setUsuario({ ...usuario, apellido: event.target.value })
+                  }
                   required
                 />
               </Form.Group>
@@ -146,12 +160,24 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                   type="email"
                   placeholder="Ingrese email"
                   value={usuario.email}
-                  onChange={(event) => setUsuario({ ...usuario, email: event.target.value })}
+                  onChange={(event) => {
+                    const emailValue = event.target.value;
+                    setUsuario({ ...usuario, email: emailValue });
+                    setEmailValido(emailRegex.test(emailValue));
+                  }}
                   required
                   isInvalid={!emailValido || emailEnUso}
                 />
-                {!emailValido && <Form.Control.Feedback type="invalid">Email no válido.</Form.Control.Feedback>}
-                {emailEnUso && <Form.Control.Feedback type="invalid">Este email ya está en uso.</Form.Control.Feedback>}
+                {!emailValido && (
+                  <Form.Control.Feedback type="invalid">
+                    Email no válido.
+                  </Form.Control.Feedback>
+                )}
+                {emailEnUso && (
+                  <Form.Control.Feedback type="invalid">
+                    Este email ya está en uso.
+                  </Form.Control.Feedback>
+                )}
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -161,8 +187,13 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese teléfono"
                   value={usuario.telefono}
-                  onChange={(event) => 
-                    setUsuario({ ...usuario, telefono: event.target.value })}
+                  onChange={(event) => {
+                    const inputRegex = /^[0-9\b]+$/; // Expresión regular para permitir solo números
+                    const inputValue = event.target.value;
+                    if (inputValue === "" || inputRegex.test(inputValue)) {
+                      setUsuario({ ...usuario, telefono: event.target.value });
+                    }
+                  }}
                   required
                 />
               </Form.Group>
@@ -173,8 +204,13 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
               <Form.Group className="mb-3" controlId="formEstado">
                 <Form.Label>Estado</Form.Label>
                 <Form.Select
-                  value={usuario.activo ? 'activo' : 'bloqueado'}
-                  onChange={(event) => setUsuario({ ...usuario, activo: event.target.value === 'activo' })}
+                  value={usuario.activo ? "activo" : "bloqueado"}
+                  onChange={(event) =>
+                    setUsuario({
+                      ...usuario,
+                      activo: event.target.value === "activo",
+                    })
+                  }
                   required
                 >
                   <option value="activo">Activo</option>
@@ -190,8 +226,13 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                   value={usuario.rol.id || ""}
                   onChange={(event) => {
                     const selectedIdRol = parseInt(event.target.value);
-                    const selectedRol = roles.find((rol) => rol.id === selectedIdRol) || { idRol: 0, nombreRol: "" };
-                    setUsuario((prevUsuario) => ({ ...prevUsuario, rol: selectedRol }));
+                    const selectedRol = roles.find(
+                      (rol) => rol.id === selectedIdRol
+                    ) || { idRol: 0, nombreRol: "" };
+                    setUsuario((prevUsuario) => ({
+                      ...prevUsuario,
+                      rol: selectedRol,
+                    }));
                   }}
                   required
                 >
@@ -232,7 +273,19 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                   type="number"
                   placeholder="Ingrese número"
                   value={usuario.domicilio.numero}
-                  onChange={(event) => setUsuario({ ...usuario, domicilio: { ...usuario.domicilio, numero: parseInt(event.target.value) } })}
+                  onChange={(event) => {
+                    const inputRegex = /^[0-9\b]+$/; // Expresión regular para permitir solo números
+                    const inputValue = event.target.value;
+                    if (inputValue === "" || inputRegex.test(inputValue)) {
+                      setUsuario({
+                        ...usuario,
+                        domicilio: {
+                          ...usuario.domicilio,
+                          numero: parseInt(event.target.value),
+                        },
+                      });
+                    }
+                  }}
                   required
                 />
               </Col>
@@ -242,7 +295,15 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese localidad"
                   value={usuario.domicilio.localidad}
-                  onChange={(event) => setUsuario({ ...usuario, domicilio: { ...usuario.domicilio, localidad: event.target.value } })}
+                  onChange={(event) =>
+                    setUsuario({
+                      ...usuario,
+                      domicilio: {
+                        ...usuario.domicilio,
+                        localidad: event.target.value,
+                      },
+                    })
+                  }
                   required
                 />
               </Col>
@@ -258,7 +319,7 @@ const EditEmpleadoModal: React.FC<IEditEmpleadoModalProps> = ({
           </Button>
         </Modal.Footer>
       </Form>
-    </Modal >
+    </Modal>
   );
 };
 

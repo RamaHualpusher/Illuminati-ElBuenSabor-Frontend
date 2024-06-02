@@ -15,6 +15,20 @@ export interface IProducto extends IBase {
   rubro: IRubroNew;
   productosIngredientes?: IProductoIngrediente[];
 }
+export interface IProductoMaxProducto extends IBase { 
+  nombre: string;
+  tiempoEstimadoCocina: number;
+  denominacion: string;
+  imagen: string;
+  stockMinimo: number;
+  stockActual: number;
+  preparacion: string;
+  precio: number;
+  esBebida: boolean;
+  rubro: IRubroNew;
+  productosIngredientes?: IProductoIngrediente[];
+  maxCantidadProducto: number;
+}
 
 export interface IProductoDto extends IBase { 
   nombre: string;
