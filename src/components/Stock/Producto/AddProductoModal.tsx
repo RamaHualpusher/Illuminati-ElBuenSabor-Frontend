@@ -391,57 +391,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
               </Form.Group>
             </Col>
           </Row>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3" controlId="formStockMin">
-                <Form.Label>Stock Mínimo</Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="Ingrese stock"
-                  value={ingredienteBebida.stockMinimo}
-                  min={1}
-                  onChange={(event) =>
-                    setIngredienteBebida({
-                      ...ingredienteBebida,
-                      stockMinimo: parseFloat(event.target.value),
-                    })
-                  }
-                  required
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3" controlId="formStockAct">
-                <Form.Label>Stock Actual</Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="Ingrese stock"
-                  value={ingredienteBebida.stockActual}
-                  min={1}
-                  onChange={(event) =>
-                    setIngredienteBebida({
-                      ...ingredienteBebida,
-                      stockActual: parseFloat(event.target.value),
-                    })
-                  }
-                  required
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          {/*
-            TIPO BEBIDA
-            Cuando el producto es de tipo bebida se mostrará ésta parte oculta del formulario
-            Donde se agregan los campos necesarios para la creación del ingrediente correspondiente a éste producto Bebida
-            export interface IIngredientes extends IBase {
-              nombre: string; //Uso el mismo del producto
-              stockMinimo: number; OK
-              stockActual: number; OK
-              precioCosto: number; 
-              unidadMedida: string; //Se setea siempre el tipo "U"
-              rubro: IRubroNew; //Se seteará un rubro de tipo ingrediente que contenga el string "BEBIDA" //Definir si será en el back o front
-            }
-          */}
+          
           {product.esBebida && (
             <>
               <Row>

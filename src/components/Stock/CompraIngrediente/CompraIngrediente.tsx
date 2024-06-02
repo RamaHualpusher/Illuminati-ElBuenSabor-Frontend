@@ -94,7 +94,7 @@ const CompraIngrediente: React.FC = () => {
       title: "Stock Dif",
       render: (row: IIngredientes) => (
         <span
-          className={`badge ${
+          className={`badge p-2 ${
             row.stockActual - row.stockMinimo < 0 ? "bg-danger" : "bg-success"
           }`}
         >

@@ -94,14 +94,14 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
     };
 
     const fetchIngredientes = async () => {
-        try {
-          const response = await fetch(`${API_URL}ingrediente`);
-          const data: IIngredientes[] = await response.json();
-          setIngredientesListToAddInProduct(data);
-        } catch (error) {
-          console.log(error);
-        }
-      };
+      try {
+        const response = await fetch(`${API_URL}ingrediente`);
+        const data: IIngredientes[] = await response.json();
+        setIngredientesListToAddInProduct(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     fetchRubros();
     fetchIngredientes();
@@ -119,21 +119,6 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
     }
   };
 
-  // useEffect(() => {
-  //   if (selectedProducto) {
-  //     setProducto({
-  //       ...selectedProducto,
-  //       rubro: selectedProducto.rubro,
-  //     });
-  //     let cos = 0;
-  //     selectedProducto.productosIngredientes?.map((ingre) => {
-  //       cos += ingre.ingrediente.precioCosto * ingre.cantidad;
-  //     });
-  //     setCosto(cos);
-  //     setSelectedIngredients(selectedProducto.productosIngredientes || []);
-  //   }
-  // }, [selectedProducto]);
-  
   useEffect(() => {
     if (selectedProducto) {
       setProducto({
@@ -146,7 +131,7 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
       });
       setCosto(cos);
       setSelectedIngredients(selectedProducto.productosIngredientes || []);
-  
+
       if (selectedProducto.esBebida) {
         const bebidaIngrediente = selectedProducto.productosIngredientes?.find(
           (ingre) => ingre.ingrediente.nombre === selectedProducto.nombre
@@ -159,7 +144,6 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
       }
     }
   }, [selectedProducto]);
-  
 
   const selectIngredienteA = (id: number) => {
     if (id !== 0) {
@@ -173,25 +157,28 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
   };
 
   const agregarIngrediente = () => {
-    if (ingredienteA && cantIngrediente > 0) {
+    console.log("Agregando ingrediente:" + ingredienteToAddInProduct)
+    if (ingredienteToAddInProduct && cantIngredienteToAddInProduct > 0) {
       const existingIngredient = selectedIngredients.find(
-        (ingre) => ingre.ingrediente.id === ingredienteA.id
+        (ingre) => ingre.ingrediente.id === ingredienteToAddInProduct.id
       );
+      console.log(ingredienteToAddInProduct);
       if (existingIngredient) {
-        existingIngredient.cantidad += cantIngrediente;
+        existingIngredient.cantidad += cantIngredienteToAddInProduct;
       } else {
         setSelectedIngredients([
           ...selectedIngredients,
           {
-            cantidad: cantIngrediente,
+            cantidad: cantIngredienteToAddInProduct,
             id: 0, // You may need to adjust this ID based on your backend logic
-            ingrediente: ingredienteA,
+            ingrediente: ingredienteToAddInProduct,
           },
         ]);
       }
-      setCosto(costo + cantIngrediente * ingredienteA.precioCosto);
-      setCantIngrediente(0);
+      setCosto(costo + cantIngredienteToAddInProduct * ingredienteToAddInProduct.precioCosto);
+      setCantIngredienteToAddInProduct(0);
     }
+    console.log(selectedIngredients);
   };
 
   const handleDeleteIngrediente = (ingredient: IProductoIngrediente) => {
@@ -202,17 +189,6 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
     setCosto(costo - ingredient.cantidad * ingredient.ingrediente.precioCosto);
   };
 
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   if (producto && selectedIngredients.length > 0) {
-  //     const updatedProducto: IProducto = {
-  //       ...producto,
-  //       productosIngredientes: selectedIngredients,
-  //     };
-  //     handleProductoEdit(updatedProducto);
-  //     handleClose();
-  //   }
-  // };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (producto && selectedIngredients.length > 0) {
@@ -232,7 +208,6 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
       handleClose();
     }
   };
-  
 
   return (
     <Modal show={show} onHide={handleClose} size="xl">
@@ -291,20 +266,7 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
                 />
               </Form.Group>
             </Col>
-            {/* <Col md={2}>
-              <Form.Group className="mb-3" controlId="formEstado">
-                <Form.Label>Es Bebida</Form.Label>
-                <Form.Check
-                  type="switch"
-                  id="esBebidaSwitch"
-                  label={producto?.esBebida ? "Sí" : "No"}
-                  checked={producto?.esBebida}
-                  onChange={() =>
-                    setProducto({ ...producto, esBebida: !producto.esBebida })
-                  }
-                />
-              </Form.Group>
-            </Col> */}
+
             <Col md={2}>
               <Form.Group className="mb-3" controlId="formEstado">
                 <Form.Label>Activo</Form.Label>
@@ -414,106 +376,7 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
               </Form.Group>
             </Col>
           </Row>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3" controlId="formStockMin">
-                <Form.Label>Stock Mínimo</Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="Ingrese stock"
-                  value={producto.stockMinimo}
-                  min={1}
-                  onChange={(event) =>
-                    setProducto({
-                      ...producto,
-                      stockMinimo: parseFloat(event.target.value),
-                    })
-                  }
-                  required
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3" controlId="formStockAct">
-                <Form.Label>Stock Actual</Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="Ingrese stock"
-                  value={producto.stockActual}
-                  min={1}
-                  onChange={(event) =>
-                    setProducto({
-                      ...producto,
-                      stockActual: parseFloat(event.target.value),
-                    })
-                  }
-                  required
-                />
-              </Form.Group>
-            </Col>
-          </Row>
 
-          {producto.esBebida && (
-            <>
-              <Row>
-                <Col md={6}>
-                  <Form.Group className="mb-3" controlId="formRubro">
-                    <Form.Label>Tipo de bebida</Form.Label>
-                    <Form.Select
-                      onChange={(event) => {
-                        const rubroId = parseInt(event.target.value);
-                        const selectedRubro = rubrosBebidas.find(
-                          (rubro) => rubro.id === rubroId
-                        );
-                        if (selectedRubro) {
-                          setIngredienteBebida({
-                            ...ingredienteBebida,
-                            rubro: selectedRubro,
-                          });
-                        }
-                      }}
-                      required
-                    >
-                      <option value="">Seleccione el tipo de bebida</option>
-                      {rubrosBebidas.map((rubro) => (
-                        <option
-                          key={rubro.id}
-                          value={rubro.id}
-                          disabled={!rubro.activo}
-                        >
-                          {rubro.nombre}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-
-                <Col md={6}>
-                  <Form.Group className="mb-3" controlId="formPrecioCosto">
-                    <Form.Label>Precio Costo</Form.Label>
-                    <div className="input-group">
-                      <span className="bg-success input-group-text">
-                        <b>$</b>
-                      </span>
-                      <Form.Control
-                        type="number"
-                        placeholder="Ingrese precio"
-                        value={ingredienteBebida.precioCosto}
-                        min={1}
-                        onChange={(event) =>
-                          setIngredienteBebida({
-                            ...ingredienteBebida,
-                            precioCosto: parseFloat(event.target.value),
-                          })
-                        }
-                        required
-                      />
-                    </div>
-                  </Form.Group>
-                </Col>
-              </Row>
-            </>
-          )}
           {!producto.esBebida && (
             <>
               <Row className=" align-items-center">
@@ -570,7 +433,6 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
                   </Button>
                 </Col>
               </Row>
-
               <Row>
                 <Col md={12}>
                   <Table striped bordered hover>
@@ -607,6 +469,24 @@ const EditProductoModal: React.FC<IEditProductoModalProps> = ({
               </Row>
             </>
           )}
+          <Row>
+            <Col md={12}>
+              <div
+                className="mb-2 btn btn-outline-info w-100"
+                style={{ cursor: "default", fontWeight: "bolder" }}
+              >
+                <p className="font-weight-bold">
+                  El stock de los productos será administrado desde la pestaña
+                  "Ingredientes" y "Compra Ingrediente".
+                </p>
+                <span className="font-weight-bold">
+                  Por favor, buscar el ingrediente correspondiente en éstas
+                  pestañas de administración para corregir cualquier problema de
+                  Stock.
+                </span>
+              </div>
+            </Col>
+          </Row>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
