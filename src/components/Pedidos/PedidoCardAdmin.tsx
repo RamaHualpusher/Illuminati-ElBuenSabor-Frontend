@@ -115,7 +115,9 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             </Button>
             {tieneOtrosProductos ? (
               <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En cocina')} disabled={!pedido.esDelivery}>
-                En cocina
+
+                A cocina
+
               </button>
             ) : (
               <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
@@ -134,7 +136,9 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
               Entregado
             </button>
             <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En cocina')} disabled={!pedido.esDelivery || pedido.esEfectivo} style={{ marginLeft: "8px" }}>
-              En cocina
+
+              A cocina
+
             </button>
           </>
         );
