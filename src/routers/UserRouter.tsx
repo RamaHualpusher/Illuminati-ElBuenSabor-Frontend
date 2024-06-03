@@ -11,6 +11,9 @@ import Page404 from "../components/Page404/Page404";
 import MisPedidos from "../components/OpcionesCliente/MisPedidos/MisPedidos";
 import DetallesPedidoUsuario from "../components/OpcionesCliente/MisPedidos/DetallesPedidoUsuario";
 import MiPerfil from "../components/OpcionesCliente/MiPerfil/MiPerfil";
+import Succes from "../components/BackURL/Succes";
+import Pending from "../components/BackURL/Pending";
+import Failure from "../components/BackURL/Failure";
 
 const UserRouter = () => {
 
@@ -29,6 +32,9 @@ const UserRouter = () => {
         <Route path="/mis-pedidos" element={<MisPedidos />} />
         <Route path="/mis-pedido/:id" element={<DetallesPedidoUsuario />} />
         <Route path="/perfil" element={<MiPerfil />} />
+        <Route path="/mpsuccess" element={<Succes />} />
+        <Route path="/mppending" element={<Pending />} />
+        <Route path="/mpfailure" element={<Failure />} />
 
         {/* Ruta para página de error 404 */}
         <Route path="*" element={<Page404 />} />

@@ -52,7 +52,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const API_URL = process.env.REACT_APP_API_URL || "";
   const MP_ACCESS = process.env.REACT_APP_MP_ACCESS_TOKEN || "";
   const MP_PUBLIC = process.env.REACT_APP_MP_PUBLIC_KEY || "";
-  const [preferenceId, setPreferenceId] = useState<string | null>(null); //para mercado pago
+  const [preferenceId, setPreferenceId] = useState<string>(); //para mercado pago
   const [showTicketModal, setShowTicketModal] = useState<boolean>(false);
   const [returnUrl, setReturnUrl] = useState<string | null>(null);
   const navigate = useNavigate(); // Obtiene la función navigate desde useNavigate
@@ -110,7 +110,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         }
       });
 
-      const nuevoTotalPedido = esDelivery ? subTotal + 500 : subTotal * 0.9;
+      const nuevoTotalPedido = esEfectivo ? subTotal * 0.9  : subTotal + 500;
 
       //aca tenemos que poner segun el producto, el tiempo estimado segun hamburguesa, papas fritas, etc
       const calcularHoraEstimadaFin = () => {
@@ -124,7 +124,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         return horaActual;
       };
 
-      const nuevoPedidoCompleto: IPedidoDto = {
+      const nuevoPedidoCompleto: IPedidoDto = { 
         activo: true,
         horaEstimadaFin: calcularHoraEstimadaFin(),
         esDelivery: esDelivery,
@@ -148,16 +148,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
   }, [pedidoConfirmado, pedidoCompleto]); //tambien agregue para factura el", pedidoCompleto"
 
-  //usamos este para cuando el pedido pase por mercado pago, tiene que esperar que se concrete el pago
-  const verificarPago = async () => {
-    // Implementa la lógica para verificar el estado del pago en Mercado Pago
-    // Por simplicidad, este ejemplo simplemente espera 3 segundos antes de considerar el pago como completado
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true); // Simula la confirmación del pago de Mercado Pago
-      }, 3000);
-    });
-  };
 
   const createPreference = async () => {
     if (!pedidoCompleto || !pedidoCompleto.usuario) {
@@ -180,37 +170,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           }
         } else {
           // Si el pago es con Mercado Pago, crea la preferencia de pago
-          initMercadoPago(MP_PUBLIC);
-          response = await axios.post(`${API_URL}mercado-pago-dato/mercadoPago`, {
-            ...pedidoCompleto, // Agregamos todo el objeto pedidoCompleto
-            items: [
-              {
-                id: pedidoCompleto.id?.toString(), // Agrega el ID del pedido
-                title: "Pedido de " + pedidoCompleto.usuario.nombre + " " + pedidoCompleto.usuario.apellido,
-                quantity: 1,
-                unit_price: pedidoCompleto.total, // Asegúrate de que sea un número
-                currency_id: "ARS",
-              },
-            ],
-            back_urls: {
-              success: "http://localhost:3000/pago-exitoso",
-              failure: "http://localhost:3000/pago-fallido",
-              pending: "http://localhost:3000/pago-pendiente",
-            },
-            auto_return: "approved",
-            notification_url: "https://localhost:3000/confirmacion-pedido",
-            payer: {
-              name: pedidoCompleto.usuario.nombre,
-              surname: pedidoCompleto.usuario.apellido,
-              email: pedidoCompleto.usuario.email,
-            },
-          });
-
-          if (response.data) {
-            const { preferenceId } = response.data;
-            setPreferenceId(preferenceId);
-            console.dir("Preference ID emitido desde SPA: " + preferenceId);            
-          }
+            initMercadoPago(MP_PUBLIC, { locale: 'es-AR' });
+            response = await axios.post(`${API_URL}mercado-pago-dato/mercadoPago`, pedidoCompleto);
+            setPreferenceId(response.data.preferenceId);
 
           console.log("Respuesta al crear preferencia de MercadoPago:", response.data);
 
