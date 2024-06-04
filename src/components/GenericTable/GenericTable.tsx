@@ -11,6 +11,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { ITableProps, IColumn } from '../../interface/ICamposTablaGenerica';
+import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import NoHayElementosTablaGenerica from '../Page404/NoHayElementosTablaGenerica';
 
