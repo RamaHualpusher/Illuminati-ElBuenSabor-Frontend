@@ -103,8 +103,15 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
             cantidad: cartItem.quantity,
             subTotal: cartItem.quantity * cartItem.price,
             producto: productoEncontrado,
+
+
+
             //aca invente que es 5, tengo que ver cuanto es el maximo
             maxCantidadProducto: 5,
+
+
+
+            
           };
           detallesPedido.push(detallePedido);
         }
@@ -241,11 +248,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
         if (validationResults.every((result) => result)) {
           // Todos los productos tienen suficiente stock, proceder con el pedido
-          // const response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
-
-          // console.log("Pedido enviado al servidor:", response.data);
           await createPreference(); //este es para crear la preferencia de mercado pago
-
         }
       } catch (error) {
         console.error("Error al enviar el pedido o factura:", error);

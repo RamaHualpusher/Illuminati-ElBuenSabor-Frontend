@@ -62,9 +62,14 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     }
   }, [domicilio]);
 
+  useEffect(() => {
+    if (esDelivery) {
+      handleEsEfectivo(false);
+    }
+  }, [esDelivery, handleEsEfectivo]);
+
   const handleClickDelivery = () => {
     handleEsDelivery(true);
-    handleEsEfectivo(false);
     if (usuario && usuario?.domicilio) {
       setNuevoDomicilio(usuario?.domicilio);
     } else {
@@ -79,6 +84,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
 
   const handleClickEfectivo = () => {
     handleEsEfectivo(true);
+    !esDelivery;
   };
 
   const handleEditModalOpen = () => {
@@ -100,6 +106,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
 
   const handleClickMercadoPago = () => {
     handleEsEfectivo(false);
+    !esEfectivo;
   };
 
   const handleCloseModal = () => {
@@ -172,7 +179,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     if (esDelivery) {
       total += costoDelivery;
     }
-    if (!esDelivery && esEfectivo) {
+    if (esEfectivo) {
       total -= subTotal * descuentoEfectivo;
     }
     return total;
@@ -306,18 +313,19 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
             <div className="d-flex flex-column align-items-center">
               <h5>Método de Pago</h5>
               <div className="d-flex justify-content-center">
+                
                 <div className="mb-0 me-2">
                   <input
                     type="radio"
                     className="btn-check"
                     id="mercadoPago-outlined"
                     autoComplete="off"
-                    checked={esDelivery || !esEfectivo}
+                    checked={esDelivery && !esEfectivo}
                     onChange={handleClickMercadoPago}
                   />
                   <label
                     className={
-                      esDelivery || !esEfectivo
+                      esDelivery 
                         ? "btn btn-primary"
                         : "btn btn-outline-primary"
                     }
