@@ -110,6 +110,7 @@ const RubroProductos: FC<RubroProductosProps> = ({ categorias, rubros, onRubroCh
             actions={actions}
             onAdd={handleAddModalOpen}
             onUpdate={handleEditModalOpen}
+            placeHolder="Buscar por Nombre"
           />
         </div>
       </Row>

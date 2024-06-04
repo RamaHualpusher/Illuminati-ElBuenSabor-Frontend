@@ -200,6 +200,7 @@ const Productos: React.FC = () => {
               setEditModalShow(true);
             }}
             onDelete={(producto) => handleDeleteConfirmation(producto)}
+            placeHolder="Buscar por Nombre"
           />
       </Row>
       <AddProductoModal

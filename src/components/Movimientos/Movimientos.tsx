@@ -164,6 +164,7 @@ const Movimientos = () => {
                 }}
                 showDate={true}
                 onView={openPedidoModal}
+                onSearch={false}
               />
             ) : (
               <NoHayPedidos onReload={() => window.location.reload()} />

@@ -180,6 +180,7 @@ const Ingrediente: React.FC = () => {
                         actions={actions}
                         onAdd={handleAddModalOpen}
                         onUpdate={handleEditModalOpen}
+                        placeHolder="Buscar por Nombre"
                     />
                 </Row>
                 {/* Modales de edición y adición */}
