@@ -1,6 +1,6 @@
 import React, { FC, useState, useContext, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Dropdown, ListGroup, Button } from "react-bootstrap";
+import { Dropdown, ListGroup, Button, Form } from "react-bootstrap";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import { CartContext } from "../../context/cart/CartProvider";
@@ -10,7 +10,9 @@ import { SearchContext } from "../Buscador/SearchContext";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import CustomDropdown from "./CustomDropdown/CustomDropdown";
-import OpcionesUsuario from "./OpcionesUsuario/OpcionesUsuario"
+import OpcionesUsuario from "./OpcionesUsuario/OpcionesUsuario";
+import LogoutButtonEmployee from "./LogoutButtonEmployee";
+import LoginButtonEmployee from "./LoginButtonEmployee";
 
 /**
  * Barra de navegación con opciones de autenticación, carrito y búsqueda.
@@ -27,6 +29,9 @@ const Navbar: FC = () => {
   const { setSearchParam } = useContext(SearchContext); // Obtener función para establecer parámetros de búsqueda
   const cartVacio = cartItems.length === 0; // Verificar si el carrito está vacío
   const API_URL = process.env.REACT_APP_API_URL || "";
+  const employeeToken = localStorage.getItem('employeeToken');
+  const [isEmployee, setIsEmployee] = useState(false);
+  
 
   //Esta función cambia el estado de navbarOpen entre true y false
   const toggleNavbar = () => {
@@ -198,8 +203,26 @@ const Navbar: FC = () => {
               </li>
             )}
             <li className="nav-item">
-              {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+              {isAuthenticated ? <LogoutButton /> : null}
             </li>
+            <li className="nav-item">
+              {employeeToken ? <LogoutButtonEmployee /> : null}
+            </li>
+            {!isAuthenticated && !employeeToken && (
+              <li className="nav-item d-flex align-items-center mx-2">
+                {isEmployee ? <LoginButtonEmployee /> : <LoginButton />}
+                
+                <Form.Check 
+                  type="switch"
+                  id="employee-client-switch"
+                  label={isEmployee ? "Empleado" : "Cliente"}
+                  className="m-2 text-success"
+                  checked={isEmployee}
+                  onChange={() => setIsEmployee(!isEmployee)}
+                />
+                
+              </li>
+            )}
           </ul>
         </div>
       </div>
