@@ -155,6 +155,7 @@ const RankingAlimento = () => {
                                     delete: false,
                                     view: false,
                                 }}
+                                onSearch={false}
                             />
                         ) : (
                             <NoHayPedidos onReload={() => window.location.reload()} />
@@ -175,6 +176,7 @@ const RankingAlimento = () => {
                                     delete: false,
                                     view: false,
                                 }}
+                                onSearch={false}
                             />
                         ) : (
                             <NoHayPedidos onReload={() => window.location.reload()} />

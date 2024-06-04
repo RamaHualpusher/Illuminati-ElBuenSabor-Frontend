@@ -26,4 +26,5 @@ export interface ITableProps<T> {
   showDate?: boolean; // Permite Mostrar busqueda por fecha (opcional)
   onSearch?: boolean; // Permite motrar o no el buscador (opcional)
   showActions?: boolean; // Permite motrar o no las actions (opcional)
+  placeHolder?: string;
 }

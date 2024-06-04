@@ -178,6 +178,7 @@ const Clientes = () => {
                             actions={actions}
                             onUpdate={handleEditModalOpen}
                             onDelete={handleClienteDelete}
+                            placeHolder="Buscar por Nombre/Apellido/Email/Teléfono"
                         />
                     </Col>
                 </Row>

@@ -22,8 +22,6 @@ const Navbar: FC = () => {
   const { cartItems, removeFromCart, clearCart } = useContext(CartContext); // Obtener elementos del carrito y función para eliminar
   const [cartOpen, setCartOpen] = useState(false); // Estado para controlar la apertura del carrito
   const [searchOpen, setSearchOpen] = useState(false); // Estado para controlar la apertura de la búsqueda
-  const [produc, setProduc] = useState<IProducto[]>([]); // Estado para almacenar productos
-  const [producComplete, setProducComplete] = useState<IProducto[]>([]); // Estado para almacenar productos completos
   const { setSearchParam } = useContext(SearchContext); // Obtener función para establecer parámetros de búsqueda
   const cartVacio = cartItems.length === 0; // Verificar si el carrito está vacío
   const API_URL = process.env.REACT_APP_API_URL || "";
@@ -46,21 +44,6 @@ const Navbar: FC = () => {
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
   };
-
-  //Hace la solicitud al BackEnd para traer datos del Producto
-  useEffect(() => {
-    const GetData = async () => {
-      try {
-        const response = await axios.get(API_URL + "producto");
-        const data = response.data;
-        setProduc(data);
-        setProducComplete(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    GetData();
-  }, []);
 
   //Esta función se utiliza para actualizar el parámetro de búsqueda en el contexto de búsqueda.
   const handleSearch = (searchParam: string) => {
@@ -137,7 +120,7 @@ const Navbar: FC = () => {
                   style={
                     cartItems.length === 0
                       ? { maxHeight: "75vh", width: "250px" }
-                      : { maxHeight: "75vh", width: "390px" }
+                      : { maxHeight: "75vh", width: "500px" }
                   }
                 >
                   <button

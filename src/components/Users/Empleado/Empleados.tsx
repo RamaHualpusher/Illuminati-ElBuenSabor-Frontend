@@ -223,6 +223,7 @@ const Empleados = () => {
                             onAdd={handleAddModalOpen}
                             onUpdate={handleEditModalOpen}
                             onDelete={handleEmpleadoDelete}
+                            placeHolder="Buscar por Nombre/Apellido/Email"
                         />
                     </Col>
                 </Row>

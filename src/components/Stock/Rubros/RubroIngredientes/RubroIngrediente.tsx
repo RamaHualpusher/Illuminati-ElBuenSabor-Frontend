@@ -108,6 +108,7 @@ const RubroIngrediente: FC<RubroIngredienteProps> = ({ categorias, rubros, onRub
           actions={actions}
           onAdd={handleAddModalOpen}
           onUpdate={handleEditModalOpen}
+          placeHolder="Buscar por Nombre"
         />
       </div>
       <EditRubroIngredienteModal

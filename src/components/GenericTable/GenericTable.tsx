@@ -27,6 +27,7 @@ function GenericTable<T>({
   showDate = false,
   onSearch = true,
   showActions = true,
+  placeHolder,
 }: ITableProps<T>) {
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<T[]>(data);
@@ -59,9 +60,11 @@ function GenericTable<T>({
           setIsLoading(false);
         }
       } else {
+        console.log("llego acá")
         setFilteredData(
           data.filter((item) => defaultSearch(item, searchText, columns))
         );
+        console.log(filteredData)
         setIsLoading(false); // Si no hay customSearch, la carga de datos se completa aquí
       }
     };
@@ -124,6 +127,8 @@ function GenericTable<T>({
     columns: IColumn<T>[]
   ): boolean =>
     columns.some((column) => {
+      console.log(column)
+      console.log(column.field)
       const value = item[column.field];
       return (
         typeof value === "string" &&
@@ -183,7 +188,7 @@ function GenericTable<T>({
               style={{ marginTop: "10px" }}
             >
               <FormControl
-                placeholder="Buscar"
+                placeholder={placeHolder}
                 aria-label="Search"
                 aria-describedby="basic-addon2"
                 onChange={handleSearchChange}
