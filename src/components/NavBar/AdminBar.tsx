@@ -3,9 +3,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import BackButton from "../BackButtom/BackButtom"; //Arreglen su BackButtom, Pongan la B mayuscula no va con b.
-import { Dropdown } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap";
 import CustomDropdown from "./CustomDropdown/CustomDropdown";
 import OpcionesUsuario from "./OpcionesUsuario/OpcionesUsuario";
+import LoginButtonEmployee from "./LoginButtonEmployee";
+import { Link } from "react-router-dom";
+import LogoutButtonEmployee from "./LogoutButtonEmployee";
 
 /**
  * Barra de navegación para el administrador.
@@ -16,6 +19,8 @@ const AdminBar: FC = () => {
 
   // Estado para controlar la apertura/cierre del menú desplegable
   const [navbarOpen, setNavbarOpen] = useState(false);
+
+  const employeeToken = localStorage.getItem('employeeToken');
 
   // Función para alternar la visibilidad del menú desplegable
   const toggleNavbar = () => {
@@ -79,9 +84,18 @@ const AdminBar: FC = () => {
               </>
             )}
             {/* Mostrar botón de inicio de sesión o cierre de sesión según el estado de autenticación */}
-            <li className="nav-item">
-              {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-            </li>
+              {isAuthenticated
+              ?
+              <li>
+                <Link to="/">
+                  <Button className="btn btn-warning">VOLVER A INICIO</Button>
+                </Link>
+              </li>
+              :
+              <li className="nav-item">
+                {employeeToken ? <LogoutButtonEmployee /> : <LoginButtonEmployee />}
+              </li>
+              }
           </ul>
         </div>
       </div>
