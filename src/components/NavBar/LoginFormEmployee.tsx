@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Alert, Modal } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
 interface LoginFormEmployeeProps {
@@ -16,17 +16,18 @@ const LoginFormEmployee: React.FC<LoginFormEmployeeProps> = ({ onLoginSuccess })
     e.preventDefault();
     setError(null);
     try {
-      const response = await axios.post(API_URL+'auth/loginEmployee', { email, password });
-      localStorage.setItem('employeeToken', response.data.token);
+      const response = await axios.post(API_URL + 'auth/loginEmployee', { email, password });
+      console.log("Login Response: ", response.data); // Log para verificar la respuesta del login
+
+      localStorage.setItem('employeeToken', response.data);
       onLoginSuccess();
-      window.location.reload();
+      window.location.reload(); // Habilita el reinicio de la página
     } catch (err) {
       setError('Error de autenticación');
     }
   };
 
   return (
-    
     <Form onSubmit={handleSubmit}>
       {error && <Alert variant="danger">{error}</Alert>}
       <Form.Group controlId="formBasicEmail">
@@ -53,7 +54,6 @@ const LoginFormEmployee: React.FC<LoginFormEmployeeProps> = ({ onLoginSuccess })
         Iniciar sesión
       </Button>
     </Form>
-    
   );
 };
 

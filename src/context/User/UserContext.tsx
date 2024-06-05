@@ -5,9 +5,9 @@ import jwtDecode from "jwt-decode";
 import { IUsuario } from "../../interface/IUsuario";
 
 interface UserContextProps {
-  usuarioContext: IUsuario | null; // Asegúrate de que el tipo de usuario sea adecuado
+  usuarioContext: IUsuario | null;
   loading: boolean;
-  userExists: boolean; // Nuevo estado para manejar la existencia del usuario
+  userExists: boolean;
 }
 
 const UserContext = createContext<UserContextProps>({
@@ -28,7 +28,6 @@ export const UserProvider: React.FC = ({ children }) => {
     if (employeeToken) {
       verificarEmpleado(employeeToken);
     } else if (!isLoading) {
-      setLoading(false);
       verificarUsuarioExistente();
     }
   }, [isLoading, auth0User, employeeToken]);
@@ -37,8 +36,11 @@ export const UserProvider: React.FC = ({ children }) => {
     try {
       const decodedToken: any = jwtDecode(token);
       const email = decodedToken.sub;
+      console.log("Decoded Token Email: ", email); // Log para verificar email decodificado
 
       const response = await axios.post(`${API_URL}usuario/empleados/email`, { email });
+      console.log("Response from Server: ", response.data); // Log para verificar la respuesta del servidor
+
       setUsuario(response.data);
       setUserExists(true);
       setLoading(false);
@@ -49,6 +51,7 @@ export const UserProvider: React.FC = ({ children }) => {
   };
 
   const verificarUsuarioExistente = async () => {
+    setLoading(true);
     if (auth0User) {
       try {
         const response = await axios.post(`${API_URL}usuario/clientes/email`, {
@@ -66,6 +69,7 @@ export const UserProvider: React.FC = ({ children }) => {
           console.error("Error al verificar el usuario:", error);
         }
       }
+      setLoading(false);
     }
   };
 
