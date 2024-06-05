@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Button } from 'react-bootstrap';
 import { IPedidoDto } from '../../interface/IPedido';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import EstadoPedidoCard from './EstadoPedidoCard';
 import axios from 'axios';
 import ModalDetallePedido from './ModalDetallePedido';
@@ -38,7 +38,6 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
   }, [location.pathname, pedido.id]);
 
   useEffect(() => {
-    // Lógica para cargar el estado actualizado del pedido desde el servidor
     const fetchPedidoActualizado = async () => {
       try {
         const response = await axios.get(`${API_URL}pedido/${pedido.id}`);
@@ -50,7 +49,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
 
     if (actualizarUI) {
       fetchPedidoActualizado();
-      setActualizarUI(false); // Restablecer el estado de actualización de la UI
+      setActualizarUI(false);
     }
   }, [actualizarUI, pedido.id]);
 
@@ -63,14 +62,12 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
   };
 
   const contieneOtrosProductos = (detallesPedidos: IDetallePedido[]): boolean => {
-    // Iterar sobre cada detalle de pedido
     for (const detallePedido of detallesPedidos) {
-      // Verificar si el producto no es una bebida
       if (!detallePedido.producto.esBebida) {
-        return true; // Si encuentra un producto que no es bebida, retorna true
+        return true;
       }
     }
-    return false; // Si no encuentra ningún producto que no sea bebida, retorna false
+    return false;
   };
 
   const handlePagoConfirmacion = () => {
@@ -84,19 +81,13 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
     const confirmacion = window.confirm(`¿Está seguro de que desea cambiar el estado del pedido a "${nuevoEstado}"?`);
     if (confirmacion) {
       try {
-        console.log("Pedido a actualizar: ");
-        console.log(JSON.stringify(pedido));
-        console.log("Nuevo estado pedido: " + nuevoEstado);
-        console.log("Estado actual del pedido: " + pedido.estadoPedido);
         if (pedido.estadoPedido !== nuevoEstado && nuevoEstado != null) {
           pedido.estadoPedido = nuevoEstado;
         }
-        console.log("Pedido a actualizado antes del PUT: ");
-        console.log(JSON.stringify(pedido));
         const response = await axios.put(`${API_URL}pedido/${pedido.id}`, pedido);
 
         cambiarEstadoPedido(response.data.estadoPedido);
-        setActualizarUI(true); // Actualizar la UI después de la solicitud PUT
+        setActualizarUI(true);
       } catch (error) {
         console.error(error);
       }
@@ -114,16 +105,25 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
             {tieneOtrosProductos ? (
-              <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En cocina')} disabled={!pedido.esDelivery}>
-
+              <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En cocina')}>
                 A cocina
-
               </button>
             ) : (
-              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
+              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')} disabled={!pedido.detallesPedidos.every((detalle) => detalle.producto.esBebida)}>
                 Listo
               </button>
             )}
+          </>
+        );
+      case 'En cocina':
+        return (
+          <>
+            <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
+              <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
+            </Button>
+            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
+              Listo
+            </button>
           </>
         );
       case 'Listo':
@@ -132,26 +132,21 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-            <button className="btn btn-primary" onClick={handlePagoConfirmacion} disabled={pedido.esDelivery || !pedido.esEfectivo}>
+            <button className="btn btn-primary me-2" onClick={handlePagoConfirmacion} disabled={!pedido.esEfectivo}>
               Entregado
             </button>
-            <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En cocina')} disabled={!pedido.esDelivery || pedido.esEfectivo} style={{ marginLeft: "8px" }}>
-
-              A cocina
-
+            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('En delivery')}>
+              En delivery
             </button>
           </>
         );
-
-
-      //logica de seguridad, solo el delivery puede cambiar el estado a "entregado" 
       case 'En delivery':
         return (
           <>
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Entregado')} disabled={pedido.esEfectivo}>
+            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Entregado')}>
               Entregado
             </button>
           </>
@@ -162,23 +157,6 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-          </>
-        );
-      case 'En cocina':
-        return (
-          <>
-            <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
-              <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
-            </Button>
-            {!pedido.esDelivery ? (
-              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
-                Listo
-              </button>
-            ) : (
-              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
-                Delivery
-              </button>
-            )}
           </>
         );
       default:
@@ -192,9 +170,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
     }
   };
 
-  //aca se verifica con mercado pago el pago 
   const isPagoMercadoPago = pedido.mercadoPagoDatos && pedido.mercadoPagoDatos.id;
-  //aca va preferenceId??
 
   return (
     <>
@@ -207,7 +183,6 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
               {pedido.detallesPedidos.every((detalle) => detalle.producto.esBebida) && (
                 <Button variant="success" size="sm">Es sólo bebida</Button>
               )}
-              {/* importante aca verificar payment_id con mercado pago, verificar traerlo */}
               {pedido.estadoPedido === 'Listo' && isPagoMercadoPago && (
                 <Button className="btn btn-success" onClick={() => handleEstadoPedidoChange('En delivery')}>En Delivery</Button>
               )}
@@ -221,7 +196,6 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
           </Row>
         </Card.Body>
       </Card>
-      {/* Modal para mostrar detalles del pedido */}
       <ModalDetallePedido pedido={pedido} onHide={handleCloseModal} show={showModal} />
     </>
   );
