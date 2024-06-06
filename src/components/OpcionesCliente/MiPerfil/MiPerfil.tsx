@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
-import { IEditUsuarioPerfil, IUsuario } from "../../../interface/IUsuario";
+import { IEditUsuarioPerfil, IUsuario, IEditUsuarioFromCliente } from "../../../interface/IUsuario";
 import EditPerfil from "./EditPerfil";
 import { useUser } from "../../../context/User/UserContext";
 import AddDireccionModal from "../MiDireccion/AddDireccionModal";
@@ -11,7 +11,7 @@ import EditDireccionModal from "../MiDireccion/EditDireccionModal";
 
 const MiPerfil: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
-  const { usuarioContext } = useUser();
+  const { usuarioContext, setUsuarioContext } = useUser();
   const defaultImage = "assets/img/EditPerfil.jpg";
   const [selectedUsuario, setSelectedUsuario] = useState<IUsuario | null>(null);
   const [editModalShow, setEditModalShow] = useState(false);
@@ -20,27 +20,46 @@ const MiPerfil: React.FC = () => {
   const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
   const API_URL = process.env.REACT_APP_API_URL || "";
 
-  const [usuario, setUsuario] = useState<IEditUsuarioPerfil>({
+  const initialUsuarioState: IEditUsuarioPerfil = {
     id: 0,
     nombre: "",
     apellido: "",
     email: "",
-    clave: "",
+    clave: "", // Default value to prevent type errors
     telefono: "",
     domicilio: {
       calle: "",
       numero: 0,
       localidad: "",
     },
-  });
+  };
+
+  const [usuario, setUsuario] = useState<IEditUsuarioPerfil>(initialUsuarioState);
 
   useEffect(() => {
     if (usuarioContext) {
-      setUsuario(usuarioContext);
+      setUsuario({
+        ...usuarioContext,
+        clave: usuarioContext.clave || "", // Ensure clave is never undefined
+      });
     }
   }, [usuarioContext]);
+
+  const actualizarUsuario = (nuevosDatos: Partial<IEditUsuarioPerfil>) => {
+    setUsuario((prevUsuario) => {
+      const usuarioActualizado = { ...prevUsuario, ...nuevosDatos };
+      setUsuarioContext((prevUsuarioContexto) => {
+        return { ...(prevUsuarioContexto as IUsuario), ...nuevosDatos };
+      });
+      return usuarioActualizado;
+    });
+  };
   
   const handleEditModalOpen = () => {
+    setUsuario(usuarioContext ? {
+      ...usuarioContext,
+      clave: usuarioContext.clave || "", // Ensure clave is never undefined
+    } : initialUsuarioState);
     setEditModalShow(true);
   };
 
@@ -54,7 +73,7 @@ const MiPerfil: React.FC = () => {
 
   const handleEditDireccionModalOpen = () => {
     setShowEditDireccionModal(true);
-    setSelectedDireccion(usuarioContext?.domicilio || null)
+    setSelectedDireccion(usuarioContext?.domicilio || null);
   };
 
   const handleDireccionModalClose = () => {
@@ -65,6 +84,7 @@ const MiPerfil: React.FC = () => {
   const handleDomicilioAdd = async (domicilio: IDomicilio) => {
     try {
       await axios.post(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
+      actualizarUsuario({ domicilio });
       setShowAddDireccionModal(false);
     } catch (error) {
       console.log(error);
@@ -73,14 +93,23 @@ const MiPerfil: React.FC = () => {
 
   const handleDomicilioEdit = async (domicilio: IDomicilio) => {
     try {
-        await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
-        const updatedUsuarioContext = { ...usuario, domicilio };
-        setUsuario(updatedUsuarioContext);
-        setEditModalShow(false);
+      await axios.put(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
+      actualizarUsuario({ domicilio });
+      setShowEditDireccionModal(false);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-};
+  };
+
+  const handlePerfilEdit = async (usuarioEditado: IEditUsuarioPerfil) => {
+    try {
+      await axios.put(`${API_URL}usuario/${usuarioEditado.id}`, usuarioEditado);
+      actualizarUsuario(usuarioEditado);
+      setEditModalShow(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div
@@ -126,7 +155,7 @@ const MiPerfil: React.FC = () => {
               ) : (
                 <p className="card-text">Telefono: Sin datos</p>
               )}
-              {usuarioContext?.domicilio ? (
+              {usuario?.domicilio ? (
                 <>
                   <p className="card-text">
                     Domicilio: {usuario?.domicilio.calle},{" "}
@@ -168,8 +197,11 @@ const MiPerfil: React.FC = () => {
       <EditPerfil
         show={editModalShow}
         handleClose={handleEditModalClose}
-        handleClienteEdit={handleEditModalOpen}
-        selectedUsuario={usuarioContext}
+        handleClienteEdit={handlePerfilEdit}
+        selectedUsuario={{
+          ...usuario,
+          clave: usuario.clave || "", // Ensure clave is never undefined
+        }}
       />
       <AddDireccionModal
         show={showAddDireccionModal}

@@ -6,12 +6,14 @@ import { IUsuario } from "../../interface/IUsuario";
 
 interface UserContextProps {
   usuarioContext: IUsuario | null;
+  setUsuarioContext: React.Dispatch<React.SetStateAction<IUsuario | null>>;
   loading: boolean;
   userExists: boolean;
 }
 
 const UserContext = createContext<UserContextProps>({
   usuarioContext: null,
+  setUsuarioContext: () => {},
   loading: true,
   userExists: false,
 });
@@ -20,7 +22,7 @@ export const UserProvider: React.FC = ({ children }) => {
   const { user: auth0User, isLoading, isAuthenticated } = useAuth0();
   const [loading, setLoading] = useState(true);
   const [userExists, setUserExists] = useState(false);
-  const [usuarioContext, setUsuario] = useState<IUsuario | null>(null);
+  const [usuarioContext, setUsuarioContext] = useState<IUsuario | null>(null);
   const API_URL = process.env.REACT_APP_API_URL || "";
   const employeeToken = localStorage.getItem('employeeToken');
 
@@ -41,7 +43,7 @@ export const UserProvider: React.FC = ({ children }) => {
       const response = await axios.post(`${API_URL}usuario/empleados/email`, { email });
       console.log("Response from Server: ", response.data); // Log para verificar la respuesta del servidor
 
-      setUsuario(response.data);
+      setUsuarioContext(response.data);
       setUserExists(true);
       setLoading(false);
     } catch (error) {
@@ -60,7 +62,7 @@ export const UserProvider: React.FC = ({ children }) => {
           email: auth0User.email,
         });
 
-        setUsuario(response.data);
+        setUsuarioContext(response.data);
         setUserExists(true);
       } catch (error: any) {
         if (error.response && error.response.status === 404) {
@@ -90,7 +92,7 @@ export const UserProvider: React.FC = ({ children }) => {
           nombreRol: "",
         });
 
-        setUsuario(response.data);
+        setUsuarioContext(response.data);
       }
     } catch (error) {
       console.error("Error al crear el nuevo cliente:", error);
@@ -98,7 +100,7 @@ export const UserProvider: React.FC = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ usuarioContext, loading, userExists }}>
+    <UserContext.Provider value={{ usuarioContext, setUsuarioContext, loading, userExists }}>
       {children}
     </UserContext.Provider>
   );
