@@ -21,7 +21,8 @@ const Pendientes: React.FC = () => {
                 // Verificar el usuario existente
                 const response = await axios.get(`${API_URL}usuario`);
                 const usuarioDB = response.data;
-                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user?.email || usuarioContext?.email );
+                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user?.email || usuario.email === usuarioContext?.email );
+                
                 if (usuarioEncontrado) {
                     // Obtener los pedidos del usuario
                     const pedidosResponse = await axios.get<IPedidoDto[]>(`${API_URL}pedido/usuario/${usuarioEncontrado.id}`);

@@ -25,9 +25,8 @@ const Pasados: React.FC = () => {
         console.log(responseUsuario);
         const usuarioDB: IUsuario[] = responseUsuario.data;
         const usuarioEncontrado = usuarioDB.find(
-          (usuario: IUsuario) => usuario.email === user?.email || usuarioContext?.email
+          (usuario: IUsuario) => usuario.email === user?.email || usuario.email === usuarioContext?.email
         );
-        console.log("usuario", usuarioEncontrado)
 
         if (usuarioEncontrado) {
           const responsePedidos = await axios.get<IPedidoDto[]>(
