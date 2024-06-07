@@ -118,9 +118,10 @@ const MiPerfil: React.FC = () => {
         minHeight: "100vh",
         backgroundImage: `url("${defaultImage}")`,
         backgroundSize: "cover",
+        width:"100%"
       }}
     >
-      <div className="card w-50 w-md-50 w-lg-50">
+      <div className="card" style={{ width: "80%", height: "75%"}}>
         <div className="card-header">
           <h1 className="display-6 text-start"> Mi Perfil</h1>
         </div>
@@ -137,7 +138,7 @@ const MiPerfil: React.FC = () => {
                 style={{ width: "100px", height: "100px" }}
               />
             </Col>
-            <Col className="d-flex flex-column align-items-start" md={8}>
+            <Col className="d-flex flex-column align-items-start" md={8} style={{fontSize:"1.2rem"}}>
               {usuario?.nombre && usuario?.apellido ? (
                 <p className="card-text">
                   Nombre: {usuario?.nombre} {usuario?.apellido}

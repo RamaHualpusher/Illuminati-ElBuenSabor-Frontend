@@ -190,6 +190,7 @@
                     delete: false,
                     view: false,
                   }}
+                  showDate={true}
                   customSearch={customSearch}
                   placeHolder="Buscar por Nombre/Apellido/Teléfono"
                 />

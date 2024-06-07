@@ -148,7 +148,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} size="xl" style={{fontSize:"1.2rem"}}>
       <Modal.Header closeButton>
         <Modal.Title>Editar Perfil</Modal.Title>
       </Modal.Header>
