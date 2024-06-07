@@ -10,15 +10,15 @@ const LoginButtonEmployee: React.FC = () => {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Iniciar sesión como empleado
+      <Button variant="primary" onClick={handleShow} className="me-2">
+        Iniciar sesión
       </Button>
 
-      <Modal show={show} onHide={handleClose} size="xl" style={{padding:"50px" }}>
-        <Modal.Header closeButton style={{padding:"50px" }}>
+      <Modal show={show} onHide={handleClose} size="xl">
+        <Modal.Header closeButton>
           <Modal.Title>Inicio de Sesión Empleado</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{padding:"50px" }}>
+        <Modal.Body>
           <LoginFormEmployee onLoginSuccess={handleClose} />
         </Modal.Body>
       </Modal>

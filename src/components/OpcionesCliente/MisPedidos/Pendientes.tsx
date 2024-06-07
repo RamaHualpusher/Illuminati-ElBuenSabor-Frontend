@@ -6,22 +6,22 @@ import { Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { IUsuario } from '../../../interface/IUsuario';
 import NoHayPedidos from '../../Page404/NoHayPedidos';
+import { useUser } from '../../../context/User/UserContext';
 
 const Pendientes: React.FC = () => {
     const [pedidosPendientes, setPedidosPendientes] = useState<IPedidoDto[]>([]);
     const { user, isAuthenticated } = useAuth0();
     const API_URL = process.env.REACT_APP_API_URL || "";
+    const { usuarioContext } = useUser();
 
     useEffect(() => {
         const fetchPedidosPendientes = async () => {
             try {
-                if (!isAuthenticated || !user) return;
                 
                 // Verificar el usuario existente
                 const response = await axios.get(`${API_URL}usuario`);
                 const usuarioDB = response.data;
-                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user.email);
-
+                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user?.email || usuarioContext?.email );
                 if (usuarioEncontrado) {
                     // Obtener los pedidos del usuario
                     const pedidosResponse = await axios.get<IPedidoDto[]>(`${API_URL}pedido/usuario/${usuarioEncontrado.id}`);
@@ -57,12 +57,12 @@ const Pendientes: React.FC = () => {
             ) : (
                 // Mostrar mensaje si no hay pedidos pendientes
                 <>
-                    <NoHayPedidos onReload={() => window.location.reload()} />
                     <div className="text-center">
-                        <Link to="/" className="btn btn-primary btn-lg mb-3">
+                        <Link to="/" className="btn btn-primary btn-lg">
                             Ver Catálogo
                         </Link>
                     </div>
+                    <NoHayPedidos onReload={() => window.location.reload()} />
                 </>
             )}
         </div>

@@ -20,7 +20,7 @@ const AdminBar: FC = () => {
   // Estado para controlar la apertura/cierre del menú desplegable
   const [navbarOpen, setNavbarOpen] = useState(false);
 
-  const employeeToken = localStorage.getItem('employeeToken');
+  const employeeToken = localStorage.getItem("employeeToken");
 
   // Función para alternar la visibilidad del menú desplegable
   const toggleNavbar = () => {
@@ -73,29 +73,28 @@ const AdminBar: FC = () => {
         >
           <ul className="navbar-nav align-items-center">
             {/* Mostrar información del usuario autenticado */}
-            {isAuthenticated && (
-              <>
-                <li className="nav-item d-flex align-items-center mx-2">
-                  <Dropdown>
-                    <CustomDropdown />
-                    <OpcionesUsuario />
-                  </Dropdown>
-                </li>
-              </>
-            )}
+            {isAuthenticated ||
+              (employeeToken && (
+                <>
+                  <li className="nav-item d-flex align-items-center mx-2">
+                    <Dropdown>
+                      <CustomDropdown employeeToken={employeeToken} />
+                      <OpcionesUsuario />
+                    </Dropdown>
+                  </li>
+                </>
+              ))}
             {/* Mostrar botón de inicio de sesión o cierre de sesión según el estado de autenticación */}
-              {isAuthenticated
-              ?
+            {isAuthenticated || employeeToken && (
               <li>
                 <Link to="/">
-                  <Button className="btn btn-warning">VOLVER A INICIO</Button>
+                  <Button className="btn btn-secondary">
+                    {" "}
+                    <i className="bi bi-house-door me-2"></i>Home
+                  </Button>
                 </Link>
               </li>
-              :
-              <li className="nav-item">
-                {employeeToken ? <LogoutButtonEmployee /> : <LoginButtonEmployee />}
-              </li>
-              }
+            )}
           </ul>
         </div>
       </div>
