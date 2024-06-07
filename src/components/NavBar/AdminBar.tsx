@@ -73,19 +73,34 @@ const AdminBar: FC = () => {
         >
           <ul className="navbar-nav align-items-center">
             {/* Mostrar información del usuario autenticado */}
-            {isAuthenticated ||
-              (employeeToken && (
-                <>
-                  <li className="nav-item d-flex align-items-center mx-2">
-                    <Dropdown>
-                      <CustomDropdown employeeToken={employeeToken} />
-                      <OpcionesUsuario />
-                    </Dropdown>
-                  </li>
-                </>
-              ))}
+            {isAuthenticated && (
+              <li className="nav-item d-flex align-items-center mx-2">
+                <Dropdown>
+                  <CustomDropdown employeeToken={employeeToken} />
+                  <OpcionesUsuario />
+                </Dropdown>
+              </li>
+            )}
+            {employeeToken && (
+              <li className="nav-item d-flex align-items-center mx-2">
+                <Dropdown>
+                  <CustomDropdown employeeToken={employeeToken} />
+                  <OpcionesUsuario />
+                </Dropdown>
+              </li>
+            )}
             {/* Mostrar botón de inicio de sesión o cierre de sesión según el estado de autenticación */}
-            {isAuthenticated || employeeToken && (
+            {isAuthenticated && (
+              <li>
+                <Link to="/">
+                  <Button className="btn btn-secondary">
+                    {" "}
+                    <i className="bi bi-house-door me-2"></i>Home
+                  </Button>
+                </Link>
+              </li>
+            )}
+            {employeeToken && (
               <li>
                 <Link to="/">
                   <Button className="btn btn-secondary">
