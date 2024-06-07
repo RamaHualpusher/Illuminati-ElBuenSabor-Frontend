@@ -173,13 +173,21 @@ const Navbar: FC = () => {
                 </Dropdown.Menu>
               </Dropdown>
             </li>
-            {isAuthenticated || employeeToken && (
+            {isAuthenticated && (
               <li className="nav-item d-flex align-items-center mx-2">
                 <Dropdown>
                   <CustomDropdown employeeToken={employeeToken}/>
                   <OpcionesUsuario />
                 </Dropdown>
               </li>
+            )}
+            {employeeToken && (
+              <li className="nav-item d-flex align-items-center mx-2">
+              <Dropdown>
+                <CustomDropdown employeeToken={employeeToken}/>
+                <OpcionesUsuario />
+              </Dropdown>
+            </li>
             )}
             <li className="nav-item">
               {isAuthenticated ? <LogoutButton /> : null}
