@@ -1,6 +1,13 @@
 import React, { FC, useState, useContext, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Dropdown, ListGroup, Button, Form } from "react-bootstrap";
+import {
+  Dropdown,
+  ListGroup,
+  Button,
+  Form,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import { CartContext } from "../../context/cart/CartProvider";
@@ -8,15 +15,10 @@ import CartItem from "../CarritoCompras/CartItem";
 import { IProducto } from "../../interface/IProducto";
 import { SearchContext } from "../Buscador/SearchContext";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import CustomDropdown from "./CustomDropdown/CustomDropdown";
 import OpcionesUsuario from "./OpcionesUsuario/OpcionesUsuario";
 import LogoutButtonEmployee from "./LogoutButtonEmployee";
 import LoginButtonEmployee from "./LoginButtonEmployee";
-
-/**
- * Barra de navegación con opciones de autenticación, carrito y búsqueda.
- */
 
 const Navbar: FC = () => {
   const { isAuthenticated } = useAuth0(); // Obtener el estado de autenticación de Auth0
@@ -26,31 +28,25 @@ const Navbar: FC = () => {
   const [searchOpen, setSearchOpen] = useState(false); // Estado para controlar la apertura de la búsqueda
   const { setSearchParam } = useContext(SearchContext); // Obtener función para establecer parámetros de búsqueda
   const cartVacio = cartItems.length === 0; // Verificar si el carrito está vacío
-  const API_URL = process.env.REACT_APP_API_URL || "";
-  const employeeToken = localStorage.getItem('employeeToken');
+  const employeeToken = localStorage.getItem("employeeToken");
   const [isEmployee, setIsEmployee] = useState(false);
-  
 
-  //Esta función cambia el estado de navbarOpen entre true y false
   const toggleNavbar = () => {
     setNavbarOpen(!navbarOpen);
   };
 
-  //Esta función toma un nombre completo como argumento y devuelve el primer nombre de la persona
   const getFirstName = (fullName: string) => {
     return fullName.split(" ")[0];
   };
-  //Esta función controla si esta abierto el carrito cuando se hace clic en el ícono de carrito.
+
   const toggleCart = () => {
     setCartOpen(!cartOpen);
   };
 
-  //Esta función controla si el campo de búsqueda está abierto o cerrado cuando se hace clic en el ícono de búsqueda.
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
   };
 
-  //Esta función se utiliza para actualizar el parámetro de búsqueda en el contexto de búsqueda.
   const handleSearch = (searchParam: string) => {
     setSearchParam(searchParam);
   };
@@ -177,10 +173,10 @@ const Navbar: FC = () => {
                 </Dropdown.Menu>
               </Dropdown>
             </li>
-            {isAuthenticated && (
+            {isAuthenticated || employeeToken && (
               <li className="nav-item d-flex align-items-center mx-2">
                 <Dropdown>
-                  <CustomDropdown />
+                  <CustomDropdown employeeToken={employeeToken}/>
                   <OpcionesUsuario />
                 </Dropdown>
               </li>
@@ -194,16 +190,38 @@ const Navbar: FC = () => {
             {!isAuthenticated && !employeeToken && (
               <li className="nav-item d-flex align-items-center mx-2">
                 {isEmployee ? <LoginButtonEmployee /> : <LoginButton />}
-                
-                <Form.Check 
-                  type="switch"
-                  id="employee-client-switch"
-                  label={isEmployee ? "Empleado" : "Cliente"}
-                  className="m-2 text-success"
-                  checked={isEmployee}
-                  onChange={() => setIsEmployee(!isEmployee)}
-                />
-                
+
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={
+                    <Tooltip id="switch-tooltip">
+                      {isEmployee
+                        ? "Iniciar sesión como Empleado"
+                        : "Iniciar sesión como Cliente"}
+                    </Tooltip>
+                  }
+                >
+                  <div style={{ width: "30px" }}>
+                    <Form.Check
+                      type="switch"
+                      id="employee-client-switch"
+                      label={
+                        <span
+                          className={`d-inline-block ${
+                            isEmployee ? "text-primary" : "text-success"
+                          }`}
+                          style={{ minWidth: "80px", textAlign: "start" }}
+                        >
+                          {isEmployee ? "Empleado" : "Cliente"}
+                        </span>
+                      }
+                      className="m-2"
+                      checked={isEmployee}
+                      onChange={() => setIsEmployee(!isEmployee)}
+                      style={{ minWidth: "80px" }}
+                    />
+                  </div>
+                </OverlayTrigger>
               </li>
             )}
           </ul>
