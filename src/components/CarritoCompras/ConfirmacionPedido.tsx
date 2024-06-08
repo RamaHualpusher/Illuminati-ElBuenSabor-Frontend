@@ -85,71 +85,75 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   }, [cartItems]);
 
   useEffect(() => {
-    if (
-      usuarioContext !== null &&
-      cartItems.length > 0 &&
-      productos !== null &&
-      esDelivery !== null &&
-      esEfectivo !== null
-    ) {
-      const detallesPedido: IDetallePedido[] = [];
+    const crearPedido = () => {
+      if (
+        usuarioContext !== null &&
+        cartItems.length > 0 &&
+        productos !== null &&
+        esDelivery !== null &&
+        esEfectivo !== null
+      ) {
+        const detallesPedido: IDetallePedido[] = [];
 
-      cartItems.forEach((cartItem) => {
-        const productoEncontrado = productos.find(
-          (producto) => producto.id === cartItem.id
-        );
-        if (productoEncontrado) {
-          const detallePedido: IDetallePedido = {
-            cantidad: cartItem.quantity,
-            subTotal: cartItem.quantity * cartItem.price,
-            producto: productoEncontrado,
-            //aca invente que es 5, tengo que ver cuanto es el maximo
-            maxCantidadProducto: 5,
-          };
-          detallesPedido.push(detallePedido);
-        }
-      });
+        cartItems.forEach((cartItem) => {
+          const productoEncontrado = productos.find(
+            (producto) => producto.id === cartItem.id
+          );
+          if (productoEncontrado) {
+            const detallePedido: IDetallePedido = {
+              cantidad: cartItem.quantity,
+              subTotal: cartItem.quantity * cartItem.price,
+              producto: productoEncontrado,
+              //aca invente que es 5, tengo que ver cuanto es el maximo
+              maxCantidadProducto: 5,
+            };
+            detallesPedido.push(detallePedido);
+          }
+        });
 
-      const nuevoTotalPedido = esEfectivo ? subTotal * 0.9  : subTotal + 500;
+        const nuevoTotalPedido = esEfectivo ? subTotal * 0.9 : subTotal + 500;
 
-      //aca tenemos que poner segun el producto, el tiempo estimado segun hamburguesa, papas fritas, etc
-      const calcularHoraEstimadaFin = () => {
-        const horaActual = new Date();
-        const esBebida = detallesPedido.some(
-          (detalle) => detalle.producto.esBebida
-        );
-        if (!esBebida) {
-          horaActual.setMinutes(horaActual.getMinutes() + 20);
-        }
-        return horaActual;
-      };
+        //aca tenemos que poner segun el producto, el tiempo estimado segun hamburguesa, papas fritas, etc
+        const calcularHoraEstimadaFin = () => {
+          const horaActual = new Date();
+          const esBebida = detallesPedido.some(
+            (detalle) => detalle.producto.esBebida
+          );
+          if (!esBebida) {
+            horaActual.setMinutes(horaActual.getMinutes() + 20);
+          }
+          return horaActual;
+        };
 
-      const nuevoPedidoCompleto: IPedidoDto = { 
-        activo: true,
-        horaEstimadaFin: calcularHoraEstimadaFin(),
-        esDelivery: esDelivery,
-        esEfectivo: esEfectivo,
-        estadoPedido: "A confirmar",
-        fechaPedido: new Date(),
-        usuario: usuarioContext,
-        detallesPedidos: detallesPedido,
-        total: nuevoTotalPedido,
-      };
-      setTotalPedido(nuevoTotalPedido);
-      setPedidoCompleto(nuevoPedidoCompleto);
+        const nuevoPedidoCompleto: IPedidoDto = {
+          activo: true,
+          horaEstimadaFin: calcularHoraEstimadaFin(),
+          esDelivery: esDelivery,
+          esEfectivo: esEfectivo,
+          estadoPedido: "A confirmar",
+          fechaPedido: new Date(),
+          usuario: usuarioContext,
+          detallesPedidos: detallesPedido,
+          total: nuevoTotalPedido,
+        };
+        setTotalPedido(nuevoTotalPedido);
+        setPedidoCompleto(nuevoPedidoCompleto);
+      }
     }
+    crearPedido()
   }, [usuarioContext, cartItems, subTotal, esDelivery, esEfectivo, productos]);
 
   //agregado por Javier
   useEffect(() => {
     if (pedidoConfirmado && pedidoCompleto) {
-      setShowTicketModal(true);      
+      setShowTicketModal(true);
       setPedidoConfirmado(true);
     }
   }, [pedidoConfirmado, pedidoCompleto]); //tambien agregue para factura el", pedidoCompleto"
 
 
   const createPreference = async () => {
+    console.log("entra a crear preference");
     if (!pedidoCompleto || !pedidoCompleto.usuario) {
       alert("El pedido o el usuario no puede ser nulo.");
       return;
@@ -161,6 +165,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
         if (esEfectivo) {
           // Si el pago es en efectivo, utiliza la URL del controlador PedidoController
+          console.log("entro a efectivo")
           response = await axios.post(`${API_URL}pedido`, pedidoCompleto);
           console.log("Respuesta al guardar el pedido:", response.data);
           if (response.data) {
@@ -170,9 +175,11 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           }
         } else {
           // Si el pago es con Mercado Pago, crea la preferencia de pago
-            initMercadoPago(MP_PUBLIC, { locale: 'es-AR' });
-            response = await axios.post(`${API_URL}mercado-pago-dato/mercadoPago`, pedidoCompleto);
-            setPreferenceId(response.data.preferenceId);
+          console.log("entro en mercadopago")
+          initMercadoPago(MP_PUBLIC, { locale: 'es-AR' });
+          response = await axios.post(`${API_URL}pedido/mercadoPagoPre`, pedidoCompleto);
+          setPreferenceId(response.data.preferenceId);
+          console.log(preferenceId);
 
           console.log("Respuesta al crear preferencia de MercadoPago:", response.data);
 
@@ -184,6 +191,24 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   };
 
   //hasta aca agregado por javier
+  //Agregado Mati
+  const onPurchase = () => {
+    createPreference();
+    if (esEfectivo) {
+      console.log("sale por efectivo");
+      onContinue();
+    } else {
+      console.log("sale por mercado preference: "+preferenceId)
+      if (preferenceId) {
+        return (
+          <>
+            <Wallet initialization={{ preferenceId: preferenceId }} customization={{ texts: { valueProp: 'smart_option' } }} />
+          </>
+        )
+      }
+    }
+  }
+  //Hasta aca mati
 
   const handleConfirmarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -324,6 +349,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
             type="submit"
             className="btn btn-primary me-2"
             disabled={isCartEmpty || !isAuthenticated}
+            onClick={onPurchase}
           >
             Confirmar Pedido
           </button>

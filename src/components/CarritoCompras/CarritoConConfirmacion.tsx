@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { CartContext } from '../../context/cart/CartProvider';
 import ConfirmacionPedido from './ConfirmacionPedido';
 import { useNavigate } from 'react-router-dom';
+import { IPedidoDto } from '../../interface/IPedido';
+import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 
 const CarritoConConfirmacion: React.FC = () => {
   // Obtener el contexto del carrito
@@ -9,6 +11,8 @@ const CarritoConConfirmacion: React.FC = () => {
 
   // Navegación
   const navigate = useNavigate();
+
+
 
   // Función para modificar la cantidad de un ítem en el carrito
   const modificarCantidad = (id: number, cantidad: number) => {

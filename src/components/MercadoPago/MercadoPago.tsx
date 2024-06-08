@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { IPedidoDto } from '../../interface/IPedido';
 import axios from 'axios';
+import { IMercadoPagoDatos } from '../../interface/IMercadoPagoDatos';
 
 const API_URL = process.env.REACT_APP_API_URL || "";
 const MP_ACCESS_TOKEN = process.env.REACT_APP_MP_ACCESS_TOKEN || ""; 
 
-const MercadoPago = (pedidoCompleto: IPedidoDto) => {
+/*const MercadoPago = (pedidoCompleto: IPedidoDto) => {
   const [preferenceId, setPreferenceId] = useState<number | null>(null);
 
   const handleConfirmarPedido = async () => {
@@ -53,6 +54,25 @@ const MercadoPago = (pedidoCompleto: IPedidoDto) => {
   };
 
   return { handleConfirmarPedido, preferenceId };
-};
+};*/
+
+const MercadoPago =(pedido:IPedidoDto)=>{
+  const handleConfirmarPedido=async()=>{
+    if(pedido!=null){
+      try{
+        const response =await axios.post(`${API_URL}/pedido/mercadoPagoPre`,pedido);
+
+        const preference:IMercadoPagoDatos={
+          fechaCreacion:response.data.fechaCreacion,
+          estado:response.data.estado,
+          preferenceId:response.data.preferenceId,
+          pedido: response.data.pedido
+        };
+      }catch(e){
+        console.log("Verga"+e);
+      }
+    }
+  }
+}
 
 export default MercadoPago;
