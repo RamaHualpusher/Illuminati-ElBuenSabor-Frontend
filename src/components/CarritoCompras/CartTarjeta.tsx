@@ -44,6 +44,17 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   );
 
   useEffect(() => {
+    const obtenerDomicilioUsuario = async () => {
+      try {
+        const response = await axios.get(`${API_URL}usuario/${user?.id}/domicilio`);
+        return response.data;
+      } catch (error) {
+        console.error("Error al obtener la dirección del usuario:", error);
+      }
+    };
+  }, [user?.id, API_URL]);
+
+  useEffect(() => {
     if (domicilio) {
       setCalle(domicilio.calle || "");
       setNumero(domicilio.numero ? domicilio.numero.toString() : "");
@@ -51,9 +62,14 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     }
   }, [domicilio]);
 
+  useEffect(() => {
+    if (esDelivery) {
+      handleEsEfectivo(false);
+    }
+  }, [esDelivery, handleEsEfectivo]);
+
   const handleClickDelivery = () => {
     handleEsDelivery(true);
-    handleEsEfectivo(false);
     if (usuario && usuario?.domicilio) {
       setNuevoDomicilio(usuario?.domicilio);
     } else {
@@ -68,6 +84,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
 
   const handleClickEfectivo = () => {
     handleEsEfectivo(true);
+    !esDelivery;
   };
 
   const handleEditModalOpen = () => {
@@ -89,6 +106,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
 
   const handleClickMercadoPago = () => {
     handleEsEfectivo(false);
+    !esEfectivo;
   };
 
   const handleCloseModal = () => {
@@ -146,7 +164,6 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   const handleDomicilioAdd = async (domicilio: IDomicilio) => {
     try {
       await axios.post(`${API_URL}usuario/${usuario?.id}/domicilio`, domicilio);
-      setNuevoDomicilio(domicilio)
       setAddModalShow(false);
     } catch (error) {
       console.log(error);
@@ -162,7 +179,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     if (esDelivery) {
       total += costoDelivery;
     }
-    if (!esDelivery && esEfectivo) {
+    if (esEfectivo) {
       total -= subTotal * descuentoEfectivo;
     }
     return total;
@@ -220,17 +237,10 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                       <>
                         {esDelivery ? (
                           <>
-                          {!nuevoDomicilio?
                             <span>
                               {domicilio.calle}, {domicilio.numero},{" "}
                               {domicilio.localidad}
                             </span>
-                            :
-                            <span>
-                              {nuevoDomicilio.calle}, {nuevoDomicilio.numero},{" "}
-                              {nuevoDomicilio.localidad}
-                            </span>
-                          }
                             <br />
                             <button
                               className="btn btn-success ms-2 mt-1 mb-2"
@@ -303,18 +313,19 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
             <div className="d-flex flex-column align-items-center">
               <h5>Método de Pago</h5>
               <div className="d-flex justify-content-center">
+                
                 <div className="mb-0 me-2">
                   <input
                     type="radio"
                     className="btn-check"
                     id="mercadoPago-outlined"
                     autoComplete="off"
-                    checked={esDelivery || !esEfectivo}
+                    checked={esDelivery && !esEfectivo}
                     onChange={handleClickMercadoPago}
                   />
                   <label
                     className={
-                      esDelivery || !esEfectivo
+                      esDelivery 
                         ? "btn btn-primary"
                         : "btn btn-outline-primary"
                     }

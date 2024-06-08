@@ -135,7 +135,7 @@ const MiPerfil: React.FC = () => {
                 className="rounded-circle"
                 src={user?.picture}
                 alt={user?.name}
-                style={{ width: "100px", height: "100px" }}
+                style={{ width: "80%", height: "80%"}}
               />
             </Col>
             <Col className="d-flex flex-column align-items-start" md={8} style={{fontSize:"1.2rem"}}>

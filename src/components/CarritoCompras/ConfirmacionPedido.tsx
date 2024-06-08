@@ -56,8 +56,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const [showTicketModal, setShowTicketModal] = useState<boolean>(false);
   const [returnUrl, setReturnUrl] = useState<string | null>(null);
   const navigate = useNavigate(); // Obtiene la función navigate desde useNavigate
-  const employeeToken = localStorage.getItem("employeeToken");
-  
+
   const handleClose = () => {
     navigate("/"); // Redirige a la página principal al hacer click en "Cerrar"
   };
@@ -327,7 +326,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           <button
             type="submit"
             className="btn btn-primary me-2"
-            disabled={isCartEmpty || !isAuthenticated && !usuarioContext}
+            disabled={isCartEmpty || !isAuthenticated}
           >
             Confirmar Pedido
           </button>
@@ -386,7 +385,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </Alert>
         </div>
       ))}
-      {!isAuthenticated || !usuarioContext && (
+      {!isAuthenticated && (
         <div className="container mt-3">
           <Alert variant="danger" show={showAlert}>
             Por favor, inicie sesión para confirmar el pedido. <br />
