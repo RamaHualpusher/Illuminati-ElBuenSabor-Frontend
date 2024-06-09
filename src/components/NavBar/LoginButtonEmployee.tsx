@@ -8,11 +8,16 @@ const LoginButtonEmployee: React.FC = () => {
   const [show, setShow] = useState(false);
   const { usuarioContext, loading, userExists } = useUser(); // Obtiene el contexto del usuario
   const navigate = useNavigate(); // Obtiene la función navigate
+  const [isMounted, setIsMounted] = useState(true);
 
   useEffect(() => {
-    if (!loading && userExists && usuarioContext) {
-      console.log("Redireccionando según el rol del usuario");
+    return () => {
+      setIsMounted(false);
+    };
+  }, []);
 
+  useEffect(() => {
+    if (isMounted && !loading && userExists && usuarioContext) {
       switch (usuarioContext.rol.nombreRol) {
         case 'Admin':
           navigate('/admin');
@@ -35,7 +40,7 @@ const LoginButtonEmployee: React.FC = () => {
         window.alert('Tienes que cambiar tu contraseña');
       }
     }
-  }, [loading, userExists, usuarioContext, navigate]);
+  }, [isMounted, loading, userExists, usuarioContext, navigate]);
 
   const handleClose = () => {
     setShow(false);

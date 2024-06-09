@@ -22,6 +22,7 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
       claveConfirm: "",
       telefono: "",
       activo: true,
+      primerIngreso: false,
       rol: { id: 0, nombreRol: "" },
       domicilio: {
         id: 0,

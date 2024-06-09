@@ -32,10 +32,8 @@ export const UserProvider: React.FC = ({ children }) => {
     try {
       const decodedToken: any = jwtDecode(token);
       const email = decodedToken.sub;
-      console.log("Decoded Token Email: ", email); // Log para verificar email decodificado
 
       const response = await axios.post(`${API_URL}usuario/empleados/email`, { email });
-      console.log("Response from Server: ", response.data); // Log para verificar la respuesta del servidor
 
       setUsuarioContext(response.data);
       setUserExists(true);
@@ -50,8 +48,6 @@ export const UserProvider: React.FC = ({ children }) => {
     setLoading(true);
     if (employeeToken) {
       await verificarEmpleado(employeeToken);
-      console.log("Desde UserContext");
-      console.log(usuarioContext);
     } else if (!isLoading && auth0User) {
       await verificarUsuarioExistente();
     }
