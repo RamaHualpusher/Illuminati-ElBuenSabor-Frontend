@@ -12,6 +12,7 @@ export interface IUsuario extends IBase {
   telefono: string;
   domicilio: IDomicilio;
   rol: IRol;
+  primerIngreso?: boolean;
 }
 
 export interface IEditUsuarioFromCliente extends IBase {

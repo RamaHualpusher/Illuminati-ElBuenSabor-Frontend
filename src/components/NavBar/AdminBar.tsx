@@ -102,12 +102,7 @@ const AdminBar: FC = () => {
             )}
             {employeeToken && (
               <li>
-                <Link to="/">
-                  <Button className="btn btn-secondary">
-                    {" "}
-                    <i className="bi bi-house-door me-2"></i>Home
-                  </Button>
-                </Link>
+                <LogoutButtonEmployee/>
               </li>
             )}
           </ul>

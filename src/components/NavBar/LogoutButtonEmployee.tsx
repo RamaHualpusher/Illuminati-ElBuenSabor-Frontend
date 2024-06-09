@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 const LogoutButtonEmployee: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem('employeeToken');
-    window.location.reload();
+    window.location.href = '/';
   };
 
   return (

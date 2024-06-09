@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { IEditUsuarioFromCliente } from "../../../interface/IUsuario";
 import { IEditClienteModalProps } from "../../../interface/IUsuario";
+import { useUser } from "../../../context/User/UserContext";
 
 const EditPerfil: React.FC<IEditClienteModalProps> = ({
   show,
@@ -9,27 +10,27 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
   selectedUsuario,
   handleClienteEdit,
 }) => {
+  const { usuarioContext } = useUser();
   const [editedCliente, setEditedCliente] = useState<IEditUsuarioFromCliente>({
     id: 0,
     nombre: "",
     apellido: "",
     email: "",
-    clave: "",
     telefono: "",
     domicilio: {
       calle: "",
       numero: 0,
       localidad: "",
     },
+    clave: "", // Inicializar clave
   });
   const [confirmarClave, setConfirmarClave] = useState<string>("");
   const [claveError, setClaveError] = useState<string | null>(null);
   const [modificandoClave, setModificandoClave] = useState(false);
-  const [claveIngresada, setClaveIngresada] = useState(false);
-  const API_URL = process.env.REACT_APP_API_URL || "";
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+  const API_URL = process.env.REACT_APP_API_URL || "";
+
   useEffect(() => {
     if (selectedUsuario) {
       setEditedCliente({
@@ -37,9 +38,9 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
         nombre: selectedUsuario.nombre,
         apellido: selectedUsuario.apellido,
         email: selectedUsuario.email,
-        clave: selectedUsuario?.clave || "",
-        telefono: selectedUsuario?.telefono,
+        telefono: selectedUsuario.telefono,
         domicilio: selectedUsuario.domicilio,
+        clave: "", // Establecer clave vacía cuando se selecciona un usuario
       });
     }
   }, [selectedUsuario]);
@@ -51,13 +52,10 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
       [name]: value,
     }));
 
-    // Verificar la complejidad de la contraseña al modificarla
-    if (name === "clave" && value.trim() !== "" && !modificandoClave) {
+    if (name === "clave" && modificandoClave) {
       validarComplejidadClave(value);
-      setModificandoClave(true);
     }
 
-    // Manejar Confirmar Contraseña si se está modificando la clave
     if (name === "confirmarClave" && modificandoClave) {
       setConfirmarClave(value);
       if (editedCliente.clave !== value) {
@@ -71,12 +69,10 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Verificar la complejidad de la contraseña al enviar el formulario
     if (modificandoClave) {
       validarComplejidadClave(editedCliente.clave);
     }
 
-    // Verificar la igualdad entre la contraseña y la confirmación de la contraseña
     if (modificandoClave && editedCliente.clave !== confirmarClave) {
       setClaveError("Las contraseñas no coinciden");
       return;
@@ -89,45 +85,43 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
       email: editedCliente.email,
       telefono: editedCliente.telefono,
       domicilio: editedCliente.domicilio,
-      clave: editedCliente.clave,
+      clave: modificandoClave ? editedCliente.clave : "",
     };
 
-    try {
-      const response = await fetch(`${API_URL}usuario/${clienteAEnviar?.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(clienteAEnviar),
-      });
+    // try {
+    //   const response = await fetch(`${API_URL}usuario/${clienteAEnviar?.id}`, {
+    //     method: "PUT",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(clienteAEnviar),
+    //   });
 
-      if (!response.ok) {
-        throw new Error("Error al guardar los cambios");
-      }
+    //   if (!response.ok) {
+    //     throw new Error("Error al guardar los cambios");
+    //   }
 
-      const data = await response.json();
-      handleClienteEdit(data);
-      handleClose();
-    } catch (error) {
-      console.error(error);
-      setClaveError("Hubo un error al guardar los cambios.");
-    }
-
-    // Limpieza de estado después de guardar cambios
+    //   const data = await response.json();
+    //   handleClienteEdit(data);
+    //   handleClose();
+    // } catch (error) {
+    //   console.error(error);
+    //   setClaveError("Hubo un error al guardar los cambios.");
+    // }"clave": "$2a$10$2jjfZKqLwLsoZ7Vl95e2geNld3E7HUSJPUSvWEZnwtzfsBSdocQm2",
+    handleClienteEdit(clienteAEnviar);
     setModificandoClave(false);
-    setClaveIngresada(false);
     setEditedCliente({
       id: 0,
       nombre: "",
       apellido: "",
       email: "",
-      clave: "",
       telefono: "",
       domicilio: {
         calle: "",
         numero: 0,
         localidad: "",
       },
+      clave: "", // Reiniciar clave
     });
 
     handleClose();
@@ -143,12 +137,11 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
       );
     } else {
       setClaveError(null);
-      setClaveIngresada(true);
     }
   };
 
   return (
-    <Modal show={show} onHide={handleClose} size="xl" style={{fontSize:"1.2rem"}}>
+    <Modal show={show} onHide={handleClose} size="xl" style={{ fontSize: "1.2rem" }}>
       <Modal.Header closeButton>
         <Modal.Title>Editar Perfil</Modal.Title>
       </Modal.Header>
@@ -157,9 +150,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
           <div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formNombre">
               <div style={{ display: "flex", alignItems: "center" }}>
-                <Form.Label style={{ width: "150px", textAlign: "left" }}>
-                  Nombre
-                </Form.Label>
+                <Form.Label style={{ width: "150px", textAlign: "left" }}>Nombre</Form.Label>
                 <Form.Control
                   type="text"
                   name="nombre"
@@ -174,9 +165,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
           <div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formApellido">
               <div style={{ display: "flex", alignItems: "center" }}>
-                <Form.Label style={{ width: "150px", textAlign: "left" }}>
-                  Apellido
-                </Form.Label>
+                <Form.Label style={{ width: "150px", textAlign: "left" }}>Apellido</Form.Label>
                 <Form.Control
                   type="text"
                   name="apellido"
@@ -191,9 +180,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
           <div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formEmail">
               <div style={{ display: "flex", alignItems: "center" }}>
-                <Form.Label style={{ width: "150px", textAlign: "left" }}>
-                  Email
-                </Form.Label>
+                <Form.Label style={{ width: "150px", textAlign: "left" }}>Email</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -208,9 +195,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
           <div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formTelefono">
               <div style={{ display: "flex", alignItems: "center" }}>
-                <Form.Label style={{ width: "150px", textAlign: "left" }}>
-                  Telefono
-                </Form.Label>
+                <Form.Label style={{ width: "150px", textAlign: "left" }}>Telefono</Form.Label>
                 <Form.Control
                   type="number"
                   name="telefono"
@@ -222,62 +207,62 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
               </div>
             </Form.Group>
           </div>
-          <div style={{ marginBottom: "10px", textAlign: "right" }}>
-            <Form.Group controlId="formClave">
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Form.Label style={{ width: "100px", textAlign: "left" }}>
-                  Contraseña
-                </Form.Label>
-                <Form.Control
-                  type={showPassword ? "text" : "password"}
-                  name="clave"
-                  value={editedCliente.clave}
-                  onChange={handleInputChange}
-                  style={{ marginLeft: "45px"}}
-                  className="shadow-sm"
-                />
-                <Button
-                  onClick={() => setShowPassword(!showPassword)}
-                  variant="outline-secondary"
-                  style={{ marginLeft: "5px" }}
-                >
-                  {showPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye-fill"></i>}
-                </Button>
-              </div>
-            </Form.Group>
-            {modificandoClave && claveError && (
-              <div className="text-danger p-1">{claveError}</div>
-            )}
-          </div>
-          {editedCliente.clave.trim() === "" && ( // Verifica si la contraseña está vacía
-            <div className="text-danger mt-2">
-              Por favor, ingrese una contraseña.
-            </div>
-          )}
-          {modificandoClave && (
+          {usuarioContext && usuarioContext.rol.nombreRol !== "Cliente" && (
             <div style={{ marginBottom: "10px", textAlign: "right" }}>
-              <Form.Group controlId="formConfirmarClave">
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Form.Label style={{ width: "150px", textAlign: "left" }}>
-                    Confirmar Contraseña
-                  </Form.Label>
-                  <Form.Control
-                    type={showConfirmPassword ? "text" : "password"}
-                    name="confirmarClave"
-                    value={confirmarClave}
-                    onChange={handleInputChange}
-                    style={{ marginLeft: "35px" }}
-                  />
-                  <Button
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    variant="outline-secondary"
-                    style={{ marginLeft: "5" }}
-                  >
-                    {showConfirmPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye-fill"></i>}
-                  </Button>
-                </div>
-                {claveError && <div className="text-danger">{claveError}</div>}
-              </Form.Group>
+              {!modificandoClave ? (
+                <Button onClick={() => setModificandoClave(true)}>
+                  Cambiar Contraseña
+                </Button>
+              ) : (
+                <>
+                  <div style={{ marginBottom: "10px", textAlign: "right" }}>
+                    <Form.Group controlId="formClave">
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <Form.Label style={{ width: "150px", textAlign: "left" }}>Nueva Contraseña</Form.Label>
+                        <Form.Control
+                          type={showPassword ? "text" : "password"}
+                          name="clave"
+                          value={editedCliente.clave}
+                          onChange={handleInputChange}
+                          style={{ marginLeft: "20px" }}
+                          className="shadow-sm"
+                        />
+                        <Button
+                          onClick={() => setShowPassword(!showPassword)}
+                          variant="outline-secondary"
+                          style={{ marginLeft: "5px" }}
+                        >
+                          {showPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye-fill"></i>}
+                        </Button>
+                      </div>
+                    </Form.Group>
+                    {claveError && <div className="text-danger p-1">{claveError}</div>}
+                  </div>
+                  <div style={{ marginBottom: "10px", textAlign: "right" }}>
+                    <Form.Group controlId="formConfirmarClave">
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <Form.Label style={{ width: "150px", textAlign: "left" }}>Confirmar Contraseña</Form.Label>
+                        <Form.Control
+                          type={showConfirmPassword ? "text" : "password"}
+                          name="confirmarClave"
+                          value={confirmarClave}
+                          onChange={handleInputChange}
+                          style={{ marginLeft: "20px" }}
+                          className="shadow-sm"
+                        />
+                        <Button
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          variant="outline-secondary"
+                          style={{ marginLeft: "5px" }}
+                        >
+                          {showConfirmPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye-fill"></i>}
+                        </Button>
+                      </div>
+                    </Form.Group>
+                    {claveError && <div className="text-danger p-1">{claveError}</div>}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </Modal.Body>
@@ -285,11 +270,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
           <Button variant="secondary" onClick={handleClose}>
             Cancelar
           </Button>
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={editedCliente.clave.trim() === ""}
-          >
+          <Button variant="primary" type="submit">
             Guardar Cambios
           </Button>
         </Modal.Footer>

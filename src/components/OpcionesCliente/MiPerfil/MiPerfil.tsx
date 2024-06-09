@@ -103,7 +103,7 @@ const MiPerfil: React.FC = () => {
 
   const handlePerfilEdit = async (usuarioEditado: IEditUsuarioPerfil) => {
     try {
-      await axios.put(`${API_URL}usuario/${usuarioEditado.id}`, usuarioEditado);
+      await axios.put(`${API_URL}usuario/actualizar/${usuarioEditado.id}`, usuarioEditado);
       actualizarUsuario(usuarioEditado);
       setEditModalShow(false);
     } catch (error) {

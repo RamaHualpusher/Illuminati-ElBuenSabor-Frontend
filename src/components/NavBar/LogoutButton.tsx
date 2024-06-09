@@ -11,7 +11,7 @@ const LogoutButton: FC = () => {
     <button
       className="btn btn-primary"
       onClick={() =>
-        logout({ logoutParams: { returnTo: window.location.origin } }) // Al hacer clic, se cierra la sesión y se redirige al origen
+        logout({ logoutParams: { returnTo: window.location.origin } })
       }
     >
       Cerrar sesión
