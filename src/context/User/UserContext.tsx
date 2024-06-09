@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
@@ -7,6 +7,7 @@ import { IUsuario } from "../../interface/IUsuario";
 interface UserContextProps {
   usuarioContext: IUsuario | null;
   setUsuarioContext: React.Dispatch<React.SetStateAction<IUsuario | null>>;
+  actualizarUsuarioContext: () => Promise<void>;
   loading: boolean;
   userExists: boolean;
 }
@@ -14,6 +15,7 @@ interface UserContextProps {
 const UserContext = createContext<UserContextProps>({
   usuarioContext: null,
   setUsuarioContext: () => {},
+  actualizarUsuarioContext: async () => {},
   loading: true,
   userExists: false,
 });
@@ -26,15 +28,7 @@ export const UserProvider: React.FC = ({ children }) => {
   const API_URL = process.env.REACT_APP_API_URL || "";
   const employeeToken = localStorage.getItem('employeeToken');
 
-  useEffect(() => {
-    if (employeeToken) {
-      verificarEmpleado(employeeToken);
-    } else if (!isLoading) {
-      verificarUsuarioExistente();
-    }
-  }, [isLoading, auth0User, employeeToken]);
-
-  const verificarEmpleado = async (token: string) => {
+  const verificarEmpleado = useCallback(async (token: string) => {
     try {
       const decodedToken: any = jwtDecode(token);
       const email = decodedToken.sub;
@@ -50,10 +44,25 @@ export const UserProvider: React.FC = ({ children }) => {
       console.error("Error al verificar el empleado:", error);
       setLoading(false);
     }
-  };
+  }, [API_URL]);
+
+  const actualizarUsuarioContext = useCallback(async () => {
+    setLoading(true);
+    if (employeeToken) {
+      await verificarEmpleado(employeeToken);
+      console.log("Desde UserContext");
+      console.log(usuarioContext);
+    } else if (!isLoading && auth0User) {
+      await verificarUsuarioExistente();
+    }
+    setLoading(false);
+  }, [employeeToken, isLoading, auth0User, verificarEmpleado]);
+
+  useEffect(() => {
+    actualizarUsuarioContext();
+  }, [actualizarUsuarioContext]);
 
   const verificarUsuarioExistente = async () => {
-    setLoading(true);
     if (auth0User) {
       try {
         const response = await axios.post(`${API_URL}usuario/clientes/email`, {
@@ -71,7 +80,6 @@ export const UserProvider: React.FC = ({ children }) => {
           console.error("Error al verificar el usuario:", error);
         }
       }
-      setLoading(false);
     }
   };
 
@@ -100,7 +108,7 @@ export const UserProvider: React.FC = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ usuarioContext, setUsuarioContext, loading, userExists }}>
+    <UserContext.Provider value={{ usuarioContext, setUsuarioContext, actualizarUsuarioContext, loading, userExists }}>
       {children}
     </UserContext.Provider>
   );

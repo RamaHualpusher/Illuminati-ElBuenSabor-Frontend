@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
+import { useUser } from '../../context/User/UserContext';
 
 interface LoginFormEmployeeProps {
   onLoginSuccess: () => void;
@@ -11,6 +12,7 @@ const LoginFormEmployee: React.FC<LoginFormEmployeeProps> = ({ onLoginSuccess })
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const API_URL = process.env.REACT_APP_API_URL || "";
+  const { actualizarUsuarioContext } = useUser(); // Obtiene el contexto del usuario
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,8 +22,9 @@ const LoginFormEmployee: React.FC<LoginFormEmployeeProps> = ({ onLoginSuccess })
       console.log("Login Response: ", response.data); // Log para verificar la respuesta del login
 
       localStorage.setItem('employeeToken', response.data);
+      // Actualiza el contexto del usuario
+      await actualizarUsuarioContext();
       onLoginSuccess();
-      window.location.reload(); // Habilita el reinicio de la página
     } catch (err) {
       setError('Error de autenticación');
     }
