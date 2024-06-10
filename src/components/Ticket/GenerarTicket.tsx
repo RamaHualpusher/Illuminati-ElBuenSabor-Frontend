@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { IFactura } from "../../interface/IFactura";
 import SendEmail from "../SendEmail/SendEmail";
 import axios from "axios";
+import FacturaPDF from "../Factura/FacturaPDF";
 
 interface GenerarTicketProps {
     pedido: IPedidoDto | null;
@@ -38,10 +39,10 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                 // Obtener todas las facturas desde el backend
                 const response = await axios.get(`${API_URL}factura`);
                 const facturas: IFactura[] = response.data;
-
+    
                 // Verificar si alguna factura tiene el mismo ID de pedido que estamos tratando de generar
-                const facturaExistente = facturas.find(factura => factura.pedido.id === selectedPedido.id);
-
+                const facturaExistente = facturas.find(factura => factura.pedido && factura.pedido.id === selectedPedido.id);
+    
                 if (facturaExistente) {
                     alert('¡Esta factura ya ha sido generada PREVIAMENTE!');
                     return null;
@@ -52,12 +53,12 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                         nombreProducto: detalle.producto.nombre,
                         precioProducto: detalle.producto.precio
                     }));   
-                    
+    
                     //validacion por si el usuario no tiene direccion asignada
                     const direccion = selectedPedido.usuario.domicilio
-    ? `${selectedPedido.usuario.domicilio.calle} ${selectedPedido.usuario.domicilio.numero}, ${selectedPedido.usuario.domicilio.localidad}`
-    : "Retiro en local";
-                   
+                        ? `${selectedPedido.usuario.domicilio.calle} ${selectedPedido.usuario.domicilio.numero}, ${selectedPedido.usuario.domicilio.localidad}`
+                        : "Retiro en local";
+                    
                     // Aquí conviertes el pedido a un objeto de factura manualmente
                     const factura: IFactura = {                        
                         activo: true,
@@ -73,7 +74,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                         detalleFactura: detallesFactura,
                         pedido: selectedPedido,
                     };
-
+    
                     // Luego, realizas el proceso de envío de la factura
                     const response = await axios.post(`${API_URL}factura`, factura);
                     if (response.data) {
@@ -88,7 +89,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                 return null;
             }
         }
-    };
+    };   
 
     const getOrDefault = (value: any, defaultValue: any) => {
         return value !== null && value !== undefined ? value : defaultValue;
@@ -105,10 +106,11 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
 
     const handleGenerarFactura = async (selectedPedido: IPedidoDto | null) => {
         if (selectedPedido) {
-            const confirmarGenerarFactura = window.confirm(`¿Está seguro de que desea generar la factura a nomnbre de ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido}?`);
+            const confirmarGenerarFactura = window.confirm(`¿Está seguro de que desea generar la factura a nombre de ${selectedPedido.usuario.nombre} ${selectedPedido.usuario.apellido}?`);
             if (confirmarGenerarFactura) {
                 if (selectedPedido) {
                     const facturaGenerada = await generarFactura(selectedPedido);
+                    console.log("factura generada" + facturaGenerada)
                     if (facturaGenerada) {
                         const confirmarEnviarEmail = window.confirm(`¿Desea enviar la factura generada por correo electrónico a ${selectedPedido.usuario.email}?`);
                         if (confirmarEnviarEmail) {
@@ -138,6 +140,14 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
     const onCancel = () => {
         closeModal(); // chequear esto para cerrar el modal y no volver a la pagina anterior
     }
+
+    const handleDescargarFactura = () => {
+        if (factura) {
+            FacturaPDF(factura);
+        } else {
+            alert("Debe generar una factura antes de poder descargarla.");
+        }
+    };
 
     return (
         <>
@@ -226,6 +236,11 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                     <button className="btn btn-primary me-2" onClick={() => handleGenerarFactura(selectedPedido)}>
                         Generar Factura
                     </button>
+                    {(factura &&
+                    <Button variant="info" onClick={handleDescargarFactura}>
+                                        Descargar Factura
+                                    </Button>
+                    )}
                     {/* Botón para abrir modal de factura */}
                     <button className="btn btn-primary me-2" onClick={handleMisPedidos}>
                         Ir a Mis Pedidos
@@ -238,21 +253,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
             </Modal>
             {showSendEmail && (
                 <SendEmail factura={factura} onCancel={() => setShowSendEmail(false)} />
-            )}
-
-            {/* Modal de edición */}
-
-            {/* esta seccion es para editar el Ticket, pero falta pasarle datos de detallePedido pero
-                con los datos de CartTabla y CartIcon y CartItem */}
-
-            {/* <EditTicket
-                    pedido={selectedPedido}
-                    closeModal={() => setShowEditModal(false)}
-                    show={showEditModal}
-                    cartItems={[]}
-                    modificarCantidad={modificarCantidad}
-                    eliminarDetallePedido={eliminarDetallePedido}
-                /> */}
+            )}          
         </>
     );
 };

@@ -111,13 +111,13 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
 
 
 
-            
+
           };
           detallesPedido.push(detallePedido);
         }
       });
 
-      const nuevoTotalPedido = esEfectivo ? subTotal * 0.9  : subTotal + 500;
+      const nuevoTotalPedido = esEfectivo ? subTotal * 0.9 : subTotal + 500;
 
       //aca tenemos que poner segun el producto, el tiempo estimado segun hamburguesa, papas fritas, etc
       const calcularHoraEstimadaFin = () => {
@@ -131,7 +131,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
         return horaActual;
       };
 
-      const nuevoPedidoCompleto: IPedidoDto = { 
+      const nuevoPedidoCompleto: IPedidoDto = {
         activo: true,
         horaEstimadaFin: calcularHoraEstimadaFin(),
         esDelivery: esDelivery,
@@ -150,7 +150,7 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   //agregado por Javier
   useEffect(() => {
     if (pedidoConfirmado && pedidoCompleto) {
-      setShowTicketModal(true);      
+      setShowTicketModal(true);
       setPedidoConfirmado(true);
     }
   }, [pedidoConfirmado, pedidoCompleto]); //tambien agregue para factura el", pedidoCompleto"
@@ -177,9 +177,9 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           }
         } else {
           // Si el pago es con Mercado Pago, crea la preferencia de pago
-            initMercadoPago(MP_PUBLIC, { locale: 'es-AR' });
-            response = await axios.post(`${API_URL}mercado-pago-dato/mercadoPago`, pedidoCompleto);
-            setPreferenceId(response.data.preferenceId);
+          initMercadoPago(MP_PUBLIC, { locale: 'es-AR' });
+          response = await axios.post(`${API_URL}mercado-pago-dato/mercadoPago`, pedidoCompleto);
+          setPreferenceId(response.data.preferenceId);
 
           console.log("Respuesta al crear preferencia de MercadoPago:", response.data);
 
@@ -345,21 +345,16 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
       {preferenceId &&
         <Wallet initialization={{ preferenceId: preferenceId.toString(), redirectMode: "blank" }} customization={{ texts: { valueProp: 'smart_option' } }} />
       }
-      <div>
-        {/* Modal del ticket */}
-        <Modal show={showTicketModal} onHide={() => setShowTicketModal(false)}>
-          {/* Aquí renderizamos el componente GenerarTicket */}
-          {pedidoConfirmado && (
-            <GenerarTicket
-              pedido={pedidoCompleto}
-              closeModal={() => setShowTicketModal(false)}
-              show={showTicketModal}
-              modificarCantidad={modificarCantidad}
-              eliminarDetallePedido={eliminarDetallePedido}
-            />
-          )}
-        </Modal>
-      </div>
+        {/* Aquí renderizamos el componente GenerarTicket */}
+        {pedidoConfirmado && (
+          <GenerarTicket
+            pedido={pedidoCompleto}
+            closeModal={() => setShowTicketModal(false)}
+            show={showTicketModal}
+            modificarCantidad={modificarCantidad}
+            eliminarDetallePedido={eliminarDetallePedido}
+          />
+        )}
       {/* Mostrar el Alert cuando el carrito esté vacío */}
       {isCartEmpty && (
         <div className="container mt-3">

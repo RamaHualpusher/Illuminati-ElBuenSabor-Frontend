@@ -1,34 +1,17 @@
-POST http://localhost:8080/api/factura
+POST http://localhost:8080/api/usuario
 Content-Type: application/json
 
 {
-    "esEfectivo": true,
-    "esDelivery": false,
-    "fechaFactura": "2024-04-14",
-    "fechaPedido": "2024-04-14",
-    "usuario": {
-        "id": 16,
+    "activo": true,
+    "nombre": "Javier",
+    "apellido": "Scandura",
+    "email": "cajero@gmail.com",
+    "clave": "123123123",
+    "telefono": "987654321",
+    "domicilio": null,
+    "rol": {
+        "id": 3,
         "activo": true,
-        "nombre": "Javier",
-        "apellido": "Scandura",
-        "email": "javier.scandura@gmail.com",
-        "clave": null,
-        "telefono": "",
-        "domicilio": null,
-        "rol": {
-            "id": 5,
-            "activo": true,
-            "nombreRol": "Cliente"
-        }
-    },
-    "detalleFactura": [
-        {
-            "cantidad": 1,
-            "nombreProducto": "Pizza Napolitana",
-            "precioProducto": 5990.0
-        }
-    ],
-    "pedido":{
-        "id": 123545
+        "nombreRol": "Cajero"
     }
 }
