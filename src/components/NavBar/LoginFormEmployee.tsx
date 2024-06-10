@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useUser } from '../../context/User/UserContext';
+import { BiShow, BiHide } from "react-icons/bi";
+const bcrypt = require('bcryptjs');
 
 interface LoginFormEmployeeProps {
   onLoginSuccess: () => void;
@@ -10,6 +12,7 @@ interface LoginFormEmployeeProps {
 const LoginFormEmployee: React.FC<LoginFormEmployeeProps> = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const API_URL = process.env.REACT_APP_API_URL || "";
   const { actualizarUsuarioContext } = useUser(); // Obtiene el contexto del usuario
@@ -18,6 +21,7 @@ const LoginFormEmployee: React.FC<LoginFormEmployeeProps> = ({ onLoginSuccess })
     e.preventDefault();
     setError(null);
     try {
+      // Enviar el email y la contraseña encriptada al servidor
       const response = await axios.post(API_URL + 'auth/loginEmployee', { email, password });
       console.log("Login Response: ", response.data); // Log para verificar la respuesta del login
 
@@ -45,12 +49,20 @@ const LoginFormEmployee: React.FC<LoginFormEmployeeProps> = ({ onLoginSuccess })
 
       <Form.Group controlId="formBasicPassword">
         <Form.Label>Contraseña</Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="Ingresa tu contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="input-group">
+          <Form.Control
+            type={showPassword ? "text" : "password"}
+            placeholder="Ingresa tu contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button
+            variant="outline-secondary"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <BiHide /> : <BiShow />}
+          </Button>
+        </div>
       </Form.Group>
 
       <Button variant="primary" type="submit" className="btn btn-success mt-2">
