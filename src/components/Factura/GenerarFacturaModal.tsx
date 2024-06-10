@@ -4,7 +4,6 @@ import { Button, Container, Modal, Table } from "react-bootstrap";
 import FacturaPDF from "./FacturaPDF";
 import GenerarCreditoModal from "./GenerarCreditoModal";
 import { exportTableDataToExcel } from '../../util/exportTableDataToExcel';
-import { IDetallePedido, IDetallePedidoDto } from "../../interface/IDetallePedido";
 import axios from 'axios';
 import SendEmail from "../SendEmail/SendEmail";
 import { IDetalleFactura } from "../../interface/IDetalleFactura";
@@ -16,7 +15,7 @@ interface GenerarFacturaModalProps {
 }
 
 const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, closeModal, show }) => {
-  const [selectedFactura, setSelectedFactura] = useState<IFactura | null>();
+  const [selectedFactura, setSelectedFactura] = useState<IFactura | null>(null);
   const [userInfo, setUserInfo] = useState<any>(null);
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [showSendEmail, setShowSendEmail] = useState<boolean>(false);
@@ -33,10 +32,9 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
     try {
       const response = await axios.get(`${API_URL}usuario/clientes`);
       const userInfo = response.data;
-      return userInfo;
+      setUserInfo(userInfo);
     } catch (error) {
       console.error('Error al obtener la información del usuario:', error);
-      throw error;
     }
   };
 
@@ -172,26 +170,26 @@ const GenerarFacturaModal: React.FC<GenerarFacturaModalProps> = ({ factura, clos
                         El Buen Sabor
                       </p>
                     </div>
-                    <div className="pdf-container d-flex justify-content-between" style={{marginTop: "40px"}}>                      
-                        <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => handleSendEmail()}>
-                          Enviar por Email
-                        </Button>
-                        <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => generatePDF()}>
-                          Descargar PDF
-                        </Button>
-                        <Button variant="success" style={{ marginLeft: "10px" }} onClick={() => exportToExcel(selectedFactura)}>
-                          Exportar a Excel
-                        </Button>
-                        <Button variant="secondary" onClick={closeModal}>
-                          Cerrar
-                        </Button>                      
+                    <div className="pdf-container d-flex justify-content-between" style={{marginTop: "40px"}}>
+                      <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => handleSendEmail()}>
+                        Enviar por Email
+                      </Button>
+                      <Button variant="primary" style={{ marginRight: "10px" }} onClick={() => generatePDF()}>
+                        Descargar PDF
+                      </Button>
+                      <Button variant="success" style={{ marginLeft: "10px" }} onClick={() => exportToExcel(selectedFactura)}>
+                        Exportar a Excel
+                      </Button>
+                      <Button variant="secondary" onClick={closeModal}>
+                        Cerrar
+                      </Button>
                     </div>
                   </div>
                 </Container>
               </div>
             </div>
           )}
-          {showSendEmail && selectedFactura && confirmSendEmail &&(
+          {showSendEmail && selectedFactura && confirmSendEmail && (
             <SendEmail factura={selectedFactura} onCancel={handleCancelSendEmail} />
           )}
         </Modal.Body>

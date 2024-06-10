@@ -182,7 +182,7 @@
             <Col>
               {pedidosPorUsuario && pedidosPorUsuario.length > 0 ? (
                 <GenericTable<IPedidoDto>
-                  data={pedidosPorUsuario}
+                  data={pedidosFiltrados}
                   columns={columns}
                   actions={{
                     create: false,
