@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
-import { IEditUsuarioPerfil, IUsuario, IEditUsuarioFromCliente } from "../../../interface/IUsuario";
+import {
+  IEditUsuarioPerfil,
+  IUsuario,
+  IEditUsuarioFromCliente,
+} from "../../../interface/IUsuario";
 import EditPerfil from "./EditPerfil";
 import { useUser } from "../../../context/User/UserContext";
 import AddDireccionModal from "../MiDireccion/AddDireccionModal";
@@ -17,9 +21,18 @@ const MiPerfil: React.FC = () => {
   const [editModalShow, setEditModalShow] = useState(false);
   const [showAddDireccionModal, setShowAddDireccionModal] = useState(false);
   const [showEditDireccionModal, setShowEditDireccionModal] = useState(false);
-  const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
+  const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(
+    null
+  );
   const API_URL = process.env.REACT_APP_API_URL || "";
 
+  const getInitials = (name: any) => {
+    return name
+      .split(" ")
+      .map((word: any[]) => word[0])
+      .join("")
+      .toUpperCase();
+  };
   const initialUsuarioState: IEditUsuarioPerfil = {
     id: 0,
     nombre: "",
@@ -34,7 +47,8 @@ const MiPerfil: React.FC = () => {
     },
   };
 
-  const [usuario, setUsuario] = useState<IEditUsuarioPerfil>(initialUsuarioState);
+  const [usuario, setUsuario] =
+    useState<IEditUsuarioPerfil>(initialUsuarioState);
 
   useEffect(() => {
     if (usuarioContext) {
@@ -54,12 +68,16 @@ const MiPerfil: React.FC = () => {
       return usuarioActualizado;
     });
   };
-  
+
   const handleEditModalOpen = () => {
-    setUsuario(usuarioContext ? {
-      ...usuarioContext,
-      clave: usuarioContext.clave || "", // Ensure clave is never undefined
-    } : initialUsuarioState);
+    setUsuario(
+      usuarioContext
+        ? {
+            ...usuarioContext,
+            clave: usuarioContext.clave || "", // Ensure clave is never undefined
+          }
+        : initialUsuarioState
+    );
     setEditModalShow(true);
   };
 
@@ -103,7 +121,10 @@ const MiPerfil: React.FC = () => {
 
   const handlePerfilEdit = async (usuarioEditado: IEditUsuarioPerfil) => {
     try {
-      await axios.put(`${API_URL}usuario/actualizar/${usuarioEditado.id}`, usuarioEditado);
+      await axios.put(
+        `${API_URL}usuario/actualizar/${usuarioEditado.id}`,
+        usuarioEditado
+      );
       actualizarUsuario(usuarioEditado);
       setEditModalShow(false);
     } catch (error) {
@@ -118,10 +139,10 @@ const MiPerfil: React.FC = () => {
         minHeight: "100vh",
         backgroundImage: `url("${defaultImage}")`,
         backgroundSize: "cover",
-        width:"100%"
+        width: "100%",
       }}
     >
-      <div className="card" style={{ width: "80%", height: "75%"}}>
+      <div className="card" style={{ width: "80%", height: "75%" }}>
         <div className="card-header">
           <h1 className="display-6 text-start"> Mi Perfil</h1>
         </div>
@@ -131,14 +152,36 @@ const MiPerfil: React.FC = () => {
               className="d-flex align-items-start justify-content-center"
               md={4}
             >
-              <img
-                className="rounded-circle"
-                src={user?.picture}
-                alt={user?.name}
-                style={{ width: "80%", height: "80%"}}
-              />
+              {!isAuthenticated ? (
+                <div
+                  className="img-fluid rounded-circle me-2 d-flex align-items-center justify-content-center"
+                  style={{
+                    width: "130px",
+                    height: "130px",
+                    backgroundColor: "#C0C0C0", // Color de fondo para las iniciales
+                  }}
+                >
+                  <span
+                    style={{ fontSize: "50px", fontWeight: "bold" }}
+                    className="text-black"
+                  >
+                    {getInitials(usuarioContext?.nombre || "")}
+                  </span>
+                </div>
+              ) : (
+                <img
+                  className="rounded-circle"
+                  src={user?.picture}
+                  alt={user?.name}
+                  style={{ width: "80%", height: "80%" }}
+                />
+              )}
             </Col>
-            <Col className="d-flex flex-column align-items-start" md={8} style={{fontSize:"1.2rem"}}>
+            <Col
+              className="d-flex flex-column align-items-start"
+              md={8}
+              style={{ fontSize: "1.2rem" }}
+            >
               {usuario?.nombre && usuario?.apellido ? (
                 <p className="card-text">
                   Nombre: {usuario?.nombre} {usuario?.apellido}
