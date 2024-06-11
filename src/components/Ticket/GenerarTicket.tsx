@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Container, Modal, Button, Table } from "react-bootstrap";
 import { IPedidoDto } from "../../interface/IPedido";
 import { IDetallePedido } from "../../interface/IDetallePedido";
-import { IDetalleFactura } from "../../interface/IDetalleFactura";
-import { useNavigate } from "react-router-dom";
 import { IFactura } from "../../interface/IFactura";
+import { useNavigate } from "react-router-dom";
 import SendEmail from "../SendEmail/SendEmail";
 import axios from "axios";
 import FacturaPDF from "../Factura/FacturaPDF";
+import { IDetalleFactura } from "../../interface/IDetalleFactura";
 
 interface GenerarTicketProps {
     pedido: IPedidoDto | null;
@@ -24,14 +24,34 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
 }) => {
     const [selectedPedido, setSelectedPedido] = useState<IPedidoDto | null>(null);
     const [showSendEmail, setShowSendEmail] = useState<boolean>(false);
-    const [showGenerarFactura, setShowGenerarFactura] = useState<boolean>(false);
+    const [facturaExistente, setFacturaExistente] = useState<boolean>(false);
     const [factura, setFactura] = useState<IFactura | null>(null);
     const navigate = useNavigate();
     const API_URL = process.env.REACT_APP_API_URL || "";
 
     useEffect(() => {
         setSelectedPedido(pedido);
+        if (pedido) {
+            verificarFacturaExistente(pedido.id ?? 0);
+        }
     }, [pedido]);
+
+    const verificarFacturaExistente = async (pedidoId: number) => {
+        try {
+            const response = await axios.get(`${API_URL}factura`);
+            const facturas: IFactura[] = response.data;
+            const facturaExistente = facturas.find(factura => factura.pedido && factura.pedido.id === pedidoId);
+            if (facturaExistente) {
+                setFacturaExistente(true);
+                setFactura(facturaExistente); // Set the existing factura
+            } else {
+                setFacturaExistente(false);
+                setFactura(null); // Clear the factura state if no existing factura is found
+            }
+        } catch (error) {
+            console.error('Error al verificar factura existente:', error);
+        }
+    };
 
     const generarFactura = async (selectedPedido: IPedidoDto | null) => {
         if (selectedPedido) {
@@ -39,28 +59,28 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                 // Obtener todas las facturas desde el backend
                 const response = await axios.get(`${API_URL}factura`);
                 const facturas: IFactura[] = response.data;
-    
+
                 // Verificar si alguna factura tiene el mismo ID de pedido que estamos tratando de generar
                 const facturaExistente = facturas.find(factura => factura.pedido && factura.pedido.id === selectedPedido.id);
-    
+
                 if (facturaExistente) {
                     alert('¡Esta factura ya ha sido generada PREVIAMENTE!');
-                    return null;
+                    setFactura(facturaExistente); // Set the existing factura
                 } else {
                     const detallesFactura: IDetalleFactura[] = selectedPedido.detallesPedidos.map((detalle: IDetallePedido) => ({
                         cantidad: detalle.cantidad,
                         subtotal: detalle.producto.precio * detalle.cantidad,
                         nombreProducto: detalle.producto.nombre,
                         precioProducto: detalle.producto.precio
-                    }));   
-    
+                    }));
+
                     //validacion por si el usuario no tiene direccion asignada
                     const direccion = selectedPedido.usuario.domicilio
                         ? `${selectedPedido.usuario.domicilio.calle} ${selectedPedido.usuario.domicilio.numero}, ${selectedPedido.usuario.domicilio.localidad}`
                         : "Retiro en local";
-                    
+
                     // Aquí conviertes el pedido a un objeto de factura manualmente
-                    const factura: IFactura = {                        
+                    const factura: IFactura = {
                         activo: true,
                         fechaPedido: selectedPedido.fechaPedido,
                         fechaFactura: new Date(),
@@ -68,19 +88,20 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                         esEfectivo: selectedPedido.esEfectivo ?? false,
                         usuario: {
                             ...selectedPedido.usuario,
-                            domicilio: selectedPedido.usuario.domicilio ? selectedPedido.usuario.domicilio : { calle: "Retiro en local", numero: 0, localidad: "" },                            
+                            domicilio: selectedPedido.usuario.domicilio ? selectedPedido.usuario.domicilio : { calle: "Retiro en local", numero: 0, localidad: "" },
                         },
                         total: selectedPedido.total ?? 0,
                         detalleFactura: detallesFactura,
                         pedido: selectedPedido,
                     };
-    
+
                     // Luego, realizas el proceso de envío de la factura
                     const response = await axios.post(`${API_URL}factura`, factura);
                     if (response.data) {
                         console.log('Factura guardada en el backend:', response.data);
                         alert('¡La factura se generó correctamente!');
                         setFactura(factura);
+                        setFacturaExistente(true); // Mark as factura existing
                         return factura;
                     }
                 }
@@ -89,7 +110,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                 return null;
             }
         }
-    };   
+    };
 
     const getOrDefault = (value: any, defaultValue: any) => {
         return value !== null && value !== undefined ? value : defaultValue;
@@ -152,7 +173,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
     return (
         <>
             <Modal show={show} onHide={closeModal} size="lg" centered>
-            <Modal.Body className="d-flex justify-content-center align-items-center">
+                <Modal.Body className="d-flex justify-content-center align-items-center">
                     {selectedPedido && (
                         <Container className="d-flex justify-content-center">
                             <div className=" w-100 border p-4 bg-white">
@@ -227,7 +248,6 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                                         </p>
                                     </div>
                                 </div>
-
                             </div>
                         </Container>
                     )}
@@ -236,16 +256,14 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                     <button className="btn btn-primary me-2" onClick={() => handleGenerarFactura(selectedPedido)}>
                         Generar Factura
                     </button>
-                    {(factura &&
-                    <Button variant="info" onClick={handleDescargarFactura}>
-                                        Descargar Factura
-                                    </Button>
+                    {(facturaExistente &&
+                        <Button variant="info" onClick={handleDescargarFactura}>
+                            Descargar Factura
+                        </Button>
                     )}
-                    {/* Botón para abrir modal de factura */}
                     <button className="btn btn-primary me-2" onClick={handleMisPedidos}>
                         Ir a Mis Pedidos
                     </button>
-                    {/* Botón para cerrar el modal */}
                     <button className="btn btn-secondary" onClick={onCancel}>
                         Cerrar
                     </button>
@@ -253,7 +271,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
             </Modal>
             {showSendEmail && (
                 <SendEmail factura={factura} onCancel={() => setShowSendEmail(false)} />
-            )}          
+            )}
         </>
     );
 };
