@@ -138,7 +138,6 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                             setShowSendEmail(true);
                         }
                     }
-                    closeModal();
                 } else {
                     console.error("Selected pedido es null o undefined");
                 }
@@ -170,9 +169,15 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
         }
     };
 
+    const handleCerrarModal = () => {
+        if (!facturaExistente) {
+            closeModal(); // Solo cierra el modal si no hay una factura existente
+        }
+    };
+
     return (
         <>
-            <Modal show={show} onHide={closeModal} size="lg" centered>
+            <Modal show={show} onHide={handleCerrarModal} size="lg" centered>
                 <Modal.Body className="d-flex justify-content-center align-items-center">
                     {selectedPedido && (
                         <Container className="d-flex justify-content-center">
