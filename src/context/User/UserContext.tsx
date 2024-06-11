@@ -1,3 +1,4 @@
+// src/context/User/UserContext.js
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
@@ -10,6 +11,7 @@ interface UserContextProps {
   actualizarUsuarioContext: () => Promise<void>;
   loading: boolean;
   userExists: boolean;
+  cambiarContrasenia: boolean;
 }
 
 const UserContext = createContext<UserContextProps>({
@@ -18,6 +20,7 @@ const UserContext = createContext<UserContextProps>({
   actualizarUsuarioContext: async () => {},
   loading: true,
   userExists: false,
+  cambiarContrasenia: false,
 });
 
 export const UserProvider: React.FC = ({ children }) => {
@@ -25,6 +28,7 @@ export const UserProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [userExists, setUserExists] = useState(false);
   const [usuarioContext, setUsuarioContext] = useState<IUsuario | null>(null);
+  const [cambiarContrasenia, setCambiarContrasenia] = useState(false);
   const API_URL = process.env.REACT_APP_API_URL || "";
   const employeeToken = localStorage.getItem('employeeToken');
 
@@ -38,6 +42,15 @@ export const UserProvider: React.FC = ({ children }) => {
       setUsuarioContext(response.data);
       setUserExists(true);
       setLoading(false);
+
+      // Verificar si necesita cambiar la Contrasenia
+      if(response.data){
+        if (response.data.rol.nombreRol != 'Admin' && response.data.rol.nombreRol != 'Cliente'  && response.data.primerIngreso) {
+          setCambiarContrasenia(true);
+        }else{
+          setCambiarContrasenia(false);
+        }
+      }
     } catch (error) {
       console.error("Error al verificar el empleado:", error);
       setLoading(false);
@@ -104,7 +117,7 @@ export const UserProvider: React.FC = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ usuarioContext, setUsuarioContext, actualizarUsuarioContext, loading, userExists }}>
+    <UserContext.Provider value={{ usuarioContext, setUsuarioContext, actualizarUsuarioContext, loading, userExists, cambiarContrasenia }}>
       {children}
     </UserContext.Provider>
   );
