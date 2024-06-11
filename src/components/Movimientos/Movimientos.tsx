@@ -147,6 +147,24 @@ const Movimientos = () => {
     exportTableDataToExcel(dataToExport, filename);
   };
 
+  const customDateSearch = async (startDate: Date | null, endDate: Date | null) => {
+    if (!startDate || !endDate) return pedidos;
+    const filtered = pedidos.filter(pedido => {
+      const pedidoFecha = new Date(pedido.fechaPedido);
+      return pedidoFecha >= startDate && pedidoFecha <= endDate;
+    });
+    return filtered;
+  };
+  const customSearch = async (searchText: string) => {
+    // Filtrar los datos por nombre, apellido y teléfono
+    const filteredData = pedidos.filter((item) =>
+      item.usuario.nombre.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.usuario.apellido.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.usuario.telefono.toLowerCase().includes(searchText.toLowerCase())
+    );
+    return filteredData;
+  };
+
   return (
     <div>
       <Container fluid>
@@ -164,6 +182,8 @@ const Movimientos = () => {
                 }}
                 showDate={true}
                 onView={openPedidoModal}
+                customDate={customDateSearch}
+                customSearch={customSearch}
                 onSearch={false}
               />
             ) : (

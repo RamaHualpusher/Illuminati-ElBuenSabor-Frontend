@@ -1,17 +1,23 @@
-POST http://localhost:8080/api/usuario
+POST http://localhost:8080/api/usuario/empleados
 Content-Type: application/json
 
 {
-    "activo": true,
-    "nombre": "Javier",
-    "apellido": "Scandura",
-    "email": "cajero@gmail.com",
-    "clave": "123123123",
-    "telefono": "987654321",
-    "domicilio": null,
-    "rol": {
-        "id": 3,
         "activo": true,
-        "nombreRol": "Cajero"
+        "nombre": "Admin",
+        "apellido": "POSTMAN",
+        "email": "admin@mail.com",
+        "clave": "Pa$$word77",
+        "telefono": "456789",
+        "primerIngreso": false,
+        "domicilio": {
+            "activo": true,
+            "calle": "NUEVO DOMICILIO",
+            "numero": 888,
+            "localidad": "POSTMAN"
+        },
+        "rol": {
+            "id": 1,
+            "activo": true,
+            "nombreRol": "Admin"
+        }
     }
-}
