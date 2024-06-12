@@ -29,7 +29,7 @@ const Navbar: FC = () => {
   const [searchOpen, setSearchOpen] = useState(false); // Estado para controlar la apertura de la búsqueda
   const { setSearchParam } = useContext(SearchContext); // Obtener función para establecer parámetros de búsqueda
   const cartVacio = cartItems.length === 0; // Verificar si el carrito está vacío
-  const { usuarioContext, loading, userExists } = useUser(); // Obtener el contexto del usuario
+  const { usuarioContext } = useUser(); // Obtener el contexto del usuario
   const [isEmployee, setIsEmployee] = useState(
     !!localStorage.getItem("employeeToken")
   );
@@ -63,26 +63,6 @@ const Navbar: FC = () => {
     setSearchParam(searchParam);
   };
 
-  const handleWorkButtonClick = () => {
-    if (usuarioContext) {
-      switch (usuarioContext.rol.nombreRol) {
-        case "Admin":
-          navigate("/admin");
-          break;
-        case "Cajero":
-          navigate("/cajero");
-          break;
-        case "Cocinero":
-          navigate("/cocinero");
-          break;
-        case "Delivery":
-          navigate("/delivery");
-          break;
-        default:
-          break;
-      }
-    }
-  };
 
   useEffect(() => {
     // Verificar si el usuario está inactivo
@@ -159,18 +139,7 @@ const Navbar: FC = () => {
                   ></i>
                 </Button>
               </li>
-              {employeeToken && (
-                <li className="nav-item">
-                  <Button
-                    variant="secondary"
-                    className="btn btn-secondary px-3 py-2"
-                    onClick={handleWorkButtonClick}
-                    style={{ fontSize: "1.2rem", width: "10rem" }}
-                  >
-                    Trabajo
-                  </Button>
-                </li>
-              )}
+             
               {!isEmployee && (
                 <li className="nav-item">
                   <Dropdown show={cartOpen} onToggle={toggleCart}>
@@ -247,7 +216,7 @@ const Navbar: FC = () => {
                 <li className="nav-item d-flex align-items-center mx-2">
                   <Dropdown>
                     <CustomDropdown employeeToken={employeeToken} />
-                    <OpcionesUsuario />
+                    <OpcionesUsuario employeeToken={employeeToken} />
                   </Dropdown>
                 </li>
               )}
@@ -255,7 +224,7 @@ const Navbar: FC = () => {
                 <li className="nav-item d-flex align-items-center mx-2">
                   <Dropdown>
                     <CustomDropdown employeeToken={employeeToken} />
-                    <OpcionesUsuario />
+                    <OpcionesUsuario  employeeToken={employeeToken}/>
                   </Dropdown>
                 </li>
               )}

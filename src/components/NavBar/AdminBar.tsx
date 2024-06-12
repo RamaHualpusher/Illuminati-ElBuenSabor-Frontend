@@ -77,7 +77,7 @@ const AdminBar: FC = () => {
               <li className="nav-item d-flex align-items-center mx-2">
                 <Dropdown>
                   <CustomDropdown employeeToken={employeeToken} />
-                  <OpcionesUsuario />
+                  <OpcionesUsuario employeeToken={employeeToken} />
                 </Dropdown>
               </li>
             )}
@@ -85,7 +85,7 @@ const AdminBar: FC = () => {
               <li className="nav-item d-flex align-items-center mx-2">
                 <Dropdown>
                   <CustomDropdown employeeToken={employeeToken} />
-                  <OpcionesUsuario />
+                  <OpcionesUsuario employeeToken={employeeToken} />
                 </Dropdown>
               </li>
             )}
@@ -102,7 +102,7 @@ const AdminBar: FC = () => {
             )}
             {employeeToken && (
               <li>
-                <LogoutButtonEmployee/>
+                <LogoutButtonEmployee />
               </li>
             )}
           </ul>
