@@ -17,22 +17,24 @@ const Pendientes: React.FC = () => {
     useEffect(() => {
         const fetchPedidosPendientes = async () => {
             try {
-                
                 // Verificar el usuario existente
                 const response = await axios.get(`${API_URL}usuario`);
                 const usuarioDB = response.data;
-                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user?.email || usuario.email === usuarioContext?.email );
-                
+                const usuarioEncontrado = usuarioDB.find((usuario: IUsuario) => usuario.email === user?.email || usuario.email === usuarioContext?.email);
+
                 if (usuarioEncontrado) {
                     // Obtener los pedidos del usuario
                     const pedidosResponse = await axios.get<IPedidoDto[]>(`${API_URL}pedido/usuario/${usuarioEncontrado.id}`);
                     // Filtrar los pedidos pendientes
                     const pedidosPendientes = pedidosResponse.data.filter((pedido) =>
-                        // ['A confirmar', 'En cocina', 'Listo', 'En delivery'].includes(pedido.estadoPedido)
-                    ['A confirmar', 'En cocina', 'Pagado'].includes(pedido.estadoPedido)
-
+                        ['A confirmar', 'En cocina', 'Pagado'].includes(pedido.estadoPedido)
                     );
-                    pedidosPendientes.sort((a, b) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
+
+                    // Ordenar los pedidos pendientes desde el último hasta el primero
+                    pedidosPendientes.sort((a, b) => new Date(b.horaEstimadaFin).getTime() - new Date(a.horaEstimadaFin).getTime());
+                    
+                    console.log("Pedidos ordenados:", pedidosPendientes);
+
                     setPedidosPendientes(pedidosPendientes);
                 } else {
                     console.error("No se encontró el usuario en la base de datos.");
@@ -44,7 +46,7 @@ const Pendientes: React.FC = () => {
         };
 
         fetchPedidosPendientes();
-    }, [isAuthenticated, user]);   
+    }, [isAuthenticated, user, usuarioContext]);
 
     return (
         <div style={{ minHeight: 'calc(100vh - 90px)' }}>
