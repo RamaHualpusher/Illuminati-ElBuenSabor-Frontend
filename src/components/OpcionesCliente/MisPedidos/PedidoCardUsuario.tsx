@@ -53,11 +53,12 @@ const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
                 <Row>
                     <Col sm={4}>
                         <Card.Text>Pedido Número: {pedido.id}</Card.Text>
+                        <Card.Text> <b> Fecha pedido: </b> {new Date(pedido.fechaPedido).toLocaleDateString()}</Card.Text>
                         <Card.Text>
                             <i className="bi bi-clock"></i>
+                            <b> Horario de entrega: </b>
                             {pedido.horaEstimadaFin ? new Date(pedido.horaEstimadaFin).toLocaleTimeString() : ''} - {pedido.esDelivery ? 'Delivery' : 'Retiro Local'}
                         </Card.Text>
-                        <Card.Text>{new Date(pedido.fechaPedido).toLocaleDateString()}</Card.Text>
                         <Card.Text><b>Total: </b> ${calcularTotalPedido().toFixed(2)}</Card.Text>
                     </Col>
                     <Col sm={8}>

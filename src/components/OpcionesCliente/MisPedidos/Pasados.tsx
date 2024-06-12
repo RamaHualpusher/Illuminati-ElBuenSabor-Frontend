@@ -48,8 +48,8 @@ const Pasados: React.FC = () => {
 
           pedidos.sort(
             (a, b) =>
-              new Date(b.fechaPedido).getTime() -
-              new Date(a.fechaPedido).getTime()
+              new Date(b.horaEstimadaFin).getTime() -
+              new Date(a.horaEstimadaFin).getTime()
           );
           setPedidosPasados(pedidos);
         }

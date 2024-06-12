@@ -237,7 +237,7 @@ const GenerarTicket: React.FC<GenerarTicketProps> = ({
                                             Envío: {getOrDefault(selectedPedido.esDelivery ? "Domicilio" : "Retiro local", "")}
                                         </p>
                                     </div>
-                                    <div className="center-section text-center">
+                                    <div className="center-section text-center enlarged-section" style={{transform: "scale(1.3)"}}>
                                         {calcularDescuento(selectedPedido) === 0.1 && (
                                             <p>
                                                 <b> Total con descuento (10%): ${totalConDescuento} </b>
