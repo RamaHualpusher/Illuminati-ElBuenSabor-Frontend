@@ -59,40 +59,60 @@ const Empleados = () => {
 
         fetchData();
     }, [filterOption]); // Agrega filterOption como dependencia aquí
-
-
     const handleEmpleadoAdd = async (empleado: IUsuario) => {
         try {
-            const domicilio = {
-                activo: empleado.domicilio.activo,
-                calle: empleado.domicilio.calle,
-                numero: empleado.domicilio.numero,
-                localidad: empleado.domicilio.localidad,
-            };
-
-            const responseDomicilio = await axios.post(`${API_URL}domicilio`, domicilio);
-
-            if (responseDomicilio.data) {
-                const updatedEmpleado = {
-                    ...empleado,
-                    domicilio: { id: responseDomicilio.data.id, ...domicilio },
-                };
-
-                const responseEmpleado = await axios.post(`${API_URL}usuario`, updatedEmpleado);
-
-                if (responseEmpleado.data) {
-                    setEmpleados([...empleados, responseEmpleado.data]);
-                    console.log('Empleado agregado:', responseEmpleado.data);
-                } else {
-                    console.log('No se pudo agregar el empleado');
-                }
+            // Loguear el objeto empleado para debug
+            console.log('Empleado enviado:', JSON.stringify(empleado, null, 2));
+    
+            // Enviar el objeto empleado al endpoint "usuario/empleados"
+            const response = await axios.post(`${API_URL}usuario/empleados`, empleado);
+    
+            if (response.data) {
+                // Actualizar la lista de empleados con el nuevo empleado agregado
+                setEmpleados([...empleados, response.data]);
+                console.log('Empleado agregado:', response.data);
             } else {
-                console.log('No se pudo agregar el domicilio');
+                console.log('No se pudo agregar el empleado');
             }
         } catch (error) {
             console.error('Error al agregar empleado:', error);
         }
     };
+    
+    
+
+    // const handleEmpleadoAdd = async (empleado: IUsuario) => {
+    //     try {
+    //         const domicilio = {
+    //             activo: empleado.domicilio.activo,
+    //             calle: empleado.domicilio.calle,
+    //             numero: empleado.domicilio.numero,
+    //             localidad: empleado.domicilio.localidad,
+    //         };
+
+    //         const responseDomicilio = await axios.post(`${API_URL}domicilio`, domicilio);
+
+    //         if (responseDomicilio.data) {
+    //             const updatedEmpleado = {
+    //                 ...empleado,
+    //                 domicilio: { id: responseDomicilio.data.id, ...domicilio },
+    //             };
+
+    //             const responseEmpleado = await axios.post(`${API_URL}usuario`, updatedEmpleado);
+
+    //             if (responseEmpleado.data) {
+    //                 setEmpleados([...empleados, responseEmpleado.data]);
+    //                 console.log('Empleado agregado:', responseEmpleado.data);
+    //             } else {
+    //                 console.log('No se pudo agregar el empleado');
+    //             }
+    //         } else {
+    //             console.log('No se pudo agregar el domicilio');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error al agregar empleado:', error);
+    //     }
+    // };
 
     // Manejar la edición de un empleado
     const handleEmpleadoEdit = async (empleado: IEditUsuarioFromAdmin) => {
