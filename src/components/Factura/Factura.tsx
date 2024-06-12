@@ -20,8 +20,7 @@ const Factura = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const facturasResponse = await axios.get<IFactura[]>(
-          `${API_URL}factura`
+        const facturasResponse = await axios.get<IFactura[]>(`${API_URL}factura`
         );
         const facturasData = facturasResponse.data.filter(
           (factura: IFactura) => factura.pedido !== null

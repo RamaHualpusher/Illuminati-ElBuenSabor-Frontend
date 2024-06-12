@@ -8,7 +8,6 @@ export interface IUsuario extends IBase {
   apellido: string;
   email: string;
   clave: string;
-  claveConfirm: string;
   telefono: string;
   domicilio: IDomicilio;
   rol: IRol;
