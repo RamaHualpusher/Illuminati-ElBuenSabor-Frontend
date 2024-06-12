@@ -29,7 +29,7 @@ const Pendientes: React.FC = () => {
                     // Filtrar los pedidos pendientes
                     const pedidosPendientes = pedidosResponse.data.filter((pedido) =>
                         // ['A confirmar', 'En cocina', 'Listo', 'En delivery'].includes(pedido.estadoPedido)
-                    ['A confirmar', 'En cocina'].includes(pedido.estadoPedido)
+                    ['A confirmar', 'En cocina', 'Pagado'].includes(pedido.estadoPedido)
 
                     );
                     pedidosPendientes.sort((a, b) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
