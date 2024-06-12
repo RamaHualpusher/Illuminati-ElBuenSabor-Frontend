@@ -3,9 +3,8 @@ import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { IRol } from "../../../interface/IRol";
 import { IUsuario } from "../../../interface/IUsuario";
 import { IAddEmpleadoModalProps } from "../../../interface/IUsuario";
-import axios from "axios";
-const bcrypt = require('bcryptjs');
 import { BiShow, BiHide } from "react-icons/bi";
+const bcrypt = require("bcryptjs");
 
 const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
   show,
@@ -19,11 +18,10 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
       apellido: "",
       email: "",
       clave: "",
-      claveConfirm: "",
       telefono: "",
       activo: true,
       primerIngreso: false,
-      rol: { id: 0, nombreRol: "" },
+      rol: { id: 0, activo: true, nombreRol: "" },
       domicilio: {
         id: 0,
         activo: true,
@@ -40,10 +38,12 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
   const [claveValida, setClaveValida] = useState(true);
   const [emailValido, setEmailValido] = useState(true);
   const [emailEnUso, setEmailEnUso] = useState(false);
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [claveConfirm, setClaveConfirm] = useState("");
   const [passwordValidation, setPasswordValidation] = useState({
     length: false,
     lowercase: false,
@@ -53,7 +53,7 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false); 
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   useEffect(() => {
     fetch(API_URL + "rol")
@@ -90,9 +90,11 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
     event.preventDefault();
 
     try {
-      const response = await axios.get(API_URL + "usuario/empleados");
-      const empleados = response.data;
-      const emailExists = empleados.some((empleado: any) => empleado.email === usuario.email);
+      const response = await fetch(API_URL + "usuario/empleados");
+      const empleados = await response.json();
+      const emailExists = empleados.some(
+        (empleado: any) => empleado.email === usuario.email
+      );
 
       if (emailExists) {
         setEmailEnUso(true);
@@ -104,7 +106,6 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
       console.error("Error al verificar el email:", error);
       return;
     }
-
     if (!emailRegex.test(usuario.email)) {
       setEmailValido(false);
       return;
@@ -112,7 +113,7 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
       setEmailValido(true);
     }
 
-    if (usuario.clave !== usuario.claveConfirm) {
+    if (usuario.clave !== claveConfirm) {
       setClaveCoincide(false);
       return;
     } else {
@@ -132,9 +133,9 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
       return;
     }
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(usuario.clave, saltRounds);
-    usuario.clave = hashedPassword;
+    // const saltRounds = 10;
+    // const hashedPassword = await bcrypt.hash(usuario.clave, saltRounds);
+    // usuario.clave = hashedPassword;
 
     if (usuario.domicilio.activo) {
       setIsSubmitting(true);
@@ -160,7 +161,9 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese nombre"
                   value={usuario.nombre}
-                  onChange={(event) => setUsuario({ ...usuario, nombre: event.target.value })}
+                  onChange={(event) =>
+                    setUsuario({ ...usuario, nombre: event.target.value })
+                  }
                   required
                 />
               </Form.Group>
@@ -172,7 +175,9 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese apellido"
                   value={usuario.apellido}
-                  onChange={(event) => setUsuario({ ...usuario, apellido: event.target.value })}
+                  onChange={(event) =>
+                    setUsuario({ ...usuario, apellido: event.target.value })
+                  }
                   required
                 />
               </Form.Group>
@@ -195,7 +200,9 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                   isInvalid={!emailValido || emailEnUso}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {!emailValido ? "Email no válido." : "Este email ya está en uso."}
+                  {!emailValido
+                    ? "Email no válido."
+                    : "Este email ya está en uso."}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -207,8 +214,13 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                   value={usuario.rol.id || ""}
                   onChange={(event) => {
                     const selectedIdRol = parseInt(event.target.value);
-                    const selectedRol = roles.find((rol) => rol.id === selectedIdRol) || { idRol: 0, nombreRol: "" };
-                    setUsuario((prevUsuario) => ({ ...prevUsuario, rol: selectedRol }));
+                    const selectedRol = roles.find(
+                      (rol) => rol.id === selectedIdRol
+                    ) || { id: 0, activo: true, nombreRol: "" };
+                    setUsuario((prevUsuario) => ({
+                      ...prevUsuario,
+                      rol: selectedRol,
+                    }));
                   }}
                   required
                 >
@@ -231,7 +243,9 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                     type={showPassword ? "text" : "password"}
                     placeholder="Ingrese contraseña"
                     value={usuario.clave}
-                    onChange={(event) => setUsuario({ ...usuario, clave: event.target.value })}
+                    onChange={(event) =>
+                      setUsuario({ ...usuario, clave: event.target.value })
+                    }
                     required
                     isInvalid={!claveCoincide || !claveValida}
                   />
@@ -242,7 +256,9 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                     {showPassword ? <BiHide /> : <BiShow />}
                   </Button>
                   <Form.Control.Feedback type="invalid">
-                    {!claveCoincide ? "Las contraseñas no coinciden." : "La contraseña no cumple con los requisitos."}
+                    {!claveCoincide
+                      ? "Las contraseñas no coinciden."
+                      : "La contraseña no cumple con los requisitos."}
                   </Form.Control.Feedback>
                 </div>
               </Form.Group>
@@ -254,8 +270,8 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                   <Form.Control
                     type={showPasswordConfirm ? "text" : "password"}
                     placeholder="Confirmar contraseña"
-                    value={usuario.claveConfirm}
-                    onChange={(event) => setUsuario({ ...usuario, claveConfirm: event.target.value })}
+                    value={claveConfirm}
+                    onChange={(event) => setClaveConfirm(event.target.value)}
                     required
                     isInvalid={!claveCoincide}
                   />
@@ -271,36 +287,6 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                 </div>
               </Form.Group>
             </Col>
-            <Row>
-              <Col md="6">
-                {usuario.clave && (
-                  <div className="card border-info shadow">
-                    <ul className="list-unstyled">
-                      <li className={`password-validation-item ${passwordValidation.length ? 'text-success' : 'text-danger'}`}>
-                        {passwordValidation.length ? <i className="bi bi-check"></i> : <i className="bi bi-x"></i>}
-                        Al menos 8 caracteres de largo
-                      </li>
-                      <li className={`password-validation-item ${passwordValidation.lowercase ? 'text-success' : 'text-danger'}`}>
-                        {passwordValidation.lowercase ? <i className="bi bi-check"></i> : <i className="bi bi-x"></i>}
-                        Letras minúsculas (a-z)
-                      </li>
-                      <li className={`password-validation-item ${passwordValidation.uppercase ? 'text-success' : 'text-danger'}`}>
-                        {passwordValidation.uppercase ? <i className="bi bi-check"></i> : <i className="bi bi-x"></i>}
-                        Letras mayúsculas (A-Z)
-                      </li>
-                      <li className={`password-validation-item ${passwordValidation.number ? 'text-success' : 'text-danger'}`}>
-                        {passwordValidation.number ? <i className="bi bi-check"></i> : <i className="bi bi-x"></i>}
-                        Números (0-9)
-                      </li>
-                      <li className={`password-validation-item ${passwordValidation.specialChar ? 'text-success' : 'text-danger'}`}>
-                        {passwordValidation.specialChar ? <i className="bi bi-check"></i> : <i className="bi bi-x"></i>}
-                        Caracteres especiales <br /> (por ejemplo: -_@$!%*?&)
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </Col>
-            </Row>
           </Row>
           <Row>
             <Col md={6}>
@@ -325,8 +311,13 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
               <Form.Group className="mb-3" controlId="formEstado">
                 <Form.Label>Estado</Form.Label>
                 <Form.Select
-                  value={usuario.activo ? 'activo' : 'bloqueado'}
-                  onChange={(event) => setUsuario({ ...usuario, activo: event.target.value === 'activo' })}
+                  value={usuario.activo ? "activo" : "bloqueado"}
+                  onChange={(event) =>
+                    setUsuario({
+                      ...usuario,
+                      activo: event.target.value === "activo",
+                    })
+                  }
                   required
                 >
                   <option value="activo">Activo</option>
@@ -344,7 +335,16 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese calle"
                   value={usuario.domicilio.calle}
-                  onChange={(event) => setUsuario({ ...usuario, domicilio: { ...usuario.domicilio, calle: event.target.value, activo: true, } })}
+                  onChange={(event) =>
+                    setUsuario({
+                      ...usuario,
+                      domicilio: {
+                        ...usuario.domicilio,
+                        calle: event.target.value,
+                        activo: true,
+                      },
+                    })
+                  }
                   required
                 />
               </Col>
@@ -358,9 +358,15 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                     const inputRegex = /^[0-9\b]+$/;
                     const inputValue = event.target.value;
                     if (inputValue === "" || inputRegex.test(inputValue)) {
-                      setUsuario({ ...usuario, domicilio: { ...usuario.domicilio, numero: parseInt(event.target.value) } })}
+                      setUsuario({
+                        ...usuario,
+                        domicilio: {
+                          ...usuario.domicilio,
+                          numero: parseInt(event.target.value),
+                        },
+                      });
                     }
-                  }
+                  }}
                   required
                 />
               </Col>
@@ -370,7 +376,15 @@ const AddEmpleadoModal: React.FC<IAddEmpleadoModalProps> = ({
                   type="text"
                   placeholder="Ingrese localidad"
                   value={usuario.domicilio.localidad}
-                  onChange={(event) => setUsuario({ ...usuario, domicilio: { ...usuario.domicilio, localidad: event.target.value } })}
+                  onChange={(event) =>
+                    setUsuario({
+                      ...usuario,
+                      domicilio: {
+                        ...usuario.domicilio,
+                        localidad: event.target.value,
+                      },
+                    })
+                  }
                   required
                 />
               </Col>
