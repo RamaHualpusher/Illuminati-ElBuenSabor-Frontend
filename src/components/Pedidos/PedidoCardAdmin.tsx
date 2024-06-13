@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Card, Row, Col, Button } from 'react-bootstrap';
 import { IPedidoDto } from '../../interface/IPedido';
 import { useLocation } from 'react-router-dom';
@@ -6,6 +6,7 @@ import EstadoPedidoCard from './EstadoPedidoCard';
 import axios from 'axios';
 import ModalDetallePedido from './ModalDetallePedido';
 import { IDetallePedido } from '../../interface/IDetallePedido';
+import { useUser } from '../../context/User/UserContext';
 
 interface PedidoCardAdminProps {
   pedido: IPedidoDto;
@@ -18,6 +19,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
   const [showModal, setShowModal] = useState(false);
   const location = useLocation();
   const API_URL = process.env.REACT_APP_API_URL || "";
+  const { usuarioContext } = useUser();
 
   useEffect(() => {
     let newUrlDetallePedido = '';
@@ -87,6 +89,8 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
         const response = await axios.put(`${API_URL}pedido/${pedido.id}`, pedido);
 
         cambiarEstadoPedido(response.data.estadoPedido);
+        //window.location.reload();
+
         setActualizarUI(true);
       } catch (error) {
         console.error(error);
@@ -95,7 +99,12 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
   };
 
   const renderActionButtons = () => {
+    if (!usuarioContext) return null;
+
     const tieneOtrosProductos = contieneOtrosProductos(pedido.detallesPedidos);
+    const isCajero = usuarioContext.rol.nombreRol === 'Cajero';
+    const isCocinero = usuarioContext.rol.nombreRol === 'Cocinero';
+    const isDelivery = usuarioContext.rol.nombreRol === 'Delivery';
 
     switch (pedido.estadoPedido) {
       case 'A confirmar':
@@ -104,7 +113,7 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-            {tieneOtrosProductos ? (
+            {isCajero && tieneOtrosProductos ? (
               <button className="btn btn-primary me-2" onClick={() => handleEstadoPedidoChange('En cocina')}>
                 A cocina
               </button>
@@ -121,9 +130,11 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
-              Listo
-            </button>
+            {isCocinero && (
+              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Listo')}>
+                Listo
+              </button>
+            )}
           </>
         );
       case 'Listo':
@@ -132,12 +143,16 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-            <button className="btn btn-primary me-2" onClick={handlePagoConfirmacion} disabled={!pedido.esEfectivo}>
-              Entregado
-            </button>
-            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('En delivery')}>
-              En delivery
-            </button>
+            {isCajero && (
+              <button className="btn btn-primary me-2" onClick={handlePagoConfirmacion} disabled={!pedido.esEfectivo}>
+                Entregado
+              </button>
+            )}
+            {isDelivery && (
+              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('En delivery')}>
+                En delivery
+              </button>
+            )}
           </>
         );
       case 'En delivery':
@@ -146,9 +161,11 @@ const PedidoCardAdmin: React.FC<PedidoCardAdminProps> = ({ pedido, cambiarEstado
             <Button className='mx-2' variant="primary" onClick={handleMostrarDetalles}>
               <i className="bi bi-file-earmark-text-fill me-1"></i> Detalles
             </Button>
-            <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Entregado')}>
-              Entregado
-            </button>
+            {isDelivery && (
+              <button className="btn btn-primary" onClick={() => handleEstadoPedidoChange('Entregado')}>
+                Entregado
+              </button>
+            )}
           </>
         );
       case 'Entregado':
