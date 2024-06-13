@@ -58,7 +58,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [selectedIngredients, setSelectedIngredients] = useState<
     IProductoIngrediente[]
-  >([]); 
+  >([]);
 
   useEffect(() => {
     const fetchRubros = async () => {
@@ -132,6 +132,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
 
       if (ingredienteExistente) {
         // Ingrediente duplicado, mostrar mensaje o realizar alguna acción
+        ingredienteExistente.cantidad += cantIngredienteToAddInProduct;
         console.log("Este ingrediente ya está en la lista.");
       } else {
         const newProductIngrediente: IProductoIngrediente = {
@@ -147,18 +148,17 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
             newProductIngrediente,
           ],
         });
-
-        setCosto(
-          costo +
-            cantIngredienteToAddInProduct *
-              ingredienteToAddInProduct.precioCosto
-        );
         setSelectedIngredients([...selectedIngredients, newProductIngrediente]);
-
-        // Limpiar el ingrediente seleccionado del select
-        setIngredienteToAddInProduct(null);
-        setCantIngredienteToAddInProduct(0);
       }
+      setCosto(
+        costo +
+        cantIngredienteToAddInProduct *
+        ingredienteToAddInProduct.precioCosto
+      );
+      // Limpiar el ingrediente seleccionado del select
+      setIngredienteToAddInProduct(null);
+      setCantIngredienteToAddInProduct(0);
+
     } else {
       // La cantidad del ingrediente es 0 o no se seleccionó ningún ingrediente
       console.log("La cantidad del ingrediente debe ser mayor que 0.");
@@ -350,68 +350,68 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
             </Row>
           )}
           <Row>
-            
+
             {!product.esBebida && (
-            <Col md={6}>
-              <Form.Group className="mb-3" controlId="formRubro">
-                <Form.Label>Rubro</Form.Label>
-                <Form.Select
-                  value={product.rubro.id || ""} // Establecer el valor seleccionado en función del ID del rubro del producto
-                  onChange={(event) => {
-                    const rubroId = parseInt(event.target.value);
-                    const selectedRubro = rubros.find(
-                      (rubro) => rubro.id === rubroId
-                    );
-                    if (selectedRubro) {
-                      setProduct({ ...product, rubro: selectedRubro });
-                    }
-                  }}
-                  required
-                >
-                  <option value="">Seleccione un rubro</option>
-                  {rubros.map((rubro) => (
-                    <option
-                      key={rubro.id}
-                      value={rubro.id}
-                      disabled={!rubro.activo}
-                    >
-                      {rubro.nombre}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-            </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="formRubro">
+                  <Form.Label>Rubro</Form.Label>
+                  <Form.Select
+                    value={product.rubro.id || ""} // Establecer el valor seleccionado en función del ID del rubro del producto
+                    onChange={(event) => {
+                      const rubroId = parseInt(event.target.value);
+                      const selectedRubro = rubros.find(
+                        (rubro) => rubro.id === rubroId
+                      );
+                      if (selectedRubro) {
+                        setProduct({ ...product, rubro: selectedRubro });
+                      }
+                    }}
+                    required
+                  >
+                    <option value="">Seleccione un rubro</option>
+                    {rubros.map((rubro) => (
+                      <option
+                        key={rubro.id}
+                        value={rubro.id}
+                        disabled={!rubro.activo}
+                      >
+                        {rubro.nombre}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
             )}
             {product.esBebida && (
-            <Col md={6}>
-              <Form.Group className="mb-3" controlId="formRubro">
-                <Form.Label>Rubro</Form.Label>
-                <Form.Select
-                  value={product.rubro.id || ""} // Establecer el valor seleccionado en función del ID del rubro del producto
-                  onChange={(event) => {
-                    const rubroId = parseInt(event.target.value);
-                    const selectedRubro = rubrosBebidas.find(
-                      (rubro) => rubro.id === rubroId
-                    );
-                    if (selectedRubro) {
-                      setProduct({ ...product, rubro: selectedRubro });
-                    }
-                  }}
-                  required
-                >
-                  <option value="">Seleccione un rubro</option>
-                  {rubrosBebidas.map((rubro) => (
-                    <option
-                      key={rubro.id}
-                      value={rubro.id}
-                      disabled={!rubro.activo}
-                    >
-                      {rubro.nombre}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-            </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="formRubro">
+                  <Form.Label>Rubro</Form.Label>
+                  <Form.Select
+                    value={product.rubro.id || ""} // Establecer el valor seleccionado en función del ID del rubro del producto
+                    onChange={(event) => {
+                      const rubroId = parseInt(event.target.value);
+                      const selectedRubro = rubrosBebidas.find(
+                        (rubro) => rubro.id === rubroId
+                      );
+                      if (selectedRubro) {
+                        setProduct({ ...product, rubro: selectedRubro });
+                      }
+                    }}
+                    required
+                  >
+                    <option value="">Seleccione un rubro</option>
+                    {rubrosBebidas.map((rubro) => (
+                      <option
+                        key={rubro.id}
+                        value={rubro.id}
+                        disabled={!rubro.activo}
+                      >
+                        {rubro.nombre}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
             )}
             <Col md={6}>
               <Form.Group className="mb-3" controlId="formPrecio">
@@ -437,7 +437,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
               </Form.Group>
             </Col>
           </Row>
-          
+
           {product.esBebida && (
             <>
               <Row>
