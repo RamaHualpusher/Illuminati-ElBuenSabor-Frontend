@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Tooltip, OverlayTrigger } from "react-bootstrap";
 import { IEditUsuarioFromCliente } from "../../../interface/IUsuario";
 import { IEditClienteModalProps } from "../../../interface/IUsuario";
 import { useUser } from "../../../context/User/UserContext";
@@ -141,7 +141,12 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
   };
 
   return (
-    <Modal show={show} onHide={handleClose} size="xl" style={{ fontSize: "1.2rem" }}>
+    <Modal
+      show={show}
+      onHide={handleClose}
+      size="xl"
+      style={{ fontSize: "1.2rem" }}
+    >
       <Modal.Header closeButton>
         <Modal.Title>Editar Perfil</Modal.Title>
       </Modal.Header>
@@ -150,7 +155,9 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
           <div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formNombre">
               <div style={{ display: "flex", alignItems: "center" }}>
-                <Form.Label style={{ width: "150px", textAlign: "left" }}>Nombre</Form.Label>
+                <Form.Label style={{ width: "150px", textAlign: "left" }}>
+                  Nombre
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="nombre"
@@ -166,7 +173,9 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
           <div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formApellido">
               <div style={{ display: "flex", alignItems: "center" }}>
-                <Form.Label style={{ width: "150px", textAlign: "left" }}>Apellido</Form.Label>
+                <Form.Label style={{ width: "150px", textAlign: "left" }}>
+                  Apellido
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="apellido"
@@ -179,26 +188,36 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
               </div>
             </Form.Group>
           </div>
-          <div style={{ marginBottom: "10px", textAlign: "right" }}>
+          {/* <div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formEmail">
               <div style={{ display: "flex", alignItems: "center" }}>
-                <Form.Label style={{ width: "150px", textAlign: "left" }}>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={editedCliente.email}
-                  onChange={handleInputChange}
-                  style={{ marginLeft: "20px" }}
-                  className="shadow-sm"
-                  placeholder="Agregue un Email"
-                />
+                <Form.Label style={{ width: "150px", textAlign: "left" }}>
+                  Email
+                </Form.Label>
+                <OverlayTrigger
+                  placement="top"
+                  overlay={<Tooltip>El Email de Google no se puede editar.</Tooltip>}
+                >
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={editedCliente.email}
+                    onChange={handleInputChange}
+                    style={{ marginLeft: "20px" }}
+                    className="shadow-sm"
+                    placeholder="Agregue un Email"
+                    disabled
+                  />
+                </OverlayTrigger>
               </div>
             </Form.Group>
-          </div>
+          </div> */}
           <div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formTelefono">
               <div style={{ display: "flex", alignItems: "center" }}>
-                <Form.Label style={{ width: "150px", textAlign: "left" }}>Telefono</Form.Label>
+                <Form.Label style={{ width: "150px", textAlign: "left" }}>
+                  Telefono
+                </Form.Label>
                 <Form.Control
                   type="number"
                   name="telefono"
@@ -222,7 +241,11 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                   <div style={{ marginBottom: "10px", textAlign: "right" }}>
                     <Form.Group controlId="formClave">
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <Form.Label style={{ width: "150px", textAlign: "left" }}>Nueva Contraseña</Form.Label>
+                        <Form.Label
+                          style={{ width: "150px", textAlign: "left" }}
+                        >
+                          Nueva Contraseña
+                        </Form.Label>
                         <Form.Control
                           type={showPassword ? "text" : "password"}
                           name="clave"
@@ -237,16 +260,26 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                           variant="outline-secondary"
                           style={{ marginLeft: "5px" }}
                         >
-                          {showPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye-fill"></i>}
+                          {showPassword ? (
+                            <i className="bi bi-eye-slash"></i>
+                          ) : (
+                            <i className="bi bi-eye-fill"></i>
+                          )}
                         </Button>
                       </div>
                     </Form.Group>
-                    {claveError && <div className="text-danger p-1">{claveError}</div>}
+                    {claveError && (
+                      <div className="text-danger p-1">{claveError}</div>
+                    )}
                   </div>
                   <div style={{ marginBottom: "10px", textAlign: "right" }}>
                     <Form.Group controlId="formConfirmarClave">
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <Form.Label style={{ width: "150px", textAlign: "left" }}>Confirmar Contraseña</Form.Label>
+                        <Form.Label
+                          style={{ width: "150px", textAlign: "left" }}
+                        >
+                          Confirmar Contraseña
+                        </Form.Label>
                         <Form.Control
                           type={showConfirmPassword ? "text" : "password"}
                           name="confirmarClave"
@@ -257,15 +290,23 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                           placeholder="Confirme la contraseña"
                         />
                         <Button
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
                           variant="outline-secondary"
                           style={{ marginLeft: "5px" }}
                         >
-                          {showConfirmPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye-fill"></i>}
+                          {showConfirmPassword ? (
+                            <i className="bi bi-eye-slash"></i>
+                          ) : (
+                            <i className="bi bi-eye-fill"></i>
+                          )}
                         </Button>
                       </div>
                     </Form.Group>
-                    {claveError && <div className="text-danger p-1">{claveError}</div>}
+                    {claveError && (
+                      <div className="text-danger p-1">{claveError}</div>
+                    )}
                   </div>
                 </>
               )}
