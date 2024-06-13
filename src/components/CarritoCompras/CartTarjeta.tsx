@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { IDomicilio } from "../../interface/IDomicilio";
-import { IUsuario } from "../../interface/IUsuario";
+import { IEditUsuarioFromCliente, IUsuario } from "../../interface/IUsuario";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import AddDireccionModal from "../OpcionesCliente/MiDireccion/AddDireccionModal";
 import EditDireccionModal from "../OpcionesCliente/MiDireccion/EditDireccionModal";
+import EditPerfil from "../OpcionesCliente/MiPerfil/EditPerfil";
 
 interface CartTarjetaProps {
   esDelivery: boolean;
@@ -36,7 +37,10 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   const [modalAbierto, setModalAbierto] = useState(false);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
-  const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(null);
+  const [perfilModal, setPerfilModal] = useState(false);
+  const [selectedDireccion, setSelectedDireccion] = useState<IDomicilio | null>(
+    null
+  );
   const { isAuthenticated, user } = useAuth0();
   const API_URL = process.env.REACT_APP_API_URL || "";
   const [nuevoDomicilio, setNuevoDomicilio] = useState<IDomicilio | null>(
@@ -46,7 +50,9 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
   useEffect(() => {
     const obtenerDomicilioUsuario = async () => {
       try {
-        const response = await axios.get(`${API_URL}usuario/${user?.id}/domicilio`);
+        const response = await axios.get(
+          `${API_URL}usuario/${user?.id}/domicilio`
+        );
         return response.data;
       } catch (error) {
         console.error("Error al obtener la dirección del usuario:", error);
@@ -111,6 +117,10 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
 
   const handleCloseModal = () => {
     setModalAbierto(false);
+  };
+
+  const handleAddPerfilModalOpen = () => {
+    setPerfilModal(true);
   };
 
   const handleFormSubmit = async (event: React.FormEvent) => {
@@ -185,6 +195,25 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
     return total;
   };
 
+  const handlePerfilModalClose = () => {
+    setPerfilModal(false);
+  };
+
+  const handlePerfilEdit = async (editedUsuario: IEditUsuarioFromCliente) => {
+    try {
+      console.log(editedUsuario)
+      await axios.put(
+        `${API_URL}usuario/actualizar/${editedUsuario.id}`,
+        editedUsuario
+      );
+      //actualizarUsuario(editedUsuario);
+      setEditModalShow(false);
+    } catch (error) {
+      console.log(error);
+    }
+    handlePerfilModalClose();
+  };
+
   return (
     <div className="d-flex justify-content-center align-items-center mb-4">
       <div className="card shadow" style={{ width: "25rem" }}>
@@ -229,55 +258,69 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
           <div className="container-fluid">
             <div className="d-flex flex-column align-items-center">
               <h1 className="display-6">Detalle del Pedido</h1>
-              {isAuthenticated && (
-                <p className="lead mb-0">
-                  <strong>Dirección:</strong>
-                  {domicilio ? (
-                    <span style={{ marginLeft: "10px" }}>
-                      <>
-                        {esDelivery ? (
-                          <>
-                            <span>
-                              {domicilio.calle}, {domicilio.numero},{" "}
-                              {domicilio.localidad}
-                            </span>
-                            <br />
-                            <button
-                              className="btn btn-success ms-2 mt-1 mb-2"
-                              onClick={handleEditModalOpen}
-                            >
-                              Cambiar Dirección
-                            </button>
-                          </>
-                        ) : (
+              <p className="lead mb-0">
+                <strong>Dirección: </strong>
+                {domicilio ? (
+                  <span style={{ marginLeft: "10px" }}>
+                    <>
+                      {esDelivery ? (
+                        <>
                           <span>
-                            Retiro en el Local{" "}
-                            <span
-                              className="icon"
-                              style={{ cursor: "pointer" }}
-                              onClick={() => {
-                                window.open(
-                                  "https://maps.app.goo.gl/aCW5vzKe88XF2poYA",
-                                  "_blank"
-                                );
-                              }}
-                            >
-                              <i className="bi bi-geo-alt-fill text-black"></i>
-                            </span>
+                            {domicilio.calle}, {domicilio.numero},{" "}
+                            {domicilio.localidad}
                           </span>
-                        )}
-                      </>
-                    </span>
-                  ) : (
+                          <br />
+                          <button
+                            className="btn btn-success ms-2 mt-1 mb-2"
+                            onClick={handleEditModalOpen}
+                          >
+                            Cambiar Dirección
+                          </button>
+                        </>
+                      ) : (
+                        <span>
+                          Retiro en el Local{" "}
+                          <span
+                            className="icon"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              window.open(
+                                "https://maps.app.goo.gl/aCW5vzKe88XF2poYA",
+                                "_blank"
+                              );
+                            }}
+                          >
+                            <i className="bi bi-geo-alt-fill text-black"></i>
+                          </span>
+                        </span>
+                      )}
+                    </>
+                  </span>
+                ) : (
+                  <button
+                    className="btn btn-success"
+                    onClick={handleAddModalOpen}
+                  >
+                    Agregar Dirección
+                  </button>
+                )}
+              </p>
+              <p className="lead mb-0">
+                {usuario?.telefono ? (
+                  <strong>Teléfono {usuario.telefono}</strong>
+                ) : (
+                  <>
+                    <strong>Teléfono:</strong>
                     <button
-                      className="btn btn-success"
-                      onClick={handleAddModalOpen}
+                      className="btn btn-success ms-2 mt-1 mb-2"
+                      onClick={handleAddPerfilModalOpen}
                     >
-                      Agregar Dirección
+                      Agregar Teléfono
                     </button>
-                  )}
-                </p>
-              )}
+                  </>
+                )}
+              </p>
+
               <div className="mb-0">
                 <p className="lead">
                   <strong>SubTotal: </strong>${subTotal}
@@ -313,7 +356,6 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
             <div className="d-flex flex-column align-items-center">
               <h5>Método de Pago</h5>
               <div className="d-flex justify-content-center">
-                
                 <div className="mb-0 me-2">
                   <input
                     type="radio"
@@ -325,9 +367,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                   />
                   <label
                     className={
-                      esDelivery 
-                        ? "btn btn-primary"
-                        : "btn btn-outline-primary"
+                      esDelivery ? "btn btn-primary" : "btn btn-outline-primary"
                     }
                     htmlFor="mercadoPago-outlined"
                   >
@@ -371,6 +411,12 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
         handleClose={handleEditModalClose}
         handleDireccionEdit={handleDomicilioEdit}
         selectedDireccion={selectedDireccion}
+      />
+      <EditPerfil
+      show={perfilModal}
+      handleClose={handlePerfilModalClose}
+      selectedUsuario={usuario}
+      handleClienteEdit={handlePerfilEdit}
       />
     </div>
   );

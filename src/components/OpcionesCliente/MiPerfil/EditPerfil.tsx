@@ -158,6 +158,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                   onChange={handleInputChange}
                   style={{ marginLeft: "20px" }}
                   className="shadow-sm"
+                  placeholder="Agregue un nombre"
                 />
               </div>
             </Form.Group>
@@ -173,6 +174,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                   onChange={handleInputChange}
                   style={{ marginLeft: "20px" }}
                   className="shadow-sm"
+                  placeholder="Agregue un Apellido"
                 />
               </div>
             </Form.Group>
@@ -188,6 +190,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                   onChange={handleInputChange}
                   style={{ marginLeft: "20px" }}
                   className="shadow-sm"
+                  placeholder="Agregue un Email"
                 />
               </div>
             </Form.Group>
@@ -203,6 +206,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                   onChange={handleInputChange}
                   style={{ marginLeft: "20px" }}
                   className="shadow-sm"
+                  placeholder="Agregue un teléfono"
                 />
               </div>
             </Form.Group>
@@ -226,6 +230,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                           onChange={handleInputChange}
                           style={{ marginLeft: "20px" }}
                           className="shadow-sm"
+                          placeholder="Agregue una nueva contraseña"
                         />
                         <Button
                           onClick={() => setShowPassword(!showPassword)}
@@ -249,6 +254,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                           onChange={handleInputChange}
                           style={{ marginLeft: "20px" }}
                           className="shadow-sm"
+                          placeholder="Confirme la contraseña"
                         />
                         <Button
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}

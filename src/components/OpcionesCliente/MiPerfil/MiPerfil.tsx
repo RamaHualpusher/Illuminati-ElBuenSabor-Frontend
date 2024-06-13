@@ -121,6 +121,7 @@ const MiPerfil: React.FC = () => {
 
   const handlePerfilEdit = async (usuarioEditado: IEditUsuarioPerfil) => {
     try {
+      console.log(usuarioEditado)
       await axios.put(
         `${API_URL}usuario/actualizar/${usuarioEditado.id}`,
         usuarioEditado
@@ -173,7 +174,7 @@ const MiPerfil: React.FC = () => {
                   className="rounded-circle"
                   src={user?.picture}
                   alt={user?.name}
-                  style={{ width: "80%", height: "80%" }}
+                  style={{ width: "130px", height: "130px" }}
                 />
               )}
             </Col>

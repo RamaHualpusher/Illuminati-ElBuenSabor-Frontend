@@ -6,7 +6,7 @@ import axios from "axios";
 import { IPedidoDto } from "../../interface/IPedido";
 import { IProducto } from "../../interface/IProducto";
 import { IDetallePedido } from "../../interface/IDetallePedido";
-import { Alert, Button, Modal } from "react-bootstrap";
+import { Alert, Button, Modal, Toast } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
 import { IProductoIngrediente } from "../../interface/IProductoIngrediente";
 import GenerarTicket from "../Ticket/GenerarTicket";
@@ -56,6 +56,8 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const [showTicketModal, setShowTicketModal] = useState<boolean>(false);
   const [returnUrl, setReturnUrl] = useState<string | null>(null);
   const navigate = useNavigate(); // Obtiene la función navigate desde useNavigate
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const handleClose = () => {
     navigate("/"); // Redirige a la página principal al hacer click en "Cerrar"
@@ -104,14 +106,8 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
             subTotal: cartItem.quantity * cartItem.price,
             producto: productoEncontrado,
 
-
-
             //aca invente que es 5, tengo que ver cuanto es el maximo
             maxCantidadProducto: 5,
-
-
-
-
           };
           detallesPedido.push(detallePedido);
         }
@@ -155,7 +151,6 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
   }, [pedidoConfirmado, pedidoCompleto]); //tambien agregue para factura el", pedidoCompleto"
 
-
   const createPreference = async () => {
     if (!pedidoCompleto || !pedidoCompleto.usuario) {
       alert("El pedido o el usuario no puede ser nulo.");
@@ -177,12 +172,17 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           }
         } else {
           // Si el pago es con Mercado Pago, crea la preferencia de pago
-          initMercadoPago(MP_PUBLIC, { locale: 'es-AR' });
-          response = await axios.post(`${API_URL}mercado-pago-dato/mercadoPago`, pedidoCompleto);
+          initMercadoPago(MP_PUBLIC, { locale: "es-AR" });
+          response = await axios.post(
+            `${API_URL}mercado-pago-dato/mercadoPago`,
+            pedidoCompleto
+          );
           setPreferenceId(response.data.preferenceId);
 
-          console.log("Respuesta al crear preferencia de MercadoPago:", response.data);
-
+          console.log(
+            "Respuesta al crear preferencia de MercadoPago:",
+            response.data
+          );
         }
       } catch (error) {
         console.error("Error al crear preferencia de pago:", error);
@@ -201,7 +201,13 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
     }
 
     if (usuarioContext === null) {
-      console.error("El usuario no está cargado. No se puede confirmar el pedido.");
+      console.error(
+        "El usuario no está cargado. No se puede confirmar el pedido."
+      );
+      return;
+    }
+
+    if (!validarDatosUsuario()) {
       return;
     }
 
@@ -268,6 +274,20 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
   const handleEsDelivery = (esDelivery: boolean) => {
     setEsDelivery(esDelivery);
     setEsEfectivo(false);
+  };
+
+  const validarDatosUsuario = (): boolean => {
+    if (
+      !usuarioContext ||
+      (esDelivery && (!usuarioContext.domicilio || !usuarioContext.telefono))
+    ) {
+      setToastMessage(
+        "Debe agregar un domicilio y un teléfono para confirmar el pedido."
+      );
+      setShowToast(true);
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -342,19 +362,25 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </button>
         </div>
       </form>
-      {preferenceId &&
-        <Wallet initialization={{ preferenceId: preferenceId.toString(), redirectMode: "blank" }} customization={{ texts: { valueProp: 'smart_option' } }} />
-      }
-        {/* Aquí renderizamos el componente GenerarTicket */}
-        {pedidoConfirmado && (
-          <GenerarTicket
-            pedido={pedidoCompleto}
-            closeModal={() => setShowTicketModal(false)}
-            show={showTicketModal}
-            modificarCantidad={modificarCantidad}
-            eliminarDetallePedido={eliminarDetallePedido}
-          />
-        )}
+      {preferenceId && (
+        <Wallet
+          initialization={{
+            preferenceId: preferenceId.toString(),
+            redirectMode: "blank",
+          }}
+          customization={{ texts: { valueProp: "smart_option" } }}
+        />
+      )}
+      {/* Aquí renderizamos el componente GenerarTicket */}
+      {pedidoConfirmado && (
+        <GenerarTicket
+          pedido={pedidoCompleto}
+          closeModal={() => setShowTicketModal(false)}
+          show={showTicketModal}
+          modificarCantidad={modificarCantidad}
+          eliminarDetallePedido={eliminarDetallePedido}
+        />
+      )}
       {/* Mostrar el Alert cuando el carrito esté vacío */}
       {isCartEmpty && (
         <div className="container mt-3">
@@ -392,6 +418,23 @@ const ConfirmacionPedido: React.FC<ConfirmacionPedidoProps> = ({
           </Alert>
         </div>
       )}
+      <Toast
+      show={showToast}
+      onClose={() => setShowToast(false)}
+      style={{
+        position: "fixed",
+        top: "90px",
+        right: "10px",
+        zIndex: 1000,
+      }}
+    >
+      <Toast.Header className="bg-danger text-white">
+        <strong className="me-auto">Advertencia</strong>
+      </Toast.Header>
+      <Toast.Body className="toast-body fs-5">
+        {toastMessage}
+      </Toast.Body>
+    </Toast>
     </div>
   );
 };
