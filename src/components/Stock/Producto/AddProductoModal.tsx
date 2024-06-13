@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form, Col, Row, Table } from "react-bootstrap";
+import { Modal, Button, Form, Col, Row, Table, Tooltip, OverlayTrigger } from "react-bootstrap";
 import axios from "axios";
 import { IProducto } from "../../../interface/IProducto";
 import { IRubroNew } from "../../../interface/IRubro";
@@ -71,9 +71,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
         const allRubros = responseData.data;
 
         const filteredRubros = allRubros.filter(
-          (rubro) =>
-            !rubro.ingredientOwner &&
-            rubro.rubroPadre === null
+          (rubro) => !rubro.ingredientOwner && rubro.rubroPadre === null
         );
 
         setRubros(filteredRubros);
@@ -123,6 +121,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
       );
       setIngredienteToAddInProduct(selectedIngrediente || null);
       setCantIngredienteToAddInProduct(0);
+      console.log("selectIngredienteToAddInProduct");
     } else {
       setIngredienteToAddInProduct(null);
     }
@@ -528,34 +527,51 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
                       ))}
                     </Form.Select>
                     {ingredienteToAddInProduct && (
-                      <div className="input-group mt-3">
-                        <Form.Control
-                          type="number"
-                          placeholder="Ingrese Cantidad"
-                          value={cantIngredienteToAddInProduct}
-                          onChange={(event) =>
-                            setCantIngredienteToAddInProduct(
-                              parseInt(event.target.value)
-                            )
-                          }
-                          required
-                          className="mr-2"
-                        />
-                        <span className="input-group-text">
-                          {ingredienteToAddInProduct.unidadMedida}
-                        </span>
-                      </div>
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip>Puede ingresar gramos con la ","</Tooltip>
+                        }
+                      >
+                        <div className="input-group mt-3">
+                          <Form.Control
+                            type="number"
+                            placeholder="Ingrese Cantidad"
+                            value={cantIngredienteToAddInProduct}
+                            onChange={(event) =>
+                              setCantIngredienteToAddInProduct(
+                                parseFloat(event.target.value)
+                              )
+                            }
+                            required
+                            className="mr-2"
+                            min={0}
+                          />
+                          <span className="input-group-text">
+                            {ingredienteToAddInProduct.unidadMedida}
+                          </span>
+                        </div>
+                      </OverlayTrigger>
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={3}>
-                  <Button
-                    variant="success"
-                    onClick={() => agregarIngrediente()}
-                  >
-                    Agregar Ingrediente
-                  </Button>
-                </Col>
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip>
+                      Si ingresa un ingrediente ya existente, se sumará
+                    </Tooltip>
+                  }
+                >
+                  <Col md={3}>
+                    <Button
+                      variant="success"
+                      onClick={() => agregarIngrediente()}
+                    >
+                      Agregar Ingrediente
+                    </Button>
+                  </Col>
+                </OverlayTrigger>
               </Row>
 
               <Row>
