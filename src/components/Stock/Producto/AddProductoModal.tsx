@@ -44,7 +44,9 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   const [product, setProduct] = useState<IProducto>(initializeProduct);
   const [rubros, setRubros] = useState<IRubroNew[]>([]);
   const [rubrosBebidas, setRubrosBebidas] = useState<IRubroNew[]>([]);
-  const [rubrosIngredienteBebidas, setRubrosIngredienteBebidas] = useState<IRubroNew[]>([]);
+  const [rubrosIngredienteBebidas, setRubrosIngredienteBebidas] = useState<
+    IRubroNew[]
+  >([]);
   const [IngredientesListToAddInProduct, setIngredientesListToAddInProduct] =
     useState<IIngredientes[]>([]);
   const [ingredienteToAddInProduct, setIngredienteToAddInProduct] =
@@ -63,14 +65,15 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   useEffect(() => {
     const fetchRubros = async () => {
       try {
-        const responseData = await axios.get<IRubroNew[]>(`${API_URL}rubro`);
+        console.log("entra");
+        const responseData = await axios.get<IRubroNew[]>(API_URL + "rubro");
+        console.log(responseData);
         const allRubros = responseData.data;
 
         const filteredRubros = allRubros.filter(
-          (rubroBebida) =>
-            !rubroBebida.ingredientOwner &&
-            rubroBebida.rubroPadre !== null &&
-            !rubroBebida.rubroPadre?.nombre.includes("Bebida")
+          (rubro) =>
+            !rubro.ingredientOwner &&
+            rubro.rubroPadre === null
         );
 
         setRubros(filteredRubros);
@@ -81,6 +84,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
             rubroBebida.rubroPadre !== null &&
             rubroBebida.rubroPadre?.nombre.includes("Bebida")
         );
+        console.log(filteredRubros);
 
         setRubrosBebidas(filteredRubrosBebidas);
 
@@ -90,6 +94,7 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
             rubroBebida.rubroPadre !== null &&
             rubroBebida.rubroPadre?.nombre.includes("Bebida")
         );
+        console.log(filteredRubrosIngredienteBebidas);
 
         setRubrosIngredienteBebidas(filteredRubrosIngredienteBebidas);
       } catch (error) {
@@ -152,13 +157,11 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
       }
       setCosto(
         costo +
-        cantIngredienteToAddInProduct *
-        ingredienteToAddInProduct.precioCosto
+          cantIngredienteToAddInProduct * ingredienteToAddInProduct.precioCosto
       );
       // Limpiar el ingrediente seleccionado del select
       setIngredienteToAddInProduct(null);
       setCantIngredienteToAddInProduct(0);
-
     } else {
       // La cantidad del ingrediente es 0 o no se seleccionó ningún ingrediente
       console.log("La cantidad del ingrediente debe ser mayor que 0.");
@@ -350,7 +353,6 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
             </Row>
           )}
           <Row>
-
             {!product.esBebida && (
               <Col md={6}>
                 <Form.Group className="mb-3" controlId="formRubro">
