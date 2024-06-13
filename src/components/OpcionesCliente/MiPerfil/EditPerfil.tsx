@@ -143,7 +143,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
   return (
     <Modal show={show} onHide={handleClose} size="xl" style={{ fontSize: "1.2rem" }}>
       <Modal.Header closeButton>
-        <Modal.Title>Editar Perfil</Modal.Title>
+       <Modal.Title>Editar Perfil</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
@@ -179,7 +179,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
               </div>
             </Form.Group>
           </div>
-          <div style={{ marginBottom: "10px", textAlign: "right" }}>
+          {/*<div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formEmail">
               <div style={{ display: "flex", alignItems: "center" }}>
                 <Form.Label style={{ width: "150px", textAlign: "left" }}>Email</Form.Label>
@@ -194,7 +194,7 @@ const EditPerfil: React.FC<IEditClienteModalProps> = ({
                 />
               </div>
             </Form.Group>
-          </div>
+          </div>*/}
           <div style={{ marginBottom: "10px", textAlign: "right" }}>
             <Form.Group controlId="formTelefono">
               <div style={{ display: "flex", alignItems: "center" }}>
