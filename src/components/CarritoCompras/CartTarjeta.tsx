@@ -362,7 +362,7 @@ const CartTarjeta: React.FC<CartTarjetaProps> = ({
                     className="btn-check"
                     id="mercadoPago-outlined"
                     autoComplete="off"
-                    checked={esDelivery && !esEfectivo}
+                    checked={esDelivery || !esEfectivo}
                     onChange={handleClickMercadoPago}
                   />
                   <label
