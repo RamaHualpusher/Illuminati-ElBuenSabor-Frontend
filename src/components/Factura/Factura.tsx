@@ -107,6 +107,23 @@ const Factura = () => {
     setShowModal(true); // Muestra el modal de GenerarFacturaModal
   };
 
+  const customSearch = async (searchText: string) => {
+    const filteredData = facturas.filter((factura) =>
+      factura.pedido.usuario.nombre.toLowerCase().includes(searchText.toLowerCase()) ||
+      factura.pedido.usuario.apellido.toLowerCase().includes(searchText.toLowerCase())
+    );
+    return filteredData;
+  };
+
+  const customDateSearch = async (startDate: Date | null, endDate: Date | null) => {
+    if (!startDate || !endDate) return facturas;
+    const filtered = facturas.filter((factura) => {
+      const pedidoFecha = new Date(factura.pedido.fechaPedido);
+      return pedidoFecha >= startDate && pedidoFecha <= endDate;
+    });
+    return filtered;
+  };  
+
   return (
     <div>
       <Container fluid>
@@ -119,17 +136,19 @@ const Factura = () => {
           <Col>
             {facturas && facturas.length > 0 ? (
               <GenericTable<IFactura>
-                data={facturas}
-                columns={columns}
-                actions={{
-                  create: false,
-                  update: false,
-                  delete: false,
-                  view: true,
-                }}
-                onView={onView}
-                showDate={true}                
-              />
+              data={facturas}
+              columns={columns}
+              actions={{
+                create: false,
+                update: false,
+                delete: false,
+                view: true,
+              }}
+              showDate={true}
+              customDate={customDateSearch}
+              customSearch={customSearch}
+              onView={onView}
+            />
             ) : (
               <NoHayPedidos onReload={() => window.location.reload()} />
             )}
