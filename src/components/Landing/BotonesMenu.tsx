@@ -15,7 +15,7 @@ const BotonesMenu: FC<IBotonesMenuProps> = ({
     },
     {
       value: "Pizzas",
-      label: "Pizza",
+      label: "Pizzas",
       icon: "bi bi-fan",
     },
     {

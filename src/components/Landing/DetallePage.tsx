@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
 import { CartContext, CartItem } from '../../context/cart/CartProvider';
-import { IProducto } from '../../interface/IProducto';
+import { IProductoMaxProducto } from '../../interface/IProducto';
 import { IDetallePedido } from '../../interface/IDetallePedido';
 import axios from 'axios';
 
@@ -10,7 +10,7 @@ const DetallePage = () => {
   const { id } = useParams<{ id: string }>();
   const { addToCart } = useContext(CartContext);
 const API_URL = process.env.REACT_APP_API_URL || "";
-  const [producto, setProducto] = useState<IProducto | undefined>();
+  const [producto, setProducto] = useState<IProductoMaxProducto | undefined>();
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const API_URL = process.env.REACT_APP_API_URL || "";
       if (id) {
         try {
           const response = await axios.get(`${API_URL}producto`);          
-          const productoEncontrado = response.data.find((producto: IProducto) => producto.id === parseInt(id));
+          const productoEncontrado = response.data.find((producto: IProductoMaxProducto) => producto.id === parseInt(id));
           setProducto(productoEncontrado);
           if (productoEncontrado && productoEncontrado.stockActual === 0) {
             setShowAlert(true);
@@ -82,10 +82,10 @@ const API_URL = process.env.REACT_APP_API_URL || "";
               <div className="card-body">
                 <h4 className="card-text">Detalles: <br />{producto.preparacion}</h4>
                 <p className="card-text">Precio de venta: ${producto.precio}</p>
-                <p className="card-text">Disponibles: {producto.stockActual}</p>
+                <p className="card-text">Disponibles: {producto.maxCantidadProducto}</p>
                 <p className="card-text">Tiempo estimado: {producto.tiempoEstimadoCocina} Min</p>
                 {ingredientesSection}
-                {producto.stockActual > 0 ? (
+                {producto.maxCantidadProducto > 0 ? (
                   <button onClick={handleAddToCart} className="btn btn-primary mb-2">
                     Agregar al Carrito
                   </button>

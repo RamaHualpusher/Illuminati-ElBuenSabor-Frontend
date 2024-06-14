@@ -65,24 +65,23 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
   useEffect(() => {
     const fetchRubros = async () => {
       try {
-        console.log("entra");
-        const responseData = await axios.get<IRubroNew[]>(API_URL + "rubro");
-        console.log(responseData);
+        const responseData = await axios.get<IRubroNew[]>(`${API_URL}rubro`);
         const allRubros = responseData.data;
 
         const filteredRubros = allRubros.filter(
-          (rubro) => !rubro.ingredientOwner && rubro.rubroPadre === null
+          (rubroBebida) =>
+            !rubroBebida.ingredientOwner &&
+            rubroBebida.rubroPadre !== null &&
+            !rubroBebida.rubroPadre?.nombre.includes("Bebida")
         );
 
         setRubros(filteredRubros);
-
         const filteredRubrosBebidas = allRubros.filter(
           (rubroBebida) =>
             !rubroBebida.ingredientOwner &&
             rubroBebida.rubroPadre !== null &&
             rubroBebida.rubroPadre?.nombre.includes("Bebida")
         );
-        console.log(filteredRubros);
 
         setRubrosBebidas(filteredRubrosBebidas);
 
@@ -92,14 +91,12 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
             rubroBebida.rubroPadre !== null &&
             rubroBebida.rubroPadre?.nombre.includes("Bebida")
         );
-        console.log(filteredRubrosIngredienteBebidas);
 
         setRubrosIngredienteBebidas(filteredRubrosIngredienteBebidas);
       } catch (error) {
         console.log(error);
       }
     };
-
     const fetchIngredientes = async () => {
       try {
         const response = await fetch(`${API_URL}ingrediente`);
@@ -109,7 +106,6 @@ const AddProductoModal: React.FC<IAddProductoModalProps> = ({
         console.log(error);
       }
     };
-
     fetchRubros();
     fetchIngredientes();
   }, [product.esBebida]);

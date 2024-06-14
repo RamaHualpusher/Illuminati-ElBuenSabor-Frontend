@@ -67,6 +67,7 @@ const TarjetaComida: React.FC<ICardProps> = ({ producto, buttonText, showButton 
         {/* Título y descripción del producto */}
         <h5 className="card-title">{producto.nombre}</h5>
         <p className="card-text">{producto.denominacion}</p>
+        <p className="card-text">Precio: ${producto.precio}</p>
 
         {/* Botón de agregar al carrito o mensaje de sin stock */}
         {renderButton()}
