@@ -75,7 +75,7 @@ const RankingClientes = () => {
     },
     { title: "Email", field: "usuario", render: rowData => <span>{rowData.usuario.email}</span> },
     { title: "Teléfono", field: "usuario", render: rowData => <span>{rowData.usuario.telefono}</span> },
-    { title: "Estado", field: "estadoPedido" },
+    // { title: "Estado", field: "estadoPedido" },
     {
       title: "Fecha del Último Pedido",
       field: "fechaPedido",
@@ -122,7 +122,7 @@ const RankingClientes = () => {
         "Nombre Completo": `${usuario.usuario.nombre} ${usuario.usuario.apellido}`,
         Email: usuario.usuario.email,
         Teléfono: usuario.usuario.telefono,
-        Estado: usuario.estadoPedido,
+        // Estado: usuario.estadoPedido,
         "Cantidad de Pedidos": usuario.cantidadPedidos,
         "Total Pedidos": usuario.totalPedidos,
       }));

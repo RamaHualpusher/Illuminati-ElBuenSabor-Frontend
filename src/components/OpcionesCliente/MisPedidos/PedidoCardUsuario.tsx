@@ -52,7 +52,7 @@ const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
             <Card.Body>
                 <Row>
                     <Col sm={4}>
-                        <Card.Text>Pedido Número: {pedido.id}</Card.Text>
+                        <Card.Text><b> Pedido Número: </b> {pedido.id}</Card.Text>
                         <Card.Text> <b> Fecha pedido: </b> {new Date(pedido.fechaPedido).toLocaleDateString()}</Card.Text>
                         <Card.Text>
                             <i className="bi bi-clock"></i>
