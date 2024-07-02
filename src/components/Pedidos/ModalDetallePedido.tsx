@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Table } from 'react-bootstrap';
-import { IPedidoDto } from '../../interface/IPedido';
+import { IPedidoDtoVuelto } from '../../interface/IPedido';
 import ModalModificarPedido from './ModalModificarPedido';
 
 interface ModalDetallePedidoProps {
-  pedido: IPedidoDto; // Propiedad que recibe el pedido seleccionado
+  pedido: IPedidoDtoVuelto; // Propiedad que recibe el pedido seleccionado
   onHide: () => void; // Función para cerrar el modal
   show: boolean; // Propiedad para controlar la visibilidad del modal
 }
@@ -24,7 +24,7 @@ const ModalDetallePedido: React.FC<ModalDetallePedidoProps> = ({ pedido, onHide,
   const handleShowModificar = () => setShowModificar(true);
   const handleHideModificar = () => setShowModificar(false);
 
-  const handlePedidoModificado = (pedidoModificado: IPedidoDto) => {
+  const handlePedidoModificado = (pedidoModificado: IPedidoDtoVuelto) => {
     // Aquí puedes actualizar el estado del pedido o realizar otras acciones
     handleHideModificar();
   };
@@ -120,9 +120,11 @@ const ModalDetallePedido: React.FC<ModalDetallePedidoProps> = ({ pedido, onHide,
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleShowModificar}>
+          {!pedido.devuelto &&(
+            <Button variant="secondary" onClick={handleShowModificar}>
             Cancelar Pedido
           </Button>
+          )}          
           <Button variant="secondary" onClick={onHide}>
             Volver
           </Button>
