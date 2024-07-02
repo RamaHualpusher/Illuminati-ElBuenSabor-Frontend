@@ -25,3 +25,15 @@ export interface IPedidoDto extends IBase {
   detallesPedidos: IDetallePedido[];
   mercadoPagoDatos?: IMercadoPagoDatos;   
 }
+export interface IPedidoDtoVuelto extends IBase {
+  horaEstimadaFin: Date;
+  esDelivery: boolean;
+  esEfectivo: boolean;
+  estadoPedido: string;
+  devuelto?: boolean;
+  fechaPedido: Date;
+  usuario: IUsuario;
+  total: number; // este no deberia ir
+  detallesPedidos: IDetallePedido[];
+  mercadoPagoDatos?: IMercadoPagoDatos;   
+}
