@@ -74,7 +74,7 @@ const PedidoCardUsuario: React.FC<PedidoCardUsuarioProps> = ({ pedido }) => {
                                     </Button>
                                 </>
                             )}
-                            {['Listo','A confirmar', 'En cocina'].includes(pedido.estadoPedido) && (
+                            {['A confirmar', 'En cocina'].includes(pedido.estadoPedido) && (
                                 // Mostrar botón de cancelar solo para ciertos estados de pedido
                                 <>
                                     <Button variant="danger" className="me-2" onClick={cancelarPedido}>

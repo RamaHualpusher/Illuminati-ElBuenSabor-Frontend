@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Table, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import { IPedidoDtoVuelto } from '../../interface/IPedido';
-import { IDetallePedido } from '../../interface/IDetallePedido'; // Asegúrate de importar IProducto si no lo has hecho
+import { IDetallePedido } from '../../interface/IDetallePedido';
 import { IProductoIngrediente } from '../../interface/IProductoIngrediente';
-import { IProducto } from '../../interface/IProducto';
+import { IIngredientes } from '../../interface/IIngredientes';
 
 interface ModalModificarPedidoProps {
     pedido: IPedidoDtoVuelto;
@@ -14,7 +14,31 @@ interface ModalModificarPedidoProps {
 }
 
 const ModalModificarPedido: React.FC<ModalModificarPedidoProps> = ({ pedido, onHide, show, onSave }) => {
-    const [detallesPedidos, setDetallesPedidos] = useState<IDetallePedido[]>(pedido.detallesPedidos);
+    const [detallesPedidos, setDetallesPedidos] = useState<IDetallePedido[]>([]);
+
+    useEffect(() => {
+        // Inicializar las cantidades de ingredientes multiplicadas por la cantidad de productos en el pedido
+        const detallesInicializados = pedido.detallesPedidos.map(detalle => {
+            const producto = detalle.producto;
+            if (producto.productosIngredientes) {
+                const productosIngredientesMultiplicados = producto.productosIngredientes.map(ing => ({
+                    ...ing,
+                    cantidad: ing.cantidad * detalle.cantidad
+                }));
+                return {
+                    ...detalle,
+                    producto: {
+                        ...producto,
+                        productosIngredientes: productosIngredientesMultiplicados
+                    }
+                };
+            }
+            return detalle;
+        });
+        setDetallesPedidos(detallesInicializados);
+    }, [pedido]);
+
+    const API_URL = process.env.REACT_APP_API_URL || "";
 
     const handleIngredienteCantidadChange = (index: number, ingIndex: number, cantidad: number) => {
         const nuevosDetalles = [...detallesPedidos];
@@ -23,18 +47,35 @@ const ModalModificarPedido: React.FC<ModalModificarPedidoProps> = ({ pedido, onH
         if (producto) {
             const productosIngredientes = producto.productosIngredientes;
             if (productosIngredientes) {
-                // Actualizar la cantidad del ingrediente multiplicando por la cantidad de productos
-                productosIngredientes[ingIndex].cantidad = cantidad * producto.stockActual; // Ajusta esto según donde se encuentre la cantidad correcta de productos
+                productosIngredientes[ingIndex].cantidad = cantidad;
                 setDetallesPedidos(nuevosDetalles);
             }
         }
     };
 
     const handleSave = async () => {
+        const listaIngredientesDevueltos: { cantidad: number; ingrediente: IIngredientes }[] = detallesPedidos.flatMap(detalle => 
+            detalle.producto.productosIngredientes?.map(ing => ({
+                cantidad: ing.cantidad,
+                ingrediente: ing.ingrediente
+            })) || []
+        );
+
+        const ingredientesUnificados = listaIngredientesDevueltos.reduce((acc: { cantidad: number; ingrediente: IIngredientes }[], ing) => {
+            const existing = acc.find(item => item.ingrediente.id === ing.ingrediente.id);
+            if (existing) {
+                existing.cantidad += ing.cantidad;
+            } else {
+                acc.push({ ...ing });
+            }
+            return acc;
+        }, []).filter(ing => ing.cantidad >= 0);
+
         const pedidoModificado = { ...pedido, detallesPedidos };
 
         try {
-            await axios.post('/pedido/aumentarStockIngrediente', pedidoModificado);
+            await axios.post(`${API_URL}/pedido/aumentarStockIngrediente`, ingredientesUnificados);
+            await axios.post(`${API_URL}/pedido/confirmarStockDevuelto`, pedidoModificado);
             onSave(pedidoModificado);
             onHide();
         } catch (error) {
