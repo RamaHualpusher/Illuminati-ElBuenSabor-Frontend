@@ -121,7 +121,7 @@ const ModalDetallePedido: React.FC<ModalDetallePedidoProps> = ({ pedido, onHide,
         </Modal.Body>
         <Modal.Footer>
           {!pedido.devuelto &&(
-            <Button variant="secondary" onClick={handleShowModificar}>
+            <Button variant="info" onClick={handleShowModificar}>
             Cancelar Pedido
           </Button>
           )}          
