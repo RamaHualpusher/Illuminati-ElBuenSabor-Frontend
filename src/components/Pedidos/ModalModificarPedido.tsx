@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Modal, Button, Table, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import { IPedidoDtoVuelto } from '../../interface/IPedido';
-import { IDetallePedido } from '../../interface/IDetallePedido';
+import { IDetallePedido } from '../../interface/IDetallePedido'; // Asegúrate de importar IProducto si no lo has hecho
+import { IProductoIngrediente } from '../../interface/IProductoIngrediente';
+import { IProducto } from '../../interface/IProducto';
 
 interface ModalModificarPedidoProps {
     pedido: IPedidoDtoVuelto;
@@ -17,10 +19,12 @@ const ModalModificarPedido: React.FC<ModalModificarPedidoProps> = ({ pedido, onH
     const handleIngredienteCantidadChange = (index: number, ingIndex: number, cantidad: number) => {
         const nuevosDetalles = [...detallesPedidos];
         const producto = nuevosDetalles[index]?.producto;
+
         if (producto) {
             const productosIngredientes = producto.productosIngredientes;
             if (productosIngredientes) {
-                productosIngredientes[ingIndex].cantidad = cantidad;
+                // Actualizar la cantidad del ingrediente multiplicando por la cantidad de productos
+                productosIngredientes[ingIndex].cantidad = cantidad * producto.stockActual; // Ajusta esto según donde se encuentre la cantidad correcta de productos
                 setDetallesPedidos(nuevosDetalles);
             }
         }
@@ -58,7 +62,7 @@ const ModalModificarPedido: React.FC<ModalModificarPedidoProps> = ({ pedido, onH
                                 <td>{detalle.producto.nombre}</td>
                                 <td>
                                     <ul>
-                                        {detalle.producto.productosIngredientes?.map((prodIngrediente, ingIndex) => (
+                                        {detalle.producto.productosIngredientes?.map((prodIngrediente: IProductoIngrediente, ingIndex: number) => (
                                             <li key={ingIndex}>
                                                 {prodIngrediente.ingrediente.nombre} - {prodIngrediente.cantidad} {prodIngrediente.ingrediente.unidadMedida}
                                                 <FormControl
